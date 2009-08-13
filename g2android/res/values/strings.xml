@@ -34,8 +34,8 @@
 	<string name="about_label">About</string>
 	<string name="about_shortcut">a</string>
 	
-	<string name="about_text">G2Android is an open source (GPL v2
-		Licence) client for Gallery2 ( http://gallery.menalto.com ) running on
+	<string name="about_text">G2Android ( http://code.google.com/p/g2android/ )  is an open source (GPL v2
+		License) client for Gallery2 ( http://gallery.menalto.com ) running on
 		the Android platform, developed and maintained by Anthony Dahanne (
 		http://blog.dahanne.net/about )</string>
 	<string name="licence">
