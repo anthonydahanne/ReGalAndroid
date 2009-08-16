@@ -25,6 +25,11 @@ import java.util.Map;
 import net.dahanne.android.g2android.R;
 import net.dahanne.android.g2android.model.Album;
 import net.dahanne.android.g2android.utils.G2Utils;
+import net.dahanne.android.g2android.utils.GalleryConnectionException;
+import net.dahanne.android.g2android.utils.ToastExceptionUtils;
+
+import org.apache.commons.lang.StringUtils;
+
 import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -42,8 +47,27 @@ public class ShowAlbums extends ListActivity implements OnItemClickListener {
 	public void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
-		HashMap<String, String> albumsProperties = G2Utils.fetchAlbums(Settings
-				.getGalleryUrl(this));
+		HashMap<String, String> albumsProperties = new HashMap<String, String>(
+				0);
+		try {
+			// the first thing is to login, if an username and password are
+			// supplied !
+			// This is done once and for all as the session cookie will be
+			// stored !
+			if (StringUtils.isNotBlank(Settings.getUsername(this))) {
+				G2Utils.loginToGallery(Settings.getGalleryHost(this), Settings
+						.getGalleryPath(this), Settings.getGalleryPort(this),
+						Settings.getUsername(this), Settings.getPassword(this));
+			}
+
+			albumsProperties = G2Utils.fetchAlbums(Settings
+					.getGalleryHost(this), Settings.getGalleryPath(this),
+					Settings.getGalleryPort(this));
+		} catch (NumberFormatException e) {
+			ToastExceptionUtils.toastNumberFormatException(this, e);
+		} catch (GalleryConnectionException e) {
+			ToastExceptionUtils.toastGalleryException(this, e);
+		}
 
 		// we load the given album from the previous selection
 		Album selectedAlbum = (Album) getIntent().getSerializableExtra(
@@ -71,15 +95,6 @@ public class ShowAlbums extends ListActivity implements OnItemClickListener {
 			Album rootAlbum = G2Utils.organizeAlbumsHierarchy(nonSortedAlbums);
 			setTitle(rootAlbum.getTitle());
 			albums = rootAlbum.getChildren();
-			// albums.add(rootAlbum);
-			// for (Album album : rootAlbum.getChildren()) {
-			// albums.add(album);
-			// if (album.getChildren().size() != 0) {
-			// for (Album album2 : album.getChildren()) {
-			// albums.add(album2);
-			// }
-			// }
-			// }
 		}
 
 		setListAdapter(new ArrayAdapter<Album>(this,

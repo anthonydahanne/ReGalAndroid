@@ -1,23 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- 
-/*
- * G2Android
- * Copyright (c) 2009 Anthony Dahanne
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
- * for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- */
- -->
+	<!--
+		/* * G2Android * Copyright (c) 2009 Anthony Dahanne * This program is
+		free software; you can redistribute it and/or modify * it under the
+		terms of the GNU General Public License as published by * the Free
+		Software Foundation; either version 2 of the License, or * (at your
+		option) any later version. * * This program is distributed in the hope
+		that it will be useful, but * WITHOUT ANY WARRANTY; without even the
+		implied warranty of MERCHANTABILITY * or FITNESS FOR A PARTICULAR
+		PURPOSE. See the GNU General Public License * for more details. * *
+		You should have received a copy of the GNU General Public License
+		along * with this program; if not, write to the Free Software
+		Foundation, Inc., * 59 Temple Place, Suite 330, Boston, MA 02111-1307
+		USA */
+	-->
 <resources>
 	<string name="g2android_title">Welcome to G2Android !</string>
 	<string name="app_name">G2Android</string>
@@ -25,45 +20,56 @@
 	<string name="gallery_url_title">Gallery Url</string>
 	<string name="g2android_no_gallery_configured">No gallery configured! Go to Menu->Settings to
 		fix this !</string>
+	<string name="g2android_default_gallery_configured">Configured with the default gallery, change gallery Url in Menu->Settings</string>
 	<string name="gallery_url_is_not_valid">The gallery url provided is not valid! Go to
 		Menu->Settings to fix this !</string>
 	<string name="gallery_url_summary">Enter here the base name of your gallery, ex :
 		http://myhost.com/gallery2</string>
 	<string name="gallery_url_default">http://g2.dahanne.net</string>
+	<string name="gallery_url_key">galleryUrl</string>
+
+	<string name="username_title">Username</string>
+	<string name="username_summary">If your gallery needs it, enter here your
+		username</string>
+	<string name="username_key">username</string>
+
+	<string name="password_title">Password</string>
+	<string name="password_summary">If your gallery needs it, enter here your
+		password</string>
+	<string name="password_key">password</string>
+
+	<string name="port_title">Port</string>
+	<string name="port_summary">The default port is 80, but if your gallery uses
+		something different, change it here</string>
+	<string name="port_key">port</string>
+	<string name="port_default">80</string>
+
+	<string name="firsttime_title">Welcome to G2Android !</string>
+	<string name="firsttime_key">firsttime</string>
+	<string name="ok">Ok !</string>
+
 	<string name="about_title">About G2Android</string>
 	<string name="about_label">About</string>
 	<string name="about_shortcut">a</string>
-	
-	<string name="about_text">G2Android ( http://code.google.com/p/g2android/ )  is an open source (GPL v2
-		License) client for Gallery2 ( http://gallery.menalto.com ) running on
-		the Android platform, developed and maintained by Anthony Dahanne (
-		http://blog.dahanne.net/about )</string>
-	<string name="licence">
-		G2Android<br />
-		Copyright (c) 2009 Anthony Dahanne
-		This program is free software; you can redistribute it and/or modify
-		it under the terms of the GNU General Public License as published by
-		the Free Software Foundation; either version 2 of the License, or
-		(at your option) any later version.<br />
 
-		This program is distributed in the hope that it will be useful, but
-		WITHOUT ANY WARRANTY; without even the implied warranty of
-		MERCHANTABILITY
-		or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
-		for more details.<br />
 
-		You should have received a copy of the GNU General Public License along
-		with this program; if not, write to the Free Software Foundation,
-		Inc.,
-		59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- </string>
+	<string name="what_is_g2android">
+		G2Android is a client to access a remote Gallery2 installation.
+		The	gallery configured by default is a sample Gallery2 installation, for
+		you to test if you don't have a gallery configured yet.
+		You can change the default gallery Url in Menu->Settings
+		You can find more sample gallery addresses at this web address :
+		http://gallery.menalto.com/gallery/demosites/
+		G2Android\'s intent is to display the content of YOUR gallery2
+		installation not the sample gallery !
+	</string>
 	<string name="full_image_title">Image</string>
-	<string name="gallery_url_key">galleryUrl</string>
 	<string name="settings_label">Settings...</string>
 	<string name="settings_title">G2Android settings</string>
 	<string name="settings_shortcut">s</string>
-	<string name="show_albums_title">G2 Albums</string>
+	<string name="show_albums_title">G2Android Albums</string>
+	<string name="show_gallery_title">G2Android Gallery</string>
 
-<string name="view_album_pictures">View this album pictures !</string>
+	<string name="view_album_pictures">View this album pictures !</string>
 
 </resources>
