@@ -18,10 +18,8 @@
 package net.dahanne.android.g2android.utils;
 
 import java.io.BufferedReader;
+import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -33,6 +31,22 @@ import net.dahanne.android.g2android.model.Album;
 import net.dahanne.android.g2android.model.G2Picture;
 
 import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.http.Header;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.cookie.Cookie;
+import org.apache.http.cookie.CookieOrigin;
+import org.apache.http.cookie.MalformedCookieException;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.cookie.BasicClientCookie;
+import org.apache.http.impl.cookie.BrowserCompatSpec;
+import org.apache.http.impl.cookie.CookieSpecBase;
+import org.apache.http.message.BasicHeader;
+import org.apache.http.message.BasicNameValuePair;
 
 /**
  * 
@@ -41,93 +55,91 @@ import org.apache.commons.lang.StringEscapeUtils;
  */
 public class G2Utils {
 
+	/**
+	 * Final static constants
+	 */
+	private static final String HTTP_PREFIX = "http://";
+	private static final BasicNameValuePair LOGIN_CMD_NAME_VALUE_PAIR = new BasicNameValuePair(
+			"g2_form[cmd]", "login");
+	private static final BasicNameValuePair FETCH_ALBUMS_CMD_NAME_VALUE_PAIR = new BasicNameValuePair(
+			"g2_form[cmd]", "fetch-albums");
+	private static final BasicNameValuePair FETCH_ALBUMS_IMAGES_CMD_NAME_VALUE_PAIR = new BasicNameValuePair(
+			"g2_form[cmd]", "fetch-album-images");
+	private static final String GR2PROTO = "#__GR2PROTO__";
+	private static final BasicNameValuePair G2_CONTROLLER_NAME_VALUE_PAIR = new BasicNameValuePair(
+			"g2_controller", "remote.GalleryRemote");
+	private static final BasicNameValuePair PROTOCOL_VERSION_NAME_VALUE_PAIR = new BasicNameValuePair(
+			"g2_form[protocol_version]", "2.0");
+	private static final String MAIN_PHP = "main.php";
+	private static final String USER_AGENT_VALUE = "G2Android Version 1.1.0";
+	private static final String USER_AGENT = "User-Agent";
+	private static final String GALLERYSID = "GALLERYSID";
 	private static final String TAG = "G2Utils";
+	static final String GR_STAT_SUCCESS = "0";
 
-	public static HashMap<String, String> fetchImages(String galleryUrl,
-			int albumName) {
-		HashMap<String, String> properties = new HashMap<String, String>();
-		StringBuffer sb = new StringBuffer();
-		sb.append("g2_form[cmd]=fetch-album-images&g2_form[set_albumName]="
-				+ albumName);
+	/**
+	 * Static variables
+	 */
+	private static String authToken;
+	private static final BasicNameValuePair G2_AUTHTOKEN_VALUE_PAIR = new BasicNameValuePair(
+			"g2_authToken", authToken);
+	private static final CookieSpecBase cookieSpecBase = new BrowserCompatSpec();
+	private static Cookie sessionCookie = new BasicClientCookie(GALLERYSID, "");
 
-		URL url;
-		try {
-			url = new URL(galleryUrl + "/"
-					+ "main.php?g2_controller=remote:GalleryRemote");
-			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-			conn.setDoOutput(true);
-			conn.setRequestMethod("POST");
+	/**
+	 * fetchImages methods : retrieves all the infos needed to fetch images from
+	 * the gallery
+	 * 
+	 * @param galleryUrl
+	 * @param albumName
+	 * @param galleryHost
+	 * @param galleryPath
+	 * @param galleryPort
+	 * @return
+	 * @throws GalleryConnectionException
+	 */
+	public static HashMap<String, String> fetchImages(String galleryHost,
+			String galleryPath, int galleryPort, int albumName)
+			throws GalleryConnectionException {
+		List<NameValuePair> nameValuePairsFetchImages = new ArrayList<NameValuePair>();
+		nameValuePairsFetchImages.add(FETCH_ALBUMS_IMAGES_CMD_NAME_VALUE_PAIR);
+		nameValuePairsFetchImages.add(new BasicNameValuePair(
+				"g2_form[set_albumName]", "" + albumName));
 
-			OutputStreamWriter wr = new OutputStreamWriter(conn
-					.getOutputStream());
-			wr.write(sb.toString());
-			wr.flush();
-
-			BufferedReader rd = new BufferedReader(new InputStreamReader(conn
-					.getInputStream()), 4096);
-			String line;
-			while ((line = rd.readLine()) != null) {
-				// Log.d(TAG, line);
-				if (line.contains("=")) {
-					String key = line.substring(0, line.indexOf("="));
-					String value = line.substring(line.indexOf("=") + 1);
-					properties.put(key, value);
-				}
-			}
-			wr.close();
-			rd.close();
-		} catch (Exception e) {
-
-			// Log.d(TAG,e.getMessage());
-		}
+		HashMap<String, String> properties = sendCommandToGallery(galleryHost,
+				galleryPath, galleryPort, nameValuePairsFetchImages);
 		return properties;
 	}
 
-	public static HashMap<String, String> fetchAlbums(String galleryUrl) {
-		HashMap<String, String> properties = new HashMap<String, String>();
-		StringBuffer sb = new StringBuffer();
-		URL url;
-		try {
-			url = new URL(
-					galleryUrl
-							+ "/"
-							+ "main.php?g2_controller=remote:GalleryRemote&g2_form[cmd]=fetch-albums");
-			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-			conn.setDoOutput(true);
-			conn.setRequestMethod("POST");
-			conn.setRequestProperty("Content-Type", "text/xml");
-			conn.setRequestProperty("user-agent", "G2Android");
+	/**
+	 * Retrieve all the albums infos from the gallery
+	 * 
+	 * @param galleryUrl
+	 * @return
+	 * @throws GalleryConnectionException
+	 */
+	public static HashMap<String, String> fetchAlbums(String galleryHost,
+			String galleryPath, int galleryPort)
+			throws GalleryConnectionException {
+		List<NameValuePair> nameValuePairsFetchAlbums = new ArrayList<NameValuePair>();
+		nameValuePairsFetchAlbums.add(FETCH_ALBUMS_CMD_NAME_VALUE_PAIR);
 
-			OutputStreamWriter wr = new OutputStreamWriter(conn
-					.getOutputStream());
-			wr.write(sb.toString());
-			wr.flush();
-
-			BufferedReader rd = new BufferedReader(new InputStreamReader(conn
-					.getInputStream()), 4096);
-			String line;
-			while ((line = rd.readLine()) != null) {
-				// Log.d(TAG, line);
-				if (line.contains("=")) {
-					String key = line.substring(0, line.indexOf("="));
-					String value = line.substring(line.indexOf("=") + 1);
-					properties.put(key, value);
-				}
-			}
-			wr.close();
-			rd.close();
-		} catch (Exception e) {
-			// Log.d(TAG,e.getMessage());
-		}
+		HashMap<String, String> properties = sendCommandToGallery(galleryHost,
+				galleryPath, galleryPort, nameValuePairsFetchAlbums);
 		return properties;
 
 	}
 
+	/**
+	 * This is where we convert the infos from the gallery to G2Picture objects
+	 * 
+	 * @param fetchImages
+	 * @return
+	 */
 	public static Collection<G2Picture> extractG2PicturesFromProperties(
 			HashMap<String, String> fetchImages) {
 		Map<Integer, G2Picture> picturesMap = new HashMap<Integer, G2Picture>();
 		List<Integer> tmpImageNumbers = new ArrayList<Integer>();
-		long depart = System.currentTimeMillis();
 		int imageNumber = 0;
 		for (Entry<String, String> entry : fetchImages.entrySet()) {
 			if (entry.getKey().contains("image")
@@ -148,6 +160,9 @@ public class G2Utils {
 				else {
 					picture = picturesMap.get(imageNumber);
 				}
+
+				// TODO : change this, using album_count, loop on it, as we know
+				// that the number at the end is between 1 and album_count
 				try {
 					if (entry.getKey().contains("image.title.")) {
 						picture.setTitle(entry.getValue());
@@ -180,9 +195,6 @@ public class G2Utils {
 				}
 			}
 		}
-		long temps = System.currentTimeMillis() - depart;
-		System.out.println("temps : " + temps);
-
 		return picturesMap.values();
 
 	}
@@ -221,7 +233,7 @@ public class G2Utils {
 				else {
 					album = albumsMap.get(albumNumber);
 				}
-
+				// TODO : use album_count for the loop
 				try {
 					if (entry.getKey().contains("album.title.")) {
 
@@ -255,43 +267,18 @@ public class G2Utils {
 	/**
 	 * Check whether the galleryUrl provided is valid or not
 	 * 
-	 * @param galleryUrl
+	 * @param galleryHost
+	 * @param galleryPath
+	 * @param galleryPort
 	 * @return boolean
+	 * @throws GalleryConnectionException
 	 */
-	public static boolean checkGalleryUrlIsValid(String galleryUrl) {
-		StringBuffer sb = new StringBuffer();
-		URL url;
-		try {
-			url = new URL(
-					galleryUrl
-							+ "/"
-							+ "main.php?g2_controller=remote:GalleryRemote&g2_form[cmd]=fetch-albums");
-			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-			conn.setDoOutput(true);
-			conn.setRequestMethod("POST");
-			conn.setRequestProperty("Content-Type", "text/xml");
-			conn.setRequestProperty("user-agent", "G2Android");
+	public static boolean checkGalleryUrlIsValid(String galleryHost,
+			String galleryPath, int galleryPort)
+			throws GalleryConnectionException {
 
-			OutputStreamWriter wr = new OutputStreamWriter(conn
-					.getOutputStream());
-			wr.write(sb.toString());
-			wr.flush();
-
-			BufferedReader rd = new BufferedReader(new InputStreamReader(conn
-					.getInputStream()), 4096);
-			String line;
-			while ((line = rd.readLine()) != null) {
-				// Log.d(TAG, line);
-				if (line.contains("#__GR2PROTO__")) {
-					return true;
-				}
-			}
-			wr.close();
-			rd.close();
-		} catch (Exception e) {
-			return false;
-		}
-		return false;
+		return fetchAlbums(galleryHost, galleryPath, galleryPort).isEmpty() ? false
+				: true;
 
 	}
 
@@ -326,5 +313,144 @@ public class G2Utils {
 
 		return rootAlbum;
 
+	}
+
+	/**
+	 * The login method, cookie handling is located in sendCommandToGallery
+	 * method
+	 * 
+	 * @param galleryUrl
+	 * @param user
+	 * @param password
+	 * @return
+	 * @throws GalleryConnectionException
+	 */
+	public static String loginToGallery(String galleryHost, String galleryPath,
+			int galleryPort, String user, String password)
+			throws GalleryConnectionException {
+
+		List<NameValuePair> sb = new ArrayList<NameValuePair>();
+		sb.add(LOGIN_CMD_NAME_VALUE_PAIR);
+		sb.add(new BasicNameValuePair("g2_form[uname]", "" + user));
+		sb.add(new BasicNameValuePair("g2_form[password]", "" + password));
+		HashMap<String, String> properties = sendCommandToGallery(galleryHost,
+				galleryPath, galleryPort, sb);
+		// auth_token retrieval, used by G2 against cross site forgery
+		authToken = null;
+		if (properties.get("status") != null
+				&& properties.get("status").equals(GR_STAT_SUCCESS)) {
+			return authToken = properties.get("auth_token");
+		}
+
+		return authToken;
+
+	}
+
+	/**
+	 * This is the central method for each command sent to the gallery
+	 * 
+	 * @param galleryHost
+	 * @param galleryPath
+	 * @param galleryPort
+	 * @param nameValuePairsForThisCommand
+	 * @return
+	 * @throws GalleryConnectionException
+	 */
+	private static HashMap<String, String> sendCommandToGallery(
+			String galleryHost, String galleryPath, int galleryPort,
+			List<NameValuePair> nameValuePairsForThisCommand)
+			throws GalleryConnectionException {
+		HashMap<String, String> properties = new HashMap<String, String>();
+		// URL url;
+		try {
+
+			HttpClient httpclient = new DefaultHttpClient();
+			HttpPost httpPost = new HttpPost(HTTP_PREFIX + galleryHost
+					+ galleryPath + "/" + MAIN_PHP);
+			httpPost.setHeader(new BasicHeader(USER_AGENT, USER_AGENT_VALUE));
+			// Setting the cookie
+			httpPost.setHeader(getCookieHeader(cookieSpecBase));
+			List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
+			nameValuePairs.add(G2_CONTROLLER_NAME_VALUE_PAIR);
+			nameValuePairs.add(G2_AUTHTOKEN_VALUE_PAIR);
+			nameValuePairs.add(PROTOCOL_VERSION_NAME_VALUE_PAIR);
+			nameValuePairs.addAll(nameValuePairsForThisCommand);
+			httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+
+			// Execute HTTP Post Request
+			HttpResponse response = httpclient.execute(httpPost);
+			InputStream content = response.getEntity().getContent();
+
+			BufferedReader rd = new BufferedReader(new InputStreamReader(
+					content), 4096);
+
+			Header[] allHeaders = response.getAllHeaders();
+			CookieOrigin origin = new CookieOrigin(galleryHost, galleryPort,
+					galleryPath, false);
+			// let's find the cookie
+			findSessionCookieAmongHeadersAndSaveIt(cookieSpecBase, allHeaders,
+					origin);
+			String line;
+			boolean gr2ProtoStringWasFound = false;
+			while ((line = rd.readLine()) != null) {
+				// Log.d(TAG, line);
+				if (line.contains(GR2PROTO)) {
+					gr2ProtoStringWasFound = true;
+				}
+				if (line.contains("=") && gr2ProtoStringWasFound) {
+					String key = line.substring(0, line.indexOf("="));
+					String value = line.substring(line.indexOf("=") + 1);
+					properties.put(key, value);
+					// System.out.println(key + "=" + value);
+				}
+			}
+			rd.close();
+		} catch (Exception e) {
+			// something went wrong, let's throw the info to the UI
+			throw new GalleryConnectionException(e.getMessage());
+			// Log.d(TAG,e.getMessage());
+		}
+		return properties;
+	}
+
+	public static InputStream getInputStreamFromUrl(String url)
+			throws GalleryConnectionException {
+		InputStream content = null;
+		try {
+			HttpGet httpGet = new HttpGet(url);
+			HttpClient httpclient = new DefaultHttpClient();
+			httpGet.setHeader(new BasicHeader(USER_AGENT, USER_AGENT_VALUE));
+			// Setting a cookie header
+			httpGet.setHeader(getCookieHeader(cookieSpecBase));
+			// Execute HTTP Get Request
+			HttpResponse response = httpclient.execute(httpGet);
+			content = response.getEntity().getContent();
+
+		} catch (Exception e) {
+			throw new GalleryConnectionException(e.getMessage());
+		}
+		return content;
+	}
+
+	private static void findSessionCookieAmongHeadersAndSaveIt(
+			CookieSpecBase cookieSpecBase, Header[] allHeaders,
+			CookieOrigin origin) throws MalformedCookieException {
+		for (Header header : allHeaders) {
+			List<Cookie> parse = cookieSpecBase.parse(header, origin);
+			for (Cookie cookie : parse) {
+				// THE cookie
+				if (cookie.getName().equals(GALLERYSID)
+						&& cookie.getValue() != null && cookie.getValue() != "") {
+					sessionCookie = cookie;
+				}
+			}
+		}
+	}
+
+	private static Header getCookieHeader(CookieSpecBase cookieSpecBase) {
+		List<Cookie> cookies = new ArrayList<Cookie>();
+		cookies.add(sessionCookie);
+		List<Header> cookieHeader = cookieSpecBase.formatCookies(cookies);
+		return cookieHeader.get(0);
 	}
 }

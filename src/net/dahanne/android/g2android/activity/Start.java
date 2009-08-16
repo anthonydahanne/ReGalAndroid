@@ -19,6 +19,8 @@ package net.dahanne.android.g2android.activity;
 
 import net.dahanne.android.g2android.R;
 import net.dahanne.android.g2android.utils.G2Utils;
+import net.dahanne.android.g2android.utils.GalleryConnectionException;
+import net.dahanne.android.g2android.utils.ToastExceptionUtils;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -43,6 +45,11 @@ public class Start extends Activity implements OnClickListener {
 		enterGalleryButton = (Button) findViewById(R.id.enter_gallery_button);
 		galleryConfiguredTextView = (TextView) findViewById(R.id.gallery_configured);
 		enterGalleryButton.setOnClickListener(this);
+		// if this is the first launch, we print a screen to explain the user
+		// what it is all about !
+		if (!FirstTimePreference.getFirsTime(this)) {
+			startActivity(new Intent(this, FirstTime.class));
+		}
 
 	}
 
@@ -54,13 +61,23 @@ public class Start extends Activity implements OnClickListener {
 		if (Settings.getGalleryUrl(this) != null
 				&& !Settings.getGalleryUrl(this).equals("")) {
 			// GalleryUrl is provided, but is it a Gallery2 URL ?
-			if (G2Utils.checkGalleryUrlIsValid(Settings.getGalleryUrl(this))) {
-				galleryConfiguredTextView.setText(Settings.getGalleryUrl(this));
-				enterGalleryButton.setEnabled(true);
-				return;
-			} else {
-				galleryConfiguredTextView
-						.setText(R.string.gallery_url_is_not_valid);
+			try {
+				if (G2Utils.checkGalleryUrlIsValid(Settings
+						.getGalleryHost(this), Settings.getGalleryPath(this),
+						Settings.getGalleryPort(this))) {
+					galleryConfiguredTextView.setText(Settings
+							.getGalleryUrl(this));
+					enterGalleryButton.setEnabled(true);
+
+					return;
+				} else {
+					galleryConfiguredTextView
+							.setText(R.string.gallery_url_is_not_valid);
+				}
+			} catch (NumberFormatException e) {
+				ToastExceptionUtils.toastNumberFormatException(this, e);
+			} catch (GalleryConnectionException e) {
+				ToastExceptionUtils.toastGalleryException(this, e);
 			}
 		} else {
 			galleryConfiguredTextView
@@ -100,17 +117,16 @@ public class Start extends Activity implements OnClickListener {
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.enter_gallery_button:
-
 			startActivity(new Intent(this, ShowAlbums.class));
-
 			break;
 		}
 
 	}
 
 	@Override
-	protected void onStart() {
-		super.onStart();
+	protected void onResume() {
+
+		super.onResume();
 		// Log.i(TAG, "Starting");
 		checkGalleryUrlIsValid();
 

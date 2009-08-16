@@ -17,10 +17,7 @@
  */
 package net.dahanne.android.g2android.activity;
 
-import java.io.IOException;
 import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -31,6 +28,8 @@ import net.dahanne.android.g2android.model.Album;
 import net.dahanne.android.g2android.model.G2Picture;
 import net.dahanne.android.g2android.utils.AsyncTask;
 import net.dahanne.android.g2android.utils.G2Utils;
+import net.dahanne.android.g2android.utils.GalleryConnectionException;
+import net.dahanne.android.g2android.utils.ToastExceptionUtils;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -73,8 +72,17 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 
 		Album album = (Album) getIntent().getSerializableExtra(
 				"g2android.Album");
-		HashMap<String, String> imagesProperties = G2Utils.fetchImages(Settings
-				.getGalleryUrl(this), album.getName());
+		HashMap<String, String> imagesProperties = new HashMap<String, String>(
+				0);
+		try {
+			imagesProperties = G2Utils.fetchImages(Settings
+					.getGalleryHost(this), Settings.getGalleryPath(this),
+					Settings.getGalleryPort(this), album.getName());
+		} catch (NumberFormatException e) {
+			ToastExceptionUtils.toastNumberFormatException(this, e);
+		} catch (GalleryConnectionException e) {
+			ToastExceptionUtils.toastGalleryException(this, e);
+		}
 		albumPictures = new ArrayList<G2Picture>();
 		albumPictures.addAll(G2Utils
 				.extractG2PicturesFromProperties(imagesProperties));
@@ -123,25 +131,32 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 		}
 	}
 
-	private InputStream getInputStreamFromUrl(String urlTyped2) {
-		HttpURLConnection con = null;
-		URL url;
-		InputStream is = null;
+	private InputStream getInputStreamFromUrl(String url) {
+		// HttpURLConnection con = null;
+		// URL url;
+		// InputStream is = null;
+		// try {
+		// url = new URL(urlTyped2);
+		// con = (HttpURLConnection) url.openConnection();
+		// con.setReadTimeout(10000 /* milliseconds */);
+		// con.setConnectTimeout(15000 /* milliseconds */);
+		// con.setRequestMethod("GET");
+		// con.setDoInput(true);
+		// con.setRequestProperty("user-agent", "G2Android");
+		// // Start the query
+		// con.connect();
+		// is = con.getInputStream();
+		// } catch (IOException e) {
+		// e.printStackTrace();
+		// }
+		// return is;
 		try {
-			url = new URL(urlTyped2);
-			con = (HttpURLConnection) url.openConnection();
-			con.setReadTimeout(10000 /* milliseconds */);
-			con.setConnectTimeout(15000 /* milliseconds */);
-			con.setRequestMethod("GET");
-			con.setDoInput(true);
-			con.setRequestProperty("user-agent", "G2Android");
-			// Start the query
-			con.connect();
-			is = con.getInputStream();
-		} catch (IOException e) {
-			e.printStackTrace();
+			return G2Utils.getInputStreamFromUrl(url);
+		} catch (GalleryConnectionException e) {
+			ToastExceptionUtils.toastGalleryException(this, e);
 		}
-		return is;
+		return null;
+
 	}
 
 	@SuppressWarnings("unchecked")
