@@ -41,40 +41,21 @@ import android.widget.AdapterView.OnItemClickListener;
 public class ShowAlbums extends ListActivity implements OnItemClickListener {
 
 	private static final String TAG = "ShowAlbums";
-	private List<Album> albums = new ArrayList<Album>();
+	private static List<Album> albums = new ArrayList<Album>();
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
-		HashMap<String, String> albumsProperties = new HashMap<String, String>(
-				0);
-		try {
-			// the first thing is to login, if an username and password are
-			// supplied !
-			// This is done once and for all as the session cookie will be
-			// stored !
-			if (StringUtils.isNotBlank(Settings.getUsername(this))) {
-				G2Utils.loginToGallery(Settings.getGalleryHost(this), Settings
-						.getGalleryPath(this), Settings.getGalleryPort(this),
-						Settings.getUsername(this), Settings.getPassword(this));
-			}
-
-			albumsProperties = G2Utils.fetchAlbums(Settings
-					.getGalleryHost(this), Settings.getGalleryPath(this),
-					Settings.getGalleryPort(this));
-		} catch (NumberFormatException e) {
-			ToastExceptionUtils.toastNumberFormatException(this, e);
-		} catch (GalleryConnectionException e) {
-			ToastExceptionUtils.toastGalleryException(this, e);
-		}
-
 		// we load the given album from the previous selection
-		Album selectedAlbum = (Album) getIntent().getSerializableExtra(
+		Integer albumName = (Integer) getIntent().getSerializableExtra(
 				"g2android.Album");
+
 		// we're back in this activity to select a sub album or to see the
 		// pictures
-		if (selectedAlbum != null) {
+		if (albumName != null) {
+			// we recover the selected album
+			Album selectedAlbum = albums.get(albumName);
 			// we create a fake album, it will be used to choose to view the
 			// pictures of the album
 			Album viewPicturesAlbum = new Album();
@@ -89,6 +70,29 @@ public class ShowAlbums extends ListActivity implements OnItemClickListener {
 		// it's the first time we get into this view, let's find the albums of
 		// the gallery
 		else {
+			HashMap<String, String> albumsProperties = new HashMap<String, String>(
+					0);
+			try {
+				// the first thing is to login, if an username and password are
+				// supplied !
+				// This is done once and for all as the session cookie will be
+				// stored !
+				if (StringUtils.isNotBlank(Settings.getUsername(this))) {
+					G2Utils.loginToGallery(Settings.getGalleryHost(this),
+							Settings.getGalleryPath(this), Settings
+									.getGalleryPort(this), Settings
+									.getUsername(this), Settings
+									.getPassword(this));
+				}
+
+				albumsProperties = G2Utils.fetchAlbums(Settings
+						.getGalleryHost(this), Settings.getGalleryPath(this),
+						Settings.getGalleryPort(this));
+			} catch (NumberFormatException e) {
+				ToastExceptionUtils.toastNumberFormatException(this, e);
+			} catch (GalleryConnectionException e) {
+				ToastExceptionUtils.toastGalleryException(this, e);
+			}
 
 			Map<Integer, Album> nonSortedAlbums = G2Utils
 					.extractAlbumFromProperties(albumsProperties);
@@ -111,12 +115,16 @@ public class ShowAlbums extends ListActivity implements OnItemClickListener {
 		Album newSelectedAlbum = albums.get(arg2);
 		if (newSelectedAlbum.getId() == 0
 				|| newSelectedAlbum.getChildren().size() == 0) {
-			// the user want to see the pictures
+			// the user want to see the pictures, no need to have all the albums
+			// hierarchy
+			newSelectedAlbum.getChildren().clear();
+			newSelectedAlbum.setParent(null);
 			intent = new Intent(this, ShowGallery.class);
+			intent.putExtra("g2android.Album", newSelectedAlbum);
 		} else {
 			intent = new Intent(this, ShowAlbums.class);
+			intent.putExtra("g2android.Album", arg2);
 		}
-		intent.putExtra("g2android.Album", newSelectedAlbum);
 		startActivity(intent);
 
 	}

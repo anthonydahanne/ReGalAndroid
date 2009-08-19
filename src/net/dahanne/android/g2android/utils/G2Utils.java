@@ -31,6 +31,7 @@ import net.dahanne.android.g2android.model.Album;
 import net.dahanne.android.g2android.model.G2Picture;
 
 import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -58,6 +59,7 @@ public class G2Utils {
 	/**
 	 * Final static constants
 	 */
+	private static final String SET_COOKIE = "Set-Cookie";
 	private static final String HTTP_PREFIX = "http://";
 	private static final BasicNameValuePair LOGIN_CMD_NAME_VALUE_PAIR = new BasicNameValuePair(
 			"g2_form[cmd]", "login");
@@ -71,7 +73,7 @@ public class G2Utils {
 	private static final BasicNameValuePair PROTOCOL_VERSION_NAME_VALUE_PAIR = new BasicNameValuePair(
 			"g2_form[protocol_version]", "2.0");
 	private static final String MAIN_PHP = "main.php";
-	private static final String USER_AGENT_VALUE = "G2Android Version 1.1.0";
+	private static final String USER_AGENT_VALUE = "G2Android Version 1.1.1";
 	private static final String USER_AGENT = "User-Agent";
 	private static final String GALLERYSID = "GALLERYSID";
 	private static final String TAG = "G2Utils";
@@ -84,7 +86,10 @@ public class G2Utils {
 	private static final BasicNameValuePair G2_AUTHTOKEN_VALUE_PAIR = new BasicNameValuePair(
 			"g2_authToken", authToken);
 	private static final CookieSpecBase cookieSpecBase = new BrowserCompatSpec();
-	private static Cookie sessionCookie = new BasicClientCookie(GALLERYSID, "");
+	private static List<Cookie> sessionCookies = new ArrayList<Cookie>();
+	static {
+		sessionCookies.add(new BasicClientCookie("", ""));
+	}
 
 	/**
 	 * fetchImages methods : retrieves all the infos needed to fetch images from
@@ -277,8 +282,13 @@ public class G2Utils {
 			String galleryPath, int galleryPort)
 			throws GalleryConnectionException {
 
-		return fetchAlbums(galleryHost, galleryPath, galleryPort).isEmpty() ? false
-				: true;
+		List<NameValuePair> nameValuePairsFetchAlbums = new ArrayList<NameValuePair>();
+		// an empty command should return a default string "no command passed" :
+		// enough to know that it is ok !
+		HashMap<String, String> properties = sendCommandToGallery(galleryHost,
+				galleryPath, galleryPort, nameValuePairsFetchAlbums);
+
+		return properties.isEmpty() ? false : true;
 
 	}
 
@@ -328,6 +338,9 @@ public class G2Utils {
 	public static String loginToGallery(String galleryHost, String galleryPath,
 			int galleryPort, String user, String password)
 			throws GalleryConnectionException {
+		// we reset the last login
+		sessionCookies.clear();
+		sessionCookies.add(new BasicClientCookie("", ""));
 
 		List<NameValuePair> sb = new ArrayList<NameValuePair>();
 		sb.add(LOGIN_CMD_NAME_VALUE_PAIR);
@@ -401,7 +414,7 @@ public class G2Utils {
 					String key = line.substring(0, line.indexOf("="));
 					String value = line.substring(line.indexOf("=") + 1);
 					properties.put(key, value);
-					// System.out.println(key + "=" + value);
+					System.out.println(key + "=" + value);
 				}
 			}
 			rd.close();
@@ -436,20 +449,22 @@ public class G2Utils {
 			CookieSpecBase cookieSpecBase, Header[] allHeaders,
 			CookieOrigin origin) throws MalformedCookieException {
 		for (Header header : allHeaders) {
-			List<Cookie> parse = cookieSpecBase.parse(header, origin);
-			for (Cookie cookie : parse) {
-				// THE cookie
-				if (cookie.getName().equals(GALLERYSID)
-						&& cookie.getValue() != null && cookie.getValue() != "") {
-					sessionCookie = cookie;
+			if (header.getName().equals(SET_COOKIE)) {
+				List<Cookie> parse = cookieSpecBase.parse(header, origin);
+				for (Cookie cookie : parse) {
+					// THE cookie
+					if (StringUtils.isNotBlank(cookie.getValue())) {
+						sessionCookies.add(cookie);
+					}
 				}
 			}
+
 		}
 	}
 
 	private static Header getCookieHeader(CookieSpecBase cookieSpecBase) {
 		List<Cookie> cookies = new ArrayList<Cookie>();
-		cookies.add(sessionCookie);
+		cookies.addAll(sessionCookies);
 		List<Header> cookieHeader = cookieSpecBase.formatCookies(cookies);
 		return cookieHeader.get(0);
 	}
