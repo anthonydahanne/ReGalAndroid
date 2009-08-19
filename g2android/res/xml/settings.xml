@@ -23,7 +23,9 @@
 	<EditTextPreference android:name="@string/username_title"
 		android:summary="@string/username_summary" android:title="@string/username_title"
 		android:key="@string/username_key" />
-	<EditTextPreference android:name="@string/password_title"
+	<EditTextPreference android:name="@string/password_title" 
 		android:summary="@string/password_summary" android:title="@string/password_title"
 		android:key="@string/password_key" />
+
+
 </PreferenceScreen>
