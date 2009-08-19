@@ -52,7 +52,7 @@ import android.widget.ViewSwitcher.ViewFactory;
 public class ShowGallery extends Activity implements OnItemSelectedListener,
 		ViewFactory {
 	private List<G2Picture> albumPictures;
-	private static final String TAG = "ImageGallery";
+	private static final String TAG = "ShowGallery";
 	private ImageSwitcher mSwitcher;
 	private Gallery gallery;
 
@@ -132,7 +132,9 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 	}
 
 	private InputStream getInputStreamFromUrl(String url) {
-		// HttpURLConnection con = null;
+
+		//System.out.println("Trying to download " + url);// HttpURLConnection con
+		// = null;
 		// URL url;
 		// InputStream is = null;
 		// try {
