@@ -17,9 +17,11 @@
  */
 package net.dahanne.android.g2android;
 
+import java.io.File;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 import java.util.Map.Entry;
 
 import junit.framework.Assert;
@@ -230,5 +232,45 @@ public class G2UtilsTest extends Assert {
 		}
 		assertEquals(true, found);
 
+	}
+
+	/**
+	 * This test fail because the user can't add a photo item in given album
+	 * 
+	 * @throws GalleryConnectionException
+	 */
+	@Test(expected = GalleryConnectionException.class)
+	public void sendImageToGalleryTestFail() throws GalleryConnectionException {
+		String authToken = G2Utils.loginToGallery(galleryHost, galleryPath,
+				galleryPort, user, password);
+		File imageFile = new File("image.png");
+		int newItemId = G2Utils.sendImageToGallery(galleryHost, galleryPath,
+				galleryPort, 11, imageFile);
+		assertTrue(newItemId != 0);
+	}
+
+	@Test
+	public void sendImageToGalleryTest() throws GalleryConnectionException {
+		String authToken = G2Utils.loginToGallery(galleryHost, galleryPath,
+				galleryPort, user, password);
+		File imageFile = new File("image.png");
+		int newItemId = G2Utils.sendImageToGallery(galleryHost, galleryPath,
+				galleryPort, 174, imageFile);
+		assertTrue(newItemId != 0);
+	}
+
+	@Test
+	public void createNewAlbumTest() throws GalleryConnectionException {
+		String authToken = G2Utils.loginToGallery(galleryHost, galleryPath,
+				galleryPort, user, password);
+		Random random = new Random();
+		int randomInt = random.nextInt();
+		String albumName = "UnitTestAlbumNumber" + randomInt;
+		String albumTitle = "Unit Test Album";
+		String albumDescription = "Yet another Unit Test Album !";
+		// File imageFile = new File("image.png");
+		int newAlbumName = G2Utils.createNewAlbum(galleryHost, galleryPath,
+				galleryPort, 174, albumName, albumTitle, albumDescription);
+		assertTrue(newAlbumName != 0);
 	}
 }

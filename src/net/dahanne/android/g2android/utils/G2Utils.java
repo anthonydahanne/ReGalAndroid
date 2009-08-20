@@ -18,6 +18,7 @@
 package net.dahanne.android.g2android.utils;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -30,6 +31,11 @@ import java.util.Map.Entry;
 import net.dahanne.android.g2android.model.Album;
 import net.dahanne.android.g2android.model.G2Picture;
 
+import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.httpclient.methods.multipart.FilePart;
+import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
+import org.apache.commons.httpclient.methods.multipart.Part;
+import org.apache.commons.httpclient.methods.multipart.StringPart;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.Header;
@@ -67,6 +73,8 @@ public class G2Utils {
 			"g2_form[cmd]", "fetch-albums");
 	private static final BasicNameValuePair FETCH_ALBUMS_IMAGES_CMD_NAME_VALUE_PAIR = new BasicNameValuePair(
 			"g2_form[cmd]", "fetch-album-images");
+	private static final BasicNameValuePair CREATE_ALBUM_CMD_NAME_VALUE_PAIR = new BasicNameValuePair(
+			"g2_form[cmd]", "new-album");
 	private static final String GR2PROTO = "#__GR2PROTO__";
 	private static final BasicNameValuePair G2_CONTROLLER_NAME_VALUE_PAIR = new BasicNameValuePair(
 			"g2_controller", "remote.GalleryRemote");
@@ -352,7 +360,7 @@ public class G2Utils {
 		authToken = null;
 		if (properties.get("status") != null
 				&& properties.get("status").equals(GR_STAT_SUCCESS)) {
-			return authToken = properties.get("auth_token");
+			authToken = properties.get("auth_token");
 		}
 
 		return authToken;
@@ -378,14 +386,15 @@ public class G2Utils {
 		try {
 
 			HttpClient httpclient = new DefaultHttpClient();
-			HttpPost httpPost = new HttpPost(HTTP_PREFIX + galleryHost
-					+ galleryPath + "/" + MAIN_PHP);
+			HttpPost httpPost = new HttpPost(HTTP_PREFIX + galleryHost + ":"
+					+ galleryPort + galleryPath + "/" + MAIN_PHP);
 			httpPost.setHeader(new BasicHeader(USER_AGENT, USER_AGENT_VALUE));
 			// Setting the cookie
 			httpPost.setHeader(getCookieHeader(cookieSpecBase));
 			List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
 			nameValuePairs.add(G2_CONTROLLER_NAME_VALUE_PAIR);
-			nameValuePairs.add(G2_AUTHTOKEN_VALUE_PAIR);
+			nameValuePairs
+					.add(new BasicNameValuePair("g2_authToken", authToken));
 			nameValuePairs.add(PROTOCOL_VERSION_NAME_VALUE_PAIR);
 			nameValuePairs.addAll(nameValuePairsForThisCommand);
 			httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
@@ -407,6 +416,7 @@ public class G2Utils {
 			boolean gr2ProtoStringWasFound = false;
 			while ((line = rd.readLine()) != null) {
 				// Log.d(TAG, line);
+				System.out.println(line);
 				if (line.contains(GR2PROTO)) {
 					gr2ProtoStringWasFound = true;
 				}
@@ -414,7 +424,6 @@ public class G2Utils {
 					String key = line.substring(0, line.indexOf("="));
 					String value = line.substring(line.indexOf("=") + 1);
 					properties.put(key, value);
-					// System.out.println(key + "=" + value);
 				}
 			}
 			rd.close();
@@ -468,4 +477,118 @@ public class G2Utils {
 		List<Header> cookieHeader = cookieSpecBase.formatCookies(cookies);
 		return cookieHeader.get(0);
 	}
+
+	/**
+	 * @param imageFile
+	 * @return
+	 * @throws GalleryConnectionException
+	 */
+	public static int sendImageToGallery(String galleryHost,
+			String galleryPath, int galleryPort, int albumName, File imageFile)
+			throws GalleryConnectionException {
+
+		int itemName = 0;
+		try {
+			PostMethod filePost = new PostMethod(HTTP_PREFIX + galleryHost
+					+ ":" + galleryPort + galleryPath + "/" + MAIN_PHP);
+			String name = imageFile.getName().substring(0,
+					imageFile.getName().indexOf("."));
+			Part[] parts = {
+					new StringPart("g2_controller", "remote.GalleryRemote"),
+					new StringPart("g2_form[cmd]", "add-item"),
+					new StringPart("g2_form[set_albumName]", "" + albumName),
+					new StringPart("g2_userfile_name", name),
+					new StringPart("g2_authToken", authToken),
+					new StringPart("g2_form[force_filename]", name),
+					new StringPart("g2_form[caption]", name),
+					new FilePart("g2_userfile", imageFile) };
+			filePost.setRequestEntity(new MultipartRequestEntity(parts,
+					filePost.getParams()));
+			String inlineCookies = new String();
+			for (Cookie cookie : sessionCookies) {
+				inlineCookies = inlineCookies + cookie.getName() + "="
+						+ cookie.getValue() + ";";
+			}
+			filePost.setRequestHeader("Cookie", inlineCookies);
+			org.apache.commons.httpclient.HttpClient client = new org.apache.commons.httpclient.HttpClient();
+			int status = client.executeMethod(filePost);
+
+			InputStream responseBodyAsStream = filePost
+					.getResponseBodyAsStream();
+			BufferedReader rd = new BufferedReader(new InputStreamReader(
+					responseBodyAsStream), 4096);
+
+			String line;
+			int statusCode = 0;
+			String statusText;
+			boolean gr2ProtoStringWasFound = false;
+			while ((line = rd.readLine()) != null) {
+				// Log.d(TAG, line);
+				if (line.contains(GR2PROTO)) {
+					gr2ProtoStringWasFound = true;
+				}
+				if (line.contains("=") && gr2ProtoStringWasFound) {
+
+					String key = line.substring(0, line.indexOf("="));
+					String value = line.substring(line.indexOf("=") + 1);
+					if ("item_name".equals(key)) {
+						itemName = new Integer(value).intValue();
+					}
+					if ("status".equals(key)) {
+						statusCode = new Integer(value).intValue();
+					}
+					// something went wronf
+					if (statusCode != 0 && "status_text".equals(key)) {
+						statusText = value;
+						throw new Exception(value);
+					}
+				}
+			}
+			rd.close();
+
+		} catch (Exception e) {
+			// something went wrong, let's throw the info to the UI
+			throw new GalleryConnectionException(e.getMessage());
+		}
+		return itemName;
+	}
+
+	/**
+	 * @param galleryHost
+	 * @param galleryPath
+	 * @param galleryPort
+	 * @param i
+	 * @param albumName
+	 * @param albumTitle
+	 * @param albumDescription
+	 * @return
+	 * @throws GalleryConnectionException
+	 */
+	public static int createNewAlbum(String galleryHost, String galleryPath,
+			int galleryPort, int parentAlbumName, String albumName,
+			String albumTitle, String albumDescription)
+			throws GalleryConnectionException {
+		int newAlbumName = 0;
+
+		List<NameValuePair> nameValuePairsFetchImages = new ArrayList<NameValuePair>();
+		nameValuePairsFetchImages.add(CREATE_ALBUM_CMD_NAME_VALUE_PAIR);
+		nameValuePairsFetchImages.add(new BasicNameValuePair(
+				"g2_form[set_albumName]", "" + parentAlbumName));
+		nameValuePairsFetchImages.add(new BasicNameValuePair(
+				"g2_form[newAlbumName]", albumName));
+		nameValuePairsFetchImages.add(new BasicNameValuePair(
+				"g2_form[newAlbumTitle]", albumTitle));
+		nameValuePairsFetchImages.add(new BasicNameValuePair(
+				"g2_form[newAlbumDesc]", albumDescription));
+
+		HashMap<String, String> properties = sendCommandToGallery(galleryHost,
+				galleryPath, galleryPort, nameValuePairsFetchImages);
+		for (Entry<String, String> entry : properties.entrySet()) {
+			if (entry.getKey().equals("album_name")) {
+				newAlbumName = new Integer(entry.getValue()).intValue();
+			}
+		}
+		return newAlbumName;
+	}
+
 }
