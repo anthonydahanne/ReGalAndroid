@@ -15,7 +15,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-package net.dahanne.android.g2android;
+package net.dahanne.android.g2android.utils;
 
 import java.io.File;
 import java.util.Collection;
@@ -27,7 +27,7 @@ import java.util.Map.Entry;
 import junit.framework.Assert;
 import net.dahanne.android.g2android.model.Album;
 import net.dahanne.android.g2android.model.G2Picture;
-import net.dahanne.android.g2android.utils.G2Utils;
+import net.dahanne.android.g2android.utils.G2ConnectionUtils;
 import net.dahanne.android.g2android.utils.GalleryConnectionException;
 
 import org.junit.Before;
@@ -40,7 +40,7 @@ import org.junit.Test;
  * @author Anthony Dahanne
  * 
  */
-public class G2UtilsTest extends Assert {
+public class G2ConnectionUtilsTest extends Assert {
 	private String galleryHost;
 	private String galleryPath;
 	private int galleryPort;
@@ -59,13 +59,13 @@ public class G2UtilsTest extends Assert {
 
 	@Test
 	public void fetchImagesTest() throws GalleryConnectionException {
-		HashMap<String, String> fetchImages = G2Utils.fetchImages(galleryHost,
+		HashMap<String, String> fetchImages = G2ConnectionUtils.fetchImages(galleryHost,
 				galleryPath, galleryPort, 11);
 		assertTrue(fetchImages.size() != 0);
 		assertTrue(fetchImages.containsKey("image_count"));
 		assertFalse(fetchImages.get("image_count").equals("0"));
 
-		fetchImages = G2Utils.fetchImages(galleryHost, galleryPath,
+		fetchImages = G2ConnectionUtils.fetchImages(galleryHost, galleryPath,
 				galleryPort, 9999);
 		// just debug messages
 		assertTrue(fetchImages.size() == 3);
@@ -74,7 +74,7 @@ public class G2UtilsTest extends Assert {
 
 	@Test(expected = GalleryConnectionException.class)
 	public void fetchImagesTest__exception() throws GalleryConnectionException {
-		G2Utils.fetchImages("something.thatmaynotexist.com", galleryPath,
+		G2ConnectionUtils.fetchImages("something.thatmaynotexist.com", galleryPath,
 				galleryPort, 11);
 
 	}
@@ -99,7 +99,7 @@ public class G2UtilsTest extends Assert {
 				.put("baseurl",
 						"http://g2.dahanne.net/main.php?g2_view=core.DownloadItem&g2_itemId=");
 
-		Collection<G2Picture> pictures = G2Utils
+		Collection<G2Picture> pictures = G2ConnectionUtils
 				.extractG2PicturesFromProperties(fetchImages);
 		G2Picture picture = pictures.iterator().next();
 		assertEquals(150, picture.getThumbHeight());
@@ -133,7 +133,7 @@ public class G2UtilsTest extends Assert {
 		albumsProperties.put("album_count", "9");
 		albumsProperties.put("status", "0");
 
-		Collection<Album> albums = G2Utils.extractAlbumFromProperties(
+		Collection<Album> albums = G2ConnectionUtils.extractAlbumFromProperties(
 				albumsProperties).values();
 		Album album = albums.iterator().next();
 		assertEquals(1, album.getId());
@@ -185,7 +185,7 @@ public class G2UtilsTest extends Assert {
 		album.setParentName(10);
 		albums.put(album.getId(), album);
 
-		Album finalALbum = G2Utils.organizeAlbumsHierarchy(albums);
+		Album finalALbum = G2ConnectionUtils.organizeAlbumsHierarchy(albums);
 		assertEquals(10, finalALbum.getName());
 		assertEquals(20, finalALbum.getChildren().get(0).getName());
 		assertEquals(4, finalALbum.getChildren().get(1).getName());
@@ -202,11 +202,11 @@ public class G2UtilsTest extends Assert {
 
 		// I know this is not a galleryUrl...
 		String falseGalleryHost = "www.google.com";
-		assertFalse(G2Utils.checkGalleryUrlIsValid(falseGalleryHost,
+		assertFalse(G2ConnectionUtils.checkGalleryUrlIsValid(falseGalleryHost,
 				galleryPath, galleryPort));
 
 		// This is supposed to be a valid Url !
-		assertTrue(G2Utils.checkGalleryUrlIsValid(galleryHost, galleryPath,
+		assertTrue(G2ConnectionUtils.checkGalleryUrlIsValid(galleryHost, galleryPath,
 				galleryPort));
 
 	}
@@ -214,15 +214,15 @@ public class G2UtilsTest extends Assert {
 	@Test
 	public void loginToGalleryTest() throws GalleryConnectionException {
 
-		String authToken = G2Utils.loginToGallery(galleryHost, galleryPath,
+		String authToken = G2ConnectionUtils.loginToGallery(galleryHost, galleryPath,
 				galleryPort, "hacker", "hackerPassword");
 		assertNull(authToken);
 
-		authToken = G2Utils.loginToGallery(galleryHost, galleryPath,
+		authToken = G2ConnectionUtils.loginToGallery(galleryHost, galleryPath,
 				galleryPort, user, password);
 		assertNotNull(authToken);
 		// if we're logged in, we should see the g2android album
-		HashMap<String, String> fetchAlbums = G2Utils.fetchAlbums(galleryHost,
+		HashMap<String, String> fetchAlbums = G2ConnectionUtils.fetchAlbums(galleryHost,
 				galleryPath, galleryPort);
 		boolean found = false;
 		for (Entry<String, String> entry : fetchAlbums.entrySet()) {
@@ -241,27 +241,27 @@ public class G2UtilsTest extends Assert {
 	 */
 	@Test(expected = GalleryConnectionException.class)
 	public void sendImageToGalleryTestFail() throws GalleryConnectionException {
-		String authToken = G2Utils.loginToGallery(galleryHost, galleryPath,
+		String authToken = G2ConnectionUtils.loginToGallery(galleryHost, galleryPath,
 				galleryPort, user, password);
 		File imageFile = new File("image.png");
-		int newItemId = G2Utils.sendImageToGallery(galleryHost, galleryPath,
+		int newItemId = G2ConnectionUtils.sendImageToGallery(galleryHost, galleryPath,
 				galleryPort, 11, imageFile);
 		assertTrue(newItemId != 0);
 	}
 
 	@Test
 	public void sendImageToGalleryTest() throws GalleryConnectionException {
-		String authToken = G2Utils.loginToGallery(galleryHost, galleryPath,
+		String authToken = G2ConnectionUtils.loginToGallery(galleryHost, galleryPath,
 				galleryPort, user, password);
 		File imageFile = new File("image.png");
-		int newItemId = G2Utils.sendImageToGallery(galleryHost, galleryPath,
+		int newItemId = G2ConnectionUtils.sendImageToGallery(galleryHost, galleryPath,
 				galleryPort, 174, imageFile);
 		assertTrue(newItemId != 0);
 	}
 
 	@Test
 	public void createNewAlbumTest() throws GalleryConnectionException {
-		String authToken = G2Utils.loginToGallery(galleryHost, galleryPath,
+		String authToken = G2ConnectionUtils.loginToGallery(galleryHost, galleryPath,
 				galleryPort, user, password);
 		Random random = new Random();
 		int randomInt = random.nextInt();
@@ -269,7 +269,7 @@ public class G2UtilsTest extends Assert {
 		String albumTitle = "Unit Test Album";
 		String albumDescription = "Yet another Unit Test Album !";
 		// File imageFile = new File("image.png");
-		int newAlbumName = G2Utils.createNewAlbum(galleryHost, galleryPath,
+		int newAlbumName = G2ConnectionUtils.createNewAlbum(galleryHost, galleryPath,
 				galleryPort, 174, albumName, albumTitle, albumDescription);
 		assertTrue(newAlbumName != 0);
 	}

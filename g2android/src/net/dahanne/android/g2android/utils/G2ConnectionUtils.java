@@ -60,7 +60,7 @@ import org.apache.http.message.BasicNameValuePair;
  * @author Anthony Dahanne
  * 
  */
-public class G2Utils {
+public class G2ConnectionUtils {
 
 	/**
 	 * Final static constants
@@ -512,6 +512,9 @@ public class G2Utils {
 			filePost.setRequestHeader("Cookie", inlineCookies);
 			org.apache.commons.httpclient.HttpClient client = new org.apache.commons.httpclient.HttpClient();
 			int status = client.executeMethod(filePost);
+
+			String string = filePost.getResponseBodyAsString();
+			System.out.println(string);
 
 			InputStream responseBodyAsStream = filePost
 					.getResponseBodyAsStream();

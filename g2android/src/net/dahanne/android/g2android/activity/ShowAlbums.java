@@ -17,14 +17,19 @@
  */
 package net.dahanne.android.g2android.activity;
 
-import java.util.ArrayList;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.dahanne.android.g2android.G2AndroidApplication;
 import net.dahanne.android.g2android.R;
 import net.dahanne.android.g2android.model.Album;
-import net.dahanne.android.g2android.utils.G2Utils;
+import net.dahanne.android.g2android.utils.AlbumUtils;
+import net.dahanne.android.g2android.utils.G2ConnectionUtils;
 import net.dahanne.android.g2android.utils.GalleryConnectionException;
 import net.dahanne.android.g2android.utils.ToastExceptionUtils;
 
@@ -46,29 +51,33 @@ import android.widget.AdapterView.OnItemClickListener;
 public class ShowAlbums extends ListActivity implements OnItemClickListener {
 
 	private static final String TAG = "ShowAlbums";
-	private static List<Album> albums = new ArrayList<Album>();
+	private Integer albumName;
+	private List<Album> albumChildren;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
-		// we load the given album from the previous selection
-		Integer albumName = (Integer) getIntent().getSerializableExtra(
+		albumName = (Integer) getIntent().getSerializableExtra(
 				"g2android.Album");
-
 		// we're back in this activity to select a sub album or to see the
 		// pictures
 		if (albumName != null) {
 			// we recover the selected album
-			Album selectedAlbum = albums.get(albumName);
+			Album rootAlbum = ((G2AndroidApplication) getApplication())
+					.getRootAlbum();
+			Album selectedAlbum = AlbumUtils.findAlbumFromAlbumName(rootAlbum,
+					albumName);
 			// we create a fake album, it will be used to choose to view the
 			// pictures of the album
 			Album viewPicturesAlbum = new Album();
 			viewPicturesAlbum.setId(0);
 			viewPicturesAlbum.setTitle(getString(R.string.view_album_pictures));
 			viewPicturesAlbum.setName(selectedAlbum.getName());
-			albums = selectedAlbum.getChildren();
-			albums.add(0, viewPicturesAlbum);
+			albumChildren = selectedAlbum.getChildren();
+			if (!albumChildren.contains(viewPicturesAlbum)) {
+				albumChildren.add(0, viewPicturesAlbum);
+			}
 			setTitle(selectedAlbum.getTitle());
 
 		}
@@ -83,14 +92,14 @@ public class ShowAlbums extends ListActivity implements OnItemClickListener {
 				// This is done once and for all as the session cookie will be
 				// stored !
 				if (StringUtils.isNotBlank(Settings.getUsername(this))) {
-					G2Utils.loginToGallery(Settings.getGalleryHost(this),
-							Settings.getGalleryPath(this), Settings
-									.getGalleryPort(this), Settings
-									.getUsername(this), Settings
-									.getPassword(this));
+					G2ConnectionUtils.loginToGallery(Settings
+							.getGalleryHost(this), Settings
+							.getGalleryPath(this), Settings
+							.getGalleryPort(this), Settings.getUsername(this),
+							Settings.getPassword(this));
 				}
 
-				albumsProperties = G2Utils.fetchAlbums(Settings
+				albumsProperties = G2ConnectionUtils.fetchAlbums(Settings
 						.getGalleryHost(this), Settings.getGalleryPath(this),
 						Settings.getGalleryPort(this));
 			} catch (NumberFormatException e) {
@@ -99,36 +108,36 @@ public class ShowAlbums extends ListActivity implements OnItemClickListener {
 				ToastExceptionUtils.toastGalleryException(this, e);
 			}
 
-			Map<Integer, Album> nonSortedAlbums = G2Utils
+			Map<Integer, Album> nonSortedAlbums = G2ConnectionUtils
 					.extractAlbumFromProperties(albumsProperties);
-			Album rootAlbum = G2Utils.organizeAlbumsHierarchy(nonSortedAlbums);
+			Album rootAlbum = G2ConnectionUtils
+					.organizeAlbumsHierarchy(nonSortedAlbums);
 			setTitle(rootAlbum.getTitle());
-			albums = rootAlbum.getChildren();
+			((G2AndroidApplication) getApplication()).setRootAlbum(rootAlbum);
+			albumChildren = rootAlbum.getChildren();
+			albumName = rootAlbum.getName();
 		}
 
 		setListAdapter(new ArrayAdapter<Album>(this,
-				android.R.layout.simple_list_item_1, albums));
+				android.R.layout.simple_list_item_1, albumChildren));
 		getListView().setTextFilterEnabled(true);
 		getListView().setOnItemClickListener(this);
 
 	}
 
 	@Override
-	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-		// Log.d(TAG, "" + arg2);
+	public void onItemClick(AdapterView<?> arg0, View arg1, int albumPosition,
+			long arg3) {
 		Intent intent;
-		Album newSelectedAlbum = albums.get(arg2);
+		Album newSelectedAlbum = albumChildren.get(albumPosition);
 		if (newSelectedAlbum.getId() == 0
 				|| newSelectedAlbum.getChildren().size() == 0) {
-			// the user want to see the pictures, no need to have all the albums
-			// hierarchy
-			newSelectedAlbum.getChildren().clear();
-			newSelectedAlbum.setParent(null);
+			// the user wants to see the pictures
 			intent = new Intent(this, ShowGallery.class);
-			intent.putExtra("g2android.Album", newSelectedAlbum);
+			intent.putExtra("g2android.Album", newSelectedAlbum.getName());
 		} else {
 			intent = new Intent(this, ShowAlbums.class);
-			intent.putExtra("g2android.Album", arg2);
+			intent.putExtra("g2android.Album", newSelectedAlbum.getName());
 		}
 		startActivity(intent);
 
@@ -136,13 +145,17 @@ public class ShowAlbums extends ListActivity implements OnItemClickListener {
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		Intent intent = new Intent(Intent.ACTION_PICK);
+		Intent intent;
 		switch (item.getItemId()) {
 		case R.id.add_photo:
-			// intent.setClassName("com.android.camera",
-			// "com.android.camera.GalleryPicker");
+			intent = new Intent(Intent.ACTION_PICK);
 			intent.setType("image/*");
 			startActivityForResult(intent, 1);
+			break;
+
+		case R.id.create_album:
+			intent = new Intent(this, ChooseSubAlbumName.class);
+			startActivityForResult(intent, 2);
 			break;
 
 		}
@@ -163,26 +176,60 @@ public class ShowAlbums extends ListActivity implements OnItemClickListener {
 			Intent intent) {
 		super.onActivityResult(requestCode, resultCode, intent);
 
-		if (resultCode == RESULT_OK) {
-			Uri photoUri = intent.getData();
-			Log.d(TAG, "should be adding a photo");
-			if (photoUri != null) {
-
-				Log.d(TAG, "photo uri is not blank");
-				// do something with the content Uri
-				// TODO figure out why this does not work!!
-				Log.d(TAG, "the photo URI is " + photoUri.getPath());
-				// Drawable thePic =
-				// Drawable.createFromPath(photoUri.getPath());
-				// // thePic is Null
-				// if (thePic != null) {
-				// Log.d(TAG, "the pic has loaded");
-				// myRecipe.addPic(thePic);
-				// ((RecipeAdapter) myListView.getAdapter())
-				// .notifyDataSetChanged();
-				//
-				// }
+		switch (requestCode) {
+		case 1:
+			// add a new photo
+			if (resultCode == RESULT_OK) {
+				Uri photoUri = intent.getData();
+				if (photoUri != null) {
+					Log.d(TAG, "the photo URI is " + photoUri.getPath());
+					try {
+						String mimeType = getContentResolver()
+								.getType(photoUri);
+						System.out.println(mimeType);
+						InputStream openInputStream = getContentResolver()
+								.openInputStream(photoUri);
+						File imageFile = File.createTempFile("G2Android",
+								".png");
+						// new File("/data/local/tmp/imageToUpload");
+						OutputStream out = new FileOutputStream(imageFile);
+						byte buf[] = new byte[1024];
+						int len;
+						while ((len = openInputStream.read(buf)) > 0) {
+							out.write(buf, 0, len);
+						}
+						out.close();
+						openInputStream.close();
+						G2ConnectionUtils.sendImageToGallery(Settings
+								.getGalleryHost(this), Settings
+								.getGalleryPath(this), Settings
+								.getGalleryPort(this), albumName, imageFile);
+					} catch (Exception e) {
+						// TODO : handle the exception
+						e.printStackTrace();
+					}
+				}
 			}
+			break;
+		case 2:
+			String subalbumName = intent.getStringExtra("subalbumName");
+			// create a new subalbum
+			try {
+				G2ConnectionUtils.createNewAlbum(Settings.getGalleryHost(this),
+						Settings.getGalleryPath(this), Settings
+								.getGalleryPort(this), albumName, subalbumName,
+						subalbumName, subalbumName);
+			} catch (NumberFormatException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (GalleryConnectionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			break;
+		default:
+			break;
 		}
+
 	}
 }

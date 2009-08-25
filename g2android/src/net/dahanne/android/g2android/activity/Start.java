@@ -18,7 +18,7 @@
 package net.dahanne.android.g2android.activity;
 
 import net.dahanne.android.g2android.R;
-import net.dahanne.android.g2android.utils.G2Utils;
+import net.dahanne.android.g2android.utils.G2ConnectionUtils;
 import net.dahanne.android.g2android.utils.GalleryConnectionException;
 import net.dahanne.android.g2android.utils.ToastExceptionUtils;
 import android.app.Activity;
@@ -62,7 +62,7 @@ public class Start extends Activity implements OnClickListener {
 				&& !Settings.getGalleryUrl(this).equals("")) {
 			// GalleryUrl is provided, but is it a Gallery2 URL ?
 			try {
-				if (G2Utils.checkGalleryUrlIsValid(Settings
+				if (G2ConnectionUtils.checkGalleryUrlIsValid(Settings
 						.getGalleryHost(this), Settings.getGalleryPath(this),
 						Settings.getGalleryPort(this))) {
 					galleryConfiguredTextView.setText(Settings
