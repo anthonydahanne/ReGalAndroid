@@ -32,7 +32,12 @@ import org.apache.commons.lang.StringUtils;
 
 import android.app.ListActivity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -127,5 +132,57 @@ public class ShowAlbums extends ListActivity implements OnItemClickListener {
 		}
 		startActivity(intent);
 
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		Intent intent = new Intent(Intent.ACTION_PICK);
+		switch (item.getItemId()) {
+		case R.id.add_photo:
+			// intent.setClassName("com.android.camera",
+			// "com.android.camera.GalleryPicker");
+			intent.setType("image/*");
+			startActivityForResult(intent, 1);
+			break;
+
+		}
+		return false;
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		super.onCreateOptionsMenu(menu);
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.menu_show_albums, menu);
+		return true;
+
+	}
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode,
+			Intent intent) {
+		super.onActivityResult(requestCode, resultCode, intent);
+
+		if (resultCode == RESULT_OK) {
+			Uri photoUri = intent.getData();
+			Log.d(TAG, "should be adding a photo");
+			if (photoUri != null) {
+
+				Log.d(TAG, "photo uri is not blank");
+				// do something with the content Uri
+				// TODO figure out why this does not work!!
+				Log.d(TAG, "the photo URI is " + photoUri.getPath());
+				// Drawable thePic =
+				// Drawable.createFromPath(photoUri.getPath());
+				// // thePic is Null
+				// if (thePic != null) {
+				// Log.d(TAG, "the pic has loaded");
+				// myRecipe.addPic(thePic);
+				// ((RecipeAdapter) myListView.getAdapter())
+				// .notifyDataSetChanged();
+				//
+				// }
+			}
+		}
 	}
 }
