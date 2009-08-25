@@ -54,6 +54,8 @@
 
 	<string name="add_photo_label">Add a photo in this album</string>
 	<string name="add_photo_shortcut">a</string>
+	<string name="create_album_label">Create a new subalbum</string>
+	<string name="create_album_shortcut">c</string>
 
 
 	<string name="what_is_g2android">

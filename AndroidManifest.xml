@@ -16,7 +16,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 	package="net.dahanne.android.g2android" android:versionCode="3"
 	android:versionName="1.1.1">
-	<application android:icon="@drawable/icon" android:label="@string/app_name">
+	<application android:icon="@drawable/icon" android:label="@string/app_name" android:name="G2AndroidApplication">
 		<activity android:name=".activity.Start" android:label="@string/app_name">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
@@ -28,6 +28,7 @@
 		<activity android:name=".activity.ShowAlbums" android:label="@string/show_albums_title" />
 		<activity android:name=".activity.ShowGallery" android:label="@string/show_gallery_title" />
 		<activity android:name=".activity.FirstTime" android:label="@string/firsttime_title" />
+		<activity android:name=".activity.ChooseSubAlbumName" android:label="subalbum" />
 		<!--
 			<activity android:name=".activity.AlbumGallery"
 			android:label="@string/show_albums_title" /> <activity

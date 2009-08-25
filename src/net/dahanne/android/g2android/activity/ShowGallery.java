@@ -23,11 +23,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.dahanne.android.g2android.G2AndroidApplication;
 import net.dahanne.android.g2android.R;
 import net.dahanne.android.g2android.model.Album;
 import net.dahanne.android.g2android.model.G2Picture;
+import net.dahanne.android.g2android.utils.AlbumUtils;
 import net.dahanne.android.g2android.utils.AsyncTask;
-import net.dahanne.android.g2android.utils.G2Utils;
+import net.dahanne.android.g2android.utils.G2ConnectionUtils;
 import net.dahanne.android.g2android.utils.GalleryConnectionException;
 import net.dahanne.android.g2android.utils.ToastExceptionUtils;
 import android.app.Activity;
@@ -70,12 +72,15 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 		mSwitcher.setOutAnimation(AnimationUtils.loadAnimation(this,
 				android.R.anim.fade_out));
 
-		Album album = (Album) getIntent().getSerializableExtra(
+		int albumName = (Integer) getIntent().getSerializableExtra(
 				"g2android.Album");
+		Album album = AlbumUtils.findAlbumFromAlbumName(
+				((G2AndroidApplication) getApplication()).getRootAlbum(),
+				albumName);
 		HashMap<String, String> imagesProperties = new HashMap<String, String>(
 				0);
 		try {
-			imagesProperties = G2Utils.fetchImages(Settings
+			imagesProperties = G2ConnectionUtils.fetchImages(Settings
 					.getGalleryHost(this), Settings.getGalleryPath(this),
 					Settings.getGalleryPort(this), album.getName());
 		} catch (NumberFormatException e) {
@@ -84,7 +89,7 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 			ToastExceptionUtils.toastGalleryException(this, e);
 		}
 		albumPictures = new ArrayList<G2Picture>();
-		albumPictures.addAll(G2Utils
+		albumPictures.addAll(G2ConnectionUtils
 				.extractG2PicturesFromProperties(imagesProperties));
 
 		ImageAdapter adapter = new ImageAdapter(this);
@@ -133,7 +138,8 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 
 	private InputStream getInputStreamFromUrl(String url) {
 
-		//System.out.println("Trying to download " + url);// HttpURLConnection con
+		// System.out.println("Trying to download " + url);// HttpURLConnection
+		// con
 		// = null;
 		// URL url;
 		// InputStream is = null;
@@ -153,7 +159,7 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 		// }
 		// return is;
 		try {
-			return G2Utils.getInputStreamFromUrl(url);
+			return G2ConnectionUtils.getInputStreamFromUrl(url);
 		} catch (GalleryConnectionException e) {
 			ToastExceptionUtils.toastGalleryException(this, e);
 		}
