@@ -21,4 +21,5 @@
 <resources>
    <color name="background">#3500ffff</color>
    <color name="title_color">#ffffffff</color>
+   <color name="text_color">#ffffffff</color>
 </resources>

@@ -20,8 +20,12 @@ package net.dahanne.android.g2android.activity;
 import net.dahanne.android.g2android.R;
 import net.dahanne.android.g2android.utils.G2ConnectionUtils;
 import net.dahanne.android.g2android.utils.GalleryConnectionException;
-import net.dahanne.android.g2android.utils.ToastExceptionUtils;
+import net.dahanne.android.g2android.utils.ToastUtils;
+
+import org.apache.commons.lang.StringUtils;
+
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -36,6 +40,7 @@ public class Start extends Activity implements OnClickListener {
 	private static final String TAG = "StartActivity";
 	private Button enterGalleryButton;
 	private TextView galleryConfiguredTextView;
+	private ProgressDialog progressDialog;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -62,6 +67,31 @@ public class Start extends Activity implements OnClickListener {
 				&& !Settings.getGalleryUrl(this).equals("")) {
 			// GalleryUrl is provided, but is it a Gallery2 URL ?
 			try {
+
+				// the first thing is to login, if an username and password are
+				// supplied !
+				// This is done once and for all as the session cookie will be
+				// stored !
+				String authToken = null;
+				if (StringUtils.isNotBlank(Settings.getUsername(this))) {
+					authToken = G2ConnectionUtils.loginToGallery(Settings
+							.getGalleryHost(this), Settings
+							.getGalleryPath(this), Settings
+							.getGalleryPort(this), Settings.getUsername(this),
+							Settings.getPassword(this));
+					if (StringUtils.isNotBlank(authToken)) {
+						galleryConfiguredTextView.setText(Settings
+								.getGalleryUrl(this));
+						enterGalleryButton.setEnabled(true);
+
+						return;
+					} else {
+						galleryConfiguredTextView
+								.setText(R.string.gallery_credentials_are_not_valid);
+					}
+				}
+				// no username just send a random command to the gallery to
+				// chack it answers
 				if (G2ConnectionUtils.checkGalleryUrlIsValid(Settings
 						.getGalleryHost(this), Settings.getGalleryPath(this),
 						Settings.getGalleryPort(this))) {
@@ -75,9 +105,9 @@ public class Start extends Activity implements OnClickListener {
 							.setText(R.string.gallery_url_is_not_valid);
 				}
 			} catch (NumberFormatException e) {
-				ToastExceptionUtils.toastNumberFormatException(this, e);
+				ToastUtils.toastNumberFormatException(this, e);
 			} catch (GalleryConnectionException e) {
-				ToastExceptionUtils.toastGalleryException(this, e);
+				ToastUtils.toastGalleryException(this, e);
 			}
 		} else {
 			galleryConfiguredTextView

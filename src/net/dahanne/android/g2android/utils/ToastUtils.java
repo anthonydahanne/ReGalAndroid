@@ -24,7 +24,7 @@ import android.widget.Toast;
  * @author Anthony Dahanne This class is used to centralize the Toast messages
  *         of the different exceptions
  */
-public class ToastExceptionUtils {
+public class ToastUtils {
 	public static final void toastGalleryException(Context context, Exception e) {
 		Toast.makeText(context,
 				"Could not connect to the gallery ! Java Exception was : "
@@ -36,5 +36,11 @@ public class ToastExceptionUtils {
 		Toast.makeText(context,
 				"Port Number must be set a number set between 1 and 65000"
 						+ e.getMessage(), 3);
+	}
+
+	public static final void toastAlbumSuccessfullyCreated(Context context,
+			String albumTitle) {
+		Toast.makeText(context, "Album was successfully created " + albumTitle,
+				3);
 	}
 }

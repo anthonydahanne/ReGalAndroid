@@ -1,6 +1,11 @@
 package net.dahanne.android.g2android.utils;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import net.dahanne.android.g2android.activity.Settings;
 import net.dahanne.android.g2android.model.Album;
+import android.content.Context;
 
 public class AlbumUtils {
 	public static Album findAlbumFromAlbumName(Album rootAlbum, int i) {
@@ -18,5 +23,25 @@ public class AlbumUtils {
 
 		}
 		return null;
+	}
+
+	public static Album retrieveRootAlbumAndItsHierarchy(Context context) {
+		HashMap<String, String> albumsProperties = new HashMap<String, String>(
+				0);
+		try {
+			albumsProperties = G2ConnectionUtils.fetchAlbums(Settings
+					.getGalleryHost(context), Settings.getGalleryPath(context),
+					Settings.getGalleryPort(context));
+		} catch (NumberFormatException e) {
+			ToastUtils.toastNumberFormatException(context, e);
+		} catch (GalleryConnectionException e) {
+			ToastUtils.toastGalleryException(context, e);
+		}
+
+		Map<Integer, Album> nonSortedAlbums = G2ConnectionUtils
+				.extractAlbumFromProperties(albumsProperties);
+		Album rootAlbum = G2ConnectionUtils
+				.organizeAlbumsHierarchy(nonSortedAlbums);
+		return rootAlbum;
 	}
 }
