@@ -40,7 +40,6 @@ public class AlbumGallery extends Activity implements OnClickListener {
 	private List<G2Picture> albumPictures;
 	private ImageAdapter imageAdapter;
 
-	@Override
 	public void onClick(View v) {
 
 	}

@@ -24,7 +24,6 @@ public class ChooseSubAlbumName extends Activity implements OnClickListener {
 
 	}
 
-	@Override
 	public void onClick(View v) {
 		Intent data = new Intent();
 		data.putExtra("subalbumName", subalbumEditText.getText().toString());

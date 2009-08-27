@@ -21,7 +21,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:orientation="vertical" android:layout_width="fill_parent"
 	android:layout_height="fill_parent" android:background="@color/background"
-	android:padding="20dip">
+	android:padding="15dip">
 	<TextView android:layout_width="fill_parent"
 		android:layout_height="wrap_content" android:text="@string/g2android_title" android:textColor="@color/title_color"
 		android:gravity="center" android:textSize="28.5sp"
@@ -37,8 +37,13 @@
 
 <TextView android:layout_width="fill_parent"
 	android:layout_height="wrap_content" android:text="@string/g2android_no_gallery_configured" android:id="@+id/gallery_configured"
-	android:textColor="@color/title_color" android:gravity="center"
+	android:textColor="@color/text_color" android:gravity="center"
 	android:textSize="8.5sp" />
+	<TextView android:layout_width="fill_parent"
+	android:layout_height="wrap_content" android:text="@string/not_logged_in" android:id="@+id/loggedin_as_id"
+	android:textColor="@color/logged_color" android:gravity="center"
+	android:textSize="10.5sp" />
+	
 
 
 </LinearLayout>
