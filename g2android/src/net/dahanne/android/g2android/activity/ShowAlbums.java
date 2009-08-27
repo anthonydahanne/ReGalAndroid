@@ -20,17 +20,24 @@ package net.dahanne.android.g2android.activity;
 import java.io.File;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
+
 import net.dahanne.android.g2android.G2AndroidApplication;
 import net.dahanne.android.g2android.R;
 import net.dahanne.android.g2android.model.Album;
 import net.dahanne.android.g2android.utils.AlbumUtils;
 import net.dahanne.android.g2android.utils.G2ConnectionUtils;
+import net.dahanne.android.g2android.utils.G2ConnectionUtilsMock;
 import net.dahanne.android.g2android.utils.GalleryConnectionException;
 import net.dahanne.android.g2android.utils.ToastUtils;
 import net.dahanne.android.g2android.utils.UriUtils;
+import android.app.AlertDialog;
 import android.app.ListActivity;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -45,6 +52,10 @@ public class ShowAlbums extends ListActivity implements OnItemClickListener {
 	private static final String TAG = "ShowAlbums";
 	private Integer albumName;
 	private List<Album> albumChildren;
+	private String galleryHost;
+	private String galleryPath;
+	private int galleryPort;
+	private ProgressDialog progressDialog;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -58,7 +69,6 @@ public class ShowAlbums extends ListActivity implements OnItemClickListener {
 
 	}
 
-	@Override
 	public void onItemClick(AdapterView<?> arg0, View arg1, int albumPosition,
 			long arg3) {
 		Intent intent;
@@ -149,7 +159,7 @@ public class ShowAlbums extends ListActivity implements OnItemClickListener {
 
 					// now refresh the album hierarchy
 					Album rootAlbum = AlbumUtils
-							.retrieveRootAlbumAndItsHierarchy(this);
+							.retrieveRootAlbumAndItsHierarchy(this,galleryHost,galleryPath,galleryPort);
 					((G2AndroidApplication) getApplication())
 							.setRootAlbum(rootAlbum);
 
@@ -166,6 +176,10 @@ public class ShowAlbums extends ListActivity implements OnItemClickListener {
 
 	@Override
 	protected void onResume() {
+		galleryHost = Settings.getGalleryHost(this);
+		galleryPath = Settings.getGalleryPath(this);
+		galleryPort = Settings.getGalleryPort(this);
+		
 		super.onResume();
 		// we're back in this activity to select a sub album or to see the
 		// pictures
@@ -191,7 +205,7 @@ public class ShowAlbums extends ListActivity implements OnItemClickListener {
 		// it's the first time we get into this view, let's find the albums of
 		// the gallery
 		else {
-			Album rootAlbum = AlbumUtils.retrieveRootAlbumAndItsHierarchy(this);
+			Album rootAlbum = AlbumUtils.retrieveRootAlbumAndItsHierarchy(this,galleryHost,galleryPath,galleryPort);
 			((G2AndroidApplication) getApplication()).setRootAlbum(rootAlbum);
 			setTitle(rootAlbum.getTitle());
 			albumChildren = rootAlbum.getChildren();
@@ -202,4 +216,27 @@ public class ShowAlbums extends ListActivity implements OnItemClickListener {
 				android.R.layout.simple_list_item_1, albumChildren));
 	}
 
+	private class FetchAlbumTask extends AsyncTask {
+
+		private static final String NOTLOGGEDIN = "NOTLOGGEDIN";
+		private static final String GUEST = "guest";
+		private Integer galleryPort;
+		private String galleryPath;
+		private String galleryHost;
+
+		@Override
+		protected Album doInBackground(Object... parameters) {
+				galleryHost = (String) parameters[0];
+				galleryPath = (String) parameters[1];
+				galleryPort = (Integer) parameters[2];
+				return AlbumUtils.retrieveRootAlbumAndItsHierarchy(ShowAlbums.this,galleryHost,galleryPath,galleryPort);
+		}
+
+		@Override
+		protected void onPostExecute(Object rootAlbum) {
+			progressDialog.dismiss();
+
+		}
+	}
+	
 }

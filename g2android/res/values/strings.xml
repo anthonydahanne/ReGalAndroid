@@ -59,6 +59,15 @@
 	<string name="create_album_label">Create a new subalbum</string>
 	<string name="create_album_shortcut">c</string>
 
+<string name="connecting_to_the_gallery">Connecting to the gallery... Please wait...</string>
+<string name="loggedin_as">Logged in as </string>
+<string name="not_logged_in">Not logged in</string>
+<string name="not_connected">You could not get connected to the configured gallery : \n</string>
+<string name="verify_your_settings">\n\nPlease verify your settings or check your device has access to the internet</string>
+
+
+
+
 
 	<string name="what_is_g2android">
 		G2Android is a client to access a remote Gallery2 installation.

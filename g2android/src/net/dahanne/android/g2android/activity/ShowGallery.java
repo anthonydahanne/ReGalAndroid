@@ -65,6 +65,9 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 	private ImageSwitcher mSwitcher;
 	private Gallery gallery;
 	private int albumName;
+	private String galleryHost;
+	private String galleryPath;
+	private int galleryPort;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -160,7 +163,6 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 	}
 
 	@SuppressWarnings("unchecked")
-	@Override
 	public void onItemSelected(AdapterView<?> parent, View view, int position,
 			long id) {
 		String resizedName = albumPictures.get(position).getResizedName();
@@ -172,7 +174,6 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 		new DownloadImageTask().execute(uriString, mSwitcher, position);
 	}
 
-	@Override
 	public View makeView() {
 		ImageView i = new ImageView(this);
 		i.setBackgroundColor(0xFF000000);
@@ -183,7 +184,6 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 
 	}
 
-	@Override
 	public void onNothingSelected(AdapterView<?> parent) {
 	}
 
@@ -299,7 +299,7 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 							subalbumName, subalbumName);
 					// now refresh the album hierarchy
 					Album rootAlbum = AlbumUtils
-							.retrieveRootAlbumAndItsHierarchy(this);
+							.retrieveRootAlbumAndItsHierarchy(this,galleryHost,galleryPath,galleryPort);
 					((G2AndroidApplication) getApplication())
 							.setRootAlbum(rootAlbum);
 				} catch (NumberFormatException e) {
@@ -313,6 +313,14 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 
 	}
 
+	@Override
+	protected void onResume() {
+		super.onResume();
+		galleryHost = Settings.getGalleryHost(this);
+		galleryPath = Settings.getGalleryPath(this);
+		galleryPort = Settings.getGalleryPort(this);
+	}
+	
 	//
 	// @Override
 	// public void onItemClick(AdapterView<?> parent, View view, int position,

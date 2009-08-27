@@ -22,4 +22,5 @@
    <color name="background">#3500ffff</color>
    <color name="title_color">#ffffffff</color>
    <color name="text_color">#ffffffff</color>
+   <color name="logged_color">#FF0000</color>
 </resources>
