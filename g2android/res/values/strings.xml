@@ -23,6 +23,8 @@
 	<string name="g2android_default_gallery_configured">Configured with the default gallery, change gallery Url in Menu->Settings</string>
 	<string name="gallery_url_is_not_valid">The gallery url provided is not valid! Go to
 		Menu->Settings to fix this !</string>
+	<string name="gallery_credentials_are_not_valid">The gallery credentials provided are not valid! Go to
+		Menu->Settings to fix this ! (Hint : try removing your credentials to check the gallery url is correct)</string>
 	<string name="gallery_url_summary">Enter here the base name of your gallery, ex :
 		http://myhost.com/gallery2</string>
 	<string name="gallery_url_default">http://g2.dahanne.net</string>
