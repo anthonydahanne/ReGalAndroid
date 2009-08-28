@@ -43,4 +43,8 @@ public class ToastUtils {
 		Toast.makeText(context, "Album was successfully created " + albumTitle,
 				3);
 	}
+
+	public static final void toastImageSuccessfullyAdded(Context context) {
+		Toast.makeText(context, "Image was successfully added", 3);
+	}
 }

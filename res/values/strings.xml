@@ -62,10 +62,11 @@
 <string name="connecting_to_the_gallery">Connecting to the gallery... Please wait...</string>
 <string name="loggedin_as">Logged in as </string>
 <string name="not_logged_in">Not logged in</string>
+<string name="please_wait">Please wait...</string>
 <string name="not_connected">You could not get connected to the configured gallery : \n</string>
 <string name="verify_your_settings">\n\nPlease verify your settings or check your device has access to the internet</string>
 
-
+<string name="fetching_gallery_albums">Fetching gallery albums...</string>
 
 
 
