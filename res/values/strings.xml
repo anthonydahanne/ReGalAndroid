@@ -48,7 +48,7 @@
 
 	<string name="firsttime_title">Welcome to G2Android !</string>
 	<string name="firsttime_key">firsttime</string>
-	<string name="ok">Ok !</string>
+	<string name="ok">OK</string>
 
 	<string name="about_label">About</string>
 	<string name="about_title">About</string>
@@ -67,6 +67,7 @@
 <string name="verify_your_settings">\n\nPlease verify your settings or check your device has access to the internet</string>
 
 <string name="fetching_gallery_albums">Fetching gallery albums...</string>
+<string name="creating_new_album">Creating new album...</string>
 
 
 
@@ -89,4 +90,12 @@
 
 	<string name="view_album_pictures">View this album pictures !</string>
 
+<string name="current_version">Version : 1.2.0</string>
+<string name="project_home">Project Home : </string>
+<string name="project_home_url">http://code.google.com/p/g2android</string>
+<string name="licence">GNU General Public License v2</string>
+<string name="album_is_empty">This album does not contain any pictures !</string>
+<string name="type_new_subalbum_name">Type in your new subalbum name : </string>
+<string name="create_subalbum">Create subalbum !</string>
+<string name="welcome_to_g2android">Welcome to G2Android</string>
 </resources>

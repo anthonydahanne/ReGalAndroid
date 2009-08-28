@@ -18,8 +18,9 @@
 package net.dahanne.android.g2android.activity;
 
 import net.dahanne.android.g2android.R;
-import net.dahanne.android.g2android.utils.G2ConnectionUtilsMock;
+import net.dahanne.android.g2android.utils.G2ConnectionUtils;
 import net.dahanne.android.g2android.utils.GalleryConnectionException;
+import net.dahanne.android.g2android.utils.ToastUtils;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -133,6 +134,7 @@ public class Start extends Activity implements OnClickListener {
 
 	}
 
+	@SuppressWarnings("unchecked")
 	private class LoginTask extends AsyncTask {
 
 		private static final String NOTLOGGEDIN = "NOTLOGGEDIN";
@@ -158,24 +160,22 @@ public class Start extends Activity implements OnClickListener {
 					// are supplied !
 					// This is done once and for all as the session cookie will
 					// be stored !
-					authToken = G2ConnectionUtilsMock.loginToGallery(galleryHost,
+					authToken = G2ConnectionUtils.loginToGallery(galleryHost,
 							galleryPath, galleryPort, user, password);
 					if(authToken==null){
 						authToken=NOTLOGGEDIN;
-						galleryUrlIsValid = G2ConnectionUtilsMock.checkGalleryUrlIsValid(galleryHost,
+						galleryUrlIsValid = G2ConnectionUtils.checkGalleryUrlIsValid(galleryHost,
 								galleryPath, galleryPort);
 					}
 				} else {
 					authToken=NOTLOGGEDIN;
 					// no username just send a random command to the gallery to
 					// check it answers
-					galleryUrlIsValid = G2ConnectionUtilsMock.checkGalleryUrlIsValid(galleryHost,
+					galleryUrlIsValid = G2ConnectionUtils.checkGalleryUrlIsValid(galleryHost,
 							galleryPath, galleryPort);
 				}
-			} catch (NumberFormatException e) {
-				// ToastUtils.toastNumberFormatException(this, e);
 			} catch (GalleryConnectionException e) {
-				// ToastUtils.toastGalleryException(this, e);
+				ToastUtils.toastGalleryException(Start.this, e);
 			}
 			return authToken;
 		}
@@ -201,7 +201,7 @@ public class Start extends Activity implements OnClickListener {
 				enterGalleryButton.setEnabled(false);
 				AlertDialog.Builder builder = new AlertDialog.Builder(Start.this);
 				builder.setTitle(R.string.app_name).setMessage( getString(R.string.not_connected) +galleryUrl+getString(R.string.verify_your_settings))
-				       .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+				       .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
 				           public void onClick(DialogInterface dialog, int id) {
 				        	   dialog.cancel();
 				           }

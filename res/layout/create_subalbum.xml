@@ -16,12 +16,12 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:orientation="vertical" android:layout_width="fill_parent"
 	android:layout_height="wrap_content">
-			<TextView android:text="Choose your new subalbum name"
+			<TextView android:text="@string/type_new_subalbum_name"
 				android:layout_width="fill_parent" android:layout_height="wrap_content"
-				android:paddingLeft="15px" android:paddingTop="15px"
+				android:padding="15px"
 				android:textStyle="bold" android:layout_gravity="center_vertical"
 				android:textColor="#ffffff" />
-			<EditText android:layout_width="fill_parent" android:layout_height="wrap_content" android:id="@+id/subalbum_id" />
-			<Button android:paddingTop="15px" android:layout_gravity="center" android:id="@+id/ok_id"  android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/ok"/>
+			<EditText android:layout_width="fill_parent" android:layout_height="wrap_content" android:id="@+id/subalbum_id" android:padding="15px" />
+			<Button android:paddingTop="15px" android:layout_gravity="center" android:id="@+id/ok_id"  android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/create_subalbum"/>
 				
 </LinearLayout>
