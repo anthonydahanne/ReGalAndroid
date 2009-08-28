@@ -38,9 +38,8 @@ public class ToastUtils {
 						+ e.getMessage(), 3);
 	}
 
-	public static final void toastAlbumSuccessfullyCreated(Context context,
-			String albumTitle) {
-		Toast.makeText(context, "Album was successfully created " + albumTitle,
+	public static final void toastAlbumSuccessfullyCreated(Context context) {
+		Toast.makeText(context, "Album was successfully created ",
 				3);
 	}
 

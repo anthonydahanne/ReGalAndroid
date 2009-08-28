@@ -21,7 +21,7 @@
 		android:layout_height="fill_parent">
 		<LinearLayout android:orientation="vertical"
 			android:layout_width="fill_parent" android:layout_height="fill_parent">
-			<TextView android:text="Welcome to G2Android" android:id="@+id/versionName"
+			<TextView android:text="@string/welcome_to_g2android" android:id="@+id/versionName"
 				android:layout_width="fill_parent" android:layout_height="wrap_content"
 				android:paddingLeft="15px" android:paddingTop="15px"
 				android:textStyle="bold" android:layout_gravity="center_vertical"

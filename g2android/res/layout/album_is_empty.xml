@@ -16,7 +16,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:orientation="vertical" android:layout_width="fill_parent"
 	android:layout_height="fill_parent">
-			<TextView android:text="This album does not contain any pictures !" 
+			<TextView android:text="@string/album_is_empty" 
 			android:textColor="@color/text_color"
 				android:layout_width="fill_parent" android:layout_height="wrap_content"
 				android:textStyle="bold" android:layout_gravity="center_vertical"/>

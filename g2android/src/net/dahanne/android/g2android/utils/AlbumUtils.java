@@ -26,17 +26,11 @@ public class AlbumUtils {
 		return null;
 	}
 
-	public static Album retrieveRootAlbumAndItsHierarchy(Context context,String galleryHost,String galleryPath,int galleryPort) {
+	public static Album retrieveRootAlbumAndItsHierarchy(Context context,String galleryHost,String galleryPath,int galleryPort) throws GalleryConnectionException {
 		HashMap<String, String> albumsProperties = new HashMap<String, String>(
 				0);
-		try {
 			albumsProperties = G2ConnectionUtils.fetchAlbums(galleryHost, galleryPath,
 					galleryPort);
-		} catch (NumberFormatException e) {
-			ToastUtils.toastNumberFormatException(context, e);
-		} catch (GalleryConnectionException e) {
-			ToastUtils.toastGalleryException(context, e);
-		}
 
 		Map<Integer, Album> nonSortedAlbums = G2ConnectionUtils
 				.extractAlbumFromProperties(albumsProperties);
