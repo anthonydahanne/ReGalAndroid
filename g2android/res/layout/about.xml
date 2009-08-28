@@ -21,19 +21,19 @@
 		android:layout_height="fill_parent">
 		<LinearLayout android:orientation="vertical"
 			android:layout_width="fill_parent" android:layout_height="fill_parent">
-			<TextView android:text="G2Android" android:id="@+id/versionName"
+			<TextView android:text="@string/app_name" android:id="@+id/versionName"
 				android:layout_width="fill_parent" android:layout_height="wrap_content"
 				android:paddingLeft="15px" android:paddingTop="15px"
 				android:textStyle="bold" android:layout_gravity="center_vertical"
 				android:textColor="#ffffff" />
-			<TextView android:text="Version: 1.1" android:layout_width="fill_parent"
+			<TextView android:text="@string/current_version" android:layout_width="fill_parent"
 				android:layout_height="wrap_content" android:paddingLeft="15px"
 				android:textColor="#ffffff" />
-			<TextView android:text="Project-Home: "
+			<TextView android:text="@string/project_home"
 				android:layout_width="fill_parent" android:layout_height="wrap_content"
 				android:paddingTop="15px" android:paddingLeft="15px"
 				android:textStyle="bold" android:textColor="#ffffff" />
-			<TextView android:text="http://code.google.com/p/g2android" android:autoLink="web"
+			<TextView android:text="@string/project_home_url" android:autoLink="web"
 				android:layout_width="fill_parent" android:layout_height="wrap_content"
 				 android:textColorLink="#ffffff"
 				android:paddingLeft="15px" android:textSize="12sp"
@@ -42,7 +42,7 @@
 				android:layout_height="wrap_content" android:paddingTop="15px"
 				android:paddingLeft="15px" android:textStyle="bold"
 				android:textColor="#ffffff" />
-			<TextView android:text="GNU General Public License v2"
+			<TextView android:text="@string/licence"
 				android:layout_width="fill_parent" android:layout_height="wrap_content"
 				android:paddingLeft="15px" android:textColor="#ffffff" />
 			<TextView android:text="http://www.gnu.org/licenses/gpl.html"
