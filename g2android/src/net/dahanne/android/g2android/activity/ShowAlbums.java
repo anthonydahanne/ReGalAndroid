@@ -20,21 +20,16 @@ package net.dahanne.android.g2android.activity;
 import java.io.File;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
-
 import net.dahanne.android.g2android.G2AndroidApplication;
 import net.dahanne.android.g2android.R;
 import net.dahanne.android.g2android.model.Album;
 import net.dahanne.android.g2android.utils.AlbumUtils;
 import net.dahanne.android.g2android.utils.G2ConnectionUtils;
-import net.dahanne.android.g2android.utils.G2ConnectionUtilsMock;
 import net.dahanne.android.g2android.utils.GalleryConnectionException;
 import net.dahanne.android.g2android.utils.ToastUtils;
 import net.dahanne.android.g2android.utils.UriUtils;
-import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -56,6 +51,7 @@ public class ShowAlbums extends ListActivity implements OnItemClickListener {
 	private String galleryPath;
 	private int galleryPort;
 	private ProgressDialog progressDialog;
+	private Album rootAlbum;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -131,10 +127,15 @@ public class ShowAlbums extends ListActivity implements OnItemClickListener {
 					try {
 						File imageFile = UriUtils.createFileFromUri(this,
 								photoUri);
-						G2ConnectionUtils.sendImageToGallery(Settings
-								.getGalleryHost(this), Settings
-								.getGalleryPath(this), Settings
-								.getGalleryPort(this), albumName, imageFile);
+						int imageCreatedName = G2ConnectionUtils
+								.sendImageToGallery(Settings
+										.getGalleryHost(this), Settings
+										.getGalleryPath(this), Settings
+										.getGalleryPort(this), albumName,
+										imageFile);
+						if (imageCreatedName != 0) {
+							ToastUtils.toastImageSuccessfullyAdded(this);
+						}
 						imageFile.delete();
 					} catch (Exception e) {
 						ToastUtils.toastGalleryException(this, e);
@@ -146,20 +147,21 @@ public class ShowAlbums extends ListActivity implements OnItemClickListener {
 				String subalbumName = intent.getStringExtra("subalbumName");
 				// create a new subalbum
 				try {
-					G2ConnectionUtils.createNewAlbum(Settings
-							.getGalleryHost(this), Settings
-							.getGalleryPath(this), Settings
-							.getGalleryPort(this), albumName, subalbumName,
-							subalbumName, subalbumName);
+					int createdAlbumName = G2ConnectionUtils.createNewAlbum(
+							Settings.getGalleryHost(this), Settings
+									.getGalleryPath(this), Settings
+									.getGalleryPort(this), albumName,
+							subalbumName, subalbumName, subalbumName);
 
-					if (albumName != 0) {
+					if (createdAlbumName != 0) {
 						ToastUtils.toastAlbumSuccessfullyCreated(this,
 								subalbumName);
 					}
 
 					// now refresh the album hierarchy
 					Album rootAlbum = AlbumUtils
-							.retrieveRootAlbumAndItsHierarchy(this,galleryHost,galleryPath,galleryPort);
+							.retrieveRootAlbumAndItsHierarchy(this,
+									galleryHost, galleryPath, galleryPort);
 					((G2AndroidApplication) getApplication())
 							.setRootAlbum(rootAlbum);
 
@@ -179,7 +181,7 @@ public class ShowAlbums extends ListActivity implements OnItemClickListener {
 		galleryHost = Settings.getGalleryHost(this);
 		galleryPath = Settings.getGalleryPath(this);
 		galleryPort = Settings.getGalleryPort(this);
-		
+
 		super.onResume();
 		// we're back in this activity to select a sub album or to see the
 		// pictures
@@ -205,7 +207,14 @@ public class ShowAlbums extends ListActivity implements OnItemClickListener {
 		// it's the first time we get into this view, let's find the albums of
 		// the gallery
 		else {
-			Album rootAlbum = AlbumUtils.retrieveRootAlbumAndItsHierarchy(this,galleryHost,galleryPath,galleryPort);
+			progressDialog = ProgressDialog.show(this,
+					getString(R.string.please_wait),
+					getString(R.string.fetching_gallery_albums), true);
+
+			new FetchAlbumTask().execute(galleryHost, galleryPath, galleryPort);
+
+			rootAlbum = AlbumUtils.retrieveRootAlbumAndItsHierarchy(this,
+					galleryHost, galleryPath, galleryPort);
 			((G2AndroidApplication) getApplication()).setRootAlbum(rootAlbum);
 			setTitle(rootAlbum.getTitle());
 			albumChildren = rootAlbum.getChildren();
@@ -226,17 +235,19 @@ public class ShowAlbums extends ListActivity implements OnItemClickListener {
 
 		@Override
 		protected Album doInBackground(Object... parameters) {
-				galleryHost = (String) parameters[0];
-				galleryPath = (String) parameters[1];
-				galleryPort = (Integer) parameters[2];
-				return AlbumUtils.retrieveRootAlbumAndItsHierarchy(ShowAlbums.this,galleryHost,galleryPath,galleryPort);
+			galleryHost = (String) parameters[0];
+			galleryPath = (String) parameters[1];
+			galleryPort = (Integer) parameters[2];
+			return AlbumUtils.retrieveRootAlbumAndItsHierarchy(ShowAlbums.this,
+					galleryHost, galleryPath, galleryPort);
 		}
 
 		@Override
 		protected void onPostExecute(Object rootAlbum) {
+			ShowAlbums.this.rootAlbum = (Album) rootAlbum;
 			progressDialog.dismiss();
 
 		}
 	}
-	
+
 }
