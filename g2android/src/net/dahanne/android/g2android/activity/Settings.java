@@ -25,7 +25,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
-import android.util.Log;
 
 public class Settings extends PreferenceActivity {
 
@@ -69,7 +68,7 @@ public class Settings extends PreferenceActivity {
 			String galleryUrlWithoutHttp = galleryUrl
 					.substring(indexSlashSlash + 2);
 			int indexSlash = galleryUrlWithoutHttp.indexOf("/");
-			Log.d(TAG, "index : " + indexSlash);
+			// Log.d(TAG, "index : " + indexSlash);
 			if (indexSlash == -1) {
 				// galleryUrl just compound of host name
 				galleryHost = galleryUrlWithoutHttp;
@@ -77,7 +76,7 @@ public class Settings extends PreferenceActivity {
 
 				galleryHost = galleryUrlWithoutHttp.substring(0, indexSlash);
 			}
-			Log.d(TAG, "host : " + galleryHost);
+			// Log.d(TAG, "host : " + galleryHost);
 			return galleryHost;
 		}
 		return null;
@@ -92,14 +91,14 @@ public class Settings extends PreferenceActivity {
 			String galleryUrlWithoutHttp = galleryUrl
 					.substring(indexSlashSlash + 2);
 			int indexSlash = galleryUrlWithoutHttp.indexOf("/");
-			Log.d(TAG, "index : " + indexSlash);
+			// Log.d(TAG, "index : " + indexSlash);
 			if (indexSlash == -1) {
 				// galleryUrl just compound of host name
 				galleryPath = "/";
 			} else {
 				galleryPath = galleryUrlWithoutHttp.substring(indexSlash);
 			}
-			Log.d(TAG, "path : " + galleryPath);
+			// Log.d(TAG, "path : " + galleryPath);
 		}
 		return galleryPath;
 	}

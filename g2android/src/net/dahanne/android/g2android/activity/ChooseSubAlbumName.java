@@ -18,6 +18,7 @@ public class ChooseSubAlbumName extends Activity implements OnClickListener {
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.create_subalbum);
+		setTitle(R.string.create_album_label);
 		subalbumEditText = (EditText) findViewById(R.id.subalbum_id);
 		okButton = (Button) findViewById(R.id.ok_id);
 		okButton.setOnClickListener(this);
