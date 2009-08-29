@@ -75,7 +75,7 @@ public class Start extends Activity implements OnClickListener {
 			// GalleryUrl is provided, but is it a valid Gallery2 URL ?
 			galleryUrl = Settings.getGalleryUrl(this);
 			progressDialog = ProgressDialog.show(this,
-					getString(R.string.app_name),
+					getString(R.string.please_wait),
 					getString(R.string.connecting_to_the_gallery), true);
 
 			String galleryHost = Settings.getGalleryHost(this);
@@ -162,17 +162,20 @@ public class Start extends Activity implements OnClickListener {
 					// be stored !
 					authToken = G2ConnectionUtils.loginToGallery(galleryHost,
 							galleryPath, galleryPort, user, password);
-					if(authToken==null){
-						authToken=NOTLOGGEDIN;
-						galleryUrlIsValid = G2ConnectionUtils.checkGalleryUrlIsValid(galleryHost,
-								galleryPath, galleryPort);
+					galleryUrlIsValid = true;
+					if (authToken == null) {
+						authToken = NOTLOGGEDIN;
+						galleryUrlIsValid = G2ConnectionUtils
+								.checkGalleryUrlIsValid(galleryHost,
+										galleryPath, galleryPort);
 					}
 				} else {
-					authToken=NOTLOGGEDIN;
+					authToken = NOTLOGGEDIN;
 					// no username just send a random command to the gallery to
 					// check it answers
-					galleryUrlIsValid = G2ConnectionUtils.checkGalleryUrlIsValid(galleryHost,
-							galleryPath, galleryPort);
+					galleryUrlIsValid = G2ConnectionUtils
+							.checkGalleryUrlIsValid(galleryHost, galleryPath,
+									galleryPort);
 				}
 			} catch (GalleryConnectionException e) {
 				ToastUtils.toastGalleryException(Start.this, e);
@@ -182,15 +185,15 @@ public class Start extends Activity implements OnClickListener {
 
 		@Override
 		protected void onPostExecute(Object authToken) {
-			if (galleryUrlIsValid ) {
+			if (galleryUrlIsValid) {
 				if (authToken.equals(NOTLOGGEDIN)) {
 					// we 're not logged in
-					loggedInAsText.setText(getString(R.string.loggedin_as)+" "
-							+ GUEST);
+					loggedInAsText.setText(getString(R.string.loggedin_as)
+							+ " " + GUEST);
 				} else {
 					// we are logged in
-					loggedInAsText.setText(getString(R.string.loggedin_as)+" "
-							+ user);
+					loggedInAsText.setText(getString(R.string.loggedin_as)
+							+ " " + user);
 				}
 				galleryConfiguredTextView.setText(galleryUrl);
 				enterGalleryButton.setEnabled(true);
@@ -199,14 +202,18 @@ public class Start extends Activity implements OnClickListener {
 				galleryConfiguredTextView
 						.setText(R.string.g2android_no_gallery_configured);
 				enterGalleryButton.setEnabled(false);
-				AlertDialog.Builder builder = new AlertDialog.Builder(Start.this);
-				builder.setTitle(R.string.app_name).setMessage( getString(R.string.not_connected) +galleryUrl+getString(R.string.verify_your_settings))
-				       .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-				           public void onClick(DialogInterface dialog, int id) {
-				        	   dialog.cancel();
-				           }
-				       })
-				       ;
+				AlertDialog.Builder builder = new AlertDialog.Builder(
+						Start.this);
+				builder.setTitle(R.string.please_wait).setMessage(
+						getString(R.string.not_connected) + galleryUrl
+								+ getString(R.string.verify_your_settings))
+						.setPositiveButton(R.string.ok,
+								new DialogInterface.OnClickListener() {
+									public void onClick(DialogInterface dialog,
+											int id) {
+										dialog.cancel();
+									}
+								});
 				AlertDialog alert = builder.create();
 				alert.show();
 

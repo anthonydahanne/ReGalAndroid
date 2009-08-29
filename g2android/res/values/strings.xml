@@ -98,4 +98,6 @@
 <string name="type_new_subalbum_name">Type in your new subalbum name : </string>
 <string name="create_subalbum">Create subalbum !</string>
 <string name="welcome_to_g2android">Welcome to G2Android</string>
+<string name="adding_photo">Uploading photo to the album</string>
+<string name="loading_first_photos_from_album">Loading first photos from album</string>
 </resources>

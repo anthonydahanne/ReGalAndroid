@@ -41,7 +41,7 @@
 	android:textSize="8.5sp" />
 	<TextView android:layout_width="fill_parent"
 	android:layout_height="wrap_content" android:text="@string/not_logged_in" android:id="@+id/loggedin_as_id"
-	android:textColor="@color/logged_color" android:gravity="center"
+	android:textColor="@color/logged_color" android:gravity="center" android:textStyle="bold"
 	android:textSize="10.5sp" />
 	
 
