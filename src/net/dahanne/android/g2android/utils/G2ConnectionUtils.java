@@ -81,9 +81,8 @@ public class G2ConnectionUtils {
 	private static final BasicNameValuePair PROTOCOL_VERSION_NAME_VALUE_PAIR = new BasicNameValuePair(
 			"g2_form[protocol_version]", "2.0");
 	private static final String MAIN_PHP = "main.php";
-	private static final String USER_AGENT_VALUE = "G2Android Version 1.1.1";
+	private static final String USER_AGENT_VALUE = "G2Android Version 1.2.0";
 	private static final String USER_AGENT = "User-Agent";
-	private static final String GALLERYSID = "GALLERYSID";
 	private static final String TAG = "G2Utils";
 	static final String GR_STAT_SUCCESS = "0";
 
@@ -202,8 +201,8 @@ public class G2ConnectionUtils {
 					}
 
 				} catch (NumberFormatException nfe) {
-					System.out.println("problem dealing with imageNumber :"
-							+ imageNumber);
+					// System.out.println("problem dealing with imageNumber :"
+					// + imageNumber);
 
 				}
 			}
@@ -266,8 +265,8 @@ public class G2ConnectionUtils {
 					}
 
 				} catch (NumberFormatException nfe) {
-					System.out.println("problem dealing with albumNumber :"
-							+ albumNumber);
+					// System.out.println("problem dealing with albumNumber :"
+					// + albumNumber);
 
 				}
 			}
@@ -416,7 +415,7 @@ public class G2ConnectionUtils {
 			boolean gr2ProtoStringWasFound = false;
 			while ((line = rd.readLine()) != null) {
 				// Log.d(TAG, line);
-				System.out.println(line);
+				// System.out.println(line);
 				if (line.contains(GR2PROTO)) {
 					gr2ProtoStringWasFound = true;
 				}
@@ -514,7 +513,7 @@ public class G2ConnectionUtils {
 			int status = client.executeMethod(filePost);
 
 			String string = filePost.getResponseBodyAsString();
-			System.out.println(string);
+			// System.out.println(string);
 
 			InputStream responseBodyAsStream = filePost
 					.getResponseBodyAsStream();
@@ -540,7 +539,7 @@ public class G2ConnectionUtils {
 					if ("status".equals(key)) {
 						statusCode = new Integer(value).intValue();
 					}
-					// something went wronf
+					// something went wrong
 					if (statusCode != 0 && "status_text".equals(key)) {
 						statusText = value;
 						throw new Exception(value);
