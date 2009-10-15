@@ -18,6 +18,7 @@
 package net.dahanne.android.g2android.activity;
 
 import java.io.File;
+import java.io.InputStream;
 import java.util.List;
 
 import net.dahanne.android.g2android.G2AndroidApplication;
@@ -26,10 +27,12 @@ import net.dahanne.android.g2android.model.Album;
 import net.dahanne.android.g2android.utils.AlbumUtils;
 import net.dahanne.android.g2android.utils.G2ConnectionUtils;
 import net.dahanne.android.g2android.utils.GalleryConnectionException;
-import net.dahanne.android.g2android.utils.ToastUtils;
 import net.dahanne.android.g2android.utils.UriUtils;
+import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -40,6 +43,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
 public class ShowAlbums extends ListActivity implements OnItemClickListener {
@@ -49,11 +53,8 @@ public class ShowAlbums extends ListActivity implements OnItemClickListener {
 	private static final String TAG = "ShowAlbums";
 	private Integer albumName;
 	private List<Album> albumChildren;
-	private String galleryHost;
-	private String galleryPath;
-	private int galleryPort;
+	private String galleryUrl;
 	private ProgressDialog progressDialog;
-	private Album rootAlbum;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -129,8 +130,7 @@ public class ShowAlbums extends ListActivity implements OnItemClickListener {
 					progressDialog = ProgressDialog.show(this,
 							getString(R.string.please_wait),
 							getString(R.string.adding_photo), true);
-					new AddPhotoTask().execute(galleryHost, galleryPath,
-							galleryPort, albumName, photoUri);
+					new AddPhotoTask().execute(galleryUrl, albumName, photoUri);
 
 				}
 				break;
@@ -140,8 +140,8 @@ public class ShowAlbums extends ListActivity implements OnItemClickListener {
 						getString(R.string.please_wait),
 						getString(R.string.creating_new_album), true);
 
-				new CreateAlbumTask().execute(galleryHost, galleryPath,
-						galleryPort, albumName, subalbumName);
+				new CreateAlbumTask().execute(galleryUrl, albumName,
+						subalbumName);
 				break;
 			}
 		}
@@ -151,18 +151,15 @@ public class ShowAlbums extends ListActivity implements OnItemClickListener {
 	@SuppressWarnings("unchecked")
 	@Override
 	protected void onResume() {
-		galleryHost = Settings.getGalleryHost(this);
-		galleryPath = Settings.getGalleryPath(this);
-		galleryPort = Settings.getGalleryPort(this);
 
 		super.onResume();
+		galleryUrl = Settings.getGalleryUrl(this);
 		// we're back in this activity to select a sub album or to see the
 		// pictures
 		if (albumName != null) {
 			// we recover the selected album
-			Album rootAlbum = ((G2AndroidApplication) getApplication())
-					.getRootAlbum();
-			Album selectedAlbum = AlbumUtils.findAlbumFromAlbumName(rootAlbum,
+			Album selectedAlbum = AlbumUtils.findAlbumFromAlbumName(
+					((G2AndroidApplication) getApplication()).getRootAlbum(),
 					albumName);
 			// we create a fake album, it will be used to choose to view the
 			// pictures of the album
@@ -186,26 +183,25 @@ public class ShowAlbums extends ListActivity implements OnItemClickListener {
 					getString(R.string.please_wait),
 					getString(R.string.fetching_gallery_albums), true);
 
-			new FetchAlbumTask().execute(galleryHost, galleryPath, galleryPort);
+			new FetchAlbumTask().execute(galleryUrl);
 		}
 
 	}
 
 	@SuppressWarnings("unchecked")
 	private class FetchAlbumTask extends AsyncTask {
+		String exceptionMessage = null;
 
 		@Override
 		protected Album doInBackground(Object... parameters) {
-			galleryHost = (String) parameters[0];
-			galleryPath = (String) parameters[1];
-			galleryPort = (Integer) parameters[2];
-			Album freshRootAlbum = new Album();
+			galleryUrl = (String) parameters[0];
+			Album freshRootAlbum;
 			try {
-				freshRootAlbum = AlbumUtils.retrieveRootAlbumAndItsHierarchy(
-						ShowAlbums.this, galleryHost, galleryPath, galleryPort);
+				freshRootAlbum = AlbumUtils
+						.retrieveRootAlbumAndItsHierarchy(galleryUrl);
 			} catch (GalleryConnectionException e) {
-				// System.out.println(e.getMessage());
-				ToastUtils.toastGalleryException(ShowAlbums.this, e);
+				freshRootAlbum = null;
+				exceptionMessage = e.getMessage();
 			}
 			return freshRootAlbum;
 		}
@@ -214,8 +210,6 @@ public class ShowAlbums extends ListActivity implements OnItemClickListener {
 		protected void onPostExecute(Object rootAlbum) {
 
 			if (rootAlbum != null) {
-
-				ShowAlbums.this.rootAlbum = (Album) rootAlbum;
 				((G2AndroidApplication) getApplication())
 						.setRootAlbum((Album) rootAlbum);
 				setTitle(((Album) rootAlbum).getTitle());
@@ -226,30 +220,31 @@ public class ShowAlbums extends ListActivity implements OnItemClickListener {
 						albumChildren);
 				setListAdapter(arrayAdapter);
 				arrayAdapter.notifyDataSetChanged();
+			} else {
+				// something went wrong
+				alertConnectionProblem(exceptionMessage, galleryUrl);
 			}
-
 			progressDialog.dismiss();
-
 		}
+
 	}
 
 	@SuppressWarnings("unchecked")
 	private class CreateAlbumTask extends AsyncTask {
+		String exceptionMessage = null;
 
 		@Override
 		protected Integer doInBackground(Object... parameters) {
-			galleryHost = (String) parameters[0];
-			galleryPath = (String) parameters[1];
-			galleryPort = (Integer) parameters[2];
-			albumName = (Integer) parameters[3];
-			String subalbumName = (String) parameters[4];
+			galleryUrl = (String) parameters[0];
+			albumName = (Integer) parameters[1];
+			String subalbumName = (String) parameters[2];
 			try {
 				int createdAlbumName = G2ConnectionUtils.createNewAlbum(
-						galleryHost, galleryPath, galleryPort, albumName,
-						subalbumName, subalbumName, subalbumName);
+						galleryUrl, albumName, subalbumName, subalbumName,
+						subalbumName);
 				return createdAlbumName;
 			} catch (GalleryConnectionException e) {
-				ToastUtils.toastGalleryException(ShowAlbums.this, e);
+				exceptionMessage = e.getMessage();
 			}
 			return null;
 		}
@@ -257,39 +252,45 @@ public class ShowAlbums extends ListActivity implements OnItemClickListener {
 		@Override
 		protected void onPostExecute(Object createdAlbumName) {
 
-			if ((Integer) createdAlbumName != 0) {
-				ToastUtils.toastAlbumSuccessfullyCreated(ShowAlbums.this);
-			}
 			progressDialog.dismiss();
-			progressDialog = ProgressDialog.show(ShowAlbums.this,
-					getString(R.string.please_wait),
-					getString(R.string.fetching_gallery_albums), true);
-			// now refresh the album hierarchy
-			new FetchAlbumTask().execute(galleryHost, galleryPath, galleryPort);
+			if ((Integer) createdAlbumName != null
+					&& (Integer) createdAlbumName != 0) {
+				toastAlbumSuccessfullyCreated(ShowAlbums.this);
+				progressDialog = ProgressDialog.show(ShowAlbums.this,
+						getString(R.string.please_wait),
+						getString(R.string.fetching_gallery_albums), true);
+				// now refresh the album hierarchy
+				new FetchAlbumTask().execute(galleryUrl);
+			} else if (exceptionMessage != null) {
+				// Something went wrong
+				alertConnectionProblem(exceptionMessage, galleryUrl);
+			}
 
 		}
 	}
 
 	@SuppressWarnings("unchecked")
 	private class AddPhotoTask extends AsyncTask {
+		private String exceptionMessage = null;
 
 		@Override
 		protected Integer doInBackground(Object... parameters) {
-			galleryHost = (String) parameters[0];
-			galleryPath = (String) parameters[1];
-			galleryPort = (Integer) parameters[2];
-			albumName = (Integer) parameters[3];
-			Uri photoUri = (Uri) parameters[4];
+			galleryUrl = (String) parameters[0];
+			albumName = (Integer) parameters[1];
+			Uri photoUri = (Uri) parameters[2];
 			Integer imageCreatedName = null;
 			try {
-				File imageFile = UriUtils.createFileFromUri(ShowAlbums.this,
+				String mimeType = ShowAlbums.this.getContentResolver().getType(
 						photoUri);
+				InputStream openInputStream = ShowAlbums.this
+						.getContentResolver().openInputStream(photoUri);
+				File imageFile = UriUtils.createFileFromUri(openInputStream,
+						mimeType);
 				imageCreatedName = G2ConnectionUtils.sendImageToGallery(
-						galleryHost, galleryPath, galleryPort, albumName,
-						imageFile);
+						galleryUrl, albumName, imageFile);
 				imageFile.delete();
 			} catch (Exception e) {
-				// TODO : do something
+				exceptionMessage = e.getMessage();
 			}
 			return imageCreatedName;
 		}
@@ -297,17 +298,46 @@ public class ShowAlbums extends ListActivity implements OnItemClickListener {
 		@Override
 		protected void onPostExecute(Object createdAlbumName) {
 
-			if (createdAlbumName != null) {
-				ToastUtils.toastImageSuccessfullyAdded(ShowAlbums.this);
-			}
 			progressDialog.dismiss();
-			progressDialog = ProgressDialog.show(ShowAlbums.this,
-					getString(R.string.please_wait),
-					getString(R.string.fetching_gallery_albums), true);
-			// now refresh the album hierarchy
-			new FetchAlbumTask().execute(galleryHost, galleryPath, galleryPort);
+			if (createdAlbumName != null) {
+				toastImageSuccessfullyAdded(ShowAlbums.this);
+				progressDialog = ProgressDialog.show(ShowAlbums.this,
+						getString(R.string.please_wait),
+						getString(R.string.fetching_gallery_albums), true);
+				// now refresh the album hierarchy
+				new FetchAlbumTask().execute(galleryUrl);
+			} else if (exceptionMessage != null) {
+				// Something went wrong
+				alertConnectionProblem(exceptionMessage, galleryUrl);
+			}
 
 		}
+	}
+
+	protected void alertConnectionProblem(String exceptionMessage,
+			String galleryUrl) {
+		AlertDialog.Builder builder = new AlertDialog.Builder(ShowAlbums.this);
+		// if there was an exception thrown, show it, or say to verify
+		// settings
+		String message = getString(R.string.not_connected) + galleryUrl
+				+ getString(R.string.exception_thrown) + exceptionMessage;
+		builder.setTitle(R.string.problem).setMessage(message)
+				.setPositiveButton(R.string.ok,
+						new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int id) {
+								dialog.cancel();
+							}
+						});
+		AlertDialog alert = builder.create();
+		alert.show();
+	}
+
+	protected void toastAlbumSuccessfullyCreated(Context context) {
+		Toast.makeText(context, "Album was successfully created ", 3);
+	}
+
+	protected void toastImageSuccessfullyAdded(Context context) {
+		Toast.makeText(context, "Image was successfully added", 3);
 	}
 
 }

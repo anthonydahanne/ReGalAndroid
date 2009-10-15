@@ -3,10 +3,7 @@ package net.dahanne.android.g2android.utils;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.dahanne.android.g2android.activity.Settings;
-import net.dahanne.android.g2android.activity.ShowAlbums;
 import net.dahanne.android.g2android.model.Album;
-import android.content.Context;
 
 public class AlbumUtils {
 	public static Album findAlbumFromAlbumName(Album rootAlbum, int i) {
@@ -26,11 +23,11 @@ public class AlbumUtils {
 		return null;
 	}
 
-	public static Album retrieveRootAlbumAndItsHierarchy(Context context,String galleryHost,String galleryPath,int galleryPort) throws GalleryConnectionException {
+	public static Album retrieveRootAlbumAndItsHierarchy(String galleryUrl)
+			throws GalleryConnectionException {
 		HashMap<String, String> albumsProperties = new HashMap<String, String>(
 				0);
-			albumsProperties = G2ConnectionUtils.fetchAlbums(galleryHost, galleryPath,
-					galleryPort);
+		albumsProperties = G2ConnectionUtils.fetchAlbums(galleryUrl);
 
 		Map<Integer, Album> nonSortedAlbums = G2ConnectionUtils
 				.extractAlbumFromProperties(albumsProperties);

@@ -26,4 +26,12 @@ public class G2AndroidApplication extends Application {
 		return rootAlbum;
 	}
 
+	public void currentAlbum(Album rootAlbum) {
+		this.rootAlbum = rootAlbum;
+	}
+
+	public Album getCurrentAlbum() {
+		return rootAlbum;
+	}
+
 }

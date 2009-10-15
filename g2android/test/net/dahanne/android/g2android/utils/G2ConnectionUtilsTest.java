@@ -27,8 +27,6 @@ import java.util.Map.Entry;
 import junit.framework.Assert;
 import net.dahanne.android.g2android.model.Album;
 import net.dahanne.android.g2android.model.G2Picture;
-import net.dahanne.android.g2android.utils.G2ConnectionUtils;
-import net.dahanne.android.g2android.utils.GalleryConnectionException;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -41,32 +39,26 @@ import org.junit.Test;
  * 
  */
 public class G2ConnectionUtilsTest extends Assert {
-	private String galleryHost;
-	private String galleryPath;
-	private int galleryPort;
-
+	private String galleryUrl;
 	private String user;
 	private String password;
 
 	@Before
 	public void init() {
-		galleryHost = "g2.dahanne.net";
-		galleryPath = "/";
-		galleryPort = 80;
+		galleryUrl = "http://g2.dahanne.net/";
 		user = "g2android";
 		password = "g2android";
 	}
 
 	@Test
 	public void fetchImagesTest() throws GalleryConnectionException {
-		HashMap<String, String> fetchImages = G2ConnectionUtils.fetchImages(galleryHost,
-				galleryPath, galleryPort, 11);
+		HashMap<String, String> fetchImages = G2ConnectionUtils.fetchImages(
+				galleryUrl, 11);
 		assertTrue(fetchImages.size() != 0);
 		assertTrue(fetchImages.containsKey("image_count"));
 		assertFalse(fetchImages.get("image_count").equals("0"));
 
-		fetchImages = G2ConnectionUtils.fetchImages(galleryHost, galleryPath,
-				galleryPort, 9999);
+		fetchImages = G2ConnectionUtils.fetchImages(galleryUrl, 9999);
 		// just debug messages
 		assertTrue(fetchImages.size() == 3);
 
@@ -74,8 +66,7 @@ public class G2ConnectionUtilsTest extends Assert {
 
 	@Test(expected = GalleryConnectionException.class)
 	public void fetchImagesTest__exception() throws GalleryConnectionException {
-		G2ConnectionUtils.fetchImages("something.thatmaynotexist.com", galleryPath,
-				galleryPort, 11);
+		G2ConnectionUtils.fetchImages("something.thatmaynotexist.com", 11);
 
 	}
 
@@ -133,8 +124,8 @@ public class G2ConnectionUtilsTest extends Assert {
 		albumsProperties.put("album_count", "9");
 		albumsProperties.put("status", "0");
 
-		Collection<Album> albums = G2ConnectionUtils.extractAlbumFromProperties(
-				albumsProperties).values();
+		Collection<Album> albums = G2ConnectionUtils
+				.extractAlbumFromProperties(albumsProperties).values();
 		Album album = albums.iterator().next();
 		assertEquals(1, album.getId());
 		assertEquals("Brunch", album.getTitle());
@@ -202,28 +193,26 @@ public class G2ConnectionUtilsTest extends Assert {
 
 		// I know this is not a galleryUrl...
 		String falseGalleryHost = "www.google.com";
-		assertFalse(G2ConnectionUtils.checkGalleryUrlIsValid(falseGalleryHost,
-				galleryPath, galleryPort));
+		assertFalse(G2ConnectionUtils.checkGalleryUrlIsValid(falseGalleryHost));
 
 		// This is supposed to be a valid Url !
-		assertTrue(G2ConnectionUtils.checkGalleryUrlIsValid(galleryHost, galleryPath,
-				galleryPort));
+		assertTrue(G2ConnectionUtils.checkGalleryUrlIsValid(galleryUrl));
 
 	}
 
 	@Test
 	public void loginToGalleryTest() throws GalleryConnectionException {
 
-		String authToken = G2ConnectionUtils.loginToGallery(galleryHost, galleryPath,
-				galleryPort, "hacker", "hackerPassword");
+		String authToken = G2ConnectionUtils.loginToGallery(galleryUrl,
+				"hacker", "hackerPassword");
 		assertNull(authToken);
 
-		authToken = G2ConnectionUtils.loginToGallery(galleryHost, galleryPath,
-				galleryPort, user, password);
+		authToken = G2ConnectionUtils
+				.loginToGallery(galleryUrl, user, password);
 		assertNotNull(authToken);
 		// if we're logged in, we should see the g2android album
-		HashMap<String, String> fetchAlbums = G2ConnectionUtils.fetchAlbums(galleryHost,
-				galleryPath, galleryPort);
+		HashMap<String, String> fetchAlbums = G2ConnectionUtils
+				.fetchAlbums(galleryUrl);
 		boolean found = false;
 		for (Entry<String, String> entry : fetchAlbums.entrySet()) {
 			if (entry.getValue().equals("G2AndroidSecretAlbum")) {
@@ -241,36 +230,91 @@ public class G2ConnectionUtilsTest extends Assert {
 	 */
 	@Test(expected = GalleryConnectionException.class)
 	public void sendImageToGalleryTestFail() throws GalleryConnectionException {
-		String authToken = G2ConnectionUtils.loginToGallery(galleryHost, galleryPath,
-				galleryPort, user, password);
+		String authToken = G2ConnectionUtils.loginToGallery(galleryUrl, user,
+				password);
 		File imageFile = new File("image.png");
-		int newItemId = G2ConnectionUtils.sendImageToGallery(galleryHost, galleryPath,
-				galleryPort, 11, imageFile);
-		assertTrue(newItemId != 0);
+		int newItemId = G2ConnectionUtils.sendImageToGallery(galleryUrl,
+				9999999, imageFile);
 	}
 
 	@Test
 	public void sendImageToGalleryTest() throws GalleryConnectionException {
-		String authToken = G2ConnectionUtils.loginToGallery(galleryHost, galleryPath,
-				galleryPort, user, password);
+		String authToken = G2ConnectionUtils.loginToGallery(galleryUrl, user,
+				password);
 		File imageFile = new File("image.png");
-		int newItemId = G2ConnectionUtils.sendImageToGallery(galleryHost, galleryPath,
-				galleryPort, 174, imageFile);
+		int newItemId = G2ConnectionUtils.sendImageToGallery(galleryUrl, 174,
+				imageFile);
 		assertTrue(newItemId != 0);
 	}
 
 	@Test
 	public void createNewAlbumTest() throws GalleryConnectionException {
-		String authToken = G2ConnectionUtils.loginToGallery(galleryHost, galleryPath,
-				galleryPort, user, password);
+		String authToken = G2ConnectionUtils.loginToGallery(galleryUrl, user,
+				password);
 		Random random = new Random();
 		int randomInt = random.nextInt();
 		String albumName = "UnitTestAlbumNumber" + randomInt;
 		String albumTitle = "Unit Test Album";
 		String albumDescription = "Yet another Unit Test Album !";
 		// File imageFile = new File("image.png");
-		int newAlbumName = G2ConnectionUtils.createNewAlbum(galleryHost, galleryPath,
-				galleryPort, 174, albumName, albumTitle, albumDescription);
+		int newAlbumName = G2ConnectionUtils.createNewAlbum(galleryUrl, 174,
+				albumName, albumTitle, albumDescription);
 		assertTrue(newAlbumName != 0);
+	}
+
+	@Test
+	public void getPortFromUrlTest() {
+		int portFromUrl = G2ConnectionUtils
+				.getPortFromUrl(galleryUrl + ":4343");
+		assertEquals(4343, portFromUrl);
+
+		portFromUrl = G2ConnectionUtils.getPortFromUrl(galleryUrl
+				+ ":4343/gallery2");
+		assertEquals(4343, portFromUrl);
+
+		portFromUrl = G2ConnectionUtils.getPortFromUrl("https://url.net");
+		assertEquals(443, portFromUrl);
+
+		portFromUrl = G2ConnectionUtils.getPortFromUrl("https://url.net:4343");
+		assertEquals(4343, portFromUrl);
+
+		portFromUrl = G2ConnectionUtils
+				.getPortFromUrl("https://url.net:4343/gallery2");
+		assertEquals(4343, portFromUrl);
+
+	}
+
+	@Test
+	public void getPathFromUrlTest() {
+		String pathFromUrl = G2ConnectionUtils
+				.getPathFromUrl("http://g2.dahanne.net/gallery2");
+		assertEquals("/gallery2", pathFromUrl);
+
+		pathFromUrl = G2ConnectionUtils
+				.getPathFromUrl("http://g2.dahanne.net:8080/gallery2");
+		assertEquals("/gallery2", pathFromUrl);
+		pathFromUrl = G2ConnectionUtils
+				.getPathFromUrl("https://g2.dahanne.net:8080/gallery2");
+		assertEquals("/gallery2", pathFromUrl);
+		pathFromUrl = G2ConnectionUtils.getPathFromUrl("https://dahanne.net");
+		assertEquals("/", pathFromUrl);
+
+	}
+
+	@Test
+	public void getHostFromUrlTest() {
+		String pathFromUrl = G2ConnectionUtils
+				.getHostFromUrl("http://g2.dahanne.net/gallery2");
+		assertEquals("g2.dahanne.net", pathFromUrl);
+
+		pathFromUrl = G2ConnectionUtils
+				.getHostFromUrl("http://g2.dahanne.net:8080/gallery2");
+		assertEquals("g2.dahanne.net", pathFromUrl);
+		pathFromUrl = G2ConnectionUtils
+				.getHostFromUrl("https://g2.dahanne.net:8080/gallery2");
+		assertEquals("g2.dahanne.net", pathFromUrl);
+		pathFromUrl = G2ConnectionUtils.getHostFromUrl("https://dahanne.net");
+		assertEquals("dahanne.net", pathFromUrl);
+
 	}
 }
