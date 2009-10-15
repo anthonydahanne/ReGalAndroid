@@ -66,7 +66,6 @@ public class G2ConnectionUtils {
 	 * Final static constants
 	 */
 	private static final String SET_COOKIE = "Set-Cookie";
-	private static final String HTTP_PREFIX = "http://";
 	private static final BasicNameValuePair LOGIN_CMD_NAME_VALUE_PAIR = new BasicNameValuePair(
 			"g2_form[cmd]", "login");
 	private static final BasicNameValuePair FETCH_ALBUMS_CMD_NAME_VALUE_PAIR = new BasicNameValuePair(
@@ -81,7 +80,7 @@ public class G2ConnectionUtils {
 	private static final BasicNameValuePair PROTOCOL_VERSION_NAME_VALUE_PAIR = new BasicNameValuePair(
 			"g2_form[protocol_version]", "2.0");
 	private static final String MAIN_PHP = "main.php";
-	private static final String USER_AGENT_VALUE = "G2Android Version 1.2.0";
+	private static final String USER_AGENT_VALUE = "G2Android Version 1.2.1";
 	private static final String USER_AGENT = "User-Agent";
 	private static final String TAG = "G2Utils";
 	static final String GR_STAT_SUCCESS = "0";
@@ -96,6 +95,8 @@ public class G2ConnectionUtils {
 	private static List<Cookie> sessionCookies = new ArrayList<Cookie>();
 	static {
 		sessionCookies.add(new BasicClientCookie("", ""));
+		// we disable the SSL Trust Manager
+		// MyTrustManager.disable();
 	}
 
 	/**
@@ -110,16 +111,15 @@ public class G2ConnectionUtils {
 	 * @return
 	 * @throws GalleryConnectionException
 	 */
-	public static HashMap<String, String> fetchImages(String galleryHost,
-			String galleryPath, int galleryPort, int albumName)
-			throws GalleryConnectionException {
+	public static HashMap<String, String> fetchImages(String galleryUrl,
+			int albumName) throws GalleryConnectionException {
 		List<NameValuePair> nameValuePairsFetchImages = new ArrayList<NameValuePair>();
 		nameValuePairsFetchImages.add(FETCH_ALBUMS_IMAGES_CMD_NAME_VALUE_PAIR);
 		nameValuePairsFetchImages.add(new BasicNameValuePair(
 				"g2_form[set_albumName]", "" + albumName));
 
-		HashMap<String, String> properties = sendCommandToGallery(galleryHost,
-				galleryPath, galleryPort, nameValuePairsFetchImages);
+		HashMap<String, String> properties = sendCommandToGallery(galleryUrl,
+				nameValuePairsFetchImages);
 		return properties;
 	}
 
@@ -130,14 +130,13 @@ public class G2ConnectionUtils {
 	 * @return
 	 * @throws GalleryConnectionException
 	 */
-	public static HashMap<String, String> fetchAlbums(String galleryHost,
-			String galleryPath, int galleryPort)
+	public static HashMap<String, String> fetchAlbums(String galleryUrl)
 			throws GalleryConnectionException {
 		List<NameValuePair> nameValuePairsFetchAlbums = new ArrayList<NameValuePair>();
 		nameValuePairsFetchAlbums.add(FETCH_ALBUMS_CMD_NAME_VALUE_PAIR);
 
-		HashMap<String, String> properties = sendCommandToGallery(galleryHost,
-				galleryPath, galleryPort, nameValuePairsFetchAlbums);
+		HashMap<String, String> properties = sendCommandToGallery(galleryUrl,
+				nameValuePairsFetchAlbums);
 		return properties;
 
 	}
@@ -285,15 +284,17 @@ public class G2ConnectionUtils {
 	 * @return boolean
 	 * @throws GalleryConnectionException
 	 */
-	public static boolean checkGalleryUrlIsValid(String galleryHost,
-			String galleryPath, int galleryPort)
+	public static boolean checkGalleryUrlIsValid(String galleryUrl)
 			throws GalleryConnectionException {
-
+		boolean checkUrlIsValid = UriUtils.checkUrlIsValid(galleryUrl);
+		if (checkUrlIsValid == false) {
+			return false;
+		}
 		List<NameValuePair> nameValuePairsFetchAlbums = new ArrayList<NameValuePair>();
 		// an empty command should return a default string "no command passed" :
 		// enough to know that it is ok !
-		HashMap<String, String> properties = sendCommandToGallery(galleryHost,
-				galleryPath, galleryPort, nameValuePairsFetchAlbums);
+		HashMap<String, String> properties = sendCommandToGallery(galleryUrl,
+				nameValuePairsFetchAlbums);
 
 		return properties.isEmpty() ? false : true;
 
@@ -342,9 +343,8 @@ public class G2ConnectionUtils {
 	 * @return
 	 * @throws GalleryConnectionException
 	 */
-	public static String loginToGallery(String galleryHost, String galleryPath,
-			int galleryPort, String user, String password)
-			throws GalleryConnectionException {
+	public static String loginToGallery(String galleryUrl, String user,
+			String password) throws GalleryConnectionException {
 		// we reset the last login
 		sessionCookies.clear();
 		sessionCookies.add(new BasicClientCookie("", ""));
@@ -353,8 +353,8 @@ public class G2ConnectionUtils {
 		sb.add(LOGIN_CMD_NAME_VALUE_PAIR);
 		sb.add(new BasicNameValuePair("g2_form[uname]", "" + user));
 		sb.add(new BasicNameValuePair("g2_form[password]", "" + password));
-		HashMap<String, String> properties = sendCommandToGallery(galleryHost,
-				galleryPath, galleryPort, sb);
+		HashMap<String, String> properties = sendCommandToGallery(galleryUrl,
+				sb);
 		// auth_token retrieval, used by G2 against cross site forgery
 		authToken = null;
 		if (properties.get("status") != null
@@ -377,16 +377,28 @@ public class G2ConnectionUtils {
 	 * @throws GalleryConnectionException
 	 */
 	private static HashMap<String, String> sendCommandToGallery(
-			String galleryHost, String galleryPath, int galleryPort,
-			List<NameValuePair> nameValuePairsForThisCommand)
+			String galleryUrl, List<NameValuePair> nameValuePairsForThisCommand)
 			throws GalleryConnectionException {
 		HashMap<String, String> properties = new HashMap<String, String>();
 		// URL url;
 		try {
 
+			// HttpParams parameters = new BasicHttpParams();
+			// SchemeRegistry schemeRegistry = new SchemeRegistry();
+			// SSLSocketFactory sslSocketFactory = SSLSocketFactory
+			// .getSocketFactory();
+			// sslSocketFactory
+			// .setHostnameVerifier(SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
+			// schemeRegistry.register(new Scheme("https", sslSocketFactory,
+			// 443));
+			// ClientConnectionManager manager = new
+			// ThreadSafeClientConnManager(
+			// parameters, schemeRegistry);
+			// HttpClient httpclient = new DefaultHttpClient(manager,
+			// parameters);
+
 			HttpClient httpclient = new DefaultHttpClient();
-			HttpPost httpPost = new HttpPost(HTTP_PREFIX + galleryHost + ":"
-					+ galleryPort + galleryPath + "/" + MAIN_PHP);
+			HttpPost httpPost = new HttpPost(galleryUrl + "/" + MAIN_PHP);
 			httpPost.setHeader(new BasicHeader(USER_AGENT, USER_AGENT_VALUE));
 			// Setting the cookie
 			httpPost.setHeader(getCookieHeader(cookieSpecBase));
@@ -406,6 +418,9 @@ public class G2ConnectionUtils {
 					content), 4096);
 
 			Header[] allHeaders = response.getAllHeaders();
+			int galleryPort = getPortFromUrl(galleryUrl);
+			String galleryHost = getHostFromUrl(galleryUrl);
+			String galleryPath = getPathFromUrl(galleryUrl);
 			CookieOrigin origin = new CookieOrigin(galleryHost, galleryPort,
 					galleryPath, false);
 			// let's find the cookie
@@ -434,6 +449,73 @@ public class G2ConnectionUtils {
 		return properties;
 	}
 
+	static String getPathFromUrl(String galleryUrl) {
+		String galleryPath = "/";
+		if (galleryUrl != null || StringUtils.isNotBlank(galleryUrl)) {
+			int indexSlashSlash = galleryUrl.indexOf("//");
+			String galleryUrlWithoutHttp = galleryUrl
+					.substring(indexSlashSlash + 2);
+			int indexSlash = galleryUrlWithoutHttp.indexOf("/");
+			// Log.d(TAG, "index : " + indexSlash);
+			if (indexSlash == -1) {
+				// galleryUrl just compound of host name
+				galleryPath = "/";
+			} else {
+				galleryPath = galleryUrlWithoutHttp.substring(indexSlash);
+			}
+		}
+		return galleryPath;
+	}
+
+	static String getHostFromUrl(String galleryUrl) {
+		String galleryHost = "";
+		if (galleryUrl != null || StringUtils.isNotBlank(galleryUrl)) {
+			int indexSlashSlash = galleryUrl.indexOf("//");
+			String galleryUrlWithoutHttp = galleryUrl
+					.substring(indexSlashSlash + 2);
+			int indexSlash = galleryUrlWithoutHttp.indexOf("/");
+			if (indexSlash == -1) {
+				// galleryUrl just compound of host name
+				galleryHost = galleryUrlWithoutHttp;
+			} else {
+
+				galleryHost = galleryUrlWithoutHttp.substring(0, indexSlash);
+			}
+		}
+		// remove the port, if any specified
+		if (galleryHost.contains(":")) {
+			galleryHost = galleryHost.substring(0, galleryHost.indexOf(":"));
+		}
+		return galleryHost;
+	}
+
+	static int getPortFromUrl(String galleryHost) {
+		boolean isHttps = galleryHost.contains("https://");
+
+		int indexOfColumn;
+		if (isHttps) {
+			indexOfColumn = galleryHost.indexOf(":", 8);
+		} else {
+			indexOfColumn = galleryHost.indexOf(":", 7);
+		}
+		if (indexOfColumn == -1) {
+			if (!isHttps) {
+				return 80;
+			}
+			return 443;
+		}
+		String galleryHostFromColumnToEnd = galleryHost
+				.substring(indexOfColumn + 1);
+		int indexOfSlashAfterColumn = galleryHostFromColumnToEnd.indexOf("/");
+		if (indexOfSlashAfterColumn == -1) {
+			return new Integer(galleryHostFromColumnToEnd);
+		}
+		String portAsString = galleryHostFromColumnToEnd.substring(0,
+				indexOfSlashAfterColumn);
+		return new Integer(portAsString);
+
+	}
+
 	public static InputStream getInputStreamFromUrl(String url)
 			throws GalleryConnectionException {
 		InputStream content = null;
@@ -445,8 +527,8 @@ public class G2ConnectionUtils {
 			httpGet.setHeader(getCookieHeader(cookieSpecBase));
 			// Execute HTTP Get Request
 			HttpResponse response = httpclient.execute(httpGet);
+			System.out.println(response.getEntity().getContentLength());
 			content = response.getEntity().getContent();
-
 		} catch (Exception e) {
 			throw new GalleryConnectionException(e.getMessage());
 		}
@@ -482,14 +564,12 @@ public class G2ConnectionUtils {
 	 * @return
 	 * @throws GalleryConnectionException
 	 */
-	public static int sendImageToGallery(String galleryHost,
-			String galleryPath, int galleryPort, int albumName, File imageFile)
-			throws GalleryConnectionException {
+	public static int sendImageToGallery(String galleryUrl, int albumName,
+			File imageFile) throws GalleryConnectionException {
 
 		int itemName = 0;
 		try {
-			PostMethod filePost = new PostMethod(HTTP_PREFIX + galleryHost
-					+ ":" + galleryPort + galleryPath + "/" + MAIN_PHP);
+			PostMethod filePost = new PostMethod(galleryUrl + "/" + MAIN_PHP);
 			String name = imageFile.getName().substring(0,
 					imageFile.getName().indexOf("."));
 			Part[] parts = {
@@ -514,6 +594,9 @@ public class G2ConnectionUtils {
 
 			String string = filePost.getResponseBodyAsString();
 			// System.out.println(string);
+			if (string == null || string.contains("status=403")) {
+				throw new Exception("Upload Failed");
+			}
 
 			InputStream responseBodyAsStream = filePost
 					.getResponseBodyAsStream();
@@ -566,9 +649,8 @@ public class G2ConnectionUtils {
 	 * @return
 	 * @throws GalleryConnectionException
 	 */
-	public static int createNewAlbum(String galleryHost, String galleryPath,
-			int galleryPort, int parentAlbumName, String albumName,
-			String albumTitle, String albumDescription)
+	public static int createNewAlbum(String galleryUrl, int parentAlbumName,
+			String albumName, String albumTitle, String albumDescription)
 			throws GalleryConnectionException {
 		int newAlbumName = 0;
 
@@ -583,8 +665,8 @@ public class G2ConnectionUtils {
 		nameValuePairsFetchImages.add(new BasicNameValuePair(
 				"g2_form[newAlbumDesc]", albumDescription));
 
-		HashMap<String, String> properties = sendCommandToGallery(galleryHost,
-				galleryPath, galleryPort, nameValuePairsFetchImages);
+		HashMap<String, String> properties = sendCommandToGallery(galleryUrl,
+				nameValuePairsFetchImages);
 		for (Entry<String, String> entry : properties.entrySet()) {
 			if (entry.getKey().equals("album_name")) {
 				newAlbumName = new Integer(entry.getValue()).intValue();

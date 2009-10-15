@@ -6,17 +6,16 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-
-import android.content.Context;
-import android.net.Uri;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class UriUtils {
 
-	public static File createFileFromUri(Context context, Uri photoUri)
-			throws FileNotFoundException, IOException {
-		String mimeType = context.getContentResolver().getType(photoUri);
-		InputStream openInputStream = context.getContentResolver()
-				.openInputStream(photoUri);
+	public final static String URL_PATTERN = "^(http|https):\\/\\/[a-z0-9]+([\\-\\.]{1}[a-z0-9]+)*\\.[a-z]{2,5}(:[0-9]{1,5})?(\\/.*)?$";
+
+	public static File createFileFromUri(InputStream openInputStream,
+			String mimeType) throws FileNotFoundException, IOException {
+
 		String fileExtension = null;
 		if (mimeType.equals("image/jpeg")) {
 			fileExtension = ".jpg";
@@ -37,6 +36,14 @@ public class UriUtils {
 		out.close();
 		openInputStream.close();
 		return imageFile;
+	}
+
+	public static boolean checkUrlIsValid(String url) {
+		// String pattern =
+		// "^(http|https):\/\/[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$";
+		Pattern p = Pattern.compile(URL_PATTERN);
+		Matcher m = p.matcher(url);
+		return m.matches();
 	}
 
 }

@@ -18,27 +18,39 @@
 	android:layout_height="fill_parent" android:background="@color/background"
 	android:padding="10dip">
 	<TextView android:layout_width="fill_parent"
-		android:layout_height="wrap_content" android:text="@string/g2android_title"
+		android:layout_height="wrap_content" android:text="@string/welcome_to_g2android"
 		android:textColor="@color/title_color" android:gravity="center"
 		android:textSize="28.5sp" android:layout_marginBottom="5dip" />
+	<LinearLayout android:orientation="horizontal"
+		android:layout_width="fill_parent" android:layout_height="wrap_content">
+		<ImageView android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:src="@drawable/g2android"
+			android:scaleType="fitXY" android:adjustViewBounds="true"
+			android:maxHeight="100dip" android:cropToPadding="true"
+			android:layout_marginBottom="2dip" android:layout_marginLeft="22dip" />
+		<LinearLayout android:orientation="vertical"
+			android:layout_width="wrap_content" android:layout_height="fill_parent">
+			<Button android:layout_width="fill_parent"
+				android:layout_height="wrap_content" android:gravity="center"
+				android:text="@string/connect_to_gallery_title" android:id="@+id/connect_to_gallery_button" />
+			<Button android:layout_width="fill_parent"
+				android:layout_height="wrap_content" android:gravity="center"
+				android:enabled="false" android:text="@string/enter_gallery_title"
+				android:id="@+id/enter_gallery_button" />
+		</LinearLayout>
+	</LinearLayout>
 
-	<ImageView android:layout_width="wrap_content"
-		android:layout_height="wrap_content" android:src="@drawable/g2android" android:scaleType="fitXY"
-		android:adjustViewBounds="true" android:maxHeight="130dip"
-		android:cropToPadding="true" android:layout_marginBottom="2dip"
-		android:layout_marginLeft="160dip" />
-	<Button android:layout_width="fill_parent"
-		android:layout_height="wrap_content" android:gravity="center"
-		android:text="@string/enter_gallery_title" android:id="@+id/enter_gallery_button" />
+
+
 
 	<TextView android:layout_width="fill_parent"
 		android:layout_height="wrap_content" android:text="@string/g2android_no_gallery_configured"
 		android:id="@+id/gallery_configured" android:textColor="@color/title_color"
 		android:gravity="center" android:textSize="8.5sp" />
-			<TextView android:layout_width="fill_parent"
-	android:layout_height="wrap_content" android:text="@string/not_logged_in" android:id="@+id/loggedin_as_id"
-	android:textColor="@color/logged_color" android:gravity="center"
-	android:textSize="10.5sp" />
+	<TextView android:layout_width="fill_parent"
+		android:layout_height="wrap_content" android:text="@string/not_logged_in"
+		android:id="@+id/loggedin_as_id" android:textColor="@color/logged_color"
+		android:gravity="center" android:textStyle="bold" android:textSize="10.5sp" />
 
 
 </LinearLayout>
