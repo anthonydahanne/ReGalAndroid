@@ -85,6 +85,16 @@ public class G2ConnectionUtilsTest extends Assert {
 		fetchImages.put("image.thumb_width.393", "150");
 		fetchImages.put("image.raw_width.393", "4288");
 		fetchImages.put("image.raw_filesize.393", "3400643");
+		fetchImages.put("image.caption.393", "caption");
+		fetchImages.put("image.forceExtension.393", "jpg");
+		fetchImages.put("image.hidden.393", "true");
+		fetchImages.put("image.clicks.393", "45");
+		fetchImages.put("image.capturedate.year.393", "2009");
+		fetchImages.put("image.capturedate.mon.393", "10");
+		fetchImages.put("image.capturedate.mday.393", "19");
+		fetchImages.put("image.capturedate.hours.393", "22");
+		fetchImages.put("image.capturedate.minutes.393", "45");
+		fetchImages.put("image.capturedate.seconds.393", "48");
 		fetchImages.put("image_count", "437");
 		fetchImages
 				.put("baseurl",
@@ -102,7 +112,16 @@ public class G2ConnectionUtilsTest extends Assert {
 		assertEquals("12599", picture.getThumbName());
 		assertEquals(150, picture.getThumbWidth());
 		assertEquals(4288, picture.getRawWidth());
-		assertEquals(3400643, picture.getRawFilesize());
+		assertEquals("caption", picture.getCaption());
+		assertEquals("jpg", picture.getForceExtension());
+		assertEquals(true, picture.isHidden());
+		assertEquals(45, picture.getImageClicks());
+		assertEquals("2009", picture.getCaptureDateYear());
+		assertEquals("10", picture.getCaptureDateMonth());
+		assertEquals("19", picture.getCaptureDateDay());
+		assertEquals("22", picture.getCaptureDateHour());
+		assertEquals("45", picture.getCaptureDateMinute());
+		assertEquals("48", picture.getCaptureDateSecond());
 
 	}
 
@@ -315,6 +334,16 @@ public class G2ConnectionUtilsTest extends Assert {
 		assertEquals("g2.dahanne.net", pathFromUrl);
 		pathFromUrl = G2ConnectionUtils.getHostFromUrl("https://dahanne.net");
 		assertEquals("dahanne.net", pathFromUrl);
+
+	}
+
+	@Test
+	public void getImageProperties() throws GalleryConnectionException {
+
+		long itemId = 13;
+		G2Picture imageProperties = G2ConnectionUtils.getImageProperties(
+				galleryUrl, itemId);
+		assertEquals("title", imageProperties.getCaption());
 
 	}
 }

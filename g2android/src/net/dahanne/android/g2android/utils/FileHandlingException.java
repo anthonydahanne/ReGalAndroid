@@ -1,7 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- 
-/*
- * G2Android
+/**
+ * g2android
  * Copyright (c) 2009 Anthony Dahanne
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,15 +15,25 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
- -->
-<GridView xmlns:android="http://schemas.android.com/apk/res/android" 
-    android:id="@+id/gridview"
-    android:layout_width="fill_parent" 
-    android:layout_height="fill_parent"
-    android:numColumns="auto_fit"
-    android:verticalSpacing="10dp"
-    android:horizontalSpacing="10dp"
-    android:columnWidth="90dp"
-    android:stretchMode="columnWidth"
-    android:gravity="center"  
-/>
+package net.dahanne.android.g2android.utils;
+
+/**
+ * @author Anthony Dahanne
+ * 
+ */
+public class FileHandlingException extends Exception {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1101773787918461376L;
+	private final static String message = FileHandlingException.class.getName();
+
+	/**
+	 * @param msg
+	 */
+	public FileHandlingException(String msg) {
+		super(message + " : " + msg);
+	}
+
+}

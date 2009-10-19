@@ -32,33 +32,80 @@ public class G2Picture implements Serializable {
 	private String resizedName;
 	private int resizedWidth;
 	private int resizedHeight;
+	private String resizedImagePath;
 
 	private String name;
 	private int rawFilesize;
 	private int rawWidth;
 	private int rawHeight;
 
-	public G2Picture() {
-		super();
+	private String caption;
+	private String forceExtension;
+	private boolean hidden;
+
+	private int imageClicks;
+
+	private String captureDateYear;
+	private String captureDateMonth;
+	private String captureDateDay;
+	private String captureDateHour;
+	private String captureDateMinute;
+	private String captureDateSecond;
+
+	public int getImageClicks() {
+		return imageClicks;
 	}
 
-	public G2Picture(String title, String thumbName, int thumbWidth,
-			int thumbHeight, String resizedName, int resizedWidth,
-			int resizedHeight, String name, int rawFilesize, int rawWidth,
-			int rawHeight, long id) {
-		super();
-		this.title = title;
-		this.thumbName = thumbName;
-		this.thumbWidth = thumbWidth;
-		this.thumbHeight = thumbHeight;
-		this.resizedName = resizedName;
-		this.resizedWidth = resizedWidth;
-		this.resizedHeight = resizedHeight;
-		this.name = name;
-		this.rawFilesize = rawFilesize;
-		this.rawWidth = rawWidth;
-		this.rawHeight = rawHeight;
-		this.setId(id);
+	public void setImageClicks(int imageClicks) {
+		this.imageClicks = imageClicks;
+	}
+
+	public String getCaptureDateYear() {
+		return captureDateYear;
+	}
+
+	public void setCaptureDateYear(String captureDateYear) {
+		this.captureDateYear = captureDateYear;
+	}
+
+	public String getCaptureDateMonth() {
+		return captureDateMonth;
+	}
+
+	public void setCaptureDateMonth(String captureDateMonth) {
+		this.captureDateMonth = captureDateMonth;
+	}
+
+	public String getCaptureDateDay() {
+		return captureDateDay;
+	}
+
+	public void setCaptureDateDay(String captureDateDay) {
+		this.captureDateDay = captureDateDay;
+	}
+
+	public String getCaptureDateHour() {
+		return captureDateHour;
+	}
+
+	public void setCaptureDateHour(String captureDateHour) {
+		this.captureDateHour = captureDateHour;
+	}
+
+	public String getCaptureDateMinute() {
+		return captureDateMinute;
+	}
+
+	public void setCaptureDateMinute(String captureDateMinute) {
+		this.captureDateMinute = captureDateMinute;
+	}
+
+	public String getCaptureDateSecond() {
+		return captureDateSecond;
+	}
+
+	public void setCaptureDateSecond(String captureDateSecond) {
+		this.captureDateSecond = captureDateSecond;
 	}
 
 	public String getName() {
@@ -155,6 +202,38 @@ public class G2Picture implements Serializable {
 
 	public long getId() {
 		return id;
+	}
+
+	public void setResizedImagePath(String resizedImagePath) {
+		this.resizedImagePath = resizedImagePath;
+	}
+
+	public String getResizedImagePath() {
+		return resizedImagePath;
+	}
+
+	public String getCaption() {
+		return caption;
+	}
+
+	public void setCaption(String caption) {
+		this.caption = caption;
+	}
+
+	public String getForceExtension() {
+		return forceExtension;
+	}
+
+	public void setForceExtension(String forceExtension) {
+		this.forceExtension = forceExtension;
+	}
+
+	public boolean isHidden() {
+		return hidden;
+	}
+
+	public void setHidden(boolean hidden) {
+		this.hidden = hidden;
 	}
 
 	@Override
