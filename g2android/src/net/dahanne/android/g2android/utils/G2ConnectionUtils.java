@@ -74,6 +74,8 @@ public class G2ConnectionUtils {
 			"g2_form[cmd]", "fetch-album-images");
 	private static final BasicNameValuePair CREATE_ALBUM_CMD_NAME_VALUE_PAIR = new BasicNameValuePair(
 			"g2_form[cmd]", "new-album");
+	private static final BasicNameValuePair IMAGE_PROPERTIES_CMD_NAME_VALUE_PAIR = new BasicNameValuePair(
+			"g2_form[cmd]", "image-properties");
 	private static final String GR2PROTO = "#__GR2PROTO__";
 	private static final BasicNameValuePair G2_CONTROLLER_NAME_VALUE_PAIR = new BasicNameValuePair(
 			"g2_controller", "remote.GalleryRemote");
@@ -197,6 +199,32 @@ public class G2ConnectionUtils {
 						picture.setRawHeight(new Integer(entry.getValue()));
 					} else if (entry.getKey().contains("image.raw_filesize.")) {
 						picture.setRawFilesize(new Integer(entry.getValue()));
+					} else if (entry.getKey().contains("image.caption.")) {
+						picture.setCaption(entry.getValue());
+					} else if (entry.getKey().contains("image.forceExtension.")) {
+						picture.setForceExtension(entry.getValue());
+					} else if (entry.getKey().contains("image.hidden.")) {
+						picture.setHidden(new Boolean(entry.getValue()));
+					} else if (entry.getKey().contains("image.clicks.")) {
+						picture.setImageClicks(new Integer(entry.getValue()));
+					} else if (entry.getKey().contains(
+							"image.capturedate.year.")) {
+						picture.setCaptureDateYear(entry.getValue());
+					} else if (entry.getKey()
+							.contains("image.capturedate.mon.")) {
+						picture.setCaptureDateMonth(entry.getValue());
+					} else if (entry.getKey().contains(
+							"image.capturedate.mday.")) {
+						picture.setCaptureDateDay(entry.getValue());
+					} else if (entry.getKey().contains(
+							"image.capturedate.hours.")) {
+						picture.setCaptureDateHour(entry.getValue());
+					} else if (entry.getKey().contains(
+							"image.capturedate.minutes.")) {
+						picture.setCaptureDateMinute(entry.getValue());
+					} else if (entry.getKey().contains(
+							"image.capturedate.seconds.")) {
+						picture.setCaptureDateSecond(entry.getValue());
 					}
 
 				} catch (NumberFormatException nfe) {
@@ -673,6 +701,72 @@ public class G2ConnectionUtils {
 			}
 		}
 		return newAlbumName;
+	}
+
+	public static G2Picture getImageProperties(String galleryUrl, long itemId)
+			throws GalleryConnectionException {
+		List<NameValuePair> nameValuePairsFetchImages = new ArrayList<NameValuePair>();
+		nameValuePairsFetchImages.add(IMAGE_PROPERTIES_CMD_NAME_VALUE_PAIR);
+		nameValuePairsFetchImages.add(new BasicNameValuePair("g2_form[id]", ""
+				+ itemId));
+
+		HashMap<String, String> properties = sendCommandToGallery(galleryUrl,
+				nameValuePairsFetchImages);
+		G2Picture pictureFromProperties = extractG2PicturePropertiesFromProperties(
+				properties, itemId);
+		return pictureFromProperties;
+
+	}
+
+	public static G2Picture extractG2PicturePropertiesFromProperties(
+			HashMap<String, String> properties, long itemId) {
+		G2Picture picture = null;
+		picture = new G2Picture();
+		picture.setId(itemId);
+
+		for (Entry<String, String> entry : properties.entrySet()) {
+			if (entry.getKey().contains("image")) {
+				// that the number at the end is between 1 and album_count
+				try {
+					if (entry.getKey().contains("image.title")) {
+						picture.setTitle(entry.getValue());
+					} else if (entry.getKey().contains("image.thumbName")) {
+						picture.setThumbName(entry.getValue());
+					} else if (entry.getKey().contains("image.thumb_width")) {
+						picture.setThumbWidth(new Integer(entry.getValue()));
+					} else if (entry.getKey().contains("image.thumb_height")) {
+						picture.setThumbHeight(new Integer(entry.getValue()));
+					} else if (entry.getKey().contains("image.resizedName")) {
+						picture.setResizedName(entry.getValue());
+					} else if (entry.getKey().contains("image.resized_width")) {
+						picture.setResizedWidth(new Integer(entry.getValue()));
+					} else if (entry.getKey().contains("image.resized_height")) {
+						picture.setResizedHeight(new Integer(entry.getValue()));
+					} else if (entry.getKey().contains("image.name")) {
+						picture.setName(entry.getValue());
+					} else if (entry.getKey().contains("image.raw_width")) {
+						picture.setRawWidth(new Integer(entry.getValue()));
+					} else if (entry.getKey().contains("image.raw_height")) {
+						picture.setRawHeight(new Integer(entry.getValue()));
+					} else if (entry.getKey().contains("image.raw_filesize")) {
+						picture.setRawFilesize(new Integer(entry.getValue()));
+					} else if (entry.getKey().contains("image.caption")) {
+						picture.setCaption(entry.getValue());
+					} else if (entry.getKey().contains("image.forceExtension")) {
+						picture.setForceExtension(entry.getValue());
+					} else if (entry.getKey().contains("image.hidden")) {
+						picture.setHidden(Boolean.getBoolean(entry.getValue()));
+					}
+
+				} catch (NumberFormatException nfe) {
+					// System.out.println("problem dealing with imageNumber :"
+					// + imageNumber);
+
+				}
+
+			}
+		}
+		return picture;
 	}
 
 }

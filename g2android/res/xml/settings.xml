@@ -14,16 +14,28 @@
 		USA */
 	-->
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-	<EditTextPreference android:name="@string/gallery_url_title"
-		android:summary="@string/gallery_url_summary" android:dialogMessage="@string/gallery_url_dialog_message"
-		  android:defaultValue="@string/gallery_url_default"
-		android:title="@string/gallery_url_title" android:key="@string/gallery_url_key" />
-	<EditTextPreference android:name="@string/username_title"
-		android:summary="@string/username_summary" android:title="@string/username_title"
-		android:key="@string/username_key" />
-	<EditTextPreference android:name="@string/password_title" android:password="true"
-		android:summary="@string/password_summary" android:title="@string/password_title"
-		android:key="@string/password_key" />
-
+	<PreferenceCategory android:title="@string/gallery_connection_settings">
+		<EditTextPreference android:name="@string/gallery_url_title"
+			android:summary="@string/gallery_url_summary" android:dialogMessage="@string/gallery_url_dialog_message"
+			android:defaultValue="@string/gallery_url_default" android:title="@string/gallery_url_title"
+			android:key="@string/gallery_url_key" />
+		<EditTextPreference android:name="@string/username_title"
+			android:summary="@string/username_summary" android:title="@string/username_title"
+			android:key="@string/username_key" />
+		<EditTextPreference android:name="@string/password_title"
+			android:password="true" android:summary="@string/password_summary"
+			android:title="@string/password_title" android:key="@string/password_key" />
+	</PreferenceCategory>
+	<PreferenceCategory android:title="@string/cache_settings">
+		<EditTextPreference android:name="@string/g2android_path_title"
+			android:summary="@string/g2android_path_summary" android:title="@string/g2android_path_title"
+			android:defaultValue="@string/g2android_path_default" />
+		<EditTextPreference android:name="@string/g2android_temp_path_title"
+			android:defaultValue="@string/g2android_cache_path_default"
+			android:summary="@string/g2android_temp_path_summary" android:title="@string/g2android_temp_path_title" />
+		<CheckBoxPreference android:key="clear_cache"
+			android:summary="@string/clear_cache_summary" android:title="@string/clear_cache_title" />
+		
+	</PreferenceCategory>
 
 </PreferenceScreen>

@@ -30,6 +30,8 @@ import net.dahanne.android.g2android.model.Album;
 import net.dahanne.android.g2android.model.G2Picture;
 import net.dahanne.android.g2android.utils.AlbumUtils;
 import net.dahanne.android.g2android.utils.AsyncTask;
+import net.dahanne.android.g2android.utils.FileHandlingException;
+import net.dahanne.android.g2android.utils.FileUtils;
 import net.dahanne.android.g2android.utils.G2ConnectionUtils;
 import net.dahanne.android.g2android.utils.GalleryConnectionException;
 import net.dahanne.android.g2android.utils.UriUtils;
@@ -50,6 +52,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
@@ -62,7 +65,7 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ViewSwitcher.ViewFactory;
 
 public class ShowGallery extends Activity implements OnItemSelectedListener,
-		ViewFactory {
+		ViewFactory, OnClickListener {
 	private static final String G2ANDROID_ALBUM = "g2android.Album";
 	private List<G2Picture> albumPictures = new ArrayList<G2Picture>();
 	private static final String TAG = "ShowGallery";
@@ -135,13 +138,30 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 	@SuppressWarnings("unchecked")
 	public void onItemSelected(AdapterView<?> parent, View view, int position,
 			long id) {
-		String resizedName = albumPictures.get(position).getResizedName();
-		String uriString = Settings.getBaseUrl(ShowGallery.this) + resizedName;
-		Bitmap currentThumbBitmap = (Bitmap) gallery
-				.getItemAtPosition(position);
-		BitmapDrawable bitmapDrawable = new BitmapDrawable(currentThumbBitmap);
-		mSwitcher.setImageDrawable(bitmapDrawable);
-		new DownloadImageTask().execute(uriString, mSwitcher, position);
+		G2Picture g2Picture = albumPictures.get(position);
+		File potentialAlreadyDownloadedFile = new File(Settings
+				.getG2AndroidCachePath(this), g2Picture.getTitle());
+		mSwitcher.setId(position);
+		// only download the picture IF it has not yet been downloaded
+		if (g2Picture.getResizedImagePath() != null
+				|| (potentialAlreadyDownloadedFile.exists() && potentialAlreadyDownloadedFile
+						.length() != 0)) {
+			Bitmap bitmap = BitmapFactory
+					.decodeFile(potentialAlreadyDownloadedFile.getPath());
+			BitmapDrawable bitmapDrawable = new BitmapDrawable(bitmap);
+			mSwitcher.setImageDrawable(bitmapDrawable);
+		} else {
+			String resizedName = g2Picture.getResizedName();
+			String uriString = Settings.getBaseUrl(ShowGallery.this)
+					+ resizedName;
+			Bitmap currentThumbBitmap = (Bitmap) gallery
+					.getItemAtPosition(position);
+			BitmapDrawable bitmapDrawable = new BitmapDrawable(
+					currentThumbBitmap);
+			mSwitcher.setImageDrawable(bitmapDrawable);
+			new ReplaceMainImageTask().execute(uriString, mSwitcher, position,
+					g2Picture);
+		}
 	}
 
 	public View makeView() {
@@ -154,31 +174,34 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 
 	}
 
-	public void onNothingSelected(AdapterView<?> parent) {
-	}
-
 	@SuppressWarnings("unchecked")
-	private class DownloadImageTask extends AsyncTask {
+	private class ReplaceMainImageTask extends AsyncTask {
 		private ImageSwitcher imageSwitcher = null;
 		private int originalPosition;
 		private String exceptionMessage = null;
 
 		@Override
 		protected Bitmap doInBackground(Object... urls) {
+			String fileUrl = (String) urls[0];
 			imageSwitcher = (ImageSwitcher) urls[1];
 			originalPosition = (Integer) urls[2];
+			G2Picture g2Picture = (G2Picture) urls[3];
 			Bitmap downloadImage = null;
+			// make sure the user is watching the picture
 			if (originalPosition == gallery.getSelectedItemPosition()) {
 				try {
-					InputStream inputStreamFromUrl = G2ConnectionUtils
-							.getInputStreamFromUrl((String) urls[0]);
-					BitmapFactory.Options bfo = new BitmapFactory.Options();
-					bfo.inDither = false;
-					bfo.inPreferredConfig = Bitmap.Config.RGB_565;
-					bfo.inSampleSize = 2;
-					downloadImage = BitmapFactory.decodeStream(
-							inputStreamFromUrl, null, bfo);
+					File imageFileOnExternalDirectory = FileUtils
+							.getFileFromGallery(ShowGallery.this, g2Picture
+									.getTitle(), g2Picture.getForceExtension(),
+									fileUrl, true);
+					downloadImage = BitmapFactory
+							.decodeFile(imageFileOnExternalDirectory.getPath());
+					g2Picture.setResizedImagePath(imageFileOnExternalDirectory
+							.getPath());
+
 				} catch (GalleryConnectionException e) {
+					exceptionMessage = e.getMessage();
+				} catch (FileHandlingException e) {
 					exceptionMessage = e.getMessage();
 				}
 			}
@@ -188,7 +211,7 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 		@Override
 		protected void onPostExecute(Object result) {
 			if (result == null) {
-				// alertConnectionProblem(exceptionMessage, galleryUrl);
+				alertConnectionProblem(exceptionMessage, galleryUrl);
 			}
 			// we check if the user is still looking at the same photo
 			// if not, we don't refresh the main view
@@ -295,10 +318,10 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 				if (albumPictures.size() == 0) {
 					setContentView(R.layout.album_is_empty);
 				} else {
-
-					setContentView(R.layout.imagegallery);
+					setContentView(R.layout.show_gallery);
 					gallery = (Gallery) findViewById(R.id.gallery);
 					mSwitcher = (ImageSwitcher) findViewById(R.id.switcher);
+					mSwitcher.setOnClickListener(ShowGallery.this);
 
 					mSwitcher.setFactory(ShowGallery.this);
 					mSwitcher.setInAnimation(AnimationUtils.loadAnimation(
@@ -412,14 +435,19 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 		Toast.makeText(context, "Image was successfully added", 3);
 	}
 
-	//
-	// @Override
-	// public void onItemClick(AdapterView<?> parent, View view, int position,
-	// long id) {
-	// Intent intent = new Intent(this, FullImage.class);
-	// intent.putExtra("g2Picture", albumPictures.get(position) );
-	// startActivity(intent );
-	//
-	// }
+	@Override
+	public void onClick(View v) {
+		Intent intent = new Intent(this, FullImage.class);
+		intent.putExtra("g2Picture", albumPictures.get(v.getId()));
+		startActivity(intent);
+
+	}
+
+	@Override
+	/**
+	 * this method comes with OnItemSelectedListener interface
+	 */
+	public void onNothingSelected(AdapterView<?> parent) {
+	}
 
 }

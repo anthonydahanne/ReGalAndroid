@@ -18,6 +18,7 @@
 package net.dahanne.android.g2android.activity;
 
 import net.dahanne.android.g2android.R;
+import net.dahanne.android.g2android.utils.FileUtils;
 import net.dahanne.android.g2android.utils.G2ConnectionUtils;
 import net.dahanne.android.g2android.utils.GalleryConnectionException;
 
@@ -52,6 +53,10 @@ public class Start extends Activity implements OnClickListener {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
+		if (Settings.isCacheClearedEverySession(this)) {
+			FileUtils.clearCache(this);
+		}
+
 		enterGalleryButton = (Button) findViewById(R.id.enter_gallery_button);
 		loggedInAsText = (TextView) findViewById(R.id.loggedin_as_id);
 		connectToGalleryButton = (Button) findViewById(R.id.connect_to_gallery_button);

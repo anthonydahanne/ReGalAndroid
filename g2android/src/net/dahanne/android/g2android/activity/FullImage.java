@@ -18,25 +18,25 @@
 package net.dahanne.android.g2android.activity;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 
 import net.dahanne.android.g2android.R;
 import net.dahanne.android.g2android.model.G2Picture;
 import net.dahanne.android.g2android.utils.AsyncTask;
+import net.dahanne.android.g2android.utils.FileHandlingException;
+import net.dahanne.android.g2android.utils.FileUtils;
+import net.dahanne.android.g2android.utils.GalleryConnectionException;
 import android.app.Activity;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.os.Environment;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 /**
- * This is NOT currently used
  * 
  * @author Anthony Dahanne
  * 
@@ -45,100 +45,205 @@ public class FullImage extends Activity {
 
 	private static final String TAG = "FullImage";
 	private ImageView imageView;
+	private G2Picture g2Picture;
+	private String galleryUrl;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.image);
+		galleryUrl = Settings.getGalleryUrl(this);
+		setContentView(R.layout.full_image);
 		imageView = (ImageView) findViewById(R.id.image_full);
-		String urlTyped = Settings.getBaseUrl(this)
-				+ ((G2Picture) getIntent().getSerializableExtra("g2Picture"))
-						.getResizedName();
-		imageView.setImageBitmap(downloadAndShowImage(urlTyped));
+		g2Picture = (G2Picture) getIntent().getSerializableExtra("g2Picture");
+		File potentialAlreadyDownloadedFile = new File(Settings
+				.getG2AndroidCachePath(this), g2Picture.getTitle());
+
+		if (potentialAlreadyDownloadedFile == null) {
+			// potentialAlreadyDownloadedFile = downloadUrl(urlTyped, g2Picture
+			// .getTitle());
+		}
+		imageView.setImageDrawable(Drawable
+				.createFromPath(potentialAlreadyDownloadedFile.getPath()));
+		// imageView.setImageBitmap(downloadAndShowImage(urlTyped));
 
 	}
 
-	private Bitmap downloadAndShowImage(String urlTyped) {
-		InputStream is = downloadUrl(urlTyped);
-		Bitmap bm = BitmapFactory.decodeStream(is);
-
-		return bm;
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		super.onCreateOptionsMenu(menu);
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.menu_full_image, menu);
+		return true;
 	}
 
-	private void saveBitmap(Bitmap bm) {
-		String storage_state = Environment.getExternalStorageState();
-		String filePath = new String();
-		if (storage_state.contains("mounted")) {
+	@SuppressWarnings("unchecked")
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case R.id.download_full_res_image:
+			new DownloadImageTask().execute(g2Picture);
+			break;
+		case R.id.show_image_properties:
+			showImageProperties(g2Picture);
+			break;
+		}
+
+		return false;
+	}
+
+	@SuppressWarnings("unchecked")
+	class DownloadImageTask extends AsyncTask {
+		private String exceptionMessage = null;
+
+		@Override
+		protected File doInBackground(Object... urls) {
+			G2Picture g2Picture = (G2Picture) urls[0];
+			File downloadImage = null;
 			try {
-				File f = Environment.getExternalStorageDirectory();
-				File j = new File(f, "/g2android");
-				j.mkdir();
-				File k = new File(j, "test");
-				filePath = k.getPath();
-				FileOutputStream fos = new FileOutputStream(k);
-				bm.compress(Bitmap.CompressFormat.JPEG, 100, fos);
-				// Drawable drawable = Drawable.createFromPath(k.getPath());
-				// imageView.setImageDrawable(drawable);
-
-			} catch (IOException e) {
-				e.printStackTrace();
+				downloadImage = FileUtils.getFileFromGallery(FullImage.this,
+						g2Picture.getTitle(), g2Picture.getForceExtension(),
+						Settings.getBaseUrl(FullImage.this)
+								+ g2Picture.getName(), false);
+			} catch (GalleryConnectionException e) {
+				exceptionMessage = e.getMessage();
+			} catch (FileHandlingException e) {
+				exceptionMessage = e.getMessage();
 			}
 
-		}
-		Toast.makeText(this, "Photo saved to " + filePath, Toast.LENGTH_LONG)
-				.show();
-	}
-
-	private InputStream downloadUrl(String urlTyped2) {
-		HttpURLConnection con = null;
-		URL url;
-		InputStream is = null;
-		try {
-			url = new URL(urlTyped2);
-			con = (HttpURLConnection) url.openConnection();
-			con.setReadTimeout(10000 /* milliseconds */);
-			con.setConnectTimeout(15000 /* milliseconds */);
-			con.setRequestMethod("GET");
-			con.setDoInput(true);
-			con.addRequestProperty("Referer", "G2Android");
-			// Start the query
-			con.connect();
-			is = con.getInputStream();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return is;
-
-	}
-
-	private class DownloadImageTask extends AsyncTask {
-		@Override
-		protected Object doInBackground(Object... urls) {
-			publishProgress(null);
-			// Log.i(TAG, urls[0].toString());
-			publishProgress(null);
-			return new Object();
-			// return downloadAndShowImage((String) urls[0]);
-
+			return downloadImage;
 		}
 
 		@Override
-		protected void onProgressUpdate(Object... values) {
-			super.onProgressUpdate(values);
-			// Log.i(TAG, "onprogressupdate");
-
+		protected void onPostExecute(Object result) {
+			if (result == null) {
+				alertConnectionProblem(exceptionMessage, galleryUrl);
+			} else {
+				Toast.makeText(FullImage.this,
+						getString(R.string.image_successfully_downloaded),
+						Toast.LENGTH_LONG).show();
+			}
 		}
-
-		protected void onPreExecute(Object result) {
-			// Log.i(TAG, "preexecute" + result.toString());
-		}
-
-		protected void onPostExecute(Bitmap result) {
-			// Log.i(TAG, "postexecute" + result.toString());
-			imageView.setImageBitmap(result);
-		}
-
 	}
+
+	private void alertConnectionProblem(String exceptionMessage,
+			String galleryUrl) {
+		AlertDialog.Builder builder = new AlertDialog.Builder(FullImage.this);
+		// if there was an exception thrown, show it, or say to verify
+		// settings
+		String message = getString(R.string.not_connected) + galleryUrl
+				+ getString(R.string.exception_thrown) + exceptionMessage;
+		builder.setTitle(R.string.problem).setMessage(message)
+				.setPositiveButton(R.string.ok,
+						new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int id) {
+								dialog.cancel();
+							}
+						});
+		AlertDialog alert = builder.create();
+		alert.show();
+	}
+
+	private void showImageProperties(G2Picture picture) {
+		AlertDialog.Builder builder = new AlertDialog.Builder(FullImage.this);
+		StringBuilder message = new StringBuilder().append(
+				getString(R.string.name)).append(" : ").append(
+				picture.getName()).append("\n").append(
+				getString(R.string.title)).append(" : ").append(
+				picture.getTitle()).append("\n").append(
+				getString(R.string.caption)).append(" : ").append(
+				picture.getCaption()).append("\n").append(
+				getString(R.string.hidden)).append(" : ").append(
+				Boolean.toString(picture.isHidden())).append("\n").append(
+				getString(R.string.full_res_filesize)).append(" : ").append(
+				picture.getRawFilesize()).append("\n").append(
+				getString(R.string.full_res_width)).append(" : ").append(
+				picture.getRawWidth()).append("px.\n").append(
+				getString(R.string.full_res_height)).append(" : ").append(
+				picture.getRawHeight()).append("px.\n");
+
+		// NOT USED IN G2...
+		// append(
+		// "Date of capture (dd/mm/yyyy) : ").append(
+		// picture.getCaptureDateDay()).append("/").append(
+		// picture.getCaptureDateMonth()).append("/").append(
+		// picture.getCaptureDateYear()).append("/").append(
+		// "Time of capture : ").append(picture.getCaptureDateHour())
+		// .append(":").append(picture.getCaptureDateMinute()).append(":")
+		// .append(picture.getCaptureDateSecond()).append(":");
+
+		builder.setTitle(R.string.image_properties).setMessage(
+				message.toString()).setPositiveButton(R.string.ok,
+				new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int id) {
+						dialog.cancel();
+					}
+				});
+		AlertDialog alert = builder.create();
+		alert.show();
+	}
+
+	// private Bitmap downloadAndShowImage(String urlTyped) {
+	// InputStream is = downloadUrl(urlTyped);
+	// Bitmap bm = BitmapFactory.decodeStream(is);
+	//
+	// return bm;
+	// }
+
+	// private Drawable imageFileToDrawable(File fileToShow) {
+	// Drawable drawable = null;
+	// String storage_state = Environment.getExternalStorageState();
+	// if (storage_state.contains("mounted")) {
+	// File externalStorageDirectory = Environment
+	// .getExternalStorageDirectory();
+	// File directoryToSaveTheImageTo = new File(externalStorageDirectory,
+	// "/g2android");
+	// directoryToSaveTheImageTo.mkdir();
+	// File imageFileOnExternalDirectory = new File(
+	// directoryToSaveTheImageTo, fileToShow.getPath());
+	// // FileOutputStream fos = new FileOutputStream(k);
+	// // bm.compress(Bitmap.CompressFormat.PNG, 100, fos);
+	// drawable = Drawable.createFromPath(imageFileOnExternalDirectory
+	// .getPath());
+	// }
+	// return drawable;
+	// // Toast.makeText(this, "Photo saved to " + filePath, Toast.LENGTH_LONG)
+	// // .show();
+	// }
+
+	// private File downloadUrl(String urlTyped2, String fileName) {
+	// HttpURLConnection con = null;
+	// URL url;
+	// InputStream is = null;
+	// int contentLength = 0;
+	// File fileFromUrl = null;
+	// try {
+	// url = new URL(urlTyped2);
+	// con = (HttpURLConnection) url.openConnection();
+	// con.setReadTimeout(10000 /* milliseconds */);
+	// con.setConnectTimeout(15000 /* milliseconds */);
+	// con.setRequestMethod("GET");
+	// con.setDoInput(true);
+	// con.addRequestProperty("Referer", "G2Android");
+	// // Start the query
+	// con.connect();
+	// contentLength = con.getContentLength();
+	// is = con.getInputStream();
+	// fileFromUrl = File
+	// .createTempFile("g2android-", "-tempFileToDelete");
+	//
+	// FileOutputStream fos = new FileOutputStream(fileFromUrl);
+	// byte[] b = new byte[contentLength * 2];
+	// while (is.read(b) != -1) {
+	// fos.write(b);
+	// }
+	//
+	// } catch (FileNotFoundException e) {
+	// e.printStackTrace();
+	// } catch (IOException e) {
+	// e.printStackTrace();
+	// }
+	// return fileFromUrl;
+	// }
 
 }
