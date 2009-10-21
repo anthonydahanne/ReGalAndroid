@@ -5,6 +5,7 @@
 		<string name="password_key">password</string>
 		<string name="port_key">port</string>
 		<string name="firsttime_key">firsttime</string>
+		<string name="clear_cache_key">clear_cache</string>
 		<!-- end of Keys -->
 		
 		<!--Default values , NOT TO TRANSLATE !-->
@@ -13,6 +14,8 @@
 		<string name="port_default">80</string>
 		<string name="gallery_url_default">http://g2.dahanne.net</string>
 		<string name="app_name">G2Android</string>
+		<string name="g2android_path_default">g2android</string>
+		<string name="g2android_cache_path_default">tmp</string>
 		<!-- end of Default Values -->
 		
 		
@@ -90,16 +93,15 @@
 		<string name="g2android_path_title">G2AndroidPath</string>
 		<string name="g2android_path_summary">The place on your SDCard where G2Android will store its data</string>
 		<string name="g2android_temp_path_summary">The subdirectory where G2Android will store its cache</string>
-		<string name="clear_cache_key">clear_cache</string>
 		<string name="clear_cache_title">Clear cache</string>
 		<string name="clear_cache_summary">Clear cache when starting a new session</string>
-		<string name="g2android_path_default">g2android</string>
-		<string name="g2android_cache_path_default">tmp</string>
 		<string name="external_storage_problem">No mounted storage available, please check your sdcard is plugged in</string>
 		<string name="gallery_connection_settings">Gallery connection settings</string>
 		<string name="cache_settings">Cache settings</string>
 	    <string name="download_full_res_image_title">Download full resolution picture to SDCard</string>
 		<string name="image_successfully_downloaded">Image successfully downloaded to sd card</string>
+		<string name="album_successfully_created">Album was successfully created !</string>
+		<string name="image_successfully_created">Image was successfully added !</string>
 		
 		<string name="image_properties">Image properties</string>
 		<string name="name">Name</string>
@@ -110,5 +112,8 @@
 		<string name="full_res_width">Full res. width</string>
 		<string name="full_res_height">Full res. height</string>
 
+		<string name="loading_photo">loading picture ...</string>
+		<string name="showing_picture">Showing picture :  </string>
+		<string name="no_more_pictures">No more pictures in this album </string>
 		
 </resources>

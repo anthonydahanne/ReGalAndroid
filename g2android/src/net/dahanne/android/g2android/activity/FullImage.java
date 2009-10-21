@@ -18,7 +18,9 @@
 package net.dahanne.android.g2android.activity;
 
 import java.io.File;
+import java.util.List;
 
+import net.dahanne.android.g2android.G2AndroidApplication;
 import net.dahanne.android.g2android.R;
 import net.dahanne.android.g2android.model.G2Picture;
 import net.dahanne.android.g2android.utils.AsyncTask;
@@ -27,12 +29,20 @@ import net.dahanne.android.g2android.utils.FileUtils;
 import net.dahanne.android.g2android.utils.GalleryConnectionException;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.view.GestureDetector;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.GestureDetector.OnGestureListener;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -41,32 +51,97 @@ import android.widget.Toast;
  * @author Anthony Dahanne
  * 
  */
-public class FullImage extends Activity {
+public class FullImage extends Activity implements OnGestureListener {
 
 	private static final String TAG = "FullImage";
 	private ImageView imageView;
 	private G2Picture g2Picture;
 	private String galleryUrl;
+	private List<G2Picture> albumPictures;
+	private int currentPosition;
+	private Dialog progressDialog;
+	private GestureDetector gestureScanner;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
+
+		gestureScanner = new GestureDetector(this);
+
 		galleryUrl = Settings.getGalleryUrl(this);
 		setContentView(R.layout.full_image);
 		imageView = (ImageView) findViewById(R.id.image_full);
-		g2Picture = (G2Picture) getIntent().getSerializableExtra("g2Picture");
+		currentPosition = getIntent().getIntExtra("currentPosition", 0);
+		albumPictures = ((G2AndroidApplication) getApplication()).getPictures();
+
+		loadingPicture();
+
+	}
+
+	@Override
+	public boolean onTouchEvent(MotionEvent me) {
+		return gestureScanner.onTouchEvent(me);
+	}
+
+	private void loadingPicture() {
+		g2Picture = albumPictures.get(currentPosition);
 		File potentialAlreadyDownloadedFile = new File(Settings
 				.getG2AndroidCachePath(this), g2Picture.getTitle());
 
-		if (potentialAlreadyDownloadedFile == null) {
-			// potentialAlreadyDownloadedFile = downloadUrl(urlTyped, g2Picture
-			// .getTitle());
+		if ((potentialAlreadyDownloadedFile.exists() && potentialAlreadyDownloadedFile
+				.length() != 0)) {
+			imageView.setImageDrawable(Drawable
+					.createFromPath(potentialAlreadyDownloadedFile.getPath()));
 		}
-		imageView.setImageDrawable(Drawable
-				.createFromPath(potentialAlreadyDownloadedFile.getPath()));
-		// imageView.setImageBitmap(downloadAndShowImage(urlTyped));
+		// only download the picture IF it has not yet been downloaded
+		else {
+			String resizedName = g2Picture.getResizedName();
+			String uriString = Settings.getBaseUrl(FullImage.this)
+					+ resizedName;
+			progressDialog = ProgressDialog.show(FullImage.this,
+					getString(R.string.please_wait),
+					getString(R.string.loading_photo), true);
+			new LoadImageTask().execute(uriString, g2Picture);
+		}
+	}
 
+	@SuppressWarnings("unchecked")
+	private class LoadImageTask extends AsyncTask {
+		private String exceptionMessage = null;
+
+		@Override
+		protected Bitmap doInBackground(Object... urls) {
+			String fileUrl = (String) urls[0];
+			G2Picture g2Picture = (G2Picture) urls[1];
+			Bitmap downloadImage = null;
+			try {
+				File imageFileOnExternalDirectory = FileUtils
+						.getFileFromGallery(FullImage.this, g2Picture
+								.getTitle(), g2Picture.getForceExtension(),
+								fileUrl, true);
+				downloadImage = BitmapFactory
+						.decodeFile(imageFileOnExternalDirectory.getPath());
+				g2Picture.setResizedImagePath(imageFileOnExternalDirectory
+						.getPath());
+
+			} catch (GalleryConnectionException e) {
+				exceptionMessage = e.getMessage();
+			} catch (FileHandlingException e) {
+				exceptionMessage = e.getMessage();
+			}
+
+			return downloadImage;
+		}
+
+		@Override
+		protected void onPostExecute(Object result) {
+			progressDialog.dismiss();
+			if (result == null) {
+				alertConnectionProblem(exceptionMessage, galleryUrl);
+			}
+			imageView.setImageDrawable(new BitmapDrawable((Bitmap) result));
+		}
 	}
 
 	@Override
@@ -183,67 +258,63 @@ public class FullImage extends Activity {
 		alert.show();
 	}
 
-	// private Bitmap downloadAndShowImage(String urlTyped) {
-	// InputStream is = downloadUrl(urlTyped);
-	// Bitmap bm = BitmapFactory.decodeStream(is);
-	//
-	// return bm;
-	// }
+	@Override
+	public boolean onDown(MotionEvent e) {
+		return false;
+	}
 
-	// private Drawable imageFileToDrawable(File fileToShow) {
-	// Drawable drawable = null;
-	// String storage_state = Environment.getExternalStorageState();
-	// if (storage_state.contains("mounted")) {
-	// File externalStorageDirectory = Environment
-	// .getExternalStorageDirectory();
-	// File directoryToSaveTheImageTo = new File(externalStorageDirectory,
-	// "/g2android");
-	// directoryToSaveTheImageTo.mkdir();
-	// File imageFileOnExternalDirectory = new File(
-	// directoryToSaveTheImageTo, fileToShow.getPath());
-	// // FileOutputStream fos = new FileOutputStream(k);
-	// // bm.compress(Bitmap.CompressFormat.PNG, 100, fos);
-	// drawable = Drawable.createFromPath(imageFileOnExternalDirectory
-	// .getPath());
-	// }
-	// return drawable;
-	// // Toast.makeText(this, "Photo saved to " + filePath, Toast.LENGTH_LONG)
-	// // .show();
-	// }
+	@Override
+	public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
+			float velocityY) {
 
-	// private File downloadUrl(String urlTyped2, String fileName) {
-	// HttpURLConnection con = null;
-	// URL url;
-	// InputStream is = null;
-	// int contentLength = 0;
-	// File fileFromUrl = null;
-	// try {
-	// url = new URL(urlTyped2);
-	// con = (HttpURLConnection) url.openConnection();
-	// con.setReadTimeout(10000 /* milliseconds */);
-	// con.setConnectTimeout(15000 /* milliseconds */);
-	// con.setRequestMethod("GET");
-	// con.setDoInput(true);
-	// con.addRequestProperty("Referer", "G2Android");
-	// // Start the query
-	// con.connect();
-	// contentLength = con.getContentLength();
-	// is = con.getInputStream();
-	// fileFromUrl = File
-	// .createTempFile("g2android-", "-tempFileToDelete");
-	//
-	// FileOutputStream fos = new FileOutputStream(fileFromUrl);
-	// byte[] b = new byte[contentLength * 2];
-	// while (is.read(b) != -1) {
-	// fos.write(b);
-	// }
-	//
-	// } catch (FileNotFoundException e) {
-	// e.printStackTrace();
-	// } catch (IOException e) {
-	// e.printStackTrace();
-	// }
-	// return fileFromUrl;
-	// }
+		int newPosition = currentPosition;
+		// right scroll we show the next picture
+		if (velocityX < 0) {
+			newPosition += 1;
+		}
+		// left scroll we show the previous picture
+		else {
+			newPosition -= 1;
+		}
+		// we're above the limit
+		if (newPosition < 0 || newPosition >= albumPictures.size()) {
+			Toast.makeText(FullImage.this,
+					getString(R.string.no_more_pictures), Toast.LENGTH_SHORT)
+					.show();
+		} else {
+			currentPosition = newPosition;
+			loadingPicture();
+			StringBuilder showingPictureSb = new StringBuilder();
+			showingPictureSb.append(getString(R.string.showing_picture));
+			int currentPositionToDisplay = currentPosition + 1;
+			showingPictureSb.append(currentPositionToDisplay);
+			showingPictureSb.append("/");
+			showingPictureSb.append(albumPictures.size());
+			Toast.makeText(FullImage.this, showingPictureSb.toString(),
+					Toast.LENGTH_SHORT).show();
+		}
+
+		return true;
+	}
+
+	@Override
+	public void onLongPress(MotionEvent e) {
+	}
+
+	@Override
+	public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX,
+			float distanceY) {
+
+		return true;
+	}
+
+	@Override
+	public void onShowPress(MotionEvent e) {
+	}
+
+	@Override
+	public boolean onSingleTapUp(MotionEvent e) {
+		return false;
+	}
 
 }
