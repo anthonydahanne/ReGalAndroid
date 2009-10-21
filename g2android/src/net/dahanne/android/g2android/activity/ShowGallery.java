@@ -428,17 +428,22 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 	}
 
 	protected void toastAlbumSuccessfullyCreated(Context context) {
-		Toast.makeText(context, "Album was successfully created ", 3);
+		Toast.makeText(context, getString(R.string.album_successfully_created),
+				Toast.LENGTH_LONG).show();
 	}
 
 	protected void toastImageSuccessfullyAdded(Context context) {
-		Toast.makeText(context, "Image was successfully added", 3);
+		Toast.makeText(context, getString(R.string.image_successfully_created),
+				Toast.LENGTH_LONG).show();
 	}
 
 	@Override
 	public void onClick(View v) {
 		Intent intent = new Intent(this, FullImage.class);
-		intent.putExtra("g2Picture", albumPictures.get(v.getId()));
+		intent.putExtra("currentPosition", v.getId());
+		((G2AndroidApplication) getApplication()).getPictures().clear();
+		((G2AndroidApplication) getApplication()).getPictures().addAll(
+				albumPictures);
 		startActivity(intent);
 
 	}

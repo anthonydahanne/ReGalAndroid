@@ -207,25 +207,26 @@ public class G2ConnectionUtils {
 						picture.setHidden(new Boolean(entry.getValue()));
 					} else if (entry.getKey().contains("image.clicks.")) {
 						picture.setImageClicks(new Integer(entry.getValue()));
-					} else if (entry.getKey().contains(
-							"image.capturedate.year.")) {
-						picture.setCaptureDateYear(entry.getValue());
-					} else if (entry.getKey()
-							.contains("image.capturedate.mon.")) {
-						picture.setCaptureDateMonth(entry.getValue());
-					} else if (entry.getKey().contains(
-							"image.capturedate.mday.")) {
-						picture.setCaptureDateDay(entry.getValue());
-					} else if (entry.getKey().contains(
-							"image.capturedate.hours.")) {
-						picture.setCaptureDateHour(entry.getValue());
-					} else if (entry.getKey().contains(
-							"image.capturedate.minutes.")) {
-						picture.setCaptureDateMinute(entry.getValue());
-					} else if (entry.getKey().contains(
-							"image.capturedate.seconds.")) {
-						picture.setCaptureDateSecond(entry.getValue());
 					}
+					// else if (entry.getKey().contains(
+					// "image.capturedate.year.")) {
+					// picture.setCaptureDateYear(entry.getValue());
+					// } else if (entry.getKey()
+					// .contains("image.capturedate.mon.")) {
+					// picture.setCaptureDateMonth(entry.getValue());
+					// } else if (entry.getKey().contains(
+					// "image.capturedate.mday.")) {
+					// picture.setCaptureDateDay(entry.getValue());
+					// } else if (entry.getKey().contains(
+					// "image.capturedate.hours.")) {
+					// picture.setCaptureDateHour(entry.getValue());
+					// } else if (entry.getKey().contains(
+					// "image.capturedate.minutes.")) {
+					// picture.setCaptureDateMinute(entry.getValue());
+					// } else if (entry.getKey().contains(
+					// "image.capturedate.seconds.")) {
+					// picture.setCaptureDateSecond(entry.getValue());
+					// }
 
 				} catch (NumberFormatException nfe) {
 					// System.out.println("problem dealing with imageNumber :"
@@ -555,7 +556,7 @@ public class G2ConnectionUtils {
 			httpGet.setHeader(getCookieHeader(cookieSpecBase));
 			// Execute HTTP Get Request
 			HttpResponse response = httpclient.execute(httpGet);
-			System.out.println(response.getEntity().getContentLength());
+			// System.out.println(response.getEntity().getContentLength());
 			content = response.getEntity().getContent();
 		} catch (Exception e) {
 			throw new GalleryConnectionException(e.getMessage());

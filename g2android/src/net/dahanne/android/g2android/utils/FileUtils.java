@@ -38,12 +38,12 @@ public class FileUtils {
 				}
 				if (!isTemporary) {
 					savePath = new File(Settings.getG2AndroidPath(context));
-				}
-				// if there is no file extension, we add the one that
-				// corresponds to the picture (if we have it)
-				if (fileName.lastIndexOf(".") == -1
-						&& !StringUtils.isEmpty(extension)) {
-					fileName = fileName + "." + extension;
+					// if there is no file extension, we add the one that
+					// corresponds to the picture (if we have it)
+					if (fileName.lastIndexOf(".") == -1
+							&& !StringUtils.isEmpty(extension)) {
+						fileName = fileName + "." + extension;
+					}
 				}
 
 				imageFileOnExternalDirectory = new File(savePath, fileName);

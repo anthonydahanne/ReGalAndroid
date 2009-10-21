@@ -54,4 +54,34 @@
 		<string name="create_subalbum">Créez un sous album !</string>
 		<string name="adding_photo">Photo en cours d\'envoi vers l\'album</string>
 		<string name="loading_first_photos_from_album">En cours de chargement des premières photos de l\'album</string>
+
+		<!-- New strings since 1.2.1 -->
+		<string name="g2android_temp_path_title">Répertoire temporaire</string>
+		<string name="g2android_path_title">Répertoire racine de G2Android</string>
+		<string name="g2android_path_summary">où seront stockés les fichiers de G2Android sur votre carte SD</string>
+		<string name="g2android_temp_path_summary">le sous répertoire où sera stocké le cache</string>
+		<string name="clear_cache_title">Effacer le cache</string>
+		<string name="clear_cache_summary">effacer le cache à chaque démarrage de l'appli</string>
+		<string name="external_storage_problem">Pas de carte SD montée; veuillez vérifier qu'elle est bien présente</string>
+		<string name="gallery_connection_settings">Paramétrage de connexion</string>
+		<string name="cache_settings">Paramétrage du cache</string>
+	    <string name="download_full_res_image_title">Télécharger la photo haute résolution sur la carte SD</string>
+		<string name="image_successfully_downloaded">Image téléchargée sur carte SD avec succès !</string>
+		<string name="album_successfully_created">L'album a été créé avec succès !</string>
+		<string name="image_successfully_created">L'image a bien été ajoutée !</string>
+		
+		<string name="image_properties">Propriétés de l'image</string>
+		<string name="name">Nom</string>
+		<string name="title">Titre</string>
+		<string name="caption">Sous titre</string>
+		<string name="hidden">Cachée</string>
+		<string name="full_res_filesize">Taille de l'image haute résolution</string>
+		<string name="full_res_width">Largeur de l'image haute résolution</string>
+		<string name="full_res_height">Hauteur de l'image haute résolution</string>
+
+		<string name="loading_photo">En train de charger l'image ...</string>
+		<string name="showing_picture">Image en cours : </string>
+		<string name="no_more_pictures">Pas d'autres photos dans l'album</string>
+
+
 </resources>

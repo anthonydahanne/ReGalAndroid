@@ -45,12 +45,12 @@ public class G2Picture implements Serializable {
 
 	private int imageClicks;
 
-	private String captureDateYear;
-	private String captureDateMonth;
-	private String captureDateDay;
-	private String captureDateHour;
-	private String captureDateMinute;
-	private String captureDateSecond;
+	// private String captureDateYear;
+	// private String captureDateMonth;
+	// private String captureDateDay;
+	// private String captureDateHour;
+	// private String captureDateMinute;
+	// private String captureDateSecond;
 
 	public int getImageClicks() {
 		return imageClicks;
@@ -60,53 +60,54 @@ public class G2Picture implements Serializable {
 		this.imageClicks = imageClicks;
 	}
 
-	public String getCaptureDateYear() {
-		return captureDateYear;
-	}
-
-	public void setCaptureDateYear(String captureDateYear) {
-		this.captureDateYear = captureDateYear;
-	}
-
-	public String getCaptureDateMonth() {
-		return captureDateMonth;
-	}
-
-	public void setCaptureDateMonth(String captureDateMonth) {
-		this.captureDateMonth = captureDateMonth;
-	}
-
-	public String getCaptureDateDay() {
-		return captureDateDay;
-	}
-
-	public void setCaptureDateDay(String captureDateDay) {
-		this.captureDateDay = captureDateDay;
-	}
-
-	public String getCaptureDateHour() {
-		return captureDateHour;
-	}
-
-	public void setCaptureDateHour(String captureDateHour) {
-		this.captureDateHour = captureDateHour;
-	}
-
-	public String getCaptureDateMinute() {
-		return captureDateMinute;
-	}
-
-	public void setCaptureDateMinute(String captureDateMinute) {
-		this.captureDateMinute = captureDateMinute;
-	}
-
-	public String getCaptureDateSecond() {
-		return captureDateSecond;
-	}
-
-	public void setCaptureDateSecond(String captureDateSecond) {
-		this.captureDateSecond = captureDateSecond;
-	}
+	//
+	// public String getCaptureDateYear() {
+	// return captureDateYear;
+	// }
+	//
+	// public void setCaptureDateYear(String captureDateYear) {
+	// this.captureDateYear = captureDateYear;
+	// }
+	//
+	// public String getCaptureDateMonth() {
+	// return captureDateMonth;
+	// }
+	//
+	// public void setCaptureDateMonth(String captureDateMonth) {
+	// this.captureDateMonth = captureDateMonth;
+	// }
+	//
+	// public String getCaptureDateDay() {
+	// return captureDateDay;
+	// }
+	//
+	// public void setCaptureDateDay(String captureDateDay) {
+	// this.captureDateDay = captureDateDay;
+	// }
+	//
+	// public String getCaptureDateHour() {
+	// return captureDateHour;
+	// }
+	//
+	// public void setCaptureDateHour(String captureDateHour) {
+	// this.captureDateHour = captureDateHour;
+	// }
+	//
+	// public String getCaptureDateMinute() {
+	// return captureDateMinute;
+	// }
+	//
+	// public void setCaptureDateMinute(String captureDateMinute) {
+	// this.captureDateMinute = captureDateMinute;
+	// }
+	//
+	// public String getCaptureDateSecond() {
+	// return captureDateSecond;
+	// }
+	//
+	// public void setCaptureDateSecond(String captureDateSecond) {
+	// this.captureDateSecond = captureDateSecond;
+	// }
 
 	public String getName() {
 		return name;
