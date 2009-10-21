@@ -82,7 +82,7 @@ public class G2ConnectionUtils {
 	private static final BasicNameValuePair PROTOCOL_VERSION_NAME_VALUE_PAIR = new BasicNameValuePair(
 			"g2_form[protocol_version]", "2.0");
 	private static final String MAIN_PHP = "main.php";
-	private static final String USER_AGENT_VALUE = "G2Android Version 1.2.1";
+	private static final String USER_AGENT_VALUE = "G2Android Version 1.3.0";
 	private static final String USER_AGENT = "User-Agent";
 	private static final String TAG = "G2Utils";
 	static final String GR_STAT_SUCCESS = "0";
