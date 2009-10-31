@@ -115,8 +115,8 @@ public class Start extends Activity implements OnClickListener {
 			intent = new Intent(this, About.class);
 			startActivity(intent);
 			break;
-		}
 
+		}
 		return false;
 	}
 

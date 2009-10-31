@@ -23,8 +23,8 @@ public class FileUtils {
 		File imageFileOnExternalDirectory = null;
 		try {
 			InputStream inputStreamFromUrl = null;
-			String storage_state = Environment.getExternalStorageState();
-			if (storage_state.contains("mounted")) {
+			String storageState = Environment.getExternalStorageState();
+			if (storageState.contains("mounted")) {
 
 				File savePath = new File(Settings
 						.getG2AndroidCachePath(context));

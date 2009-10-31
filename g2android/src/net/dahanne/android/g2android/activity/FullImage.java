@@ -32,10 +32,12 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.GestureDetector;
 import android.view.Menu;
@@ -53,6 +55,12 @@ import android.widget.Toast;
  */
 public class FullImage extends Activity implements OnGestureListener {
 
+	private static final String SLASH = "/";
+	private static final String FILE = "file://";
+	private static final String IMAGE = "image/";
+	private static final String IMAGE_JPEG = "image/jpeg";
+	private static final String TEXT_PLAIN = "text/plain";
+	private static final String MAIN_PHP_G2_ITEM_ID = "/main.php?g2_itemId=";
 	private static final String TAG = "FullImage";
 	private ImageView imageView;
 	private G2Picture g2Picture;
@@ -155,12 +163,36 @@ public class FullImage extends Activity implements OnGestureListener {
 	@SuppressWarnings("unchecked")
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
+		Intent intent = new Intent(Intent.ACTION_SEND);
 		switch (item.getItemId()) {
 		case R.id.download_full_res_image:
 			new DownloadImageTask().execute(g2Picture);
 			break;
 		case R.id.show_image_properties:
 			showImageProperties(g2Picture);
+			break;
+		case R.id.share_image:
+			intent.setType(TEXT_PLAIN);
+			intent.putExtra(Intent.EXTRA_TEXT, Settings.getGalleryUrl(this)
+					+ MAIN_PHP_G2_ITEM_ID + g2Picture.getName());
+			startActivity(Intent.createChooser(intent,
+					getString(R.string.choose_action)));
+			break;
+		case R.id.send_image:
+			// we first download the full res image
+			new DownloadImageTask().execute(g2Picture);
+			String filePath = Settings.getG2AndroidPath(this) + SLASH
+					+ g2Picture.getTitle();
+			String extension = g2Picture.getForceExtension();
+			// if no extension is found, let's assume it's a jpeg...
+			if (extension != null) {
+				intent.setType(IMAGE_JPEG);
+			} else {
+				intent.setType(IMAGE + extension);
+			}
+			intent.putExtra(Intent.EXTRA_STREAM, Uri.parse(FILE + filePath));
+			startActivity(Intent.createChooser(intent,
+					getString(R.string.choose_action)));
 			break;
 		}
 
@@ -288,7 +320,7 @@ public class FullImage extends Activity implements OnGestureListener {
 			showingPictureSb.append(getString(R.string.showing_picture));
 			int currentPositionToDisplay = currentPosition + 1;
 			showingPictureSb.append(currentPositionToDisplay);
-			showingPictureSb.append("/");
+			showingPictureSb.append(SLASH);
 			showingPictureSb.append(albumPictures.size());
 			Toast.makeText(FullImage.this, showingPictureSb.toString(),
 					Toast.LENGTH_SHORT).show();
