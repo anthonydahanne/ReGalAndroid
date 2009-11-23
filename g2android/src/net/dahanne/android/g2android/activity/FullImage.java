@@ -69,12 +69,13 @@ public class FullImage extends Activity implements OnGestureListener {
 	private int currentPosition;
 	private Dialog progressDialog;
 	private GestureDetector gestureScanner;
+	private Toast toast;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
-
+		toast = new Toast(this);
 		gestureScanner = new GestureDetector(this);
 
 		galleryUrl = Settings.getGalleryUrl(this);
@@ -93,6 +94,8 @@ public class FullImage extends Activity implements OnGestureListener {
 	}
 
 	private void loadingPicture() {
+		// issue #14 : cancel the Toast, otherwise they'll pile up...
+		toast.cancel();
 		g2Picture = albumPictures.get(currentPosition);
 		File potentialAlreadyDownloadedFile = new File(Settings
 				.getG2AndroidCachePath(this), g2Picture.getTitle());
@@ -226,7 +229,7 @@ public class FullImage extends Activity implements OnGestureListener {
 			if (result == null) {
 				alertConnectionProblem(exceptionMessage, galleryUrl);
 			} else {
-				Toast.makeText(FullImage.this,
+				toast.makeText(FullImage.this,
 						getString(R.string.image_successfully_downloaded),
 						Toast.LENGTH_LONG).show();
 			}
@@ -310,7 +313,7 @@ public class FullImage extends Activity implements OnGestureListener {
 		}
 		// we're above the limit
 		if (newPosition < 0 || newPosition >= albumPictures.size()) {
-			Toast.makeText(FullImage.this,
+			toast.makeText(FullImage.this,
 					getString(R.string.no_more_pictures), Toast.LENGTH_SHORT)
 					.show();
 		} else {
@@ -322,7 +325,7 @@ public class FullImage extends Activity implements OnGestureListener {
 			showingPictureSb.append(currentPositionToDisplay);
 			showingPictureSb.append(SLASH);
 			showingPictureSb.append(albumPictures.size());
-			Toast.makeText(FullImage.this, showingPictureSb.toString(),
+			toast.makeText(FullImage.this, showingPictureSb.toString(),
 					Toast.LENGTH_SHORT).show();
 		}
 

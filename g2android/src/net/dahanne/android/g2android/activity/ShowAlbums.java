@@ -24,8 +24,8 @@ import java.util.List;
 import net.dahanne.android.g2android.G2AndroidApplication;
 import net.dahanne.android.g2android.R;
 import net.dahanne.android.g2android.model.Album;
-import net.dahanne.android.g2android.utils.AlbumUtils;
 import net.dahanne.android.g2android.utils.G2ConnectionUtils;
+import net.dahanne.android.g2android.utils.G2DataUtils;
 import net.dahanne.android.g2android.utils.GalleryConnectionException;
 import net.dahanne.android.g2android.utils.UriUtils;
 import android.app.AlertDialog;
@@ -158,7 +158,7 @@ public class ShowAlbums extends ListActivity implements OnItemClickListener {
 		// pictures
 		if (albumName != null) {
 			// we recover the selected album
-			Album selectedAlbum = AlbumUtils.findAlbumFromAlbumName(
+			Album selectedAlbum = G2DataUtils.findAlbumFromAlbumName(
 					((G2AndroidApplication) getApplication()).getRootAlbum(),
 					albumName);
 			// we create a fake album, it will be used to choose to view the
@@ -197,7 +197,7 @@ public class ShowAlbums extends ListActivity implements OnItemClickListener {
 			galleryUrl = (String) parameters[0];
 			Album freshRootAlbum;
 			try {
-				freshRootAlbum = AlbumUtils
+				freshRootAlbum = G2DataUtils
 						.retrieveRootAlbumAndItsHierarchy(galleryUrl);
 			} catch (GalleryConnectionException e) {
 				freshRootAlbum = null;

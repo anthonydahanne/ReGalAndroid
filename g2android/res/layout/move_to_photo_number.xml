@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+	<!--
+		/* * G2Android * Copyright (c) 2009 Anthony Dahanne * This program is
+		free software; you can redistribute it and/or modify * it under the
+		terms of the GNU General Public License as published by * the Free
+		Software Foundation; either version 2 of the License, or * (at your
+		option) any later version. * * This program is distributed in the hope
+		that it will be useful, but * WITHOUT ANY WARRANTY; without even the
+		implied warranty of MERCHANTABILITY * or FITNESS FOR A PARTICULAR
+		PURPOSE. See the GNU General Public License * for more details. * *
+		You should have received a copy of the GNU General Public License
+		along * with this program; if not, write to the Free Software
+		Foundation, Inc., * 59 Temple Place, Suite 330, Boston, MA 02111-1307
+		USA */
+	-->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="wrap_content" android:layout_height="wrap_content"
+	android:padding="5dip">
+
+	
+	
+		<LinearLayout android:orientation="horizontal"
+			android:layout_width="wrap_content" android:layout_height="wrap_content">
+
+			<!-- select 1st photo -->
+			<Button android:id="@+id/first_photo" android:layout_width="wrap_content"
+				android:layout_height="wrap_content" android:layout_marginTop="46dip"
+				android:layout_marginLeft="5dip" android:paddingTop="2dip"
+				android:paddingBottom="2dip" android:paddingLeft="20dip"
+				android:paddingRight="20dip" style="?android:attr/textAppearanceLargeInverse" />
+
+			<!-- Photo number -->
+			<com.android.internal.widget.NumberPicker
+				android:id="@+id/photo_number" android:layout_width="70dip"
+				android:layout_height="wrap_content" android:layout_marginLeft="5dip"
+				android:focusable="true" android:focusableInTouchMode="true" />
+
+			<!-- select last photo -->
+			<Button android:id="@+id/last_photo" android:layout_width="wrap_content"
+				android:layout_height="wrap_content" android:layout_marginTop="46dip"
+				android:layout_marginLeft="5dip" android:paddingTop="2dip"
+				android:paddingBottom="2dip" android:paddingLeft="20dip"
+				android:paddingRight="20dip" style="?android:attr/textAppearanceLargeInverse" />
+
+		</LinearLayout>
+		<Button android:id="@+id/ok" android:layout_width="wrap_content"
+			android:layout_height="wrap_content"  />
+		<Button android:id="@+id/cancel" android:layout_width="wrap_content"
+			android:layout_height="wrap_content"  />
+
+</FrameLayout>
