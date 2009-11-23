@@ -65,12 +65,12 @@
 		<string name="external_storage_problem">Pas de carte SD montée; veuillez vérifier qu'elle est bien présente</string>
 		<string name="gallery_connection_settings">Paramétrage de connexion</string>
 		<string name="cache_settings">Paramétrage du cache</string>
-	    <string name="download_full_res_image_title">Télécharger la photo haute résolution sur la carte SD</string>
+	    <string name="download_full_res_image_title">Télécharger en HD</string>
 		<string name="image_successfully_downloaded">Image téléchargée sur carte SD avec succès !</string>
 		<string name="album_successfully_created">L'album a été créé avec succès !</string>
 		<string name="image_successfully_created">L'image a bien été ajoutée !</string>
 		
-		<string name="image_properties">Propriétés de l'image</string>
+		<string name="image_properties">Propriétés</string>
 		<string name="name">Nom</string>
 		<string name="title">Titre</string>
 		<string name="caption">Sous titre</string>

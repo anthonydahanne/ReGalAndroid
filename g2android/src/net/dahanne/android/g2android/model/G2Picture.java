@@ -28,6 +28,7 @@ public class G2Picture implements Serializable {
 	private String thumbName;
 	private int thumbWidth;
 	private int thumbHeight;
+	private String thumbImagePath;
 
 	private String resizedName;
 	private int resizedWidth;
@@ -235,6 +236,14 @@ public class G2Picture implements Serializable {
 
 	public void setHidden(boolean hidden) {
 		this.hidden = hidden;
+	}
+
+	public void setThumbImagePath(String thumbImagePath) {
+		this.thumbImagePath = thumbImagePath;
+	}
+
+	public String getThumbImagePath() {
+		return thumbImagePath;
 	}
 
 	@Override

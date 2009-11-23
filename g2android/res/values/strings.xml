@@ -98,12 +98,12 @@
 		<string name="external_storage_problem">No mounted storage available, please check your sdcard is plugged in</string>
 		<string name="gallery_connection_settings">Gallery connection settings</string>
 		<string name="cache_settings">Cache settings</string>
-	    <string name="download_full_res_image_title">Download full resolution picture to SDCard</string>
+	    <string name="download_full_res_image_title">Download full res.</string>
 		<string name="image_successfully_downloaded">Image successfully downloaded to sd card</string>
 		<string name="album_successfully_created">Album was successfully created !</string>
 		<string name="image_successfully_created">Image was successfully added !</string>
 		
-		<string name="image_properties">Image properties</string>
+		<string name="image_properties">Properties</string>
 		<string name="name">Name</string>
 		<string name="title">Title</string>
 		<string name="caption">Caption</string>

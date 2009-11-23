@@ -28,11 +28,11 @@ import net.dahanne.android.g2android.G2AndroidApplication;
 import net.dahanne.android.g2android.R;
 import net.dahanne.android.g2android.model.Album;
 import net.dahanne.android.g2android.model.G2Picture;
-import net.dahanne.android.g2android.utils.AlbumUtils;
 import net.dahanne.android.g2android.utils.AsyncTask;
 import net.dahanne.android.g2android.utils.FileHandlingException;
 import net.dahanne.android.g2android.utils.FileUtils;
 import net.dahanne.android.g2android.utils.G2ConnectionUtils;
+import net.dahanne.android.g2android.utils.G2DataUtils;
 import net.dahanne.android.g2android.utils.GalleryConnectionException;
 import net.dahanne.android.g2android.utils.UriUtils;
 import android.app.Activity;
@@ -84,7 +84,7 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 		progressDialog = ProgressDialog.show(ShowGallery.this,
 				getString(R.string.please_wait),
 				getString(R.string.loading_first_photos_from_album), true);
-		Album album = AlbumUtils.findAlbumFromAlbumName(
+		Album album = G2DataUtils.findAlbumFromAlbumName(
 				((G2AndroidApplication) getApplication()).getRootAlbum(),
 				albumName);
 		setTitle(album.getTitle());
@@ -135,19 +135,82 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 		}
 	}
 
+	public class ImageAdapter2 extends BaseAdapter {
+		private Context mContext;
+		private Map<Integer, Bitmap> bitmapsCache = new HashMap<Integer, Bitmap>();
+
+		public ImageAdapter2(Context c) {
+			mContext = c;
+		}
+
+		public int getCount() {
+			return albumPictures.size();
+		}
+
+		public Object getItem(int position) {
+			return bitmapsCache.get(position);
+		}
+
+		public long getItemId(int position) {
+			return albumPictures.get(position).getId();
+		}
+
+		public View getView(int position, View convertView, ViewGroup parent) {
+			G2Picture g2Picture = albumPictures.get(position);
+			File potentiallyAlreadyDownloadedFile = new File(Settings
+					.getG2AndroidCachePath(ShowGallery.this), "thumb_"
+					+ g2Picture.getTitle());
+			// maybe present in the local cache
+			Bitmap downloadImage = bitmapsCache.get(position);
+			if (downloadImage == null) {
+				// only download the picture IF it has not yet been downloaded
+				if (g2Picture.getThumbImagePath() != null
+						|| (potentiallyAlreadyDownloadedFile.exists() && potentiallyAlreadyDownloadedFile
+								.length() != 0)) {
+					downloadImage = BitmapFactory
+							.decodeFile(potentiallyAlreadyDownloadedFile
+									.getPath());
+				} else {
+					String thumbName = g2Picture.getThumbName();
+					String uriString = Settings.getBaseUrl(ShowGallery.this)
+							+ thumbName;
+					try {
+						File imageFileOnExternalDirectory = FileUtils
+								.getFileFromGallery(ShowGallery.this, "thumb_"
+										+ g2Picture.getTitle(), g2Picture
+										.getForceExtension(), uriString, true);
+						downloadImage = BitmapFactory
+								.decodeFile(imageFileOnExternalDirectory
+										.getPath());
+						g2Picture
+								.setThumbImagePath(imageFileOnExternalDirectory
+										.getPath());
+						bitmapsCache.put(position, downloadImage);
+					} catch (Exception e) {
+						alertConnectionProblem(e.getMessage(), galleryUrl);
+					}
+				}
+
+			}
+			ImageView i = new ImageView(mContext);
+			i.setImageBitmap(downloadImage);
+			return i;
+		}
+	}
+
 	@SuppressWarnings("unchecked")
 	public void onItemSelected(AdapterView<?> parent, View view, int position,
 			long id) {
 		G2Picture g2Picture = albumPictures.get(position);
-		File potentialAlreadyDownloadedFile = new File(Settings
+		File potentiallyAlreadyDownloadedFile = new File(Settings
 				.getG2AndroidCachePath(this), g2Picture.getTitle());
 		mSwitcher.setId(position);
 		// only download the picture IF it has not yet been downloaded
 		if (g2Picture.getResizedImagePath() != null
-				|| (potentialAlreadyDownloadedFile.exists() && potentialAlreadyDownloadedFile
+				|| (potentiallyAlreadyDownloadedFile.exists() && potentiallyAlreadyDownloadedFile
 						.length() != 0)) {
 			Bitmap bitmap = BitmapFactory
-					.decodeFile(potentialAlreadyDownloadedFile.getPath());
+					.decodeFile(potentiallyAlreadyDownloadedFile.getPath());
 			BitmapDrawable bitmapDrawable = new BitmapDrawable(bitmap);
 			mSwitcher.setImageDrawable(bitmapDrawable);
 		} else {
@@ -313,7 +376,7 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 			} else {
 
 				albumPictures
-						.addAll(G2ConnectionUtils
+						.addAll(G2DataUtils
 								.extractG2PicturesFromProperties((HashMap<String, String>) imagesProperties));
 				if (albumPictures.size() == 0) {
 					setContentView(R.layout.album_is_empty);
@@ -329,7 +392,7 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 					mSwitcher.setOutAnimation(AnimationUtils.loadAnimation(
 							ShowGallery.this, android.R.anim.fade_out));
 
-					ImageAdapter adapter = new ImageAdapter(ShowGallery.this);
+					ImageAdapter2 adapter = new ImageAdapter2(ShowGallery.this);
 					gallery.setAdapter(adapter);
 					gallery.setOnItemSelectedListener(ShowGallery.this);
 				}
