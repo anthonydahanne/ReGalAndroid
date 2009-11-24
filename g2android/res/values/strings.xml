@@ -122,9 +122,9 @@
 		<string name="choose_action">Choose an action</string>
 		<string name="first_photo">First</string>
 		<string name="last_photo">Last</string>
-		<string name="choose_photo_number">Last</string>
+		<string name="choose_photo_number">Jump to photo no.</string>
 		<string name="choose_photo_number_title">Go to photo number ...</string>
-		
+		<string name="cancel">Cancel</string>
 		
 		
 		
