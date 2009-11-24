@@ -13,42 +13,44 @@
 		Foundation, Inc., * 59 Temple Place, Suite 330, Boston, MA 02111-1307
 		USA */
 	-->
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="wrap_content" android:layout_height="wrap_content"
-	android:padding="5dip">
+	android:padding="5dip" android:orientation="vertical" >
 
-	
-	
-		<LinearLayout android:orientation="horizontal"
-			android:layout_width="wrap_content" android:layout_height="wrap_content">
 
-			<!-- select 1st photo -->
-			<Button android:id="@+id/first_photo" android:layout_width="wrap_content"
-				android:layout_height="wrap_content" android:layout_marginTop="46dip"
-				android:layout_marginLeft="5dip" android:paddingTop="2dip"
-				android:paddingBottom="2dip" android:paddingLeft="20dip"
-				android:text="@string/first_photo"
-				android:paddingRight="20dip" style="?android:attr/textAppearanceLargeInverse" />
 
-			<!-- Photo number -->
-			<com.android.internal.widget.NumberPicker
-				android:id="@+id/photo_number" android:layout_width="70dip"
-				android:layout_height="wrap_content" android:layout_marginLeft="5dip"
-				android:focusable="true" android:focusableInTouchMode="true" />
+	<LinearLayout android:orientation="horizontal" 
+		android:layout_width="wrap_content" android:layout_height="wrap_content">
 
-			<!-- select last photo -->
-			<Button android:id="@+id/last_photo" android:layout_width="wrap_content"
-				
-				android:text="@string/last_photo"
-				android:layout_height="wrap_content" android:layout_marginTop="46dip"
-				android:layout_marginLeft="5dip" android:paddingTop="2dip"
-				android:paddingBottom="2dip" android:paddingLeft="20dip"
-				android:paddingRight="20dip" style="?android:attr/textAppearanceLargeInverse" />
+		<!-- select 1st photo -->
+		<Button android:id="@+id/first_photo" android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:layout_marginTop="46dip"
+			android:layout_marginLeft="5dip" android:paddingTop="2dip"
+			android:paddingBottom="2dip" android:paddingLeft="20dip"
+			android:text="@string/first_photo" android:paddingRight="20dip"
+			style="?android:attr/textAppearanceLargeInverse" />
 
-		</LinearLayout>
-		<Button android:id="@+id/ok" android:layout_width="wrap_content"
-			android:layout_height="wrap_content"  />
-		<Button android:id="@+id/cancel" android:layout_width="wrap_content"
-			android:layout_height="wrap_content"  />
+		<!-- Photo number -->
+		<net.dahanne.android.g2android.utils.modified_android_source.NumberPicker
+			android:id="@+id/photo_number" android:layout_width="70dip"
+			android:layout_height="wrap_content" android:layout_marginLeft="5dip"
+			android:focusable="true" android:focusableInTouchMode="true" />
 
-</FrameLayout>
+		<!-- select last photo -->
+		<Button android:id="@+id/last_photo" android:layout_width="wrap_content"
+
+			android:text="@string/last_photo" android:layout_height="wrap_content"
+			android:layout_marginTop="46dip" android:layout_marginLeft="5dip"
+			android:paddingTop="2dip" android:paddingBottom="2dip"
+			android:paddingLeft="20dip" android:paddingRight="20dip"
+			style="?android:attr/textAppearanceLargeInverse" />
+
+	</LinearLayout>
+	<RelativeLayout android:layout_width="fill_parent" android:orientation="horizontal" android:gravity="center"
+		android:layout_height="wrap_content">
+		<Button android:id="@+id/ok" android:layout_width="wrap_content" android:text="@string/ok"
+			android:layout_height="wrap_content" />
+		<Button android:id="@+id/cancel" android:layout_width="wrap_content" android:text="@string/cancel"
+			android:layout_height="wrap_content" />
+	</RelativeLayout>
+</LinearLayout>
