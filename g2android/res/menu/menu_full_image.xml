@@ -8,5 +8,7 @@
 		android:id="@+id/share_image" />
 	<item android:title="@string/send_image_title" android:icon="@android:drawable/ic_menu_send"
 		android:id="@+id/send_image" />
+	<item android:title="@string/choose_photo_number" android:icon="@android:drawable/ic_menu_send"
+		android:id="@+id/choose_photo_number" />
 
 </menu>

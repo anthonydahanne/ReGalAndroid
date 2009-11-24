@@ -29,6 +29,7 @@
 		<activity android:name=".activity.FullImage" android:label="@string/full_image_title" />
 		<activity android:name=".activity.FirstTime" android:label="@string/firsttime_title" />
 		<activity android:name=".activity.ChooseSubAlbumName" android:label="subalbum" android:theme="@android:style/Theme.Dialog" />
+		<activity android:name=".activity.ChoosePhotoNumber" android:label="subalbum" android:theme="@android:style/Theme.Dialog" />
 
 	</application>
 	<uses-permission android:name="android.permission.INTERNET" />
