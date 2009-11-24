@@ -19,6 +19,7 @@ package net.dahanne.android.g2android.utils;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
@@ -294,7 +295,11 @@ public class G2ConnectionUtils {
 				}
 			}
 			rd.close();
-		} catch (Exception e) {
+		} catch (IOException e) {
+			// something went wrong, let's throw the info to the UI
+			throw new GalleryConnectionException(e.getMessage());
+			// Log.d(TAG,e.getMessage());
+		} catch (MalformedCookieException e) {
 			// something went wrong, let's throw the info to the UI
 			throw new GalleryConnectionException(e.getMessage());
 			// Log.d(TAG,e.getMessage());
@@ -304,7 +309,7 @@ public class G2ConnectionUtils {
 
 	static String getPathFromUrl(String galleryUrl) {
 		String galleryPath = "/";
-		if (galleryUrl != null || StringUtils.isNotBlank(galleryUrl)) {
+		if (galleryUrl != null && StringUtils.isNotBlank(galleryUrl)) {
 			int indexSlashSlash = galleryUrl.indexOf("//");
 			String galleryUrlWithoutHttp = galleryUrl
 					.substring(indexSlashSlash + 2);
@@ -322,7 +327,7 @@ public class G2ConnectionUtils {
 
 	static String getHostFromUrl(String galleryUrl) {
 		String galleryHost = "";
-		if (galleryUrl != null || StringUtils.isNotBlank(galleryUrl)) {
+		if (galleryUrl != null && StringUtils.isNotBlank(galleryUrl)) {
 			int indexSlashSlash = galleryUrl.indexOf("//");
 			String galleryUrlWithoutHttp = galleryUrl
 					.substring(indexSlashSlash + 2);

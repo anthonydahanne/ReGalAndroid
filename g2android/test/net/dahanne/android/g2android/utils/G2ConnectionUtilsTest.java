@@ -108,16 +108,16 @@ public class G2ConnectionUtilsTest extends Assert {
 	 */
 	@Test(expected = GalleryConnectionException.class)
 	public void sendImageToGalleryTestFail() throws GalleryConnectionException {
-		String authToken = G2ConnectionUtils.loginToGallery(galleryUrl, user,
+		G2ConnectionUtils.loginToGallery(galleryUrl, user,
 				password);
 		File imageFile = new File("image.png");
-		int newItemId = G2ConnectionUtils.sendImageToGallery(galleryUrl,
+		G2ConnectionUtils.sendImageToGallery(galleryUrl,
 				9999999, imageFile);
 	}
 
 	@Test
 	public void sendImageToGalleryTest() throws GalleryConnectionException {
-		String authToken = G2ConnectionUtils.loginToGallery(galleryUrl, user,
+		G2ConnectionUtils.loginToGallery(galleryUrl, user,
 				password);
 		File imageFile = new File("image.png");
 		int newItemId = G2ConnectionUtils.sendImageToGallery(galleryUrl, 174,
@@ -127,7 +127,7 @@ public class G2ConnectionUtilsTest extends Assert {
 
 	@Test
 	public void createNewAlbumTest() throws GalleryConnectionException {
-		String authToken = G2ConnectionUtils.loginToGallery(galleryUrl, user,
+		G2ConnectionUtils.loginToGallery(galleryUrl, user,
 				password);
 		Random random = new Random();
 		int randomInt = random.nextInt();

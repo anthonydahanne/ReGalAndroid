@@ -97,7 +97,7 @@ public class G2DataUtils {
 					} else if (entry.getKey().contains("image.forceExtension.")) {
 						picture.setForceExtension(entry.getValue());
 					} else if (entry.getKey().contains("image.hidden.")) {
-						picture.setHidden(new Boolean(entry.getValue()));
+						picture.setHidden(Boolean.valueOf(entry.getValue()));
 					} else if (entry.getKey().contains("image.clicks.")) {
 						picture.setImageClicks(new Integer(entry.getValue()));
 					}
@@ -151,9 +151,7 @@ public class G2DataUtils {
 
 	public static Album retrieveRootAlbumAndItsHierarchy(String galleryUrl)
 			throws GalleryConnectionException {
-		HashMap<String, String> albumsProperties = new HashMap<String, String>(
-				0);
-		albumsProperties = G2ConnectionUtils.fetchAlbums(galleryUrl);
+		HashMap<String, String> albumsProperties = G2ConnectionUtils.fetchAlbums(galleryUrl);
 
 		Map<Integer, Album> nonSortedAlbums = extractAlbumFromProperties(albumsProperties);
 		Album rootAlbum = organizeAlbumsHierarchy(nonSortedAlbums);

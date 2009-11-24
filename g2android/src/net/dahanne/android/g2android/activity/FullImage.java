@@ -188,7 +188,7 @@ public class FullImage extends Activity implements OnGestureListener {
 					+ g2Picture.getTitle();
 			String extension = g2Picture.getForceExtension();
 			// if no extension is found, let's assume it's a jpeg...
-			if (extension != null) {
+			if (extension == null) {
 				intent.setType(IMAGE_JPEG);
 			} else {
 				intent.setType(IMAGE + extension);
