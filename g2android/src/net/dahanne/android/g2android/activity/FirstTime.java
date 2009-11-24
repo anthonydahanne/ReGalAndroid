@@ -36,7 +36,7 @@ public class FirstTime extends Activity implements OnClickListener {
 
 	public void onClick(View v) {
 
-		boolean timeTrue = FirstTimePreference.setFirstTimeTrue(this);
+		FirstTimePreference.setFirstTimeTrue(this);
 		this.finish();
 
 	}
