@@ -27,6 +27,7 @@
 				android:layout_height="wrap_content" android:layout_marginTop="46dip"
 				android:layout_marginLeft="5dip" android:paddingTop="2dip"
 				android:paddingBottom="2dip" android:paddingLeft="20dip"
+				android:text="@string/first_photo"
 				android:paddingRight="20dip" style="?android:attr/textAppearanceLargeInverse" />
 
 			<!-- Photo number -->
@@ -37,6 +38,8 @@
 
 			<!-- select last photo -->
 			<Button android:id="@+id/last_photo" android:layout_width="wrap_content"
+				
+				android:text="@string/last_photo"
 				android:layout_height="wrap_content" android:layout_marginTop="46dip"
 				android:layout_marginLeft="5dip" android:paddingTop="2dip"
 				android:paddingBottom="2dip" android:paddingLeft="20dip"

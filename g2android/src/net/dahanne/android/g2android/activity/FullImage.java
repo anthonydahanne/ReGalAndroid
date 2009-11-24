@@ -23,10 +23,10 @@ import java.util.List;
 import net.dahanne.android.g2android.G2AndroidApplication;
 import net.dahanne.android.g2android.R;
 import net.dahanne.android.g2android.model.G2Picture;
-import net.dahanne.android.g2android.utils.AsyncTask;
 import net.dahanne.android.g2android.utils.FileHandlingException;
 import net.dahanne.android.g2android.utils.FileUtils;
 import net.dahanne.android.g2android.utils.GalleryConnectionException;
+import net.dahanne.android.g2android.utils.modified_android_source.AsyncTask;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -196,6 +196,10 @@ public class FullImage extends Activity implements OnGestureListener {
 			intent.putExtra(Intent.EXTRA_STREAM, Uri.parse(FILE + filePath));
 			startActivity(Intent.createChooser(intent,
 					getString(R.string.choose_action)));
+			break;
+		case R.id.choose_photo_number:
+			intent = new Intent(this, ChoosePhotoNumber.class);
+			startActivity(intent);
 			break;
 		}
 

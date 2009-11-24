@@ -120,6 +120,11 @@
 		<string name="share_image_title">Share this photo url</string>
 		<string name="send_image_title">Send this photo to</string>
 		<string name="choose_action">Choose an action</string>
+		<string name="first_photo">First</string>
+		<string name="last_photo">Last</string>
+		<string name="choose_photo_number">Last</string>
+		<string name="choose_photo_number_title">Go to photo number ...</string>
+		
 		
 		
 		

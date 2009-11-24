@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.dahanne.android.g2android.utils;
+package net.dahanne.android.g2android.utils.modified_android_source;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Callable;
