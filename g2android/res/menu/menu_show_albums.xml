@@ -21,7 +21,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
    <item android:id="@+id/add_photo"
       android:title="@string/add_photo_label"
-      android:icon="@android:drawable/ic_menu_add"
+      android:icon="@android:drawable/ic_menu_upload"
       android:alphabeticShortcut="@string/add_photo_shortcut" />
     <item android:id="@+id/create_album"
       android:title="@string/create_album_label"

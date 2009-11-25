@@ -17,9 +17,11 @@
  */
 package net.dahanne.android.g2android.activity;
 
+import net.dahanne.android.g2android.G2AndroidApplication;
 import net.dahanne.android.g2android.R;
 import net.dahanne.android.g2android.utils.modified_android_source.NumberPicker;
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -28,49 +30,66 @@ import android.widget.Button;
 
 public class ChoosePhotoNumber extends Activity implements OnClickListener {
 
+	
+	static final String CHOSEN_PHOTO = "chosenPhoto";
 	private NumberPicker np;
 	private Button okButton;
 	private Button cancelButton;
 	private Button firstPhotoButton;
 	private Button lastPhotoButton;
+	private int numberOfPictures;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+		//view creation and context loading
 		setContentView(R.layout.choose_photo_number);
+		numberOfPictures = ((G2AndroidApplication) getApplication()).getPictures().size();
+		int currentPhoto = savedInstanceState.getInt( FullImage.CURRENT_PHOTO);
+		setTitle(R.string.choose_photo_number_title);
+		
+		//number picker initialization
 		np = (NumberPicker) findViewById(R.id.photo_number);
+		np.setRange(0, numberOfPictures -1, null);
+		np.setCurrent(currentPhoto);
+
+		//buttons and listeners attached
 		okButton = (Button) findViewById(R.id.ok);
 		cancelButton = (Button) findViewById(R.id.cancel);
 		firstPhotoButton = (Button) findViewById(R.id.first_photo);
 		lastPhotoButton = (Button) findViewById(R.id.last_photo);
-
-		setTitle(R.string.choose_photo_number_title);
-		np.setRange(0, 100, null);
 		okButton.setOnClickListener(this);
 		cancelButton.setOnClickListener(this);
+		firstPhotoButton.setOnClickListener(this);
+		lastPhotoButton.setOnClickListener(this);
 
 	}
 
 	@Override
 	public void onClick(View v) {
+		Intent data =  new Intent();
+		int photoChosen = 0;
 		switch (v.getId()) {
 		case R.id.ok:
-			int currentNumber = np.getCurrent();
-			Log.d("yop", Integer.toString(currentNumber));
-			// TODO
-			break;
-		case R.id.cancel:
-			this.finish();
+			photoChosen = np.getCurrent();
 			break;
 		case R.id.first_photo:
-			// TODO
+			//already 0 so nothing to do here
 			break;
 		case R.id.last_photo:
-			// TODO
+			photoChosen= numberOfPictures-1;
+			break;
+		case R.id.cancel:
+			setResult(RESULT_CANCELED);
+			finish();
 			break;
 		default:
 			break;
 		}
+		data.putExtra(CHOSEN_PHOTO, photoChosen);
+		setResult(RESULT_OK, data );
+		finish();
 
 	}
 }
