@@ -62,6 +62,7 @@ public class FullImage extends Activity implements OnGestureListener {
 	private static final String TEXT_PLAIN = "text/plain";
 	private static final String MAIN_PHP_G2_ITEM_ID = "/main.php?g2_itemId=";
 	private static final String TAG = "FullImage";
+	static final String CURRENT_PHOTO = "currentPhoto";
 	private ImageView imageView;
 	private G2Picture g2Picture;
 	private String galleryUrl;
@@ -199,6 +200,7 @@ public class FullImage extends Activity implements OnGestureListener {
 			break;
 		case R.id.choose_photo_number:
 			intent = new Intent(this, ChoosePhotoNumber.class);
+			intent.putExtra(CURRENT_PHOTO, currentPosition);
 			startActivity(intent);
 			break;
 		}
@@ -336,6 +338,22 @@ public class FullImage extends Activity implements OnGestureListener {
 		return true;
 	}
 
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if(resultCode==RESULT_OK){
+			//the user has selected a photo number, let's show it !
+			currentPosition = data.getIntExtra(ChoosePhotoNumber.CHOSEN_PHOTO,currentPosition);
+			loadingPicture();
+		}
+	}
+	
+	@Override
+	protected void onPause() {
+		Intent data = new Intent();
+		data.putExtra(ChoosePhotoNumber.CHOSEN_PHOTO, currentPosition);
+		setResult(RESULT_OK, data );
+	}
+	
 	@Override
 	public void onLongPress(MotionEvent e) {
 	}

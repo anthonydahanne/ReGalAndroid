@@ -66,6 +66,9 @@ import android.widget.ViewSwitcher.ViewFactory;
 
 public class ShowGallery extends Activity implements OnItemSelectedListener,
 		ViewFactory, OnClickListener {
+	private static final int REQUEST_CODE_ADD_ALBUM = 2;
+	private static final int REQUEST_CODE_ADD_PHOTO = 1;
+	private static final int REQUEST_CODE_FULL_IMAGE = 3;
 	private static final String G2ANDROID_ALBUM = "g2android.Album";
 	private List<G2Picture> albumPictures = new ArrayList<G2Picture>();
 	private static final String TAG = "ShowGallery";
@@ -92,50 +95,8 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 
 	}
 
-	public class ImageAdapter extends BaseAdapter {
-		private Context mContext;
-		private Map<Integer, Bitmap> bitmapsCache = new HashMap<Integer, Bitmap>();
-
-		public ImageAdapter(Context c) {
-			mContext = c;
-		}
-
-		public int getCount() {
-			return albumPictures.size();
-		}
-
-		public Object getItem(int position) {
-			return bitmapsCache.get(position);
-		}
-
-		public long getItemId(int position) {
-			return albumPictures.get(position).getId();
-		}
-
-		public View getView(int position, View convertView, ViewGroup parent) {
-			Bitmap downloadImage = null;
-			ImageView i = new ImageView(mContext);
-			if (bitmapsCache.get(position) == null) {
-				try {
-					downloadImage = BitmapFactory
-							.decodeStream(G2ConnectionUtils
-									.getInputStreamFromUrl((Settings
-											.getBaseUrl(ShowGallery.this) + albumPictures
-											.get(position).getThumbName())));
-				} catch (GalleryConnectionException e) {
-					alertConnectionProblem(e.getMessage(), galleryUrl);
-				}
-				bitmapsCache.put(position, downloadImage);
-			} else {
-				downloadImage = bitmapsCache.get(position);
-			}
-
-			i.setImageBitmap(downloadImage);
-			return i;
-		}
-	}
-
 	public class ImageAdapter2 extends BaseAdapter {
+		private static final String THUMB_PREFIX = "thumb_";
 		private Context mContext;
 		private Map<Integer, Bitmap> bitmapsCache = new HashMap<Integer, Bitmap>();
 
@@ -158,7 +119,7 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 		public View getView(int position, View convertView, ViewGroup parent) {
 			G2Picture g2Picture = albumPictures.get(position);
 			File potentiallyAlreadyDownloadedFile = new File(Settings
-					.getG2AndroidCachePath(ShowGallery.this), "thumb_"
+					.getG2AndroidCachePath(ShowGallery.this), THUMB_PREFIX
 					+ g2Picture.getTitle());
 			// maybe present in the local cache
 			Bitmap downloadImage = bitmapsCache.get(position);
@@ -176,7 +137,7 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 							+ thumbName;
 					try {
 						File imageFileOnExternalDirectory = FileUtils
-								.getFileFromGallery(ShowGallery.this, "thumb_"
+								.getFileFromGallery(ShowGallery.this, THUMB_PREFIX
 										+ g2Picture.getTitle(), g2Picture
 										.getForceExtension(), uriString, true);
 						downloadImage = BitmapFactory
@@ -293,12 +254,12 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 		case R.id.add_photo:
 			intent = new Intent(Intent.ACTION_PICK);
 			intent.setType("image/*");
-			startActivityForResult(intent, 1);
+			startActivityForResult(intent, REQUEST_CODE_ADD_PHOTO);
 			break;
 
 		case R.id.create_album:
 			intent = new Intent(this, ChooseSubAlbumName.class);
-			startActivityForResult(intent, 2);
+			startActivityForResult(intent, REQUEST_CODE_ADD_ALBUM);
 			break;
 		}
 		return false;
@@ -323,7 +284,7 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 
 		if (resultCode == RESULT_OK) {
 			switch (requestCode) {
-			case 1:
+			case REQUEST_CODE_ADD_PHOTO:
 				// add a new photo
 				Uri photoUri = intent.getData();
 				if (photoUri != null) {
@@ -334,7 +295,7 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 
 				}
 				break;
-			case 2:
+			case REQUEST_CODE_ADD_ALBUM:
 				String subalbumName = intent.getStringExtra("subalbumName");
 				progressDialog = ProgressDialog.show(this,
 						getString(R.string.please_wait),
@@ -343,6 +304,13 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 				new CreateAlbumTask().execute(galleryUrl, albumName,
 						subalbumName);
 				break;
+				
+				
+			case REQUEST_CODE_FULL_IMAGE:
+				//TODO recover current position in album
+				//int currentPosition = intent.getIntExtra(ChoosePhotoNumber.CHOSEN_PHOTO,gallery.getP);
+				break;
+				
 			}
 		}
 
@@ -507,10 +475,12 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 		((G2AndroidApplication) getApplication()).getPictures().clear();
 		((G2AndroidApplication) getApplication()).getPictures().addAll(
 				albumPictures);
-		startActivity(intent);
+		startActivityForResult(intent,REQUEST_CODE_FULL_IMAGE);
 
 	}
 
+	
+	
 	@Override
 	/**
 	 * this method comes with OnItemSelectedListener interface
