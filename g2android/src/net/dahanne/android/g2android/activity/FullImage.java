@@ -64,7 +64,7 @@ public class FullImage extends Activity implements OnGestureListener {
 	private static final String TEXT_PLAIN = "text/plain";
 	private static final String MAIN_PHP_G2_ITEM_ID = "/main.php?g2_itemId=";
 	private static final String TAG = "FullImage";
-	static final String CURRENT_PHOTO = "currentPhoto";
+	static final String CURRENT_POSITION = "currentPhoto";
 	private ImageView imageView;
 	private G2Picture g2Picture;
 	private String galleryUrl;
@@ -83,11 +83,23 @@ public class FullImage extends Activity implements OnGestureListener {
 		galleryUrl = Settings.getGalleryUrl(this);
 		setContentView(R.layout.full_image);
 		imageView = (ImageView) findViewById(R.id.image_full);
-		currentPosition = getIntent().getIntExtra("currentPosition", 0);
 		albumPictures = ((G2AndroidApplication) getApplication()).getPictures();
 
-		loadingPicture();
+	}
 
+	@Override
+	protected void onResume() {
+		super.onResume();
+		currentPosition = ((G2AndroidApplication) getApplication())
+				.getCurrentPosition();
+		loadingPicture();
+	}
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+		((G2AndroidApplication) getApplication())
+				.setCurrentPosition(currentPosition);
 	}
 
 	@Override
@@ -95,13 +107,14 @@ public class FullImage extends Activity implements OnGestureListener {
 		return gestureScanner.onTouchEvent(me);
 	}
 
+	@SuppressWarnings("unchecked")
 	private void loadingPicture() {
 		g2Picture = albumPictures.get(currentPosition);
 		File potentialAlreadyDownloadedFile = new File(Settings
 				.getG2AndroidCachePath(this), g2Picture.getTitle());
 
-		if ((potentialAlreadyDownloadedFile.exists() && potentialAlreadyDownloadedFile
-				.length() != 0)) {
+		if (potentialAlreadyDownloadedFile.exists()
+				&& potentialAlreadyDownloadedFile.length() != 0) {
 			imageView.setImageDrawable(Drawable
 					.createFromPath(potentialAlreadyDownloadedFile.getPath()));
 		}
@@ -199,7 +212,7 @@ public class FullImage extends Activity implements OnGestureListener {
 			break;
 		case R.id.choose_photo_number:
 			intent = new Intent(this, ChoosePhotoNumber.class);
-			intent.putExtra(CURRENT_PHOTO, currentPosition);
+			intent.putExtra(CURRENT_POSITION, currentPosition);
 			startActivityForResult(intent, REQUEST_CODE_CHOOSE_PHOTO_NUMBER);
 			break;
 		}
@@ -299,11 +312,6 @@ public class FullImage extends Activity implements OnGestureListener {
 	}
 
 	@Override
-	public boolean onDown(MotionEvent e) {
-		return false;
-	}
-
-	@Override
 	public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
 			float velocityY) {
 
@@ -342,13 +350,13 @@ public class FullImage extends Activity implements OnGestureListener {
 	}
 
 	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if (resultCode == RESULT_OK) {
-			// the user has selected a photo number, let's show it !
-			currentPosition = data.getIntExtra(ChoosePhotoNumber.CHOSEN_PHOTO,
-					currentPosition);
-			loadingPicture();
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+			setResult(RESULT_OK);
+			this.finish();
+			return true;
 		}
+		return false;
 	}
 
 	@Override
@@ -362,14 +370,7 @@ public class FullImage extends Activity implements OnGestureListener {
 	}
 
 	@Override
-	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		if (keyCode == KeyEvent.KEYCODE_BACK) {
-			Intent data = new Intent();
-			data.putExtra(ChoosePhotoNumber.CHOSEN_PHOTO, currentPosition);
-			setResult(RESULT_OK, data);
-			this.finish();
-			return true;
-		}
+	public boolean onDown(MotionEvent e) {
 		return false;
 	}
 

@@ -10,6 +10,7 @@ import android.app.Application;
 public class G2AndroidApplication extends Application {
 	private List<G2Picture> pictures = new ArrayList<G2Picture>();
 	private Album rootAlbum;
+	private int currentPosition;
 
 	public void setRootAlbum(Album rootAlbum) {
 		this.rootAlbum = rootAlbum;
@@ -29,5 +30,13 @@ public class G2AndroidApplication extends Application {
 
 	public List<G2Picture> getPictures() {
 		return pictures;
+	}
+
+	public void setCurrentPosition(int currentPosition) {
+		this.currentPosition = currentPosition;
+	}
+
+	public int getCurrentPosition() {
+		return currentPosition;
 	}
 }
