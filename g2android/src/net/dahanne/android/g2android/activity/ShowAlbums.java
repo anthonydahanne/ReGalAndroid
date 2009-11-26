@@ -48,6 +48,8 @@ import android.widget.AdapterView.OnItemClickListener;
 
 public class ShowAlbums extends ListActivity implements OnItemClickListener {
 
+	private static final int REQUEST_CREATE_ALBUM = 2;
+	private static final int REQUEST_ADD_PHOTO = 1;
 	private static final String IMAGE_TYPE = "image/*";
 	private static final String G2ANDROID_ALBUM = "g2android.Album";
 	private static final String TAG = "ShowAlbums";
@@ -91,12 +93,12 @@ public class ShowAlbums extends ListActivity implements OnItemClickListener {
 		case R.id.add_photo:
 			intent = new Intent(Intent.ACTION_PICK);
 			intent.setType(IMAGE_TYPE);
-			startActivityForResult(intent, 1);
+			startActivityForResult(intent, REQUEST_ADD_PHOTO);
 			break;
 
 		case R.id.create_album:
 			intent = new Intent(this, ChooseSubAlbumName.class);
-			startActivityForResult(intent, 2);
+			startActivityForResult(intent, REQUEST_CREATE_ALBUM);
 			break;
 
 		}
@@ -135,7 +137,8 @@ public class ShowAlbums extends ListActivity implements OnItemClickListener {
 				}
 				break;
 			case 2:
-				String subalbumName = intent.getStringExtra("subalbumName");
+				String subalbumName = intent
+						.getStringExtra(ChooseSubAlbumName.SUBALBUM_NAME);
 				progressDialog = ProgressDialog.show(this,
 						getString(R.string.please_wait),
 						getString(R.string.creating_new_album), true);
@@ -333,11 +336,13 @@ public class ShowAlbums extends ListActivity implements OnItemClickListener {
 	}
 
 	protected void toastAlbumSuccessfullyCreated(Context context) {
-		Toast.makeText(context, "Album was successfully created ", 3);
+		Toast.makeText(context, getString(R.string.album_successfully_created),
+				Toast.LENGTH_LONG);
 	}
 
 	protected void toastImageSuccessfullyAdded(Context context) {
-		Toast.makeText(context, "Image was successfully added", 3);
+		Toast.makeText(context, getString(R.string.image_successfully_created),
+				Toast.LENGTH_LONG);
 	}
 
 }

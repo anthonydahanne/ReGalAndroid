@@ -40,6 +40,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.GestureDetector;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -55,6 +56,7 @@ import android.widget.Toast;
  */
 public class FullImage extends Activity implements OnGestureListener {
 
+	private static final int REQUEST_CODE_CHOOSE_PHOTO_NUMBER = 1;
 	private static final String SLASH = "/";
 	private static final String FILE = "file://";
 	private static final String IMAGE = "image/";
@@ -76,7 +78,6 @@ public class FullImage extends Activity implements OnGestureListener {
 	protected void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
-		toast = new Toast(this);
 		gestureScanner = new GestureDetector(this);
 
 		galleryUrl = Settings.getGalleryUrl(this);
@@ -95,8 +96,6 @@ public class FullImage extends Activity implements OnGestureListener {
 	}
 
 	private void loadingPicture() {
-		// issue #14 : cancel the Toast, otherwise they'll pile up...
-		toast.cancel();
 		g2Picture = albumPictures.get(currentPosition);
 		File potentialAlreadyDownloadedFile = new File(Settings
 				.getG2AndroidCachePath(this), g2Picture.getTitle());
@@ -201,7 +200,7 @@ public class FullImage extends Activity implements OnGestureListener {
 		case R.id.choose_photo_number:
 			intent = new Intent(this, ChoosePhotoNumber.class);
 			intent.putExtra(CURRENT_PHOTO, currentPosition);
-			startActivity(intent);
+			startActivityForResult(intent, REQUEST_CODE_CHOOSE_PHOTO_NUMBER);
 			break;
 		}
 
@@ -235,7 +234,7 @@ public class FullImage extends Activity implements OnGestureListener {
 			if (result == null) {
 				alertConnectionProblem(exceptionMessage, galleryUrl);
 			} else {
-				toast.makeText(FullImage.this,
+				Toast.makeText(FullImage.this,
 						getString(R.string.image_successfully_downloaded),
 						Toast.LENGTH_LONG).show();
 			}
@@ -317,11 +316,10 @@ public class FullImage extends Activity implements OnGestureListener {
 		else {
 			newPosition -= 1;
 		}
+		String message;
 		// we're above the limit
 		if (newPosition < 0 || newPosition >= albumPictures.size()) {
-			toast.makeText(FullImage.this,
-					getString(R.string.no_more_pictures), Toast.LENGTH_SHORT)
-					.show();
+			message = getString(R.string.no_more_pictures);
 		} else {
 			currentPosition = newPosition;
 			loadingPicture();
@@ -331,29 +329,28 @@ public class FullImage extends Activity implements OnGestureListener {
 			showingPictureSb.append(currentPositionToDisplay);
 			showingPictureSb.append(SLASH);
 			showingPictureSb.append(albumPictures.size());
-			toast.makeText(FullImage.this, showingPictureSb.toString(),
-					Toast.LENGTH_SHORT).show();
+			message = showingPictureSb.toString();
 		}
-
+		// make the toast or update it
+		if (toast == null) {
+			toast = Toast.makeText(FullImage.this, message, Toast.LENGTH_SHORT);
+		} else {
+			toast.setText(message);
+		}
+		toast.show();
 		return true;
 	}
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if(resultCode==RESULT_OK){
-			//the user has selected a photo number, let's show it !
-			currentPosition = data.getIntExtra(ChoosePhotoNumber.CHOSEN_PHOTO,currentPosition);
+		if (resultCode == RESULT_OK) {
+			// the user has selected a photo number, let's show it !
+			currentPosition = data.getIntExtra(ChoosePhotoNumber.CHOSEN_PHOTO,
+					currentPosition);
 			loadingPicture();
 		}
 	}
-	
-	@Override
-	protected void onPause() {
-		Intent data = new Intent();
-		data.putExtra(ChoosePhotoNumber.CHOSEN_PHOTO, currentPosition);
-		setResult(RESULT_OK, data );
-	}
-	
+
 	@Override
 	public void onLongPress(MotionEvent e) {
 	}
@@ -361,8 +358,19 @@ public class FullImage extends Activity implements OnGestureListener {
 	@Override
 	public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX,
 			float distanceY) {
-
 		return true;
+	}
+
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+			Intent data = new Intent();
+			data.putExtra(ChoosePhotoNumber.CHOSEN_PHOTO, currentPosition);
+			setResult(RESULT_OK, data);
+			this.finish();
+			return true;
+		}
+		return false;
 	}
 
 	@Override

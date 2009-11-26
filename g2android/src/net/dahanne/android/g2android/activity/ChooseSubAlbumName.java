@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 public class ChooseSubAlbumName extends Activity implements OnClickListener {
+	static final String SUBALBUM_NAME = "subalbumName";
 	private EditText subalbumEditText;
 	private Button okButton;
 
@@ -27,7 +28,7 @@ public class ChooseSubAlbumName extends Activity implements OnClickListener {
 
 	public void onClick(View v) {
 		Intent data = new Intent();
-		data.putExtra("subalbumName", subalbumEditText.getText().toString());
+		data.putExtra(SUBALBUM_NAME, subalbumEditText.getText().toString());
 		setResult(RESULT_OK, data);
 		finish();
 

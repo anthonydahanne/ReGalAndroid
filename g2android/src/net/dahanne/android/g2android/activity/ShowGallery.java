@@ -95,12 +95,12 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 
 	}
 
-	public class ImageAdapter2 extends BaseAdapter {
+	public class ImageAdapter extends BaseAdapter {
 		private static final String THUMB_PREFIX = "thumb_";
 		private Context mContext;
 		private Map<Integer, Bitmap> bitmapsCache = new HashMap<Integer, Bitmap>();
 
-		public ImageAdapter2(Context c) {
+		public ImageAdapter(Context c) {
 			mContext = c;
 		}
 
@@ -137,9 +137,10 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 							+ thumbName;
 					try {
 						File imageFileOnExternalDirectory = FileUtils
-								.getFileFromGallery(ShowGallery.this, THUMB_PREFIX
-										+ g2Picture.getTitle(), g2Picture
-										.getForceExtension(), uriString, true);
+								.getFileFromGallery(ShowGallery.this,
+										THUMB_PREFIX + g2Picture.getTitle(),
+										g2Picture.getForceExtension(),
+										uriString, true);
 						downloadImage = BitmapFactory
 								.decodeFile(imageFileOnExternalDirectory
 										.getPath());
@@ -304,13 +305,20 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 				new CreateAlbumTask().execute(galleryUrl, albumName,
 						subalbumName);
 				break;
-				
-				
+
 			case REQUEST_CODE_FULL_IMAGE:
-				//TODO recover current position in album
-				//int currentPosition = intent.getIntExtra(ChoosePhotoNumber.CHOSEN_PHOTO,gallery.getP);
+				// recover current position in current album
+				int currentPosition = intent.getIntExtra(
+						ChoosePhotoNumber.CHOSEN_PHOTO, 0);
+				gallery.setSelection(currentPosition);
+				G2Picture g2Picture = albumPictures.get(currentPosition);
+				String resizedName = g2Picture.getResizedName();
+				String uriString = Settings.getBaseUrl(ShowGallery.this)
+						+ resizedName;
+				new ReplaceMainImageTask().execute(uriString, mSwitcher,
+						currentPosition, g2Picture);
 				break;
-				
+
 			}
 		}
 
@@ -349,6 +357,7 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 				if (albumPictures.size() == 0) {
 					setContentView(R.layout.album_is_empty);
 				} else {
+					// we set up the view
 					setContentView(R.layout.show_gallery);
 					gallery = (Gallery) findViewById(R.id.gallery);
 					mSwitcher = (ImageSwitcher) findViewById(R.id.switcher);
@@ -360,7 +369,7 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 					mSwitcher.setOutAnimation(AnimationUtils.loadAnimation(
 							ShowGallery.this, android.R.anim.fade_out));
 
-					ImageAdapter2 adapter = new ImageAdapter2(ShowGallery.this);
+					ImageAdapter adapter = new ImageAdapter(ShowGallery.this);
 					gallery.setAdapter(adapter);
 					gallery.setOnItemSelectedListener(ShowGallery.this);
 				}
@@ -475,12 +484,10 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 		((G2AndroidApplication) getApplication()).getPictures().clear();
 		((G2AndroidApplication) getApplication()).getPictures().addAll(
 				albumPictures);
-		startActivityForResult(intent,REQUEST_CODE_FULL_IMAGE);
+		startActivityForResult(intent, REQUEST_CODE_FULL_IMAGE);
 
 	}
 
-	
-	
 	@Override
 	/**
 	 * this method comes with OnItemSelectedListener interface

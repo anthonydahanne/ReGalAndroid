@@ -25,8 +25,7 @@ import org.apache.http.impl.cookie.BasicClientCookie;
 
 /**
  * 
- * @author Anthony Dahanne
- * 
+ * @author Anthony Dahanne NOT USED AT THE MOMENT
  */
 public class G2ConnectionUtilsMock {
 
