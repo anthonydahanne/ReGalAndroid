@@ -62,7 +62,8 @@ public class G2ConnectionUtilsTest extends Assert {
 
 	@Test(expected = GalleryConnectionException.class)
 	public void fetchImagesTest__exception() throws GalleryConnectionException {
-		G2ConnectionUtils.fetchImages("something.thatmaynotexist.com", 11);
+		G2ConnectionUtils.fetchImages("http://something.thatmaynotexist.com",
+				11);
 
 	}
 
@@ -108,17 +109,14 @@ public class G2ConnectionUtilsTest extends Assert {
 	 */
 	@Test(expected = GalleryConnectionException.class)
 	public void sendImageToGalleryTestFail() throws GalleryConnectionException {
-		G2ConnectionUtils.loginToGallery(galleryUrl, user,
-				password);
+		G2ConnectionUtils.loginToGallery(galleryUrl, user, password);
 		File imageFile = new File("image.png");
-		G2ConnectionUtils.sendImageToGallery(galleryUrl,
-				9999999, imageFile);
+		G2ConnectionUtils.sendImageToGallery(galleryUrl, 9999999, imageFile);
 	}
 
 	@Test
 	public void sendImageToGalleryTest() throws GalleryConnectionException {
-		G2ConnectionUtils.loginToGallery(galleryUrl, user,
-				password);
+		G2ConnectionUtils.loginToGallery(galleryUrl, user, password);
 		File imageFile = new File("image.png");
 		int newItemId = G2ConnectionUtils.sendImageToGallery(galleryUrl, 174,
 				imageFile);
@@ -127,8 +125,7 @@ public class G2ConnectionUtilsTest extends Assert {
 
 	@Test
 	public void createNewAlbumTest() throws GalleryConnectionException {
-		G2ConnectionUtils.loginToGallery(galleryUrl, user,
-				password);
+		G2ConnectionUtils.loginToGallery(galleryUrl, user, password);
 		Random random = new Random();
 		int randomInt = random.nextInt();
 		String albumName = "UnitTestAlbumNumber" + randomInt;

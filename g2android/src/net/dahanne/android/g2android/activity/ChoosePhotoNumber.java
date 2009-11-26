@@ -23,14 +23,12 @@ import net.dahanne.android.g2android.utils.modified_android_source.NumberPicker;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 
 public class ChoosePhotoNumber extends Activity implements OnClickListener {
 
-	
 	static final String CHOSEN_PHOTO = "chosenPhoto";
 	private NumberPicker np;
 	private Button okButton;
@@ -43,18 +41,19 @@ public class ChoosePhotoNumber extends Activity implements OnClickListener {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		//view creation and context loading
+		// view creation and context loading
 		setContentView(R.layout.choose_photo_number);
-		numberOfPictures = ((G2AndroidApplication) getApplication()).getPictures().size();
-		int currentPhoto = savedInstanceState.getInt( FullImage.CURRENT_PHOTO);
+		numberOfPictures = ((G2AndroidApplication) getApplication())
+				.getPictures().size();
+		int currentPhoto = getIntent().getIntExtra(FullImage.CURRENT_PHOTO, 0);
 		setTitle(R.string.choose_photo_number_title);
-		
-		//number picker initialization
-		np = (NumberPicker) findViewById(R.id.photo_number);
-		np.setRange(0, numberOfPictures -1, null);
-		np.setCurrent(currentPhoto);
 
-		//buttons and listeners attached
+		// number picker initialization
+		np = (NumberPicker) findViewById(R.id.photo_number);
+		np.setRange(1, numberOfPictures, null);
+		np.setCurrent(currentPhoto + 1);
+
+		// buttons and listeners attached
 		okButton = (Button) findViewById(R.id.ok);
 		cancelButton = (Button) findViewById(R.id.cancel);
 		firstPhotoButton = (Button) findViewById(R.id.first_photo);
@@ -68,17 +67,17 @@ public class ChoosePhotoNumber extends Activity implements OnClickListener {
 
 	@Override
 	public void onClick(View v) {
-		Intent data =  new Intent();
+		Intent data = new Intent();
 		int photoChosen = 0;
 		switch (v.getId()) {
 		case R.id.ok:
-			photoChosen = np.getCurrent();
+			photoChosen = np.getCurrent() - 1;
 			break;
 		case R.id.first_photo:
-			//already 0 so nothing to do here
+			// already 0 so nothing to do here
 			break;
 		case R.id.last_photo:
-			photoChosen= numberOfPictures-1;
+			photoChosen = numberOfPictures - 1;
 			break;
 		case R.id.cancel:
 			setResult(RESULT_CANCELED);
@@ -88,7 +87,7 @@ public class ChoosePhotoNumber extends Activity implements OnClickListener {
 			break;
 		}
 		data.putExtra(CHOSEN_PHOTO, photoChosen);
-		setResult(RESULT_OK, data );
+		setResult(RESULT_OK, data);
 		finish();
 
 	}

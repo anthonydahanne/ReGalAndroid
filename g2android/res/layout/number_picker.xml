@@ -3,7 +3,7 @@
 
 <merge xmlns:android="http://schemas.android.com/apk/res/android">
 
-	<net.dahanne.android.g2android.utils.modified_android_source.MyNumberPickerButton
+	<net.dahanne.android.g2android.utils.modified_android_source.NumberPickerButton
 		android:id="@+id/increment" android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
 		android:background="@drawable/timepicker_up_normal"
@@ -17,7 +17,7 @@
 		style="?android:attr/textAppearanceLargeInverse" android:textColor="@android:color/primary_text_light"
 		android:textSize="30sp" />
 
-	<net.dahanne.android.g2android.utils.modified_android_source.MyNumberPickerButton
+	<net.dahanne.android.g2android.utils.modified_android_source.NumberPickerButton
 		android:id="@+id/decrement" android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
 		android:background="@drawable/timepicker_down_normal"
