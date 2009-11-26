@@ -21,7 +21,6 @@ import net.dahanne.android.g2android.G2AndroidApplication;
 import net.dahanne.android.g2android.R;
 import net.dahanne.android.g2android.utils.modified_android_source.NumberPicker;
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -29,7 +28,6 @@ import android.widget.Button;
 
 public class ChoosePhotoNumber extends Activity implements OnClickListener {
 
-	static final String CHOSEN_PHOTO = "chosenPhoto";
 	private NumberPicker np;
 	private Button okButton;
 	private Button cancelButton;
@@ -45,7 +43,8 @@ public class ChoosePhotoNumber extends Activity implements OnClickListener {
 		setContentView(R.layout.choose_photo_number);
 		numberOfPictures = ((G2AndroidApplication) getApplication())
 				.getPictures().size();
-		int currentPhoto = getIntent().getIntExtra(FullImage.CURRENT_PHOTO, 0);
+		int currentPhoto = getIntent().getIntExtra(FullImage.CURRENT_POSITION,
+				0);
 		setTitle(R.string.choose_photo_number_title);
 
 		// number picker initialization
@@ -67,17 +66,16 @@ public class ChoosePhotoNumber extends Activity implements OnClickListener {
 
 	@Override
 	public void onClick(View v) {
-		Intent data = new Intent();
-		int photoChosen = 0;
+		int chosenPhoto = 0;
 		switch (v.getId()) {
 		case R.id.ok:
-			photoChosen = np.getCurrent() - 1;
+			chosenPhoto = np.getCurrent() - 1;
 			break;
 		case R.id.first_photo:
 			// already 0 so nothing to do here
 			break;
 		case R.id.last_photo:
-			photoChosen = numberOfPictures - 1;
+			chosenPhoto = numberOfPictures - 1;
 			break;
 		case R.id.cancel:
 			setResult(RESULT_CANCELED);
@@ -86,8 +84,8 @@ public class ChoosePhotoNumber extends Activity implements OnClickListener {
 		default:
 			break;
 		}
-		data.putExtra(CHOSEN_PHOTO, photoChosen);
-		setResult(RESULT_OK, data);
+		((G2AndroidApplication) getApplication())
+				.setCurrentPosition(chosenPhoto);
 		finish();
 
 	}

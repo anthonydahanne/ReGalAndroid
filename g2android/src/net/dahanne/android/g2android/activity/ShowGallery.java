@@ -66,8 +66,8 @@ import android.widget.ViewSwitcher.ViewFactory;
 
 public class ShowGallery extends Activity implements OnItemSelectedListener,
 		ViewFactory, OnClickListener {
-	private static final int REQUEST_CODE_ADD_ALBUM = 2;
 	private static final int REQUEST_CODE_ADD_PHOTO = 1;
+	private static final int REQUEST_CODE_ADD_ALBUM = 2;
 	private static final int REQUEST_CODE_FULL_IMAGE = 3;
 	private static final String G2ANDROID_ALBUM = "g2android.Album";
 	private List<G2Picture> albumPictures = new ArrayList<G2Picture>();
@@ -126,8 +126,8 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 			if (downloadImage == null) {
 				// only download the picture IF it has not yet been downloaded
 				if (g2Picture.getThumbImagePath() != null
-						|| (potentiallyAlreadyDownloadedFile.exists() && potentiallyAlreadyDownloadedFile
-								.length() != 0)) {
+						|| potentiallyAlreadyDownloadedFile.exists()
+						&& potentiallyAlreadyDownloadedFile.length() != 0) {
 					downloadImage = BitmapFactory
 							.decodeFile(potentiallyAlreadyDownloadedFile
 									.getPath());
@@ -169,8 +169,8 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 		mSwitcher.setId(position);
 		// only download the picture IF it has not yet been downloaded
 		if (g2Picture.getResizedImagePath() != null
-				|| (potentiallyAlreadyDownloadedFile.exists() && potentiallyAlreadyDownloadedFile
-						.length() != 0)) {
+				|| potentiallyAlreadyDownloadedFile.exists()
+				&& potentiallyAlreadyDownloadedFile.length() != 0) {
 			Bitmap bitmap = BitmapFactory
 					.decodeFile(potentiallyAlreadyDownloadedFile.getPath());
 			BitmapDrawable bitmapDrawable = new BitmapDrawable(bitmap);
@@ -307,16 +307,7 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 				break;
 
 			case REQUEST_CODE_FULL_IMAGE:
-				// recover current position in current album
-				int currentPosition = intent.getIntExtra(
-						ChoosePhotoNumber.CHOSEN_PHOTO, 0);
-				gallery.setSelection(currentPosition);
-				G2Picture g2Picture = albumPictures.get(currentPosition);
-				String resizedName = g2Picture.getResizedName();
-				String uriString = Settings.getBaseUrl(ShowGallery.this)
-						+ resizedName;
-				new ReplaceMainImageTask().execute(uriString, mSwitcher,
-						currentPosition, g2Picture);
+
 				break;
 
 			}
@@ -372,6 +363,22 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 					ImageAdapter adapter = new ImageAdapter(ShowGallery.this);
 					gallery.setAdapter(adapter);
 					gallery.setOnItemSelectedListener(ShowGallery.this);
+
+					// recover current position in current album
+					int currentPosition = ((G2AndroidApplication) getApplication())
+							.getCurrentPosition();
+					if (currentPosition != 0) {
+						gallery.setSelection(currentPosition);
+						G2Picture g2Picture = albumPictures
+								.get(currentPosition);
+						String resizedName = g2Picture.getResizedName();
+						String uriString = Settings
+								.getBaseUrl(ShowGallery.this)
+								+ resizedName;
+						new ReplaceMainImageTask().execute(uriString,
+								mSwitcher, currentPosition, g2Picture);
+					}
+
 				}
 			}
 		}
@@ -480,10 +487,10 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 	@Override
 	public void onClick(View v) {
 		Intent intent = new Intent(this, FullImage.class);
-		intent.putExtra("currentPosition", v.getId());
 		((G2AndroidApplication) getApplication()).getPictures().clear();
 		((G2AndroidApplication) getApplication()).getPictures().addAll(
 				albumPictures);
+		((G2AndroidApplication) getApplication()).setCurrentPosition(v.getId());
 		startActivityForResult(intent, REQUEST_CODE_FULL_IMAGE);
 
 	}
