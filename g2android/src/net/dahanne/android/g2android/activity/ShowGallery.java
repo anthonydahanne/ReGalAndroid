@@ -167,6 +167,9 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 		File potentiallyAlreadyDownloadedFile = new File(Settings
 				.getG2AndroidCachePath(this), g2Picture.getTitle());
 		mSwitcher.setId(position);
+		//remember the position where we were
+		((G2AndroidApplication) getApplication())
+		.setCurrentPosition(position);
 		// only download the picture IF it has not yet been downloaded
 		if (g2Picture.getResizedImagePath() != null
 				|| potentiallyAlreadyDownloadedFile.exists()
@@ -494,7 +497,7 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 		startActivityForResult(intent, REQUEST_CODE_FULL_IMAGE);
 
 	}
-
+	
 	@Override
 	/**
 	 * this method comes with OnItemSelectedListener interface

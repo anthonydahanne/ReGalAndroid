@@ -87,8 +87,8 @@
 		<string name="share_image_title">Partager l\'url de la photo</string>
 		<string name="send_image_title">Envoyer à</string>
 		<string name="choose_action">Choisis une action</string>
-		<string name="first_photo">Première</string>
-		<string name="last_photo">Dernière</string>
+		<string name="first_photo">Déb.</string>
+		<string name="last_photo">Fin</string>
 		<string name="choose_photo_number">Accès direct à la photo no.</string>
 		<string name="choose_photo_number_title">Accès direct à la photo no.</string>
 		<string name="cancel">Annuler</string>

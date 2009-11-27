@@ -80,7 +80,7 @@
         <string name="show_albums_title">G2Android Albums</string>
         <string name="show_gallery_title">G2Android Gallery</string>
 		<string name="view_album_pictures">View this album pictures !</string>
-		<string name="current_version">Version : 1.4.0</string>
+		<string name="current_version">Version : 1.4.1</string>
 		<string name="project_home">Project Home : </string>
 		<string name="album_is_empty">This album does not contain any pictures !</string>
 		<string name="type_new_subalbum_name">Type in your new subalbum name : </string>
