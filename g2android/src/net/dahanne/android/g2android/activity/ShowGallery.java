@@ -84,15 +84,22 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 		super.onCreate(savedInstanceState);
 		galleryUrl = Settings.getGalleryUrl(this);
 		albumName = (Integer) getIntent().getSerializableExtra(G2ANDROID_ALBUM);
-		progressDialog = ProgressDialog.show(ShowGallery.this,
-				getString(R.string.please_wait),
-				getString(R.string.loading_first_photos_from_album), true);
 		Album album = G2DataUtils.findAlbumFromAlbumName(
 				((G2AndroidApplication) getApplication()).getRootAlbum(),
 				albumName);
 		setTitle(album.getTitle());
-		new FetchImagesTask().execute(galleryUrl, albumName);
 
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		if (progressDialog == null) {
+			progressDialog = ProgressDialog.show(ShowGallery.this,
+					getString(R.string.please_wait),
+					getString(R.string.loading_first_photos_from_album), true);
+		}
+		new FetchImagesTask().execute(galleryUrl, albumName);
 	}
 
 	public class ImageAdapter extends BaseAdapter {
@@ -167,9 +174,8 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 		File potentiallyAlreadyDownloadedFile = new File(Settings
 				.getG2AndroidCachePath(this), g2Picture.getTitle());
 		mSwitcher.setId(position);
-		//remember the position where we were
-		((G2AndroidApplication) getApplication())
-		.setCurrentPosition(position);
+		// remember the position where we were
+		((G2AndroidApplication) getApplication()).setCurrentPosition(position);
 		// only download the picture IF it has not yet been downloaded
 		if (g2Picture.getResizedImagePath() != null
 				|| potentiallyAlreadyDownloadedFile.exists()
@@ -340,15 +346,19 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 
 		@Override
 		protected void onPostExecute(Object imagesProperties) {
-			progressDialog.dismiss();
+			if (progressDialog.isShowing()) {
+				progressDialog.dismiss();
+			}
 			if (imagesProperties == null) {
 				alertConnectionProblem(exceptionMessage, galleryUrl);
 			} else {
-
-				albumPictures
-						.addAll(G2DataUtils
-								.extractG2PicturesFromProperties((HashMap<String, String>) imagesProperties));
-				if (albumPictures.size() == 0) {
+				// first check to avoid reloading all the pictures
+				if (albumPictures.isEmpty()) {
+					albumPictures
+							.addAll(G2DataUtils
+									.extractG2PicturesFromProperties((HashMap<String, String>) imagesProperties));
+				}
+				if (albumPictures.isEmpty()) {
 					setContentView(R.layout.album_is_empty);
 				} else {
 					// we set up the view
@@ -497,7 +507,7 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 		startActivityForResult(intent, REQUEST_CODE_FULL_IMAGE);
 
 	}
-	
+
 	@Override
 	/**
 	 * this method comes with OnItemSelectedListener interface

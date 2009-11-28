@@ -189,6 +189,10 @@ public class ShowAlbums extends ListActivity implements OnItemClickListener {
 			new FetchAlbumTask().execute(galleryUrl);
 		}
 
+		// we have to clear the currentPosition in album as the user is going to
+		// choose another album
+		((G2AndroidApplication) getApplication()).setCurrentPosition(0);
+
 	}
 
 	@SuppressWarnings("unchecked")

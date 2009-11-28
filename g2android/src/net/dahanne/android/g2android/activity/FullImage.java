@@ -353,6 +353,8 @@ public class FullImage extends Activity implements OnGestureListener {
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
 			setResult(RESULT_OK);
+			((G2AndroidApplication) getApplication())
+					.setCurrentPosition(currentPosition);
 			this.finish();
 			return true;
 		}
