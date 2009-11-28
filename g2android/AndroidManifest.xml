@@ -25,7 +25,7 @@
 		<activity android:name=".activity.Settings" android:label="@string/settings_title" />
 		<activity android:name=".activity.About" android:label="@string/about_title" android:theme="@android:style/Theme.Dialog" />
 		<activity android:name=".activity.ShowAlbums" android:label="@string/show_albums_title" />
-		<activity android:name=".activity.ShowGallery" android:label="@string/show_gallery_title" />
+		<activity android:name=".activity.ShowGallery" android:label="@string/show_gallery_title"  android:configChanges="keyboardHidden|orientation" />
 		<activity android:name=".activity.FullImage" android:label="@string/full_image_title" android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
 		<activity android:name=".activity.FirstTime" android:label="@string/firsttime_title" />
 		<activity android:name=".activity.ChooseSubAlbumName" android:label="@string/choose_subalbum_name" android:theme="@android:style/Theme.Dialog" />
