@@ -185,9 +185,16 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 			BitmapDrawable bitmapDrawable = new BitmapDrawable(bitmap);
 			mSwitcher.setImageDrawable(bitmapDrawable);
 		} else {
+			String uriString;
 			String resizedName = g2Picture.getResizedName();
-			String uriString = Settings.getBaseUrl(ShowGallery.this)
-					+ resizedName;
+			// issue #23 : when there is no resized picture, we fetch the
+			// original picture
+			if (resizedName == null) {
+				uriString = Settings.getBaseUrl(ShowGallery.this)
+						+ g2Picture.getName();
+			} else {
+				uriString = Settings.getBaseUrl(ShowGallery.this) + resizedName;
+			}
 			Bitmap currentThumbBitmap = (Bitmap) gallery
 					.getItemAtPosition(position);
 			BitmapDrawable bitmapDrawable = new BitmapDrawable(
@@ -385,9 +392,17 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 						G2Picture g2Picture = albumPictures
 								.get(currentPosition);
 						String resizedName = g2Picture.getResizedName();
-						String uriString = Settings
-								.getBaseUrl(ShowGallery.this)
-								+ resizedName;
+						// issue #23 : when there is no resized picture, we
+						// fetch the
+						// original picture
+						String uriString;
+						if (resizedName == null) {
+							uriString = Settings.getBaseUrl(ShowGallery.this)
+									+ g2Picture.getName();
+						} else {
+							uriString = Settings.getBaseUrl(ShowGallery.this)
+									+ resizedName;
+						}
 						new ReplaceMainImageTask().execute(uriString,
 								mSwitcher, currentPosition, g2Picture);
 					}
@@ -461,7 +476,7 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 
 			progressDialog.dismiss();
 			if ((Integer) createdPhotoName != 0) {
-				toastAlbumSuccessfullyCreated(ShowGallery.this);
+				toastImageSuccessfullyAdded(ShowGallery.this);
 			} else {
 				alertConnectionProblem(exceptionMessage, galleryUrl);
 			}
