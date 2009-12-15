@@ -159,10 +159,11 @@ public class ShowAlbums extends ListActivity implements OnItemClickListener {
 		galleryUrl = Settings.getGalleryUrl(this);
 		// we're back in this activity to select a sub album or to see the
 		// pictures
-		if (albumName != null) {
+		Album rootAlbum = ((G2AndroidApplication) getApplication())
+				.getRootAlbum();
+		if (albumName != null && rootAlbum != null) {
 			// we recover the selected album
-			Album selectedAlbum = G2DataUtils.findAlbumFromAlbumName(
-					((G2AndroidApplication) getApplication()).getRootAlbum(),
+			Album selectedAlbum = G2DataUtils.findAlbumFromAlbumName(rootAlbum,
 					albumName);
 			// we create a fake album, it will be used to choose to view the
 			// pictures of the album

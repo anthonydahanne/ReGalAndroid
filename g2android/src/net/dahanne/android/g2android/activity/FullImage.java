@@ -120,9 +120,16 @@ public class FullImage extends Activity implements OnGestureListener {
 		}
 		// only download the picture IF it has not yet been downloaded
 		else {
+			String uriString;
 			String resizedName = g2Picture.getResizedName();
-			String uriString = Settings.getBaseUrl(FullImage.this)
-					+ resizedName;
+			// issue #23 : when there is no resized picture, we fetch the
+			// original picture
+			if (resizedName == null) {
+				uriString = Settings.getBaseUrl(FullImage.this)
+						+ g2Picture.getName();
+			} else {
+				uriString = Settings.getBaseUrl(FullImage.this) + resizedName;
+			}
 			progressDialog = ProgressDialog.show(FullImage.this,
 					getString(R.string.please_wait),
 					getString(R.string.loading_photo), true);
