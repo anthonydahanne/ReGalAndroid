@@ -18,9 +18,12 @@
 package net.dahanne.android.g2android.activity;
 
 import net.dahanne.android.g2android.R;
+import net.dahanne.android.g2android.model.Album;
+import net.dahanne.android.g2android.utils.DBHelper;
 import net.dahanne.android.g2android.utils.FileUtils;
 import net.dahanne.android.g2android.utils.G2ConnectionUtils;
 import net.dahanne.android.g2android.utils.GalleryConnectionException;
+import net.dahanne.android.g2android.utils.DBHelper.G2AndroidContext;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -69,6 +72,13 @@ public class Start extends Activity implements OnClickListener {
 		if (!FirstTimePreference.getFirsTime(this)) {
 			startActivity(new Intent(this, FirstTime.class));
 		}
+
+		// TEST
+		DBHelper dbHelper = new DBHelper(this);
+		dbHelper.insert(new G2AndroidContext(0, 43, new Album(), 12));
+
+		G2AndroidContext g2c = dbHelper.getLast();
+		g2c.toString();
 
 	}
 
