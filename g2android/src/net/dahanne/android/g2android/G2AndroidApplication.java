@@ -11,6 +11,7 @@ public class G2AndroidApplication extends Application {
 	private List<G2Picture> pictures = new ArrayList<G2Picture>();
 	private Album rootAlbum;
 	private int currentPosition;
+	private int albumName;
 
 	public void setRootAlbum(Album rootAlbum) {
 		this.rootAlbum = rootAlbum;
@@ -38,5 +39,13 @@ public class G2AndroidApplication extends Application {
 
 	public int getCurrentPosition() {
 		return currentPosition;
+	}
+
+	public void setAlbumName(int albumName) {
+		this.albumName = albumName;
+	}
+
+	public int getAlbumName() {
+		return albumName;
 	}
 }

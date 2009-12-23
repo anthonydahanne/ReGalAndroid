@@ -8,9 +8,18 @@ import net.dahanne.android.g2android.model.Album;
 import net.dahanne.android.g2android.model.G2Picture;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 public class G2DataUtilsTest extends Assert {
+
+	private G2DataUtils g2DataUtils;
+
+	@Before
+	public void before() {
+		g2DataUtils = G2DataUtils.getInstance();
+	}
+
 	@Test
 	public void findAlbumFromAlbumNameTest() {
 		Album rootAlbum = new Album();
@@ -33,10 +42,10 @@ public class G2DataUtilsTest extends Assert {
 		Album album311 = new Album();
 		album311.setName(311);
 		album31.getChildren().add(album311);
-		Album albumFound = G2DataUtils.findAlbumFromAlbumName(rootAlbum, 311);
+		Album albumFound = g2DataUtils.findAlbumFromAlbumName(rootAlbum, 311);
 		assertEquals(album311, albumFound);
 
-		assertNull(G2DataUtils.findAlbumFromAlbumName(rootAlbum, 312));
+		assertNull(g2DataUtils.findAlbumFromAlbumName(rootAlbum, 312));
 
 	}
 
@@ -70,7 +79,7 @@ public class G2DataUtilsTest extends Assert {
 				.put("baseurl",
 						"http://g2.dahanne.net/main.php?g2_view=core.DownloadItem&g2_itemId=");
 
-		Collection<G2Picture> pictures = G2DataUtils
+		Collection<G2Picture> pictures = g2DataUtils
 				.extractG2PicturesFromProperties(fetchImages);
 		G2Picture picture = pictures.iterator().next();
 		assertEquals(150, picture.getThumbHeight());
@@ -113,7 +122,7 @@ public class G2DataUtilsTest extends Assert {
 		albumsProperties.put("album_count", "9");
 		albumsProperties.put("status", "0");
 
-		Collection<Album> albums = G2DataUtils.extractAlbumFromProperties(
+		Collection<Album> albums = g2DataUtils.extractAlbumFromProperties(
 				albumsProperties).values();
 		Album album = albums.iterator().next();
 		assertEquals(1, album.getId());
@@ -165,7 +174,7 @@ public class G2DataUtilsTest extends Assert {
 		album.setParentName(10);
 		albums.put(album.getId(), album);
 
-		Album finalALbum = G2DataUtils.organizeAlbumsHierarchy(albums);
+		Album finalALbum = g2DataUtils.organizeAlbumsHierarchy(albums);
 		assertEquals(10, finalALbum.getName());
 		assertEquals(20, finalALbum.getChildren().get(0).getName());
 		assertEquals(4, finalALbum.getChildren().get(1).getName());

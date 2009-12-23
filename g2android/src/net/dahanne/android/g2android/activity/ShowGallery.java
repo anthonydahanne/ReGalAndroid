@@ -18,7 +18,6 @@
 package net.dahanne.android.g2android.activity;
 
 import java.io.File;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -28,25 +27,26 @@ import net.dahanne.android.g2android.G2AndroidApplication;
 import net.dahanne.android.g2android.R;
 import net.dahanne.android.g2android.model.Album;
 import net.dahanne.android.g2android.model.G2Picture;
-import net.dahanne.android.g2android.utils.FileHandlingException;
+import net.dahanne.android.g2android.tasks.AddPhotoTask;
+import net.dahanne.android.g2android.tasks.CreateAlbumTask;
+import net.dahanne.android.g2android.tasks.ReplaceMainImageTask;
 import net.dahanne.android.g2android.utils.FileUtils;
 import net.dahanne.android.g2android.utils.G2ConnectionUtils;
 import net.dahanne.android.g2android.utils.G2DataUtils;
 import net.dahanne.android.g2android.utils.GalleryConnectionException;
-import net.dahanne.android.g2android.utils.UriUtils;
+import net.dahanne.android.g2android.utils.ShowUtils;
 import net.dahanne.android.g2android.utils.modified_android_source.AsyncTask;
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -60,7 +60,6 @@ import android.widget.BaseAdapter;
 import android.widget.Gallery;
 import android.widget.ImageSwitcher;
 import android.widget.ImageView;
-import android.widget.Toast;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ViewSwitcher.ViewFactory;
 
@@ -74,32 +73,47 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 	private static final String TAG = "ShowGallery";
 	private ImageSwitcher mSwitcher;
 	private Gallery gallery;
-	private int albumName;
-	private String galleryUrl;
-	private Dialog progressDialog;
+	private ProgressDialog progressDialog;
+	private boolean mustLogIn;
 
-	@SuppressWarnings("unchecked")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		galleryUrl = Settings.getGalleryUrl(this);
-		albumName = (Integer) getIntent().getSerializableExtra(G2ANDROID_ALBUM);
-		Album album = G2DataUtils.findAlbumFromAlbumName(
-				((G2AndroidApplication) getApplication()).getRootAlbum(),
-				albumName);
-		setTitle(album.getTitle());
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	protected void onResume() {
+		super.onResume();
+		Log.i(TAG, "resuming");
+
+		if (((G2AndroidApplication) getApplication()).getRootAlbum() == null) {
+			Log.i(TAG, "rootAlbum is null");
+			// we recover the context from the database
+			mustLogIn = ShowUtils.getInstance()
+					.recoverContextFromDatabase(this);
+		}
+		// we write the title
+		if (getTitle() == null || getTitle().equals("")
+				|| getTitle().equals(getString(R.string.show_gallery_title))) {
+			Album album = G2DataUtils.getInstance().findAlbumFromAlbumName(
+					((G2AndroidApplication) getApplication()).getRootAlbum(),
+					((G2AndroidApplication) getApplication()).getAlbumName());
+			setTitle(album.getTitle());
+		}
+		progressDialog = ProgressDialog.show(ShowGallery.this,
+				getString(R.string.please_wait),
+				getString(R.string.loading_first_photos_from_album), true);
+		new FetchImagesTask().execute(Settings.getGalleryUrl(this),
+				((G2AndroidApplication) getApplication()).getAlbumName());
 
 	}
 
 	@Override
-	protected void onResume() {
-		super.onResume();
-		if (progressDialog == null) {
-			progressDialog = ProgressDialog.show(ShowGallery.this,
-					getString(R.string.please_wait),
-					getString(R.string.loading_first_photos_from_album), true);
-		}
-		new FetchImagesTask().execute(galleryUrl, albumName);
+	protected void onPause() {
+		super.onPause();
+		ShowUtils.getInstance().saveContextToDatabase(this);
+
 	}
 
 	public class ImageAdapter extends BaseAdapter {
@@ -144,7 +158,8 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 							+ thumbName;
 					try {
 						File imageFileOnExternalDirectory = FileUtils
-								.getFileFromGallery(ShowGallery.this,
+								.getInstance().getFileFromGallery(
+										ShowGallery.this,
 										THUMB_PREFIX + g2Picture.getTitle(),
 										g2Picture.getForceExtension(),
 										uriString, true);
@@ -156,7 +171,10 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 										.getPath());
 						bitmapsCache.put(position, downloadImage);
 					} catch (Exception e) {
-						alertConnectionProblem(e.getMessage(), galleryUrl);
+						ShowUtils.getInstance().alertConnectionProblem(
+								e.getMessage(),
+								Settings.getGalleryUrl(ShowGallery.this),
+								ShowGallery.this);
 					}
 				}
 
@@ -200,8 +218,8 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 			BitmapDrawable bitmapDrawable = new BitmapDrawable(
 					currentThumbBitmap);
 			mSwitcher.setImageDrawable(bitmapDrawable);
-			new ReplaceMainImageTask().execute(uriString, mSwitcher, position,
-					g2Picture);
+			new ReplaceMainImageTask(this, progressDialog, gallery).execute(
+					uriString, mSwitcher, position, g2Picture);
 		}
 	}
 
@@ -213,55 +231,6 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 				LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
 		return i;
 
-	}
-
-	@SuppressWarnings("unchecked")
-	private class ReplaceMainImageTask extends AsyncTask {
-		private ImageSwitcher imageSwitcher = null;
-		private int originalPosition;
-		private String exceptionMessage = null;
-
-		@Override
-		protected Bitmap doInBackground(Object... urls) {
-			String fileUrl = (String) urls[0];
-			imageSwitcher = (ImageSwitcher) urls[1];
-			originalPosition = (Integer) urls[2];
-			G2Picture g2Picture = (G2Picture) urls[3];
-			Bitmap downloadImage = null;
-			// make sure the user is watching the picture
-			if (originalPosition == gallery.getSelectedItemPosition()) {
-				try {
-					File imageFileOnExternalDirectory = FileUtils
-							.getFileFromGallery(ShowGallery.this, g2Picture
-									.getTitle(), g2Picture.getForceExtension(),
-									fileUrl, true);
-					downloadImage = BitmapFactory
-							.decodeFile(imageFileOnExternalDirectory.getPath());
-					g2Picture.setResizedImagePath(imageFileOnExternalDirectory
-							.getPath());
-
-				} catch (GalleryConnectionException e) {
-					exceptionMessage = e.getMessage();
-				} catch (FileHandlingException e) {
-					exceptionMessage = e.getMessage();
-				}
-			}
-			return downloadImage;
-		}
-
-		@Override
-		protected void onPostExecute(Object result) {
-			if (result == null) {
-				alertConnectionProblem(exceptionMessage, galleryUrl);
-			}
-			// we check if the user is still looking at the same photo
-			// if not, we don't refresh the main view
-			if (result != null
-					&& originalPosition == gallery.getSelectedItemPosition()) {
-				imageSwitcher.setImageDrawable(new BitmapDrawable(
-						(Bitmap) result));
-			}
-		}
 	}
 
 	@Override
@@ -298,7 +267,12 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 	protected void onActivityResult(int requestCode, int resultCode,
 			Intent intent) {
 		super.onActivityResult(requestCode, resultCode, intent);
-
+		if (((G2AndroidApplication) getApplication()).getRootAlbum() == null) {
+			// rootAlbum is null ? the app died
+			// we recover the context from the database
+			mustLogIn = ShowUtils.getInstance()
+					.recoverContextFromDatabase(this);
+		}
 		if (resultCode == RESULT_OK) {
 			switch (requestCode) {
 			case REQUEST_CODE_ADD_PHOTO:
@@ -308,7 +282,10 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 					progressDialog = ProgressDialog.show(this,
 							getString(R.string.please_wait),
 							getString(R.string.adding_photo), true);
-					new AddPhotoTask().execute(galleryUrl, albumName, photoUri);
+					new AddPhotoTask(this, progressDialog).execute(Settings
+							.getGalleryUrl(this),
+							((G2AndroidApplication) getApplication())
+									.getAlbumName(), photoUri, mustLogIn);
 
 				}
 				break;
@@ -318,8 +295,10 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 						getString(R.string.please_wait),
 						getString(R.string.creating_new_album), true);
 
-				new CreateAlbumTask().execute(galleryUrl, albumName,
-						subalbumName);
+				new CreateAlbumTask(this, progressDialog).execute(Settings
+						.getGalleryUrl(this),
+						((G2AndroidApplication) getApplication())
+								.getAlbumName(), subalbumName);
 				break;
 
 			case REQUEST_CODE_FULL_IMAGE:
@@ -338,33 +317,47 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 
 		@Override
 		protected HashMap<String, String> doInBackground(Object... parameters) {
-			galleryUrl = (String) parameters[0];
-			albumName = (Integer) parameters[1];
+			String galleryUrl = (String) parameters[0];
+			int albumName = (Integer) parameters[1];
 			HashMap<String, String> imagesProperties = null;
 			try {
-				imagesProperties = G2ConnectionUtils.fetchImages(galleryUrl,
-						albumName);
+				if (mustLogIn) {
+					G2ConnectionUtils.getInstance().loginToGallery(galleryUrl,
+							Settings.getUsername(ShowGallery.this),
+							Settings.getPassword(ShowGallery.this));
+					mustLogIn = false;
+				}
+				imagesProperties = G2ConnectionUtils.getInstance().fetchImages(
+						galleryUrl, albumName);
 			} catch (GalleryConnectionException e) {
 				exceptionMessage = e.getMessage();
+				Log.d(TAG, "exception mess" + exceptionMessage);
 			}
+
+			// Log.d(TAG, imagesProperties.toString());
+
 			return imagesProperties;
 
 		}
 
 		@Override
 		protected void onPostExecute(Object imagesProperties) {
-			if (progressDialog.isShowing()) {
-				progressDialog.dismiss();
-			}
+			// if (progressDialog.isShowing()) {
+			progressDialog.dismiss();
+			// }
 			if (imagesProperties == null) {
-				alertConnectionProblem(exceptionMessage, galleryUrl);
+				ShowUtils.getInstance().alertConnectionProblem(
+						exceptionMessage,
+						Settings.getGalleryUrl(ShowGallery.this),
+						ShowGallery.this);
 			} else {
 				// first check to avoid reloading all the pictures
-				if (albumPictures.isEmpty()) {
-					albumPictures
-							.addAll(G2DataUtils
-									.extractG2PicturesFromProperties((HashMap<String, String>) imagesProperties));
-				}
+				// if (albumPictures.isEmpty()) {
+				albumPictures.clear();
+				albumPictures.addAll(G2DataUtils.getInstance()
+						.extractG2PicturesFromProperties(
+								(HashMap<String, String>) imagesProperties));
+				// }
 				if (albumPictures.isEmpty()) {
 					setContentView(R.layout.album_is_empty);
 				} else {
@@ -403,113 +396,14 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 							uriString = Settings.getBaseUrl(ShowGallery.this)
 									+ resizedName;
 						}
-						new ReplaceMainImageTask().execute(uriString,
+						new ReplaceMainImageTask(ShowGallery.this,
+								progressDialog, gallery).execute(uriString,
 								mSwitcher, currentPosition, g2Picture);
 					}
 
 				}
 			}
 		}
-	}
-
-	@SuppressWarnings("unchecked")
-	private class CreateAlbumTask extends AsyncTask {
-		private String exceptionMessage;
-
-		@Override
-		protected Integer doInBackground(Object... parameters) {
-			galleryUrl = (String) parameters[0];
-			albumName = (Integer) parameters[1];
-			String subalbumName = (String) parameters[2];
-			try {
-				int createdAlbumName = G2ConnectionUtils.createNewAlbum(
-						galleryUrl, albumName, subalbumName, subalbumName,
-						subalbumName);
-				return createdAlbumName;
-			} catch (GalleryConnectionException e) {
-				exceptionMessage = e.getMessage();
-			}
-			return null;
-		}
-
-		@Override
-		protected void onPostExecute(Object createdAlbumName) {
-
-			progressDialog.dismiss();
-			if ((Integer) createdAlbumName != 0) {
-				toastAlbumSuccessfullyCreated(ShowGallery.this);
-			} else {
-				alertConnectionProblem(exceptionMessage, galleryUrl);
-			}
-
-		}
-	}
-
-	@SuppressWarnings("unchecked")
-	private class AddPhotoTask extends AsyncTask {
-		private String exceptionMessage;
-
-		@Override
-		protected Integer doInBackground(Object... parameters) {
-			galleryUrl = (String) parameters[0];
-			albumName = (Integer) parameters[1];
-			Uri photoUri = (Uri) parameters[2];
-			Integer imageCreatedName = null;
-			try {
-				String mimeType = ShowGallery.this.getContentResolver()
-						.getType(photoUri);
-				InputStream openInputStream = ShowGallery.this
-						.getContentResolver().openInputStream(photoUri);
-				File imageFile = UriUtils.createFileFromUri(openInputStream,
-						mimeType);
-				imageCreatedName = G2ConnectionUtils.sendImageToGallery(
-						galleryUrl, albumName, imageFile);
-				imageFile.delete();
-			} catch (Exception e) {
-				exceptionMessage = e.getMessage();
-			}
-			return imageCreatedName;
-		}
-
-		@Override
-		protected void onPostExecute(Object createdPhotoName) {
-
-			progressDialog.dismiss();
-			if ((Integer) createdPhotoName != 0) {
-				toastImageSuccessfullyAdded(ShowGallery.this);
-			} else {
-				alertConnectionProblem(exceptionMessage, galleryUrl);
-			}
-
-		}
-	}
-
-	protected void alertConnectionProblem(String exceptionMessage,
-			String galleryUrl) {
-		AlertDialog.Builder builder = new AlertDialog.Builder(ShowGallery.this);
-		// if there was an exception thrown, show it, or say to verify
-		// settings
-		String message = getString(R.string.not_connected) + galleryUrl
-				+ getString(R.string.exception_thrown) + exceptionMessage;
-		builder.setTitle(R.string.problem).setMessage(message)
-				.setPositiveButton(R.string.ok,
-						new DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface dialog, int id) {
-								dialog.cancel();
-							}
-						});
-		AlertDialog alert = builder.create();
-		alert.show();
-	}
-
-	protected void toastAlbumSuccessfullyCreated(Context context) {
-		Toast.makeText(context, getString(R.string.album_successfully_created),
-				Toast.LENGTH_LONG).show();
-	}
-
-	protected void toastImageSuccessfullyAdded(Context context) {
-		Toast.makeText(context, getString(R.string.image_successfully_created),
-				Toast.LENGTH_LONG).show();
 	}
 
 	@Override
@@ -528,6 +422,26 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 	 * this method comes with OnItemSelectedListener interface
 	 */
 	public void onNothingSelected(AdapterView<?> parent) {
+	}
+
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		// the user tries to get back to the parent album
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+			Album currentAlbum = G2DataUtils.getInstance()
+					.findAlbumFromAlbumName(
+							((G2AndroidApplication) getApplication())
+									.getRootAlbum(),
+							((G2AndroidApplication) getApplication())
+									.getAlbumName());
+			if (currentAlbum.getChildren().isEmpty()) {
+				((G2AndroidApplication) getApplication())
+						.setAlbumName(currentAlbum.getParentName());
+			}
+			this.finish();
+			return true;
+		}
+		return false;
 	}
 
 }

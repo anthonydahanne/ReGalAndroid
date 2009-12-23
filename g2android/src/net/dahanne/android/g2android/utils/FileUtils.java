@@ -16,7 +16,20 @@ import android.os.Environment;
 
 public class FileUtils {
 
-	public static File getFileFromGallery(Context context, String fileName,
+	private static FileUtils fileUtils = new FileUtils();
+
+	public static FileUtils getInstance() {
+		return fileUtils;
+	}
+
+	private FileUtils() {
+
+	}
+
+	private G2ConnectionUtils g2ConnectionUtils = G2ConnectionUtils
+			.getInstance();
+
+	public File getFileFromGallery(Context context, String fileName,
 			String extension, String imageUrl, boolean isTemporary)
 			throws GalleryConnectionException, FileHandlingException {
 
@@ -47,7 +60,7 @@ public class FileUtils {
 				}
 
 				imageFileOnExternalDirectory = new File(savePath, fileName);
-				inputStreamFromUrl = G2ConnectionUtils
+				inputStreamFromUrl = g2ConnectionUtils
 						.getInputStreamFromUrl(imageUrl);
 			} else {
 				throw new FileHandlingException(context
@@ -71,7 +84,7 @@ public class FileUtils {
 		return imageFileOnExternalDirectory;
 	}
 
-	public static void clearCache(Context context) {
+	public void clearCache(Context context) {
 		File tempG2AndroidPath = new File(Settings
 				.getG2AndroidCachePath(context));
 		if (tempG2AndroidPath.exists()) {

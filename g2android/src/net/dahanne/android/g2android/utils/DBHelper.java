@@ -1,13 +1,5 @@
 package net.dahanne.android.g2android.utils;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.OutputStream;
-import java.io.StreamCorruptedException;
-
 import net.dahanne.android.g2android.model.Album;
 import android.content.ContentValues;
 import android.content.Context;
@@ -24,7 +16,7 @@ public class DBHelper {
 
 	private static final String CLASSNAME = DBHelper.class.getSimpleName();
 	private static final String[] COLS = new String[] { "_id",
-			"current_position", "root_album", "album_name" };
+			"current_position", "root_album", "album_name", "is_logged_in" };
 
 	private SQLiteDatabase db;
 	private final DBOpenHelper dbOpenHelper;
@@ -39,53 +31,24 @@ public class DBHelper {
 		public int currentPosition;
 		public Album rootAlbum;
 		public int albumName;
+		public short isLoggedIn;
 
 		public G2AndroidContext() {
 		}
 
 		public G2AndroidContext(final long id, final int currentPosition,
-				final Album rootAlbum, final int albumName) {
+				final Album rootAlbum, final int albumName,
+				final boolean isLoggedIn) {
 			this.id = id;
 			this.currentPosition = currentPosition;
 			this.rootAlbum = rootAlbum;
 			this.albumName = albumName;
+			this.isLoggedIn = isLoggedIn ? (short) 1 : 0;
 		}
 
 		@Override
 		public String toString() {
 			return this.id + " " + this.currentPosition + " " + this.albumName;
-		}
-
-		public String getRootAlbum() {
-			OutputStream output = new ByteArrayOutputStream();
-			try {
-				ObjectOutputStream oos = new ObjectOutputStream(output);
-				oos.writeObject(rootAlbum);
-				oos.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			return output.toString();
-
-		}
-
-		public void setRootAlbum(String serializedRootAlbum) {
-
-			ByteArrayInputStream bais = new ByteArrayInputStream(
-					serializedRootAlbum.getBytes());
-			ObjectInputStream ois;
-			try {
-				ois = new ObjectInputStream(bais);
-				rootAlbum = (Album) ois.readObject();
-				ois.close();
-			} catch (StreamCorruptedException e) {
-				// Log.e("PLOUF", e.getLocalizedMessage());
-			} catch (IOException e) {
-				e.printStackTrace();
-			} catch (ClassNotFoundException e) {
-				e.printStackTrace();
-			}
-
 		}
 	}
 
@@ -93,7 +56,7 @@ public class DBHelper {
 
 		private static final String DB_CREATE = "CREATE TABLE "
 				+ DBHelper.DB_TABLE
-				+ " (_id INTEGER PRIMARY KEY, current_position INTEGER, root_album TEXT, album_name INTEGER);";
+				+ " (_id INTEGER PRIMARY KEY, current_position INTEGER, root_album BLOB, album_name INTEGER, is_logged_in SHORT );";
 
 		public DBOpenHelper(final Context context) {
 			super(context, DBHelper.DB_NAME, null, DBHelper.DB_VERSION);
@@ -146,22 +109,29 @@ public class DBHelper {
 	public void insert(final G2AndroidContext g2AndroidContext) {
 		ContentValues values = new ContentValues();
 		values.put("current_position", g2AndroidContext.currentPosition);
-		values.put("root_album", g2AndroidContext.getRootAlbum());
+		values.put("root_album", g2AndroidContext.rootAlbum.serialize());
 		values.put("album_name", g2AndroidContext.albumName);
+		values.put("is_logged_in", g2AndroidContext.isLoggedIn);
+
 		this.db.insert(DBHelper.DB_TABLE, null, values);
 	}
 
 	public void update(final G2AndroidContext g2AndroidContext) {
 		ContentValues values = new ContentValues();
 		values.put("current_position", g2AndroidContext.currentPosition);
-		values.put("root_album", g2AndroidContext.getRootAlbum());
+		values.put("root_album", g2AndroidContext.rootAlbum.serialize());
 		values.put("album_name", g2AndroidContext.albumName);
+		values.put("is_logged_in", g2AndroidContext.isLoggedIn);
 		this.db.update(DBHelper.DB_TABLE, values, "_id=" + g2AndroidContext.id,
 				null);
 	}
 
 	public void delete(final long id) {
 		this.db.delete(DBHelper.DB_TABLE, "_id=" + id, null);
+	}
+
+	public void deleteAll() {
+		this.db.delete(DBHelper.DB_TABLE, null, null);
 	}
 
 	// public void delete(final String zip) {
@@ -179,8 +149,11 @@ public class DBHelper {
 				g2AndroidContext = new G2AndroidContext();
 				g2AndroidContext.id = c.getLong(0);
 				g2AndroidContext.currentPosition = c.getInt(1);
-				g2AndroidContext.setRootAlbum(c.getString(2));
+				g2AndroidContext.rootAlbum = Album.unserializeAlbum(c
+						.getBlob(2));
 				g2AndroidContext.albumName = c.getInt(3);
+				g2AndroidContext.isLoggedIn = c.getShort(4);
+
 			}
 		} catch (SQLException e) {
 			// Log.v(Constants.LOGTAG, DBHelper.CLASSNAME, e);

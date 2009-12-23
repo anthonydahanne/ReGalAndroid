@@ -18,12 +18,10 @@
 package net.dahanne.android.g2android.activity;
 
 import net.dahanne.android.g2android.R;
-import net.dahanne.android.g2android.model.Album;
 import net.dahanne.android.g2android.utils.DBHelper;
 import net.dahanne.android.g2android.utils.FileUtils;
 import net.dahanne.android.g2android.utils.G2ConnectionUtils;
 import net.dahanne.android.g2android.utils.GalleryConnectionException;
-import net.dahanne.android.g2android.utils.DBHelper.G2AndroidContext;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -50,14 +48,27 @@ public class Start extends Activity implements OnClickListener {
 	private TextView loggedInAsText;
 	private ProgressDialog progressDialog;
 	private String galleryUrl;
+	private DBHelper dbHelper;
+	private G2ConnectionUtils g2ConnectionUtils = G2ConnectionUtils
+			.getInstance();
+	private FileUtils fileUtils = FileUtils.getInstance();
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+		dbHelper.cleanup();
+	}
 
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		dbHelper = new DBHelper(this);
+		dbHelper.deleteAll();
+
 		setContentView(R.layout.main);
 		if (Settings.isCacheClearedEverySession(this)) {
-			FileUtils.clearCache(this);
+			fileUtils.clearCache(this);
 		}
 
 		enterGalleryButton = (Button) findViewById(R.id.enter_gallery_button);
@@ -74,11 +85,10 @@ public class Start extends Activity implements OnClickListener {
 		}
 
 		// TEST
-		DBHelper dbHelper = new DBHelper(this);
-		dbHelper.insert(new G2AndroidContext(0, 43, new Album(), 12));
-
-		G2AndroidContext g2c = dbHelper.getLast();
-		g2c.toString();
+		// dbHelper.insert(new G2AndroidContext(0, 43, new Album(), 12));
+		//
+		// G2AndroidContext g2c = dbHelper.getLast();
+		// g2c.toString();
 
 	}
 
@@ -169,7 +179,7 @@ public class Start extends Activity implements OnClickListener {
 					// are supplied !
 					// This is done once and for all as the session cookie will
 					// be stored !
-					authToken = G2ConnectionUtils.loginToGallery(galleryUrl,
+					authToken = g2ConnectionUtils.loginToGallery(galleryUrl,
 							user, password);
 					galleryUrlIsValid = true;
 				}
@@ -177,7 +187,7 @@ public class Start extends Activity implements OnClickListener {
 				// any access
 				if (authToken == null) {
 					authToken = NOTLOGGEDIN;
-					galleryUrlIsValid = G2ConnectionUtils
+					galleryUrlIsValid = g2ConnectionUtils
 							.checkGalleryUrlIsValid(galleryUrl);
 				}
 			} catch (GalleryConnectionException e) {

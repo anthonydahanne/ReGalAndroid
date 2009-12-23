@@ -17,7 +17,13 @@
  */
 package net.dahanne.android.g2android.model;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.io.StreamCorruptedException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -200,4 +206,40 @@ public class Album implements Serializable {
 
 		return new StringBuilder().append(title).toString();
 	}
+
+	/**
+	 * @param myAlbum
+	 */
+	public byte[] serialize() {
+		ByteArrayOutputStream output = new ByteArrayOutputStream();
+		try {
+			ObjectOutputStream oos = new ObjectOutputStream(output);
+			oos.writeObject(this);
+			oos.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return output.toByteArray();
+
+	}
+
+	public static Album unserializeAlbum(byte[] serializedAlbum) {
+		Album album = null;
+		try {
+			ByteArrayInputStream bais = new ByteArrayInputStream(
+					serializedAlbum);
+			ObjectInputStream ois = new ObjectInputStream(bais);
+			album = (Album) ois.readObject();
+			ois.close();
+		} catch (StreamCorruptedException e) {
+			// Log.e("PLOUF", e.getLocalizedMessage());
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		return album;
+
+	}
+
 }

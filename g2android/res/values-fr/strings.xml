@@ -81,7 +81,7 @@
 
 		<string name="loading_photo">En train de charger l\'image ...</string>
 		<string name="showing_picture">Image en cours : </string>
-		<string name="no_more_pictures">Pas d'autres photos dans l\'album</string>
+		<string name="no_more_pictures">Pas d\'autres photos dans l\'album</string>
 
 	<!-- New strings since 1.3.0 -->
 		<string name="share_image_title">Partager l\'url de la photo</string>

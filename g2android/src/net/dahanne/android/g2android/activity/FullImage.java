@@ -73,6 +73,7 @@ public class FullImage extends Activity implements OnGestureListener {
 	private Dialog progressDialog;
 	private GestureDetector gestureScanner;
 	private Toast toast;
+	private FileUtils fileUtils = FileUtils.getInstance();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -147,7 +148,7 @@ public class FullImage extends Activity implements OnGestureListener {
 			G2Picture g2Picture = (G2Picture) urls[1];
 			Bitmap downloadImage = null;
 			try {
-				File imageFileOnExternalDirectory = FileUtils
+				File imageFileOnExternalDirectory = fileUtils
 						.getFileFromGallery(FullImage.this, g2Picture
 								.getTitle(), g2Picture.getForceExtension(),
 								fileUrl, true);
@@ -236,7 +237,7 @@ public class FullImage extends Activity implements OnGestureListener {
 			G2Picture g2Picture = (G2Picture) urls[0];
 			File downloadImage = null;
 			try {
-				downloadImage = FileUtils.getFileFromGallery(FullImage.this,
+				downloadImage = fileUtils.getFileFromGallery(FullImage.this,
 						g2Picture.getTitle(), g2Picture.getForceExtension(),
 						Settings.getBaseUrl(FullImage.this)
 								+ g2Picture.getName(), false);

@@ -36,13 +36,25 @@ import org.apache.commons.lang.StringEscapeUtils;
  */
 public class G2DataUtils {
 
+	private G2ConnectionUtils g2ConnectionUtils = G2ConnectionUtils
+			.getInstance();
+	private static G2DataUtils g2DataUtils = new G2DataUtils();
+
+	public static G2DataUtils getInstance() {
+		return g2DataUtils;
+	}
+
+	private G2DataUtils() {
+
+	}
+
 	/**
 	 * This is where we convert the infos from the gallery to G2Picture objects
 	 * 
 	 * @param fetchImages
 	 * @return
 	 */
-	public static Collection<G2Picture> extractG2PicturesFromProperties(
+	public Collection<G2Picture> extractG2PicturesFromProperties(
 			HashMap<String, String> fetchImages) {
 		Map<Integer, G2Picture> picturesMap = new HashMap<Integer, G2Picture>();
 		List<Integer> tmpImageNumbers = new ArrayList<Integer>();
@@ -132,7 +144,7 @@ public class G2DataUtils {
 
 	}
 
-	public static Album findAlbumFromAlbumName(Album rootAlbum, int i) {
+	public Album findAlbumFromAlbumName(Album rootAlbum, int i) {
 		if (rootAlbum.getName() == i) {
 			return rootAlbum;
 		}
@@ -149,9 +161,10 @@ public class G2DataUtils {
 		return null;
 	}
 
-	public static Album retrieveRootAlbumAndItsHierarchy(String galleryUrl)
+	public Album retrieveRootAlbumAndItsHierarchy(String galleryUrl)
 			throws GalleryConnectionException {
-		HashMap<String, String> albumsProperties = G2ConnectionUtils.fetchAlbums(galleryUrl);
+		HashMap<String, String> albumsProperties = g2ConnectionUtils
+				.fetchAlbums(galleryUrl);
 
 		Map<Integer, Album> nonSortedAlbums = extractAlbumFromProperties(albumsProperties);
 		Album rootAlbum = organizeAlbumsHierarchy(nonSortedAlbums);
@@ -166,7 +179,7 @@ public class G2DataUtils {
 	 * @param albumsProperties
 	 * @return List<Album>
 	 */
-	public static Map<Integer, Album> extractAlbumFromProperties(
+	public Map<Integer, Album> extractAlbumFromProperties(
 			HashMap<String, String> albumsProperties) {
 		int albumNumber = 0;
 		Map<Integer, Album> albumsMap = new HashMap<Integer, Album>();
@@ -227,7 +240,7 @@ public class G2DataUtils {
 	 * @param albums
 	 * @return
 	 */
-	public static Album organizeAlbumsHierarchy(Map<Integer, Album> albums) {
+	public Album organizeAlbumsHierarchy(Map<Integer, Album> albums) {
 		Album rootAlbum = null;
 
 		for (Album album : albums.values()) {
@@ -256,7 +269,7 @@ public class G2DataUtils {
 
 	}
 
-	public static G2Picture extractG2PicturePropertiesFromProperties(
+	public G2Picture extractG2PicturePropertiesFromProperties(
 			HashMap<String, String> properties, long itemId) {
 		G2Picture picture = null;
 		picture = new G2Picture();

@@ -17,33 +17,29 @@
  */
 package net.dahanne.android.g2android.activity;
 
-import java.io.File;
-import java.io.InputStream;
 import java.util.List;
 
 import net.dahanne.android.g2android.G2AndroidApplication;
 import net.dahanne.android.g2android.R;
 import net.dahanne.android.g2android.model.Album;
-import net.dahanne.android.g2android.utils.G2ConnectionUtils;
+import net.dahanne.android.g2android.tasks.AddPhotoTask;
+import net.dahanne.android.g2android.tasks.CreateAlbumTask;
+import net.dahanne.android.g2android.tasks.FetchAlbumTask;
 import net.dahanne.android.g2android.utils.G2DataUtils;
-import net.dahanne.android.g2android.utils.GalleryConnectionException;
-import net.dahanne.android.g2android.utils.UriUtils;
-import android.app.AlertDialog;
+import net.dahanne.android.g2android.utils.ShowUtils;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
 public class ShowAlbums extends ListActivity implements OnItemClickListener {
@@ -53,17 +49,13 @@ public class ShowAlbums extends ListActivity implements OnItemClickListener {
 	private static final String IMAGE_TYPE = "image/*";
 	private static final String G2ANDROID_ALBUM = "g2android.Album";
 	private static final String TAG = "ShowAlbums";
-	private Integer albumName;
-	private List<Album> albumChildren;
-	private String galleryUrl;
 	private ProgressDialog progressDialog;
+	private boolean mustLogIn;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
-		albumName = (Integer) getIntent().getSerializableExtra(G2ANDROID_ALBUM);
-
 		getListView().setTextFilterEnabled(true);
 		getListView().setOnItemClickListener(this);
 
@@ -72,16 +64,22 @@ public class ShowAlbums extends ListActivity implements OnItemClickListener {
 	public void onItemClick(AdapterView<?> arg0, View arg1, int albumPosition,
 			long arg3) {
 		Intent intent;
-		Album newSelectedAlbum = albumChildren.get(albumPosition);
-		if (newSelectedAlbum.getId() == 0
+		Album newSelectedAlbum = G2DataUtils.getInstance()
+				.findAlbumFromAlbumName(
+						((G2AndroidApplication) getApplication())
+								.getRootAlbum(),
+						((Album) getListAdapter().getItem(albumPosition))
+								.getName());
+		if (newSelectedAlbum.getName() == ((G2AndroidApplication) getApplication())
+				.getAlbumName()
 				|| newSelectedAlbum.getChildren().size() == 0) {
 			// the user wants to see the pictures
 			intent = new Intent(this, ShowGallery.class);
-			intent.putExtra(G2ANDROID_ALBUM, newSelectedAlbum.getName());
 		} else {
 			intent = new Intent(this, ShowAlbums.class);
-			intent.putExtra(G2ANDROID_ALBUM, newSelectedAlbum.getName());
 		}
+		((G2AndroidApplication) getApplication()).setAlbumName(newSelectedAlbum
+				.getName());
 		startActivity(intent);
 
 	}
@@ -122,7 +120,12 @@ public class ShowAlbums extends ListActivity implements OnItemClickListener {
 	protected void onActivityResult(int requestCode, int resultCode,
 			Intent intent) {
 		super.onActivityResult(requestCode, resultCode, intent);
-
+		if (((G2AndroidApplication) getApplication()).getRootAlbum() == null) {
+			// rootAlbum is null ? the app died
+			// we recover the context from the database
+			mustLogIn = ShowUtils.getInstance()
+					.recoverContextFromDatabase(this);
+		}
 		if (resultCode == RESULT_OK) {
 			switch (requestCode) {
 			case 1:
@@ -132,7 +135,10 @@ public class ShowAlbums extends ListActivity implements OnItemClickListener {
 					progressDialog = ProgressDialog.show(this,
 							getString(R.string.please_wait),
 							getString(R.string.adding_photo), true);
-					new AddPhotoTask().execute(galleryUrl, albumName, photoUri);
+					new AddPhotoTask(this, progressDialog).execute(Settings
+							.getGalleryUrl(this),
+							((G2AndroidApplication) getApplication())
+									.getAlbumName(), photoUri, mustLogIn);
 
 				}
 				break;
@@ -143,8 +149,10 @@ public class ShowAlbums extends ListActivity implements OnItemClickListener {
 						getString(R.string.please_wait),
 						getString(R.string.creating_new_album), true);
 
-				new CreateAlbumTask().execute(galleryUrl, albumName,
-						subalbumName);
+				new CreateAlbumTask(this, progressDialog).execute(Settings
+						.getGalleryUrl(this),
+						((G2AndroidApplication) getApplication())
+								.getAlbumName(), subalbumName);
 				break;
 			}
 		}
@@ -154,30 +162,50 @@ public class ShowAlbums extends ListActivity implements OnItemClickListener {
 	@SuppressWarnings("unchecked")
 	@Override
 	protected void onResume() {
-
 		super.onResume();
-		galleryUrl = Settings.getGalleryUrl(this);
+		Log.i(TAG, "resuming");
+		if (((G2AndroidApplication) getApplication()).getRootAlbum() != null) {
+
+			Log.i(TAG, "rootalbum "
+					+ ((G2AndroidApplication) getApplication()).getRootAlbum()
+							.toString());
+		}
+		Log.i(TAG, "albumname "
+				+ ((G2AndroidApplication) getApplication()).getAlbumName());
 		// we're back in this activity to select a sub album or to see the
 		// pictures
-		Album rootAlbum = ((G2AndroidApplication) getApplication())
-				.getRootAlbum();
-		if (albumName != null && rootAlbum != null) {
+
+		if (((G2AndroidApplication) getApplication()).getRootAlbum() == null) {
+			Log.i(TAG, "rootAlbum is null");
+			// we recover the context from the database
+			mustLogIn = ShowUtils.getInstance()
+					.recoverContextFromDatabase(this);
+		}
+		if (((G2AndroidApplication) getApplication()).getAlbumName() != 0) {
 			// we recover the selected album
-			Album selectedAlbum = G2DataUtils.findAlbumFromAlbumName(rootAlbum,
-					albumName);
+			Album selectedAlbum = G2DataUtils.getInstance()
+					.findAlbumFromAlbumName(
+							((G2AndroidApplication) getApplication())
+									.getRootAlbum(),
+							((G2AndroidApplication) getApplication())
+									.getAlbumName());
 			// we create a fake album, it will be used to choose to view the
 			// pictures of the album
 			Album viewPicturesAlbum = new Album();
 			viewPicturesAlbum.setId(0);
 			viewPicturesAlbum.setTitle(getString(R.string.view_album_pictures));
 			viewPicturesAlbum.setName(selectedAlbum.getName());
-			albumChildren = selectedAlbum.getChildren();
+			List<Album> albumChildren = selectedAlbum.getChildren();
 			if (!albumChildren.contains(viewPicturesAlbum)) {
 				albumChildren.add(0, viewPicturesAlbum);
 			}
 			setTitle(selectedAlbum.getTitle());
 			setListAdapter(new ArrayAdapter<Album>(this,
 					android.R.layout.simple_list_item_1, albumChildren));
+
+			// now the root album is the current album
+			// ((G2AndroidApplication) getApplication())
+			// .setRootAlbum(selectedAlbum);
 
 		}
 		// it's the first time we get into this view, let's find the albums of
@@ -187,7 +215,8 @@ public class ShowAlbums extends ListActivity implements OnItemClickListener {
 					getString(R.string.please_wait),
 					getString(R.string.fetching_gallery_albums), true);
 
-			new FetchAlbumTask().execute(galleryUrl);
+			new FetchAlbumTask(this, progressDialog).execute(Settings
+					.getGalleryUrl(this));
 		}
 
 		// we have to clear the currentPosition in album as the user is going to
@@ -196,158 +225,38 @@ public class ShowAlbums extends ListActivity implements OnItemClickListener {
 
 	}
 
-	@SuppressWarnings("unchecked")
-	private class FetchAlbumTask extends AsyncTask {
-		String exceptionMessage = null;
+	@Override
+	protected void onPause() {
+		super.onPause();
+		Log.i(TAG, "pausing");
+		ShowUtils.getInstance().saveContextToDatabase(this);
+		if (((G2AndroidApplication) getApplication()).getRootAlbum() != null) {
 
-		@Override
-		protected Album doInBackground(Object... parameters) {
-			galleryUrl = (String) parameters[0];
-			Album freshRootAlbum;
-			try {
-				freshRootAlbum = G2DataUtils
-						.retrieveRootAlbumAndItsHierarchy(galleryUrl);
-			} catch (GalleryConnectionException e) {
-				freshRootAlbum = null;
-				exceptionMessage = e.getMessage();
-			}
-			return freshRootAlbum;
+			Log.i(TAG, "rootalbum "
+					+ ((G2AndroidApplication) getApplication()).getRootAlbum()
+							.toString());
 		}
-
-		@Override
-		protected void onPostExecute(Object rootAlbum) {
-
-			if (rootAlbum != null) {
-				((G2AndroidApplication) getApplication())
-						.setRootAlbum((Album) rootAlbum);
-				setTitle(((Album) rootAlbum).getTitle());
-				albumChildren = ((Album) rootAlbum).getChildren();
-				albumName = ((Album) rootAlbum).getName();
-				ArrayAdapter<Album> arrayAdapter = new ArrayAdapter<Album>(
-						ShowAlbums.this, android.R.layout.simple_list_item_1,
-						albumChildren);
-				setListAdapter(arrayAdapter);
-				arrayAdapter.notifyDataSetChanged();
-			} else {
-				// something went wrong
-				alertConnectionProblem(exceptionMessage, galleryUrl);
-			}
-			progressDialog.dismiss();
-		}
+		Log.i(TAG, "albumname "
+				+ ((G2AndroidApplication) getApplication()).getAlbumName());
 
 	}
 
-	@SuppressWarnings("unchecked")
-	private class CreateAlbumTask extends AsyncTask {
-		String exceptionMessage = null;
-
-		@Override
-		protected Integer doInBackground(Object... parameters) {
-			galleryUrl = (String) parameters[0];
-			albumName = (Integer) parameters[1];
-			String subalbumName = (String) parameters[2];
-			try {
-				int createdAlbumName = G2ConnectionUtils.createNewAlbum(
-						galleryUrl, albumName, subalbumName, subalbumName,
-						subalbumName);
-				return createdAlbumName;
-			} catch (GalleryConnectionException e) {
-				exceptionMessage = e.getMessage();
-			}
-			return null;
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		// the user tries to get back to the parent album
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+			Album currentAlbum = G2DataUtils.getInstance()
+					.findAlbumFromAlbumName(
+							((G2AndroidApplication) getApplication())
+									.getRootAlbum(),
+							((G2AndroidApplication) getApplication())
+									.getAlbumName());
+			((G2AndroidApplication) getApplication()).setAlbumName(currentAlbum
+					.getParentName());
+			this.finish();
+			return true;
 		}
-
-		@Override
-		protected void onPostExecute(Object createdAlbumName) {
-
-			progressDialog.dismiss();
-			if ((Integer) createdAlbumName != null
-					&& (Integer) createdAlbumName != 0) {
-				toastAlbumSuccessfullyCreated(ShowAlbums.this);
-				progressDialog = ProgressDialog.show(ShowAlbums.this,
-						getString(R.string.please_wait),
-						getString(R.string.fetching_gallery_albums), true);
-				// now refresh the album hierarchy
-				new FetchAlbumTask().execute(galleryUrl);
-			} else if (exceptionMessage != null) {
-				// Something went wrong
-				alertConnectionProblem(exceptionMessage, galleryUrl);
-			}
-
-		}
-	}
-
-	@SuppressWarnings("unchecked")
-	private class AddPhotoTask extends AsyncTask {
-		private String exceptionMessage = null;
-
-		@Override
-		protected Integer doInBackground(Object... parameters) {
-			galleryUrl = (String) parameters[0];
-			albumName = (Integer) parameters[1];
-			Uri photoUri = (Uri) parameters[2];
-			Integer imageCreatedName = null;
-			try {
-				String mimeType = ShowAlbums.this.getContentResolver().getType(
-						photoUri);
-				InputStream openInputStream = ShowAlbums.this
-						.getContentResolver().openInputStream(photoUri);
-				File imageFile = UriUtils.createFileFromUri(openInputStream,
-						mimeType);
-				imageCreatedName = G2ConnectionUtils.sendImageToGallery(
-						galleryUrl, albumName, imageFile);
-				imageFile.delete();
-			} catch (Exception e) {
-				exceptionMessage = e.getMessage();
-			}
-			return imageCreatedName;
-		}
-
-		@Override
-		protected void onPostExecute(Object createdAlbumName) {
-
-			progressDialog.dismiss();
-			if (createdAlbumName != null) {
-				toastImageSuccessfullyAdded(ShowAlbums.this);
-				progressDialog = ProgressDialog.show(ShowAlbums.this,
-						getString(R.string.please_wait),
-						getString(R.string.fetching_gallery_albums), true);
-				// now refresh the album hierarchy
-				new FetchAlbumTask().execute(galleryUrl);
-			} else if (exceptionMessage != null) {
-				// Something went wrong
-				alertConnectionProblem(exceptionMessage, galleryUrl);
-			}
-
-		}
-	}
-
-	protected void alertConnectionProblem(String exceptionMessage,
-			String galleryUrl) {
-		AlertDialog.Builder builder = new AlertDialog.Builder(ShowAlbums.this);
-		// if there was an exception thrown, show it, or say to verify
-		// settings
-		String message = getString(R.string.not_connected) + galleryUrl
-				+ getString(R.string.exception_thrown) + exceptionMessage;
-		builder.setTitle(R.string.problem).setMessage(message)
-				.setPositiveButton(R.string.ok,
-						new DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface dialog, int id) {
-								dialog.cancel();
-							}
-						});
-		AlertDialog alert = builder.create();
-		alert.show();
-	}
-
-	protected void toastAlbumSuccessfullyCreated(Context context) {
-		Toast.makeText(context, getString(R.string.album_successfully_created),
-				Toast.LENGTH_LONG);
-	}
-
-	protected void toastImageSuccessfullyAdded(Context context) {
-		Toast.makeText(context, getString(R.string.image_successfully_created),
-				Toast.LENGTH_LONG);
+		return false;
 	}
 
 }

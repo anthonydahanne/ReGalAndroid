@@ -14,7 +14,7 @@
 		USA */
 	-->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-	package="net.dahanne.android.g2android" android:versionCode="8" android:versionName="1.4.1">
+	package="net.dahanne.android.g2android" android:versionCode="9" android:versionName="1.4.2">
 	<application android:icon="@drawable/icon" android:label="@string/app_name" android:name="G2AndroidApplication">
 		<activity android:name=".activity.Start" android:label="@string/app_name">
 			<intent-filter>
