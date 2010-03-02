@@ -95,6 +95,8 @@
 		<string name="g2android_temp_path_summary">The subdirectory where G2Android will store its cache</string>
 		<string name="clear_cache_title">Clear cache</string>
 		<string name="clear_cache_summary">Clear cache when starting a new session</string>
+		<string name="cache_cleared">Cache successfully cleared !</string>
+		
 		<string name="external_storage_problem">No mounted storage available, please check your sdcard is plugged in</string>
 		<string name="gallery_connection_settings">Gallery connection settings</string>
 		<string name="cache_settings">Cache settings</string>

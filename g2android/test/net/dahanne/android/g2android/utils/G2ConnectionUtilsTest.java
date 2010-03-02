@@ -113,7 +113,7 @@ public class G2ConnectionUtilsTest extends Assert {
 	public void sendImageToGalleryTestFail() throws GalleryConnectionException {
 		g2ConnectionUtils.loginToGallery(galleryUrl, user, password);
 		File imageFile = new File("image.png");
-		g2ConnectionUtils.sendImageToGallery(galleryUrl, 9999999, imageFile);
+		g2ConnectionUtils.sendImageToGallery(galleryUrl, -5, imageFile);
 	}
 
 	@Test

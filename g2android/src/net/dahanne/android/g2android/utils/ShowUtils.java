@@ -72,6 +72,12 @@ public class ShowUtils {
 				context.getString(R.string.image_successfully_created),
 				Toast.LENGTH_LONG).show();
 	}
+	
+	public void toastCacheSuccessfullyCleared(Context context) {
+		Toast.makeText(context,
+				context.getString(R.string.cache_cleared),
+				Toast.LENGTH_LONG).show();
+	}
 
 	/**
 	 * 

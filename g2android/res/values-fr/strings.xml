@@ -62,6 +62,7 @@
 		<string name="g2android_temp_path_summary">le sous répertoire où sera stocké le cache</string>
 		<string name="clear_cache_title">Effacer le cache</string>
 		<string name="clear_cache_summary">effacer le cache à chaque démarrage de l'appli</string>
+		<string name="cache_cleared">Cache effacé avec succès !</string>
 		<string name="external_storage_problem">Pas de carte SD montée; veuillez vérifier qu'elle est bien présente</string>
 		<string name="gallery_connection_settings">Paramétrage de connexion</string>
 		<string name="cache_settings">Paramétrage du cache</string>

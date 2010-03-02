@@ -16,6 +16,7 @@ import android.os.Environment;
 
 public class FileUtils {
 
+	private static final String NO_CACHE_PATH = "/.nomedia";
 	private static FileUtils fileUtils = new FileUtils();
 
 	public static FileUtils getInstance() {
@@ -48,6 +49,13 @@ public class FileUtils {
 					File g2AndroidCacheDirectory = new File(Settings
 							.getG2AndroidCachePath(context));
 					g2AndroidCacheDirectory.mkdir();
+					//issue #30 : insert the .nomedia file so that the dir won't be parsed by other photo apps
+					File noMediaFile = new File(Settings
+							.getG2AndroidCachePath(context)+NO_CACHE_PATH);
+					if(!noMediaFile.createNewFile()){
+						throw new FileHandlingException(context
+								.getString(R.string.external_storage_problem));
+					}
 				}
 				if (!isTemporary) {
 					savePath = new File(Settings.getG2AndroidPath(context));

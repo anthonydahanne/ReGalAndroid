@@ -51,8 +51,6 @@ import org.apache.http.impl.cookie.CookieSpecBase;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.message.BasicNameValuePair;
 
-import android.util.Log;
-
 /**
  * 
  * @author Anthony Dahanne
@@ -60,6 +58,8 @@ import android.util.Log;
  */
 public class G2ConnectionUtils {
 
+	private static final String UPLOAD_FAILED = "Upload Failed";
+	private static final String FAILED = "failed";
 	private static final Charset UTF_8 = Charset.forName("US-ASCII");
 	private static final String EQUALS = "=";
 	/**
@@ -246,7 +246,12 @@ public class G2ConnectionUtils {
 			// disable expect-continue handshake (lighttpd doesn't supportit)
 			httpclient.getParams().setBooleanParameter(
 					"http.protocol.expect-continue", false);
-			HttpPost httpPost = new HttpPost(galleryUrl + "/" + MAIN_PHP);
+			// bug #25 : for embedded gallery, should not add main.php
+			String correctedGalleryUrl = galleryUrl;
+			if (!UriUtils.isEmbeddedGallery(galleryUrl)) {
+				correctedGalleryUrl = galleryUrl + "/" + MAIN_PHP;
+			}
+			HttpPost httpPost = new HttpPost(correctedGalleryUrl);
 			// if we send an image to the gallery, we pass it to the gallery
 			// through multipartEntity
 			httpPost.setHeader(BASIC_HEADER);
@@ -306,11 +311,11 @@ public class G2ConnectionUtils {
 			rd.close();
 		} catch (IOException e) {
 			// something went wrong, let's throw the info to the UI
-			Log.e(TAG, "IOException" + e.getMessage());
+			// Log.e(TAG, "IOException" + e.getMessage());
 			throw new GalleryConnectionException("IOException" + e.getMessage());
 		} catch (MalformedCookieException e) {
 			// something went wrong, let's throw the info to the UI
-			Log.e(TAG, "MalformedCookie" + e.getMessage());
+			// Log.e(TAG, "MalformedCookie" + e.getMessage());
 			throw new GalleryConnectionException("MalformedCookie"
 					+ e.getMessage());
 		}
@@ -500,14 +505,14 @@ public class G2ConnectionUtils {
 	 */
 	public int sendImageToGallery(String galleryUrl, int albumName,
 			File imageFile) throws GalleryConnectionException {
-		Log.i(TAG, "about to send photo 2" + galleryUrl + "  " + albumName
-				+ "  " + imageFile.getAbsolutePath());
-		Log.i(TAG, "authToken is : " + authToken);
-		for (Cookie iterable_element : getSessionCookies()) {
+		// Log.i(TAG, "about to send photo 2" + galleryUrl + "  " + albumName
+		// + "  " + imageFile.getAbsolutePath());
+		// Log.i(TAG, "authToken is : " + authToken);
+		// for (Cookie iterable_element : getSessionCookies()) {
 
-			Log.i(TAG, "session cookie value is  : "
-					+ iterable_element.getValue());
-		}
+		// Log.i(TAG, "session cookie value is  : "
+		// + iterable_element.getValue());
+		// }
 
 		int imageCreatedName = 0;
 		String name = imageFile.getName().substring(0,
@@ -520,6 +525,10 @@ public class G2ConnectionUtils {
 		for (Entry<String, String> entry : properties.entrySet()) {
 			if (entry.getKey().equals(ITEM_NAME)) {
 				imageCreatedName = new Integer(entry.getValue()).intValue();
+				break;
+			}
+			if (entry.getValue().contains(FAILED)) {
+				throw new GalleryConnectionException(UPLOAD_FAILED);
 			}
 		}
 		return imageCreatedName;

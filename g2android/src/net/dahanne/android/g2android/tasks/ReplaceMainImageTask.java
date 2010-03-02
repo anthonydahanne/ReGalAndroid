@@ -85,8 +85,8 @@ public class ReplaceMainImageTask extends AsyncTask {
 	@Override
 	protected void onPostExecute(Object result) {
 		if (result == null) {
-			ShowUtils.getInstance().alertConnectionProblem(exceptionMessage,
-					Settings.getGalleryUrl(activity), activity);
+//			ShowUtils.getInstance().alertConnectionProblem(exceptionMessage,
+//					Settings.getGalleryUrl(activity), activity);
 		}
 		// we check if the user is still looking at the same photo
 		// if not, we don't refresh the main view

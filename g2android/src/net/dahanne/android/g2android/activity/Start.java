@@ -17,11 +17,14 @@
  */
 package net.dahanne.android.g2android.activity;
 
+import java.io.File;
+
 import net.dahanne.android.g2android.R;
 import net.dahanne.android.g2android.utils.DBHelper;
 import net.dahanne.android.g2android.utils.FileUtils;
 import net.dahanne.android.g2android.utils.G2ConnectionUtils;
 import net.dahanne.android.g2android.utils.GalleryConnectionException;
+import net.dahanne.android.g2android.utils.ShowUtils;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -136,8 +139,15 @@ public class Start extends Activity implements OnClickListener {
 			startActivity(intent);
 			break;
 
+		case R.id.clear_cache:
+			intent = new Intent(this, Settings.class);
+			FileUtils.getInstance().clearCache(this);
+			ShowUtils.getInstance().toastCacheSuccessfullyCleared(this);
+			break;
+			
 		}
 		return false;
+		
 	}
 
 	public void onClick(View v) {

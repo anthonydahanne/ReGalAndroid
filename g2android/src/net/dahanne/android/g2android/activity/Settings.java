@@ -20,6 +20,7 @@ package net.dahanne.android.g2android.activity;
 import java.io.File;
 
 import net.dahanne.android.g2android.R;
+import net.dahanne.android.g2android.utils.UriUtils;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Environment;
@@ -42,6 +43,7 @@ public class Settings extends PreferenceActivity {
 	private static String OPT_G2ANDROID_CACHE_PATH_DEF = "tmp";
 
 	private static final String OPT_BASE_URL_DEF = "main.php?g2_view=core.DownloadItem&g2_itemId=";
+	private static final String EMBEDDED_GALLERY_OPT_BASE_URL_DEF = "&g2_view=core.DownloadItem&g2_itemId=";
 	private static final String TAG = "Settings";
 
 	@Override
@@ -59,7 +61,12 @@ public class Settings extends PreferenceActivity {
 
 	/** Get the baseUrl */
 	public static String getBaseUrl(Context context) {
+		//bug #25 : for embedded gallery, should not add main.php
+		if(UriUtils.isEmbeddedGallery(getGalleryUrl(context))){
+			return getGalleryUrl(context) +  EMBEDDED_GALLERY_OPT_BASE_URL_DEF;
+		}
 		return getGalleryUrl(context) + "/" + OPT_BASE_URL_DEF;
+		
 	}
 
 	/** Get the current value of the username option */

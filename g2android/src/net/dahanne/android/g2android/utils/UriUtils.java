@@ -45,5 +45,13 @@ public class UriUtils {
 		Matcher m = p.matcher(url);
 		return m.matches();
 	}
+	
+	//bug #25 : for embedded gallery, should not add main.php
+	public static boolean isEmbeddedGallery(String url){
+		if(url.contains("action=gallery")){
+			return true;
+		}
+		return false;
+	}
 
 }
