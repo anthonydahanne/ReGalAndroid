@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+	<!--
+		/* * G2Android * Copyright (c) 2009 Anthony Dahanne * This program is
+		free software; you can redistribute it and/or modify * it under the
+		terms of the GNU General Public License as published by * the Free
+		Software Foundation; either version 2 of the License, or * (at your
+		option) any later version. * * This program is distributed in the hope
+		that it will be useful, but * WITHOUT ANY WARRANTY; without even the
+		implied warranty of MERCHANTABILITY * or FITNESS FOR A PARTICULAR
+		PURPOSE. See the GNU General Public License * for more details. * *
+		You should have received a copy of the GNU General Public License
+		along * with this program; if not, write to the Free Software
+		Foundation, Inc., * 59 Temple Place, Suite 330, Boston, MA 02111-1307
+		USA */
+	-->
+<resources>
+	<string name="g2android_title">Welcome to G2Android !</string>
+	<string name="app_name">G2Android</string>
+	<string name="enter_gallery_title">Enter gallery !</string>
+	<string name="gallery_url_title">Gallery Url</string>
+	<string name="g2android_no_gallery_configured">No gallery configured! Go to Menu->Settings to
+		fix this !</string>
+	<string name="g2android_default_gallery_configured">Configured with the default gallery, change gallery Url in Menu->Settings</string>
+	<string name="gallery_url_is_not_valid">The gallery url provided is not valid! Go to
+		Menu->Settings to fix this !</string>
+	<string name="gallery_credentials_are_not_valid">The gallery credentials provided are not valid! Go to
+		Menu->Settings to fix this ! (Hint : try removing your credentials to check the gallery url is correct)</string>
+	<string name="gallery_url_summary">Enter here the base name of your gallery, ex :
+		http://myhost.com/gallery2</string>
+	<string name="gallery_url_default">http://g2.dahanne.net</string>
+	<string name="gallery_url_key">galleryUrl</string>
+
+	<string name="username_title">Username</string>
+	<string name="username_summary">If your gallery needs it, enter here your
+		username</string>
+	<string name="username_key">username</string>
+
+	<string name="password_title">Password</string>
+	<string name="password_summary">If your gallery needs it, enter here your
+		password</string>
+	<string name="password_key">password</string>
+
+	<string name="port_title">Port</string>
+	<string name="port_summary">The default port is 80, but if your gallery uses
+		something different, change it here</string>
+	<string name="port_key">port</string>
+	<string name="port_default">80</string>
+
+	<string name="firsttime_title">Welcome to G2Android !</string>
+	<string name="firsttime_key">firsttime</string>
+	<string name="ok">OK</string>
+
+	<string name="about_label">About</string>
+	<string name="about_title">About</string>
+	<string name="about_shortcut">a</string>
+
+	<string name="add_photo_label">Add a photo in this album</string>
+	<string name="add_photo_shortcut">a</string>
+	<string name="create_album_label">Create a new subalbum</string>
+	<string name="create_album_shortcut">c</string>
+
+<string name="connecting_to_the_gallery">Connecting to the gallery... Please wait...</string>
+<string name="loggedin_as">Logged in as </string>
+<string name="not_logged_in">Not logged in</string>
+<string name="please_wait">Please wait...</string>
+<string name="not_connected">You could not get connected to the configured gallery : \n</string>
+<string name="verify_your_settings">\n\nPlease verify your settings or check your device has access to the internet</string>
+
+<string name="fetching_gallery_albums">Fetching gallery albums...</string>
+<string name="creating_new_album">Creating new album...</string>
+
+
+
+	<string name="what_is_g2android">
+		G2Android is a client to access a remote Gallery2 installation.
+		The	gallery configured by default is a sample Gallery2 installation, for
+		you to test if you don't have a gallery configured yet.
+		You can change the default gallery Url in Menu->Settings
+		You can find more sample gallery addresses at this web address :
+		http://gallery.menalto.com/gallery/demosites/
+		G2Android\'s intent is to display the content of YOUR gallery2
+		installation not the sample gallery !
+	</string>
+	<string name="full_image_title">Image</string>
+	<string name="settings_label">Settings...</string>
+	<string name="settings_title">G2Android settings</string>
+	<string name="settings_shortcut">s</string>
+	<string name="show_albums_title">G2Android Albums</string>
+	<string name="show_gallery_title">G2Android Gallery</string>
+
+	<string name="view_album_pictures">View this album pictures !</string>
+
+<string name="current_version">Version : 1.2.0</string>
+<string name="project_home">Project Home : </string>
+<string name="project_home_url">http://code.google.com/p/g2android</string>
+<string name="licence">GNU General Public License v2</string>
+<string name="album_is_empty">This album does not contain any pictures !</string>
+<string name="type_new_subalbum_name">Type in your new subalbum name : </string>
+<string name="create_subalbum">Create subalbum !</string>
+<string name="welcome_to_g2android">Welcome to G2Android</string>
+<string name="adding_photo">Uploading photo to the album</string>
+<string name="loading_first_photos_from_album">Loading first photos from album</string>
+</resources>
