@@ -101,10 +101,9 @@ public class Start extends Activity implements OnClickListener {
 	 */
 	@SuppressWarnings("unchecked")
 	private void checkGalleryUrlIsValid() {
-		if (Settings.getGalleryUrl(this) != null
-				&& !Settings.getGalleryUrl(this).equals("")) {
+		galleryUrl = Settings.getGalleryUrl(this);
+		if (StringUtils.isNotBlank(galleryUrl)) {
 			// GalleryUrl is provided, but is it a valid Gallery2 URL ?
-			galleryUrl = Settings.getGalleryUrl(this);
 			progressDialog = ProgressDialog.show(this,
 					getString(R.string.please_wait),
 					getString(R.string.connecting_to_the_gallery), true);
@@ -184,6 +183,8 @@ public class Start extends Activity implements OnClickListener {
 				galleryUrl = (String) parameters[0];
 				user = (String) parameters[1];
 				password = (String) parameters[2];
+				galleryUrlIsValid = g2ConnectionUtils
+				.checkGalleryUrlIsValid(galleryUrl);
 				if (StringUtils.isNotBlank(user)) {
 					// the first thing is to login, if an username and password
 					// are supplied !
@@ -191,14 +192,11 @@ public class Start extends Activity implements OnClickListener {
 					// be stored !
 					authToken = g2ConnectionUtils.loginToGallery(galleryUrl,
 							user, password);
-					galleryUrlIsValid = true;
 				}
 				// if no username is provided or if the username did not match
 				// any access
 				if (authToken == null) {
 					authToken = NOTLOGGEDIN;
-					galleryUrlIsValid = g2ConnectionUtils
-							.checkGalleryUrlIsValid(galleryUrl);
 				}
 			} catch (GalleryConnectionException e) {
 				// the connection went wrong, the authToken is then null

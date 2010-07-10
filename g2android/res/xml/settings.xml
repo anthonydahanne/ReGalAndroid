@@ -15,7 +15,7 @@
 	-->
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 	<PreferenceCategory android:title="@string/gallery_connection_settings">
-		<EditTextPreference android:name="@string/gallery_url_title"
+		<net.dahanne.android.g2android.api.EditUrlPreference android:name="@string/gallery_url_title"
 			android:summary="@string/gallery_url_summary" android:dialogMessage="@string/gallery_url_dialog_message"
 			android:defaultValue="@string/gallery_url_default" android:title="@string/gallery_url_title"
 			android:key="@string/gallery_url_key" />

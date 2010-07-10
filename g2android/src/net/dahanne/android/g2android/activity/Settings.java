@@ -45,18 +45,19 @@ public class Settings extends PreferenceActivity {
 	private static final String OPT_BASE_URL_DEF = "main.php?g2_view=core.DownloadItem&g2_itemId=";
 	private static final String EMBEDDED_GALLERY_OPT_BASE_URL_DEF = "&g2_view=core.DownloadItem&g2_itemId=";
 	private static final String TAG = "Settings";
+	private static String galleryUrl;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		addPreferencesFromResource(R.xml.settings);
-
 	}
 
 	/** Get the current value of the galleryUrl option */
 	public static String getGalleryUrl(Context context) {
-		return PreferenceManager.getDefaultSharedPreferences(context)
+		galleryUrl = PreferenceManager.getDefaultSharedPreferences(context)
 				.getString(OPT_GALLERY_URL_KEY, OPT_GALLERY_URL_DEF);
+		return galleryUrl;
 	}
 
 	/** Get the baseUrl */

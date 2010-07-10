@@ -103,6 +103,15 @@ public class G2ConnectionUtilsTest extends Assert {
 		assertEquals(true, found);
 
 	}
+	
+	
+	@Test(expected = GalleryConnectionException.class)
+	public void loginToGalleryTestFailBecauseUrlIsWrong() throws GalleryConnectionException {
+
+		g2ConnectionUtils.loginToGallery("http://g2.dahanne .net/",
+				"hacker", "hackerPassword");
+
+	}
 
 	/**
 	 * This test fail because the user can't add a photo item in given album

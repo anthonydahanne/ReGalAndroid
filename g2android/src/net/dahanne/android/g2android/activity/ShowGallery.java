@@ -406,7 +406,6 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 		}
 	}
 
-	@Override
 	public void onClick(View v) {
 		Intent intent = new Intent(this, FullImage.class);
 		((G2AndroidApplication) getApplication()).getPictures().clear();
@@ -417,7 +416,6 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 
 	}
 
-	@Override
 	/**
 	 * this method comes with OnItemSelectedListener interface
 	 */

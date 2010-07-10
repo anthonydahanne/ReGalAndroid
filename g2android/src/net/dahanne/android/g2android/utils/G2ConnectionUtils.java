@@ -318,6 +318,10 @@ public class G2ConnectionUtils {
 			// Log.e(TAG, "MalformedCookie" + e.getMessage());
 			throw new GalleryConnectionException("MalformedCookie"
 					+ e.getMessage());
+		}catch (IllegalArgumentException e) {
+			// the url is not correct
+			throw new GalleryConnectionException("Url is not correct : "
+					+ e.getMessage());
 		}
 		return properties;
 	}
@@ -433,8 +437,12 @@ public class G2ConnectionUtils {
 	}
 
 	private MultipartEntity createMultiPartEntityForSendImageToGallery(
-			int albumName, File imageFile, String name)
+			int albumName, File imageFile)
 			throws GalleryConnectionException {
+		
+		String nameWithoutExtension = imageFile.getName().substring(0,
+				imageFile.getName().indexOf("."));
+		
 		MultipartEntity multiPartEntity;
 		try {
 			multiPartEntity = new MultipartEntity();
@@ -444,13 +452,13 @@ public class G2ConnectionUtils {
 					UTF_8));
 			multiPartEntity.addPart("g2_form[set_albumName]", new StringBody(""
 					+ albumName, UTF_8));
-			multiPartEntity.addPart("g2_userfile_name", new StringBody(name,
-					UTF_8));
 			multiPartEntity.addPart("g2_authToken", new StringBody(authToken,
 					UTF_8));
-			multiPartEntity.addPart("g2_form[force_filename]", new StringBody(
-					name, UTF_8));
-			multiPartEntity.addPart("g2_form[caption]", new StringBody(name,
+			multiPartEntity.addPart("g2_form[caption]", new StringBody(nameWithoutExtension,
+					UTF_8));
+			multiPartEntity.addPart("g2_form[extrafield.Summary]", new StringBody("Sent from my android phone, with g2Android",
+					UTF_8));
+			multiPartEntity.addPart("g2_form[extrafield.Description]", new StringBody("Sent from my android phone, with g2Android",
 					UTF_8));
 			multiPartEntity.addPart("g2_userfile", new FileBody(imageFile));
 		} catch (Exception e) {
@@ -515,10 +523,9 @@ public class G2ConnectionUtils {
 		// }
 
 		int imageCreatedName = 0;
-		String name = imageFile.getName().substring(0,
-				imageFile.getName().indexOf("."));
+		
 		MultipartEntity multiPartEntity = createMultiPartEntityForSendImageToGallery(
-				albumName, imageFile, name);
+				albumName, imageFile);
 		HashMap<String, String> properties = sendCommandToGallery(galleryUrl,
 				null, multiPartEntity);
 

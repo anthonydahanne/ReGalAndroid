@@ -37,7 +37,6 @@ public class SerializationTest {
 						true, true, true, true, "Some fields!"));
 
 		Serialization serialization = new Serialization();
-		String string = new String("salut les gars!");
 		byte[] serialize = serialization.serialize(myAlbum);
 		Album unserializedAlbum = serialization.unSerialize(serialize);
 		Assert.assertEquals(myAlbum, unserializedAlbum);

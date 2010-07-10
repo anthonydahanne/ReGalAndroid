@@ -64,7 +64,6 @@ public class ChoosePhotoNumber extends Activity implements OnClickListener {
 
 	}
 
-	@Override
 	public void onClick(View v) {
 		int chosenPhoto = 0;
 		switch (v.getId()) {

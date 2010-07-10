@@ -129,7 +129,7 @@
 		<string name="cancel">Cancel</string>
 		<string name="choose_subalbum_name">Choose new album name</string>
 		
-		
-		
+		<!--  new string since 1.5.0 -->
+		<string name="url_validation_problem">The url you provided is not valid, please double check it does not contain spaces or other special characters !</string>
 		
 </resources>
