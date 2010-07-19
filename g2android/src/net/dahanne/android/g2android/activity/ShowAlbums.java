@@ -22,16 +22,16 @@ import java.util.List;
 import net.dahanne.android.g2android.G2AndroidApplication;
 import net.dahanne.android.g2android.R;
 import net.dahanne.android.g2android.model.Album;
-import net.dahanne.android.g2android.tasks.AddPhotoTask;
 import net.dahanne.android.g2android.tasks.CreateAlbumTask;
 import net.dahanne.android.g2android.tasks.FetchAlbumTask;
+import net.dahanne.android.g2android.tasks.LoginTask;
 import net.dahanne.android.g2android.utils.G2DataUtils;
 import net.dahanne.android.g2android.utils.ShowUtils;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -39,8 +39,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ArrayAdapter;
 
 public class ShowAlbums extends ListActivity implements OnItemClickListener {
 
@@ -98,6 +98,12 @@ public class ShowAlbums extends ListActivity implements OnItemClickListener {
 			intent = new Intent(this, ChooseSubAlbumName.class);
 			startActivityForResult(intent, REQUEST_CREATE_ALBUM);
 			break;
+			
+		case R.id.take_picture:
+			intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+			startActivityForResult(intent, REQUEST_ADD_PHOTO);
+
+			break;
 
 		}
 		return false;
@@ -125,24 +131,23 @@ public class ShowAlbums extends ListActivity implements OnItemClickListener {
 			// we recover the context from the database
 			mustLogIn = ShowUtils.getInstance()
 					.recoverContextFromDatabase(this);
+			if(mustLogIn){
+				new LoginTask(this, progressDialog, null, null, null);
+			}
 		}
 		if (resultCode == RESULT_OK) {
 			switch (requestCode) {
-			case 1:
+			case REQUEST_ADD_PHOTO:
 				// add a new photo
-				Uri photoUri = intent.getData();
-				if (photoUri != null) {
-					progressDialog = ProgressDialog.show(this,
-							getString(R.string.please_wait),
-							getString(R.string.adding_photo), true);
-					new AddPhotoTask(this, progressDialog).execute(Settings
-							.getGalleryUrl(this),
-							((G2AndroidApplication) getApplication())
-									.getAlbumName(), photoUri, mustLogIn);
-
+				Intent intent2 = new Intent(this,UploadPhoto.class);
+				intent2.setData(intent.getData());
+				if(intent.getExtras()!=null){
+					intent2.putExtras(intent.getExtras());
 				}
+				intent2.setAction(Intent.ACTION_SEND);
+				startActivity(intent2);
 				break;
-			case 2:
+			case REQUEST_CREATE_ALBUM:
 				String subalbumName = intent
 						.getStringExtra(ChooseSubAlbumName.SUBALBUM_NAME);
 				progressDialog = ProgressDialog.show(this,
@@ -251,8 +256,11 @@ public class ShowAlbums extends ListActivity implements OnItemClickListener {
 									.getRootAlbum(),
 							((G2AndroidApplication) getApplication())
 									.getAlbumName());
-			((G2AndroidApplication) getApplication()).setAlbumName(currentAlbum
-					.getParentName());
+			//TODO check if it makes sense when the currentAlbum is null
+			if(currentAlbum!=null){
+				((G2AndroidApplication) getApplication()).setAlbumName(currentAlbum
+						.getParentName());
+			}
 			this.finish();
 			return true;
 		}

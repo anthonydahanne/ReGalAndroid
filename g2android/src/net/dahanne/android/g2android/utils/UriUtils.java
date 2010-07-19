@@ -9,6 +9,11 @@ import java.io.OutputStream;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import android.app.Activity;
+import android.database.Cursor;
+import android.net.Uri;
+import android.provider.MediaStore;
+
 public class UriUtils {
 
 	public final static String URL_PATTERN = "^(http|https):\\/\\/[a-z0-9]+([\\-\\.]{1}[a-z0-9]+)*\\.[a-z]{2,5}(:[0-9]{1,5})?(\\/.*)?$";
@@ -38,6 +43,31 @@ public class UriUtils {
 		return imageFile;
 	}
 
+	public static File getFileFromUri(Uri uri, Activity activity) {
+		String[] projection = { MediaStore.Images.ImageColumns.DATA };
+		String filePath=null;
+		Cursor c = activity.managedQuery(uri, projection, null, null, null);
+		if (c != null && c.moveToFirst()) {
+			filePath = c.getString(0);
+		}
+		if(filePath!=null){
+			return new File(filePath);
+		}
+		return null;
+
+	}
+	
+	public static String getFileNameFromUri(Uri uri, Activity activity) {
+		String[] projection = { MediaStore.Images.ImageColumns.DISPLAY_NAME };
+		String fileName=null;
+		Cursor c = activity.managedQuery(uri, projection, null, null, null);
+		if (c != null && c.moveToFirst()) {
+			fileName = c.getString(0);
+		}
+		return fileName;
+
+	}
+
 	public static boolean checkUrlIsValid(String url) {
 		// String pattern =
 		// "^(http|https):\/\/[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$";
@@ -45,13 +75,25 @@ public class UriUtils {
 		Matcher m = p.matcher(url);
 		return m.matches();
 	}
-	
-	//bug #25 : for embedded gallery, should not add main.php
-	public static boolean isEmbeddedGallery(String url){
-		if(url.contains("action=gallery")){
+
+	// bug #25 : for embedded gallery, should not add main.php
+	public static boolean isEmbeddedGallery(String url) {
+		if (url.contains("action=gallery")) {
 			return true;
 		}
 		return false;
+	}
+
+	public static String extractFilenameFromUri(Uri uri, Activity activity) {
+
+		String fileName = null;
+		String[] projection = { MediaStore.Images.ImageColumns.DISPLAY_NAME /* col1 */};
+
+		Cursor c = activity.managedQuery(uri, projection, null, null, null);
+		if (c != null && c.moveToFirst()) {
+			fileName = c.getString(0);
+		}
+		return fileName;
 	}
 
 }

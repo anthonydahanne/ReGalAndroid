@@ -24,12 +24,12 @@
 	<ImageView android:layout_width="fill_parent"
 		android:layout_height="wrap_content" android:src="@drawable/g2android"
 		android:scaleType="fitXY" android:adjustViewBounds="true"
-		android:maxHeight="175dip" android:cropToPadding="true"
+		android:maxHeight="220dip" android:cropToPadding="true"
 		android:layout_marginBottom="2dip" />
 
-	<Button android:layout_width="fill_parent"
+	<!-- Button android:layout_width="fill_parent"
 		android:layout_height="wrap_content" android:gravity="center"
-		android:text="@string/connect_to_gallery_title" android:id="@+id/connect_to_gallery_button" />
+		android:text="@string/connect_to_gallery_title" android:id="@+id/connect_to_gallery_button" /-->
 
 
 	<Button android:layout_width="fill_parent"

@@ -1,0 +1,130 @@
+<resources>
+                <!--Keys, NOT TO TRANSLATE !-->
+                <string name="gallery_url_key">galleryUrl</string>
+                <string name="username_key">使用者名</string>
+                <string name="password_key">密碼</string>
+                <string name="port_key">通訊埠</string>
+                <string name="firsttime_key">firsttime</string>
+                <string name="clear_cache_key">clear_cache</string>
+                <!-- end of Keys -->
+                
+                <!--Default values , NOT TO TRANSLATE !-->
+                <string name="project_home_url">http://code.google.com/p/g2android</string>
+                <string name="licence">GNU通用公共授權2版</string>
+                <string name="port_default">80</string>
+                <string name="gallery_url_default">http://g2.dahanne.net</string>
+                <string name="app_name">G2Android</string>
+                <string name="g2android_path_default">g2android</string>
+                <string name="g2android_cache_path_default">tmp</string>
+                <!-- end of Default Values -->
+                
+                
+        <!-- Activities -->
+        <string name="welcome_to_g2android">歡迎使用G2Android</string>
+        <string name="enter_gallery_title">進入圖庫！</string>
+        <string name="connect_to_gallery_title">連接到圖庫！</string>
+        <string name="gallery_url_title">圖庫位址</string>
+        <string name="g2android_no_gallery_configured">未設定圖庫！在 Menu-&gt;設定 中修復這個問題</string>
+        <string name="g2android_default_gallery_configured">設定了預設的圖庫，在 Menu-&gt;設定 中修改圖庫位址</string>
+        <string name="gallery_url_is_not_valid">為圖庫提供的不是有效連結！在 Menu-&gt;設定 中修復這個問題！</string>
+        <string name="gallery_credentials_are_not_valid">為圖庫提供的訊息不是有效的！在 Menu-&gt;設定中修復這個問題！
+                (提示：嘗試去掉其中您的其他訊息驗證圖庫位址是否正確)</string>
+        <string name="gallery_url_summary">在這輸入您圖庫的基本名稱，例如:
+                http://myhost.com/gallery2</string>
+        <string name="gallery_url_dialog_message">在這輸入您圖庫的基本名稱，例如:
+                http://myhost.com/gallery2, 或 http://myhost.com:8080 或 http://myhost.com:8080/path</string>
+        <string name="username_title">使用者名</string>
+        <string name="username_summary">如果您的圖庫需要使用者名，在這輸入</string>
+        <string name="password_title">密碼</string>
+        <string name="password_summary">如果您的圖庫需要密碼，在這輸入</string>
+        <string name="port_title">通訊埠</string>
+        <string name="port_summary">預設通訊埠是80，不過如果您的圖庫使用的是其他通訊埠，在
+                這裡修改它</string>        
+        <string name="firsttime_title">歡迎使用G2Android！</string>
+        <string name="ok">確定</string>
+        <string name="about_label">關於</string>
+        <string name="about_title">關於</string>
+        <string name="about_shortcut">a</string>
+        <string name="add_photo_label">新增一張照片到這個相冊</string>
+        <string name="add_photo_shortcut">a</string>
+        <string name="create_album_label">建立一個子相冊</string>
+        <string name="create_album_shortcut">c</string>
+                <string name="connecting_to_the_gallery">正在連接到圖庫...</string>
+                <string name="loggedin_as">登陸為</string>
+                <string name="not_logged_in">未登入</string>
+                <string name="please_wait">請稍候...</string>
+                <string name="problem">問題</string>
+                <string name="not_connected">無法讓你連接到已設定的圖庫: \n</string>
+                <string name="verify_your_settings">\n\n請檢查您的設定或檢視設備的網路連接情況</string>
+                <string name="exception_thrown">\n\n與圖庫連接時出現了一個問題，細節如下 : \n</string>
+                <string name="fetching_gallery_albums">正在獲取圖庫相冊...</string>
+                <string name="creating_new_album">正在建立新相冊...</string>
+                <string name="what_is_g2android">
+                G2Android是一個連接到遠端Gallery2裝置的用戶端。
+                預設設定的圖庫是一個簡單的Gallery2裝置，是為了
+                在您還沒有設定圖庫之前協助您測試的。
+                您可用通過 Menu-&gt;設定 來修改圖庫的位址。
+                您可以在下面的網頁位址上找到更多的圖庫位址範例：
+                http://gallery.menalto.com/gallery/demosites/
+                G2Android的目的是顯示您自己的Gallery2裝置而不是這些範例！
+        </string>
+        <string name="full_image_title">圖像</string>
+        <string name="settings_label">設定...</string>
+        <string name="settings_title">G2Android 設定</string>
+        <string name="settings_shortcut">s</string>
+        <string name="show_albums_title">G2Android 相冊</string>
+        <string name="show_gallery_title">G2Android 圖庫</string>
+                <string name="view_album_pictures">檢視這個相冊的圖片！</string>
+                <string name="current_version">版本號 : 1.4.3</string>
+                <string name="project_home">項目首頁 : </string>
+                <string name="album_is_empty">這個相冊中未含有任何圖片！</string>
+                <string name="type_new_subalbum_name">輸入您新子相冊的名字: </string>
+                <string name="create_subalbum">建立子相冊！</string>
+                <string name="adding_photo">正在上傳照片到這個相冊</string>
+                <string name="loading_first_photos_from_album">正在載入相冊的第一張照片</string>
+                
+                <!-- New strings since 1.2.1 -->
+                <string name="g2android_temp_path_title">G2Android臨時路徑</string>
+                <string name="g2android_path_title">G2Android路徑</string>
+                <string name="g2android_path_summary">位置位於SD卡上，是G2Android儲存資料的地方</string>
+                <string name="g2android_temp_path_summary">這個子目錄是為了讓G2Android儲存記憶體緩衝區的</string>
+                <string name="clear_cache_title">清理記憶體緩衝區</string>
+                <string name="clear_cache_summary">當開始一個新的會話時清理記憶體緩衝區</string>
+                <string name="cache_cleared">已成功清理記憶體緩衝區！</string>
+                
+                <string name="external_storage_problem">未找到可用的儲存設備，請檢查您的SD卡是否已插入</string>
+                <string name="gallery_connection_settings">圖庫連接設定</string>
+                <string name="cache_settings">記憶體緩衝區設定</string>
+            <string name="download_full_res_image_title">下載完整的資源。</string>
+                <string name="image_successfully_downloaded">圖像成功下載到SD卡</string>
+                <string name="album_successfully_created">建立相冊成功！</string>
+                <string name="image_successfully_created">成功推薦圖像！</string>
+                
+                <string name="image_properties">屬性</string>
+                <string name="name">名字</string>
+                <string name="title">標題</string>
+                <string name="caption">題注</string>
+                <string name="hidden">隱藏</string>
+                <string name="full_res_filesize">完整資來源檔案大小</string>
+                <string name="full_res_width">完整資源圖片寬度</string>
+                <string name="full_res_height">完整資源圖片高度</string>
+
+                <string name="loading_photo">正在載入圖片 ...</string>
+                <string name="showing_picture">顯示的圖片 :  </string>
+                <string name="no_more_pictures">相冊中無更多的照片了</string>
+                
+                <!-- New strings since 1.3.0 -->
+                <string name="share_image_title">分先這張照片的位址</string>
+                <string name="send_image_title">傳送這張照片到</string>
+                <string name="choose_action">選取一個動作</string>
+                <string name="first_photo">首</string>
+                <string name="last_photo">尾</string>
+                <string name="choose_photo_number">跳躍到指定編號的相片。</string>
+                <string name="choose_photo_number_title">轉到指定編號相片 ...</string>
+                <string name="cancel">取消</string>
+                <string name="choose_subalbum_name">選取一個新的相冊名</string>
+                
+                
+                
+                
+</resources>

@@ -66,6 +66,10 @@ public class Album implements Serializable {
 		this.extrafields = extrafields;
 	}
 
+	public Album(int id) {
+		this.id = id;
+	}
+
 	public int getName() {
 		return name;
 	}

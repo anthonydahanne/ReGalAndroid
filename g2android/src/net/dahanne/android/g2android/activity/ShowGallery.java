@@ -27,7 +27,6 @@ import net.dahanne.android.g2android.G2AndroidApplication;
 import net.dahanne.android.g2android.R;
 import net.dahanne.android.g2android.model.Album;
 import net.dahanne.android.g2android.model.G2Picture;
-import net.dahanne.android.g2android.tasks.AddPhotoTask;
 import net.dahanne.android.g2android.tasks.CreateAlbumTask;
 import net.dahanne.android.g2android.tasks.ReplaceMainImageTask;
 import net.dahanne.android.g2android.utils.FileUtils;
@@ -43,24 +42,24 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
-import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.BaseAdapter;
 import android.widget.Gallery;
 import android.widget.ImageSwitcher;
 import android.widget.ImageView;
-import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ViewSwitcher.ViewFactory;
 
 public class ShowGallery extends Activity implements OnItemSelectedListener,
@@ -247,6 +246,12 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 			intent = new Intent(this, ChooseSubAlbumName.class);
 			startActivityForResult(intent, REQUEST_CODE_ADD_ALBUM);
 			break;
+			
+		case R.id.take_picture:
+			intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+			startActivityForResult(intent, REQUEST_CODE_ADD_PHOTO);
+
+			break;
 		}
 		return false;
 	}
@@ -277,17 +282,13 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 			switch (requestCode) {
 			case REQUEST_CODE_ADD_PHOTO:
 				// add a new photo
-				Uri photoUri = intent.getData();
-				if (photoUri != null) {
-					progressDialog = ProgressDialog.show(this,
-							getString(R.string.please_wait),
-							getString(R.string.adding_photo), true);
-					new AddPhotoTask(this, progressDialog).execute(Settings
-							.getGalleryUrl(this),
-							((G2AndroidApplication) getApplication())
-									.getAlbumName(), photoUri, mustLogIn);
-
+				Intent intent2 = new Intent(this,UploadPhoto.class);
+				intent2.setData(intent.getData());
+				if(intent.getExtras()!=null){
+					intent2.putExtras(intent.getExtras());
 				}
+				intent2.setAction(Intent.ACTION_SEND);
+				startActivity(intent2);
 				break;
 			case REQUEST_CODE_ADD_ALBUM:
 				String subalbumName = intent.getStringExtra("subalbumName");
@@ -432,7 +433,7 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 									.getRootAlbum(),
 							((G2AndroidApplication) getApplication())
 									.getAlbumName());
-			if (currentAlbum.getChildren().isEmpty()) {
+			if(currentAlbum!=null &&currentAlbum.getChildren().isEmpty()) {
 				((G2AndroidApplication) getApplication())
 						.setAlbumName(currentAlbum.getParentName());
 			}

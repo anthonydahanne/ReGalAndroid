@@ -84,7 +84,7 @@ public class G2ConnectionUtils {
 	private static final BasicNameValuePair PROTOCOL_VERSION_NAME_VALUE_PAIR = new BasicNameValuePair(
 			"g2_form[protocol_version]", "2.0");
 	private static final String MAIN_PHP = "main.php";
-	private static final String USER_AGENT_VALUE = "G2Android Version 1.4.3";
+	private static final String USER_AGENT_VALUE = "G2Android Version 1.5.0";
 	private static final String USER_AGENT = "User-Agent";
 	private static final BasicHeader BASIC_HEADER = new BasicHeader(USER_AGENT,
 			USER_AGENT_VALUE);
@@ -437,11 +437,12 @@ public class G2ConnectionUtils {
 	}
 
 	private MultipartEntity createMultiPartEntityForSendImageToGallery(
-			int albumName, File imageFile)
+			int albumName, File imageFile, String imageName)
 			throws GalleryConnectionException {
-		
-		String nameWithoutExtension = imageFile.getName().substring(0,
-				imageFile.getName().indexOf("."));
+		if(imageName==null){
+			imageName = imageFile.getName().substring(0,
+					imageFile.getName().indexOf("."));
+		}
 		
 		MultipartEntity multiPartEntity;
 		try {
@@ -454,7 +455,7 @@ public class G2ConnectionUtils {
 					+ albumName, UTF_8));
 			multiPartEntity.addPart("g2_authToken", new StringBody(authToken,
 					UTF_8));
-			multiPartEntity.addPart("g2_form[caption]", new StringBody(nameWithoutExtension,
+			multiPartEntity.addPart("g2_form[caption]", new StringBody(imageName,
 					UTF_8));
 			multiPartEntity.addPart("g2_form[extrafield.Summary]", new StringBody("Sent from my android phone, with g2Android",
 					UTF_8));
@@ -506,26 +507,19 @@ public class G2ConnectionUtils {
 	 * @param galleryUrl
 	 * @param parentAlbumName
 	 * @param albumName
+	 * @param imageName 
 	 * @param albumTitle
 	 * @param albumDescription
 	 * @return number of the new album
 	 * @throws GalleryConnectionException
 	 */
-	public int sendImageToGallery(String galleryUrl, int albumName,
-			File imageFile) throws GalleryConnectionException {
-		// Log.i(TAG, "about to send photo 2" + galleryUrl + "  " + albumName
-		// + "  " + imageFile.getAbsolutePath());
-		// Log.i(TAG, "authToken is : " + authToken);
-		// for (Cookie iterable_element : getSessionCookies()) {
-
-		// Log.i(TAG, "session cookie value is  : "
-		// + iterable_element.getValue());
-		// }
+	public synchronized int sendImageToGallery(String galleryUrl, int albumName,
+			File imageFile, String imageName) throws GalleryConnectionException {
 
 		int imageCreatedName = 0;
 		
 		MultipartEntity multiPartEntity = createMultiPartEntityForSendImageToGallery(
-				albumName, imageFile);
+				albumName, imageFile,imageName);
 		HashMap<String, String> properties = sendCommandToGallery(galleryUrl,
 				null, multiPartEntity);
 

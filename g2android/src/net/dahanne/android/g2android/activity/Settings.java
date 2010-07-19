@@ -108,4 +108,5 @@ public class Settings extends PreferenceActivity {
 				.getBoolean(OPT_CLEAR_CACHE_EVERY_SESSION, false);
 	}
 
+
 }

@@ -14,7 +14,7 @@
 		USA */
 	-->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-	package="net.dahanne.android.g2android" android:versionCode="10" android:versionName="1.4.3">
+	package="net.dahanne.android.g2android" android:versionCode="11" android:versionName="1.5.0">
 	<application android:icon="@drawable/icon" android:label="@string/app_name" android:name="G2AndroidApplication">
 		<activity android:name=".activity.Start" android:label="@string/app_name">
 			<intent-filter>
@@ -30,8 +30,19 @@
 		<activity android:name=".activity.FirstTime" android:label="@string/firsttime_title" />
 		<activity android:name=".activity.ChooseSubAlbumName" android:label="@string/choose_subalbum_name" android:theme="@android:style/Theme.Dialog" />
 		<activity android:name=".activity.ChoosePhotoNumber" android:label="@string/choose_photo_number_title" android:theme="@android:style/Theme.Dialog" />
+		<activity android:name=".activity.UploadPhoto" android:label="@string/upload_photo_title" >
+			<intent-filter>
+					<action android:name="android.intent.action.SEND" />
+					<action android:name="android.intent.action.SEND_MULTIPLE" />
+					<category
+						android:name="android.intent.category.DEFAULT" />
+					<data android:mimeType="image/*" />
+			</intent-filter>
+		</activity>
 
 	</application>
 	<uses-permission android:name="android.permission.INTERNET" />
 	<uses-sdk android:minSdkVersion="3" />
+
+<uses-permission android:name="android.permission.CAMERA"></uses-permission>
 </manifest> 

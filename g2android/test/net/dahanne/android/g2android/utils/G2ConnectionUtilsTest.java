@@ -19,8 +19,8 @@ package net.dahanne.android.g2android.utils;
 
 import java.io.File;
 import java.util.HashMap;
-import java.util.Random;
 import java.util.Map.Entry;
+import java.util.Random;
 
 import junit.framework.Assert;
 
@@ -122,7 +122,7 @@ public class G2ConnectionUtilsTest extends Assert {
 	public void sendImageToGalleryTestFail() throws GalleryConnectionException {
 		g2ConnectionUtils.loginToGallery(galleryUrl, user, password);
 		File imageFile = new File("image.png");
-		g2ConnectionUtils.sendImageToGallery(galleryUrl, -5, imageFile);
+		g2ConnectionUtils.sendImageToGallery(galleryUrl, -5, imageFile,null);
 	}
 
 	@Test
@@ -130,7 +130,7 @@ public class G2ConnectionUtilsTest extends Assert {
 		g2ConnectionUtils.loginToGallery(galleryUrl, user, password);
 		File imageFile = new File("image.png");
 		int newItemId = g2ConnectionUtils.sendImageToGallery(galleryUrl, 174,
-				imageFile);
+				imageFile,"plouf");
 		assertTrue(newItemId != 0);
 	}
 

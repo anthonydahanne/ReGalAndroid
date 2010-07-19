@@ -163,12 +163,18 @@ public class G2DataUtils {
 
 	public Album retrieveRootAlbumAndItsHierarchy(String galleryUrl)
 			throws GalleryConnectionException {
+		Map<Integer, Album> nonSortedAlbums = getAllAlbums(galleryUrl);
+		Album rootAlbum = organizeAlbumsHierarchy(nonSortedAlbums);
+		return rootAlbum;
+	}
+
+	public Map<Integer, Album> getAllAlbums(String galleryUrl)
+			throws GalleryConnectionException {
 		HashMap<String, String> albumsProperties = g2ConnectionUtils
 				.fetchAlbums(galleryUrl);
 
 		Map<Integer, Album> nonSortedAlbums = extractAlbumFromProperties(albumsProperties);
-		Album rootAlbum = organizeAlbumsHierarchy(nonSortedAlbums);
-		return rootAlbum;
+		return nonSortedAlbums;
 	}
 
 	/**

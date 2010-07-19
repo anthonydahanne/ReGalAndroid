@@ -1,5 +1,5 @@
 <resources>
-		<!--Keys, NOT TO TRANSLATE !-->
+		<!--Keys,  TO TRANSLATE !-->
 		<string name="gallery_url_key">galleryUrl</string>
 		<string name="username_key">username</string>
 		<string name="password_key">password</string>
@@ -80,7 +80,7 @@
         <string name="show_albums_title">G2Android Albums</string>
         <string name="show_gallery_title">G2Android Gallery</string>
 		<string name="view_album_pictures">View this album pictures !</string>
-		<string name="current_version">Version : 1.4.3</string>
+		<string name="current_version">Version : 1.5.0</string>
 		<string name="project_home">Project Home : </string>
 		<string name="album_is_empty">This album does not contain any pictures !</string>
 		<string name="type_new_subalbum_name">Type in your new subalbum name : </string>
@@ -131,5 +131,16 @@
 		
 		<!--  new string since 1.5.0 -->
 		<string name="url_validation_problem">The url you provided is not valid, please double check it does not contain spaces or other special characters !</string>
+		<string name="upload_photo_title">Upload photo(s) with G2Android</string>
+		<string name="take_picture_label">Take picture and send it to gallery</string>
+		<string name="upload_photo_no_photo">No photo to send, please try again to select a photo !</string>
+		<string name="upload_photo_send_to">You are about to send a photo to :</string>
+		<string name="upload_photo_gallery_url">- gallery url</string>
+		<string name="upload_photo_connected_as">- connected as user</string>
+		<string name="upload_photo_choose_a_name">Choose a name for this photo: </string>
+		<string name="upload_photo_choose_destination">Choose your destination album : </string>
+		<string name="upload_photo_send">Send</string>
+		<string name="upload_photo_done">Done</string>
+		<string name="upload_photo_settings">Go to settings</string>
 		
 </resources>

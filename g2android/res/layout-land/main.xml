@@ -30,9 +30,9 @@
 			android:layout_marginBottom="2dip" android:layout_marginLeft="22dip" />
 		<LinearLayout android:orientation="vertical"
 			android:layout_width="wrap_content" android:layout_height="fill_parent">
-			<Button android:layout_width="fill_parent"
+			<!-- Button android:layout_width="fill_parent"
 				android:layout_height="wrap_content" android:gravity="center"
-				android:text="@string/connect_to_gallery_title" android:id="@+id/connect_to_gallery_button" />
+				android:text="@string/connect_to_gallery_title" android:id="@+id/connect_to_gallery_button" /-->
 			<Button android:layout_width="fill_parent"
 				android:layout_height="wrap_content" android:gravity="center"
 				android:enabled="false" android:text="@string/enter_gallery_title"

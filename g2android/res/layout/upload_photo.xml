@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical" android:layout_width="fill_parent"
+	android:layout_height="fill_parent" android:background="@color/background"
+	android:padding="15dip">
+	<TextView android:text="@string/upload_photo_send_to"
+		android:layout_width="fill_parent" android:layout_height="wrap_content"
+		android:textStyle="bold" android:layout_gravity="center_vertical" />
+	<TextView android:text="@string/upload_photo_gallery_url" android:id="@+id/gallery_url"
+		android:paddingLeft="15px" android:layout_width="fill_parent"
+		android:layout_height="wrap_content"></TextView>
+	<TextView android:text="@string/upload_photo_connected_as" android:id="@+id/connected_as_user"
+		android:paddingLeft="15px" android:layout_width="fill_parent"
+		android:layout_height="wrap_content"></TextView>
+	<!-- ImageView android:id="@+id/photo_to_send"
+		android:layout_width="wrap_content" android:layout_height="wrap_content" /-->
+	 <TextView
+        android:id="@+id/label"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" android:textStyle="bold"
+        android:text="@string/upload_photo_choose_a_name"/>
+	
+	<EditText android:id="@+id/filename" android:layout_width="fill_parent"
+		android:layout_height="wrap_content"  android:text="G2Default"
+		android:layout_below="@id/label" />
+
+	<TextView android:text="@string/upload_photo_choose_destination"
+		android:layout_width="fill_parent" android:layout_height="wrap_content"
+		android:textStyle="bold" android:layout_gravity="center_vertical" />
+	<Spinner android:id="@+id/album_list" android:layout_width="fill_parent"
+		android:layout_height="wrap_content" />
+	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+		android:orientation="horizontal" android:layout_width="fill_parent"
+		android:layout_height="wrap_content" android:background="@color/background"
+		android:padding="1dip">
+
+		<Button android:text="@string/upload_photo_send" android:id="@+id/send_button"
+			android:layout_width="wrap_content" android:layout_height="fill_parent"></Button>
+		<Button android:text="@string/upload_photo_done" android:id="@+id/cancel_button"
+			android:layout_width="wrap_content" android:layout_height="fill_parent"></Button>
+		<Button android:text="@string/upload_photo_settings" android:id="@+id/g2android_button"
+			android:layout_width="wrap_content" android:layout_height="fill_parent">
+		</Button>
+	</LinearLayout>
+
+</LinearLayout>

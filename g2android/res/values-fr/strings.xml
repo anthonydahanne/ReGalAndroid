@@ -95,7 +95,18 @@
 		<string name="cancel">Annuler</string>
 		<string name="choose_subalbum_name">Choisis un nom pour l\'album</string>
 
-	<!--  new string since 1.5.0 -->
+		<!--  new string since 1.5.0 -->
 		<string name="url_validation_problem">L\'url que vous avez saisie pour votre galerie n\'est pas valide ! Vérifiez là !</string>
+		<string name="upload_photo_title">Envoyer avec g2android</string>
+		<string name="take_picture_label">Prendre 1 photo et l\'envoyer</string>
+		<string name="upload_photo_no_photo">Pas de photo à envoyer !</string>
+		<string name="upload_photo_send_to">Vous allez envoyer une photo vers :</string>
+		<string name="upload_photo_gallery_url">- url de la galerie : </string>
+		<string name="upload_photo_connected_as">- connecté en tant que : </string>
+		<string name="upload_photo_choose_a_name">Choisissez un nom pour la photo : </string>
+		<string name="upload_photo_choose_destination">Choisissez l\'album de destination : </string>
+		<string name="upload_photo_send">Envoyer</string>
+		<string name="upload_photo_done">Fini</string>
+		<string name="upload_photo_settings">Configurer g2android</string>
 		
 </resources>

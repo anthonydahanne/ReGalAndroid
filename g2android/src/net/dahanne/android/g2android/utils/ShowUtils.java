@@ -60,6 +60,25 @@ public class ShowUtils {
 		AlertDialog alert = builder.create();
 		alert.show();
 	}
+	
+	
+	public void alertFileProblem(String exceptionMessage,
+			 Context context) {
+		AlertDialog.Builder builder = new AlertDialog.Builder(context);
+		// if there was an exception thrown, show it, or tell to verify
+		// settings
+		String message =  context.getString(R.string.exception_thrown)
+				+ exceptionMessage;
+		builder.setTitle(R.string.problem).setMessage(message)
+				.setPositiveButton(R.string.ok,
+						new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int id) {
+								dialog.cancel();
+							}
+						});
+		AlertDialog alert = builder.create();
+		alert.show();
+	}
 
 	public void toastAlbumSuccessfullyCreated(Context context) {
 		Toast.makeText(context,
@@ -67,9 +86,13 @@ public class ShowUtils {
 				Toast.LENGTH_LONG).show();
 	}
 
-	public void toastImageSuccessfullyAdded(Context context) {
+	public void toastImageSuccessfullyAdded(Context context, String imageName) {
+		StringBuilder stringBuilder = new StringBuilder();
+		stringBuilder.append(context.getString(R.string.image_successfully_created));
+		stringBuilder.append(" : ");
+		stringBuilder.append(imageName);
 		Toast.makeText(context,
-				context.getString(R.string.image_successfully_created),
+				stringBuilder.toString(),
 				Toast.LENGTH_LONG).show();
 	}
 	

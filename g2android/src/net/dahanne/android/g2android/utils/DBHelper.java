@@ -114,6 +114,8 @@ public class DBHelper {
 		values.put("is_logged_in", g2AndroidContext.isLoggedIn);
 
 		this.db.insert(DBHelper.DB_TABLE, null, values);
+		
+		cleanup();
 	}
 
 	public void update(final G2AndroidContext g2AndroidContext) {
@@ -124,6 +126,8 @@ public class DBHelper {
 		values.put("is_logged_in", g2AndroidContext.isLoggedIn);
 		this.db.update(DBHelper.DB_TABLE, values, "_id=" + g2AndroidContext.id,
 				null);
+		
+		cleanup();
 	}
 
 	public void delete(final long id) {
@@ -158,9 +162,12 @@ public class DBHelper {
 		} catch (SQLException e) {
 			// Log.v(Constants.LOGTAG, DBHelper.CLASSNAME, e);
 		} finally {
-			if (c != null && !c.isClosed()) {
-				c.close();
-			}
+			c.close();
+			cleanup();
+			
+//			if (c != null && !c.isClosed()) {
+//				c.close();
+//			}
 		}
 		return g2AndroidContext;
 	}
