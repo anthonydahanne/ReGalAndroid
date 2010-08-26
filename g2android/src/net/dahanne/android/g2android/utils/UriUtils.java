@@ -44,22 +44,28 @@ public class UriUtils {
 	}
 
 	public static File getFileFromUri(Uri uri, Activity activity) {
+		String filePath = null;
+		String scheme = uri.getScheme();
+		filePath = uri.getPath();
+		if (filePath != null && scheme != null && scheme.equals("file")) {
+			return new File(filePath);
+		}
+
 		String[] projection = { MediaStore.Images.ImageColumns.DATA };
-		String filePath=null;
 		Cursor c = activity.managedQuery(uri, projection, null, null, null);
 		if (c != null && c.moveToFirst()) {
 			filePath = c.getString(0);
 		}
-		if(filePath!=null){
+		if (filePath != null) {
 			return new File(filePath);
 		}
 		return null;
 
 	}
-	
+
 	public static String getFileNameFromUri(Uri uri, Activity activity) {
 		String[] projection = { MediaStore.Images.ImageColumns.DISPLAY_NAME };
-		String fileName=null;
+		String fileName = null;
 		Cursor c = activity.managedQuery(uri, projection, null, null, null);
 		if (c != null && c.moveToFirst()) {
 			fileName = c.getString(0);
@@ -87,6 +93,12 @@ public class UriUtils {
 	public static String extractFilenameFromUri(Uri uri, Activity activity) {
 
 		String fileName = null;
+		String scheme = uri.getScheme();
+		String path = uri.getPath();
+		if (path != null && scheme != null && scheme.equals("file")) {
+			fileName = path.substring(path.lastIndexOf("/") + 1);
+		}
+
 		String[] projection = { MediaStore.Images.ImageColumns.DISPLAY_NAME /* col1 */};
 
 		Cursor c = activity.managedQuery(uri, projection, null, null, null);

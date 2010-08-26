@@ -73,7 +73,7 @@ public class FullImage extends Activity implements OnGestureListener {
 	private ProgressDialog progressDialog;
 	private GestureDetector gestureScanner;
 	private Toast toast;
-	private FileUtils fileUtils = FileUtils.getInstance();
+	private final FileUtils fileUtils = FileUtils.getInstance();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -94,8 +94,8 @@ public class FullImage extends Activity implements OnGestureListener {
 		if (albumPictures == null || albumPictures.size() == 0) {
 			finish();
 		} else {
-		currentPosition = ((G2AndroidApplication) getApplication())
-				.getCurrentPosition();
+			currentPosition = ((G2AndroidApplication) getApplication())
+					.getCurrentPosition();
 			loadingPicture();
 		}
 
@@ -233,6 +233,24 @@ public class FullImage extends Activity implements OnGestureListener {
 			intent = new Intent(this, ChoosePhotoNumber.class);
 			intent.putExtra(CURRENT_POSITION, currentPosition);
 			startActivityForResult(intent, REQUEST_CODE_CHOOSE_PHOTO_NUMBER);
+			break;
+
+		case R.id.advanced_control:
+			intent = new Intent();
+			intent.setAction(android.content.Intent.ACTION_VIEW);
+			// imageFilePath is a path to a file located on the sd card
+			// such "/sdcard/temp.jpg"
+			filePath = Settings.getG2AndroidPath(this) + SLASH
+					+ g2Picture.getTitle();
+			File file = new File(filePath);
+			if (!file.exists()) {
+				filePath = Settings.getG2AndroidCachePath(this) + SLASH
+						+ g2Picture.getTitle();
+				file = new File(filePath);
+			}
+			intent.setDataAndType(Uri.fromFile(file), "image/*");
+			startActivity(intent);
+
 			break;
 		}
 

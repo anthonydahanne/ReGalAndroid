@@ -24,11 +24,14 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import net.dahanne.android.g2android.G2AndroidApplication;
 import net.dahanne.android.g2android.R;
 import net.dahanne.android.g2android.model.Album;
 import net.dahanne.android.g2android.tasks.AddPhotoTask;
-import net.dahanne.android.g2android.tasks.FetchAlbumTask2;
+import net.dahanne.android.g2android.tasks.AddPhotosTask;
+import net.dahanne.android.g2android.tasks.FetchAlbumForUploadTask;
 import net.dahanne.android.g2android.tasks.LoginTask;
+import net.dahanne.android.g2android.utils.G2DataUtils;
 import net.dahanne.android.g2android.utils.ShowUtils;
 import net.dahanne.android.g2android.utils.UriUtils;
 import android.app.Activity;
@@ -40,6 +43,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.Window;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -57,8 +61,8 @@ public class UploadPhoto extends Activity implements OnClickListener {
 	private TextView galleryUrlText;
 	private TextView connectedAsUserText;
 	private Uri mImageUri;
-	private Spinner albumList;
-	private ArrayAdapter<Album> emptyAdapter;
+	private Spinner spinner;
+	private ArrayAdapter<Album> albumAdapter;
 	private EditText filenameEditText;
 	private File imageFromCamera;
 	private ArrayList<Uri> mImageUris;
@@ -66,8 +70,11 @@ public class UploadPhoto extends Activity implements OnClickListener {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		emptyAdapter = new ArrayAdapter<Album>(this, 0);
-		;
+		albumAdapter = new ArrayAdapter<Album>(this, 0);
+		// albumAdapter = new AlbumAdapterForUpload(this,
+		// R.layout.show_albums_for_upload_row, items);
+		// this will enable the progress bar
+		requestWindowFeature(Window.FEATURE_PROGRESS);
 		setContentView(R.layout.upload_photo);
 		setTitle(R.string.upload_photo_title);
 		filenameEditText = (EditText) findViewById(R.id.filename);
@@ -78,7 +85,7 @@ public class UploadPhoto extends Activity implements OnClickListener {
 		String fileName = SENT_WITH_G2_ANDROID;
 
 		if (Intent.ACTION_SEND.equals(intent.getAction())) {
-			if ((extras != null) || intent.getData() != null) {
+			if ((extras != null) || (intent.getData() != null)) {
 				// depending on the source of the intent, the uri can be in
 				// extra or data, or can also be a bmp if coming from the camera
 				if (extras != null) {
@@ -86,7 +93,7 @@ public class UploadPhoto extends Activity implements OnClickListener {
 					if (mImageUri == null) {
 						Bitmap bm = null;
 						Object o = extras.get("data");
-						if (o != null && o instanceof Bitmap) {
+						if ((o != null) && (o instanceof Bitmap)) {
 							bm = (Bitmap) o;
 							try {
 								StringBuilder stringBuilder = new StringBuilder();
@@ -95,8 +102,8 @@ public class UploadPhoto extends Activity implements OnClickListener {
 								stringBuilder.append("/");
 								StringBuilder stringBuilderFileName = new StringBuilder();
 								stringBuilderFileName.append(fileName);
-								stringBuilderFileName
-										.append(System.currentTimeMillis());
+								stringBuilderFileName.append(System
+										.currentTimeMillis());
 								stringBuilderFileName.append(".jpg");
 								stringBuilder.append(stringBuilderFileName);
 								imageFromCamera = new File(
@@ -106,14 +113,16 @@ public class UploadPhoto extends Activity implements OnClickListener {
 								bm.compress(CompressFormat.JPEG, 100, fos);
 								fos.flush();
 								fos.close();
-								
-								mImageUri=Uri.fromFile(imageFromCamera);
+
+								mImageUri = Uri.fromFile(imageFromCamera);
 								fileName = stringBuilderFileName.toString();
-								
+
 							} catch (FileNotFoundException e) {
-								ShowUtils.getInstance().alertFileProblem(e.getMessage(),this);
+								ShowUtils.getInstance().alertFileProblem(
+										e.getMessage(), this);
 							} catch (IOException e) {
-								ShowUtils.getInstance().alertFileProblem(e.getMessage(),this);
+								ShowUtils.getInstance().alertFileProblem(
+										e.getMessage(), this);
 							}
 
 						}
@@ -123,19 +132,18 @@ public class UploadPhoto extends Activity implements OnClickListener {
 					mImageUri = intent.getData();
 				}
 			}
-			if(fileName.equals(SENT_WITH_G2_ANDROID)){
+			if (fileName.equals(SENT_WITH_G2_ANDROID)) {
 				fileName = UriUtils.extractFilenameFromUri(mImageUri, this);
 			}
 			filenameEditText.setText(fileName);
 		}
-		
+
 		if ("android.intent.action.SEND_MULTIPLE".equals(intent.getAction())) {
-			mImageUris =  extras.getParcelableArrayList(Intent.EXTRA_STREAM);
+			mImageUris = extras.getParcelableArrayList(Intent.EXTRA_STREAM);
 			filenameEditText.setEnabled(false);
-			filenameEditText.setText("Multiple files upload");
-			
+			filenameEditText.setText(R.string.multiple_files_upload);
+
 		}
-		
 
 		sendButton = (Button) findViewById(R.id.send_button);
 		cancelButton = (Button) findViewById(R.id.cancel_button);
@@ -143,8 +151,6 @@ public class UploadPhoto extends Activity implements OnClickListener {
 		sendButton.setOnClickListener(this);
 		cancelButton.setOnClickListener(this);
 		goToG2AndroidButton.setOnClickListener(this);
-		
-		
 
 		galleryUrlText = (TextView) findViewById(R.id.gallery_url);
 		connectedAsUserText = (TextView) findViewById(R.id.connected_as_user);
@@ -156,8 +162,8 @@ public class UploadPhoto extends Activity implements OnClickListener {
 	protected void onResume() {
 		super.onResume();
 
-		albumList = (Spinner) findViewById(R.id.album_list);
-		albumList.setAdapter(emptyAdapter);
+		spinner = (Spinner) findViewById(R.id.album_list);
+		spinner.setAdapter(albumAdapter);
 
 		progressDialog = ProgressDialog.show(this,
 				getString(R.string.please_wait),
@@ -170,15 +176,24 @@ public class UploadPhoto extends Activity implements OnClickListener {
 	}
 
 	/**
-	 * \ This method is called back from LoginTask
+	 * This method is called back from LoginTask
 	 */
 	@SuppressWarnings("unchecked")
 	public void showAlbumList() {
+		// we recover the context from the database
+		ShowUtils.getInstance().recoverContextFromDatabase(this);
+		Album currentAlbum = null;
+		if (((G2AndroidApplication) getApplication()).getRootAlbum() != null) {
+			currentAlbum = G2DataUtils.getInstance().findAlbumFromAlbumName(
+					((G2AndroidApplication) getApplication()).getRootAlbum(),
+					((G2AndroidApplication) getApplication()).getAlbumName());
+		}
 		progressDialog = ProgressDialog.show(this,
 				getString(R.string.please_wait),
 				getString(R.string.fetching_gallery_albums), true);
-		new FetchAlbumTask2(this, progressDialog, albumList).execute(Settings
-				.getGalleryUrl(this));
+		new FetchAlbumForUploadTask(this, progressDialog, spinner, currentAlbum)
+				.execute(Settings.getGalleryUrl(this));
+
 	}
 
 	@SuppressWarnings("unchecked")
@@ -187,42 +202,37 @@ public class UploadPhoto extends Activity implements OnClickListener {
 		switch (v.getId()) {
 		case R.id.send_button:
 
-			Album selectAlbum = (Album) albumList.getSelectedItem();
+			Album selectAlbum = (Album) spinner.getSelectedItem();
 
-			if (mImageUri != null) {
+			if (mImageUri == null && mImageUris == null) {
+				// there is no image to send
+				Toast.makeText(this, R.string.upload_photo_no_photo,
+						Toast.LENGTH_LONG);
+			} else {
+
 				boolean mustLogIn = ShowUtils.getInstance()
 						.recoverContextFromDatabase(this);
 				progressDialog = ProgressDialog.show(this,
 						getString(R.string.please_wait),
 						getString(R.string.adding_photo), true);
-				new AddPhotoTask(this, progressDialog).execute(
-						Settings.getGalleryUrl(this),
-						Integer.valueOf(selectAlbum.getName()), mImageUri,
-						mustLogIn, filenameEditText.getText().toString(),imageFromCamera);
-			}
-			//multiple file upload
-			else if(mImageUris != null){
-				boolean mustLogIn = ShowUtils.getInstance()
-				.recoverContextFromDatabase(this);
-				for (Uri imageUri : mImageUris) {
-					progressDialog = ProgressDialog.show(this,
-							getString(R.string.please_wait),
-							getString(R.string.adding_photo), true);
+
+				// one picture to upload : can be from camera or from sdcard
+				if (mImageUri != null) {
 					new AddPhotoTask(this, progressDialog).execute(
 							Settings.getGalleryUrl(this),
-							Integer.valueOf(selectAlbum.getName()), imageUri,
-							mustLogIn, UriUtils.getFileNameFromUri(imageUri, this),null);
+							Integer.valueOf(selectAlbum.getName()), mImageUri,
+							mustLogIn, filenameEditText.getText().toString(),
+							imageFromCamera);
+				}
+				// multiple file upload
+				else if (mImageUris != null) {
+					new AddPhotosTask(this, progressDialog).execute(
+							Settings.getGalleryUrl(this),
+							Integer.valueOf(selectAlbum.getName()), mImageUris,
+							mustLogIn);
 				}
 			}
-			
-			
-			else {
-				// there is no image to send
-				Toast.makeText(
-						this,
-						R.string.upload_photo_no_photo,
-						Toast.LENGTH_LONG);
-			}
+
 			break;
 		case R.id.cancel_button:
 			finish();
@@ -234,5 +244,4 @@ public class UploadPhoto extends Activity implements OnClickListener {
 		}
 
 	}
-
 }

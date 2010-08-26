@@ -32,8 +32,8 @@ public class Album implements Serializable {
 	private int id;
 	private int name;
 	private String title;
-	private String summary;
 	private int parentName;
+	private String summary;
 	private boolean add;
 	private boolean write;
 	private boolean deleteAlbum;
@@ -42,7 +42,7 @@ public class Album implements Serializable {
 	private String albumUrl;
 	private Album parent;
 
-	private List<Album> children = new ArrayList<Album>();
+	private final List<Album> children = new ArrayList<Album>();
 
 	public Album() {
 		super();
@@ -58,7 +58,7 @@ public class Album implements Serializable {
 		this.name = name;
 		this.title = title;
 		this.summary = summary;
-		this.parentName = parent;
+		parentName = parent;
 		this.add = add;
 		this.write = write;
 		this.deleteAlbum = deleteAlbum;
@@ -171,10 +171,23 @@ public class Album implements Serializable {
 	}
 
 	@Override
+	public String toString() {
+		return new StringBuilder().append("id : ").append(id)
+				.append(" name : ").append(name).append(" title : ")
+				.append(title).append(" parentName : ").append(parentName)
+				.toString();
+
+		// return new StringBuilder().append(title).toString();
+	}
+
+	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + (name == 0 ? 0 : prime);
+		result = prime * result + id;
+		result = prime * result + name;
+		result = prime * result + parentName;
+		result = prime * result + ((title == null) ? 0 : title.hashCode());
 		return result;
 	}
 
@@ -190,25 +203,23 @@ public class Album implements Serializable {
 			return false;
 		}
 		Album other = (Album) obj;
-
-		if (name == 0) {
-			if (other.name != 0) {
-				return false;
-			}
-		} else if (name != other.name) {
+		if (id != other.id) {
 			return false;
 		}
-
+		if (name != other.name) {
+			return false;
+		}
+		if (parentName != other.parentName) {
+			return false;
+		}
+		if (title == null) {
+			if (other.title != null) {
+				return false;
+			}
+		} else if (!title.equals(other.title)) {
+			return false;
+		}
 		return true;
-	}
-
-	@Override
-	public String toString() {
-		// return new StringBuilder().append("name : ").append(name).append(
-		// " title : ").append(title).append(" parentId : ").append(
-		// parentName).toString();
-
-		return new StringBuilder().append(title).toString();
 	}
 
 	/**

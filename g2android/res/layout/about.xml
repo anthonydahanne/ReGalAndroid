@@ -60,6 +60,46 @@
 			<TextView android:text="http://blog.dahanne.net/about" android:textColorLink="#ffffff"
 				android:layout_width="fill_parent" android:layout_height="wrap_content"
 				android:paddingLeft="15px" android:textColor="#ffffff" android:autoLink="web" />
+			<TextView android:text="Graphics, art: " android:layout_width="fill_parent"
+				android:layout_height="wrap_content" android:paddingTop="15px"
+				android:paddingLeft="15px" android:textStyle="bold"
+				android:textColor="#ffffff" />
+			<TextView android:text="Dan"
+				android:layout_width="fill_parent" android:layout_height="wrap_content"
+				android:paddingLeft="15px" android:textColor="#ffffff" />
+			<TextView android:text="http://www.gdl3d.com/" android:textColorLink="#ffffff"
+				android:layout_width="fill_parent" android:layout_height="wrap_content"
+				android:paddingLeft="15px" android:textColor="#ffffff" android:autoLink="web" />
+			<TextView android:text="Chinese translation: " android:layout_width="fill_parent"
+				android:layout_height="wrap_content" android:paddingTop="15px"
+				android:paddingLeft="15px" android:textStyle="bold"
+				android:textColor="#ffffff" />
+			<TextView android:text="GoApk.com"
+				android:layout_width="fill_parent" android:layout_height="wrap_content"
+				android:paddingLeft="15px" android:textColor="#ffffff" />
+			<TextView android:text="http://goapk.com" android:textColorLink="#ffffff"
+				android:layout_width="fill_parent" android:layout_height="wrap_content"
+				android:paddingLeft="15px" android:textColor="#ffffff" android:autoLink="web" />
+			<TextView android:text="Did you find a bug ?" android:layout_width="fill_parent"
+				android:layout_height="wrap_content" android:paddingTop="15px"
+				android:paddingLeft="15px" android:textStyle="bold"
+				android:textColor="#ffffff" />
+			<TextView android:text="Please report it !"
+				android:layout_width="fill_parent" android:layout_height="wrap_content"
+				android:paddingLeft="15px" android:textColor="#ffffff" />
+			<TextView android:text="http://code.google.com/p/g2android/issues/list" android:textColorLink="#ffffff"
+				android:layout_width="fill_parent" android:layout_height="wrap_content"
+				android:paddingLeft="15px" android:textColor="#ffffff" android:autoLink="web" />
+			<TextView android:text="Do you love this app ?" android:layout_width="fill_parent"
+				android:layout_height="wrap_content" android:paddingTop="15px"
+				android:paddingLeft="15px" android:textStyle="bold"
+				android:textColor="#ffffff" />
+			<TextView android:text="You can flattr me to show your support !"
+				android:layout_width="fill_parent" android:layout_height="wrap_content"
+				android:paddingLeft="15px" android:textColor="#ffffff" />
+			<TextView android:text="https://flattr.com/thing/38389/G2Android" android:textColorLink="#ffffff"
+				android:layout_width="fill_parent" android:layout_height="wrap_content"
+				android:paddingLeft="15px" android:textColor="#ffffff" android:autoLink="web" />
 			<TextView android:paddingTop="15px"
 				android:layout_width="fill_parent" android:layout_height="wrap_content"
 				android:paddingLeft="15px" android:textColor="#ffffff" android:text="@string/what_is_g2android"

@@ -84,7 +84,7 @@
 		<string name="showing_picture">Image en cours : </string>
 		<string name="no_more_pictures">Pas d\'autres photos dans l\'album</string>
 
-	<!-- New strings since 1.3.0 -->
+		<!-- New strings since 1.3.0 -->
 		<string name="share_image_title">Partager l\'url de la photo</string>
 		<string name="send_image_title">Envoyer à</string>
 		<string name="choose_action">Choisis une action</string>
@@ -108,5 +108,16 @@
 		<string name="upload_photo_send">Envoyer</string>
 		<string name="upload_photo_done">Fini</string>
 		<string name="upload_photo_settings">Configurer g2android</string>
+		
+		<!--  new string since 1.6.0 -->
+		<string name="images_successfully_created">Images ajoutées avec succès</string>
+		<string name="upload_settings">Réglages d\'envoi</string>
+		<string name="default_summary_title">Sommaire par défaut</string>
+		<string name="default_summary_summary">Les photos envoyées auront ce sommaire par défaut</string>
+		<string name="default_description_title">Description par défaut</string>
+		<string name="default_description_summary">Les photos envoyées auront cette description par défaut</string>
+		<string name="multiple_files_upload">Envoi de fichiers multiples</string>
+		<string name="no_summary_available">Pas de sommaire disponible</string>
+		<string name="advanced_control_title">Contrôles avancés</string>
 		
 </resources>

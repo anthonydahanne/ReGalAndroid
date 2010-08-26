@@ -1,0 +1,46 @@
+<!-- 
+This optimized layout was adapted from Romain Guy's blog :
+http://www.curious-creature.org/2009/02/22/android-layout-tricks-1/
+and from this post :
+http://stackoverflow.com/questions/3289096/android-relative-layout-placement-problems
+ -->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+android:layout_width="fill_parent"
+android:layout_height="?android:attr/listPreferredItemHeight"
+android:padding="6dip">
+<ImageView
+        android:id="@+id/icon"
+
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+
+        android:layout_alignParentTop="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginRight="6dip"
+
+        android:src="@drawable/folder_images_icon" />
+
+<TextView
+    android:id="@+id/first_line"
+    android:layout_height="wrap_content"
+    android:layout_width="fill_parent"
+    android:lines="1"
+    android:layout_toRightOf="@+id/icon"
+    android:layout_alignParentRight="true"
+    android:layout_alignParentTop="true"
+    android:gravity="center_vertical"
+android:textColor="#ffffff"    
+    android:text="FirstLine" />
+<TextView
+    android:id="@+id/second_line"
+    android:layout_height="wrap_content"
+    android:layout_width="fill_parent"
+    android:layout_toRightOf="@+id/icon"
+    android:layout_below="@+id/first_line"
+    android:layout_alignParentRight="true"
+    android:layout_alignParentBottom="true"
+    android:gravity="center_vertical"
+    
+    android:text="SecondLine" />
+</RelativeLayout>
+

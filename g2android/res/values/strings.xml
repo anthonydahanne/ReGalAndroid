@@ -1,11 +1,15 @@
 <resources>
-		<!--Keys,  TO TRANSLATE !-->
+		<!--Keys, NOT TO TRANSLATE !-->
 		<string name="gallery_url_key">galleryUrl</string>
 		<string name="username_key">username</string>
 		<string name="password_key">password</string>
 		<string name="port_key">port</string>
 		<string name="firsttime_key">firsttime</string>
 		<string name="clear_cache_key">clear_cache</string>
+		<string name="g2android_path_key">g2android_path</string>
+		<string name="g2android_temp_path_key">g2android_cache_path</string>
+		<string name="default_summary_key">DefaultSummary</string>
+		<string name="default_description_key">DefaultDescription</string>
 		<!-- end of Keys -->
 		
 		<!--Default values , NOT TO TRANSLATE !-->
@@ -80,7 +84,7 @@
         <string name="show_albums_title">G2Android Albums</string>
         <string name="show_gallery_title">G2Android Gallery</string>
 		<string name="view_album_pictures">View this album pictures !</string>
-		<string name="current_version">Version : 1.5.0</string>
+		<string name="current_version">Version : 1.6.0</string>
 		<string name="project_home">Project Home : </string>
 		<string name="album_is_empty">This album does not contain any pictures !</string>
 		<string name="type_new_subalbum_name">Type in your new subalbum name : </string>
@@ -142,5 +146,18 @@
 		<string name="upload_photo_send">Send</string>
 		<string name="upload_photo_done">Done</string>
 		<string name="upload_photo_settings">Go to settings</string>
+		
+		<!--  new string since 1.6.0 -->
+		<string name="images_successfully_created">Images were successfully added !</string>
+		<string name="upload_settings">Upload settings</string>
+		<string name="default_summary_title">Default Summary</string>
+		<string name="default_summary_summary">Photos sent with G2Android will have this summary set</string>
+		<string name="default_description_title">Default Description</string>
+		<string name="default_description_summary">Photos sent with G2Android will have this description set</string>
+		<string name="multiple_files_upload">Multiple files upload</string>
+		<string name="no_summary_available">No summary available</string>
+		<string name="advanced_control_title">Advanced controls</string>
+
+		
 		
 </resources>

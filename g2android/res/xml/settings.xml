@@ -29,12 +29,25 @@
 	<PreferenceCategory android:title="@string/cache_settings">
 		<EditTextPreference android:name="@string/g2android_path_title"
 			android:summary="@string/g2android_path_summary" android:title="@string/g2android_path_title"
-			android:defaultValue="@string/g2android_path_default" />
+			android:defaultValue="@string/g2android_path_default"
+			android:key="@string/g2android_path_key" />
 		<EditTextPreference android:name="@string/g2android_temp_path_title"
 			android:defaultValue="@string/g2android_cache_path_default"
-			android:summary="@string/g2android_temp_path_summary" android:title="@string/g2android_temp_path_title" />
+			android:summary="@string/g2android_temp_path_summary" android:title="@string/g2android_temp_path_title"
+			android:key="@string/g2android_temp_path_key" />
 		<CheckBoxPreference android:key="clear_cache"
 			android:summary="@string/clear_cache_summary" android:title="@string/clear_cache_title" />
+		
+	</PreferenceCategory>
+	<PreferenceCategory android:title="@string/upload_settings">
+		<EditTextPreference android:name="@string/default_summary_title"
+			android:summary="@string/default_summary_summary" android:title="@string/default_summary_title"
+			android:key="@string/default_summary_key" />
+			
+			
+		<EditTextPreference android:name="@string/default_description_title"
+			android:key="@string/default_description_key"
+			android:summary="@string/default_description_summary" android:title="@string/default_description_title" />
 		
 	</PreferenceCategory>
 

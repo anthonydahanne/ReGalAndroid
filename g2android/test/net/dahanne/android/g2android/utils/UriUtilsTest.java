@@ -22,4 +22,11 @@ public class UriUtilsTest {
 		assertFalse(UriUtils.checkUrlIsValid(url));
 
 	}
+
+	// @Test
+	// public void extractFilenameFromUri__file() {
+	// Uri uri = Uri.parse("file:///sdcard/g2android/truc.jpg");
+	// assertEquals("truc.jpg", UriUtils.extractFilenameFromUri(uri, null));
+	//
+	// }
 }

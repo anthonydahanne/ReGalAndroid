@@ -17,11 +17,14 @@
  */
 package net.dahanne.android.g2android.tasks;
 
+import java.util.Collections;
 import java.util.List;
 
 import net.dahanne.android.g2android.G2AndroidApplication;
 import net.dahanne.android.g2android.R;
+import net.dahanne.android.g2android.adapters.AlbumAdapter;
 import net.dahanne.android.g2android.model.Album;
+import net.dahanne.android.g2android.utils.AlbumComparator;
 import net.dahanne.android.g2android.utils.G2DataUtils;
 import net.dahanne.android.g2android.utils.GalleryConnectionException;
 import net.dahanne.android.g2android.utils.ShowUtils;
@@ -39,11 +42,11 @@ public class FetchAlbumTask extends AsyncTask {
 	String exceptionMessage = null;
 	ListActivity activity;
 	private String galleryUrl;
-	private ProgressDialog progressDialog;
+	private final ProgressDialog progressDialog;
 
 	public FetchAlbumTask(ListActivity context, ProgressDialog progressDialog) {
 		super();
-		this.activity = context;
+		activity = context;
 		this.progressDialog = progressDialog;
 	}
 
@@ -69,7 +72,7 @@ public class FetchAlbumTask extends AsyncTask {
 					.setRootAlbum((Album) rootAlbum);
 			activity.setTitle(((Album) rootAlbum).getTitle());
 			List<Album> albumChildren = ((Album) rootAlbum).getChildren();
-
+			Collections.sort(albumChildren, new AlbumComparator());
 			// we create a fake album, it will be used to choose to view the
 			// pictures of the album
 			Album viewPicturesAlbum = new Album();
@@ -80,9 +83,14 @@ public class FetchAlbumTask extends AsyncTask {
 			if (!albumChildren.contains(viewPicturesAlbum)) {
 				albumChildren.add(0, viewPicturesAlbum);
 			}
-			ArrayAdapter<Album> arrayAdapter = new ArrayAdapter<Album>(
-					activity, android.R.layout.simple_list_item_1,
-					albumChildren);
+
+			// ArrayAdapter<Album> arrayAdapter = new ArrayAdapter<Album>(
+			// activity, android.R.layout.simple_list_item_1,
+			// albumChildren);
+			// activity.setListAdapter(arrayAdapter);
+			ArrayAdapter<Album> arrayAdapter = new AlbumAdapter(activity,
+					R.layout.show_albums_row, albumChildren);
+
 			activity.setListAdapter(arrayAdapter);
 			arrayAdapter.notifyDataSetChanged();
 		} else {

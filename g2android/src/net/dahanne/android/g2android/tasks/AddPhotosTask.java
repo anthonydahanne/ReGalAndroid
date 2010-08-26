@@ -18,6 +18,7 @@
 package net.dahanne.android.g2android.tasks;
 
 import java.io.File;
+import java.util.ArrayList;
 
 import net.dahanne.android.g2android.activity.Settings;
 import net.dahanne.android.g2android.utils.G2ConnectionUtils;
@@ -28,32 +29,27 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.view.Window;
 
-public class AddPhotoTask extends AsyncTask<Object, Void, String> {
+public class AddPhotosTask extends AsyncTask<Object, Integer, Void> {
 	private String exceptionMessage = null;
 	Activity activity;
 	private String galleryUrl;
 	private final ProgressDialog progressDialog;
 
-	public AddPhotoTask(Activity context, ProgressDialog progressDialog) {
+	public AddPhotosTask(Activity context, ProgressDialog progressDialog) {
 		super();
 		activity = context;
 		this.progressDialog = progressDialog;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	protected String doInBackground(Object... parameters) {
+	protected Void doInBackground(Object... parameters) {
 		String galleryUrl = (String) parameters[0];
 		Integer albumName = (Integer) parameters[1];
-		Uri photoUri = (Uri) parameters[2];
+		ArrayList<Uri> photoUris = (ArrayList<Uri>) parameters[2];
 		boolean mustLogIn = (Boolean) parameters[3];
-		String imageName = (String) parameters[4];
-		File imageFile = (File) parameters[5];
-
-		// not from the camera
-		if (imageFile == null) {
-			imageFile = UriUtils.getFileFromUri(photoUri, activity);
-		}
 
 		try {
 			if (mustLogIn) {
@@ -61,18 +57,26 @@ public class AddPhotoTask extends AsyncTask<Object, Void, String> {
 						Settings.getUsername(activity),
 						Settings.getPassword(activity));
 			}
-			G2ConnectionUtils.getInstance().sendImageToGallery(galleryUrl,
-					albumName, imageFile, imageName,
-					Settings.getDefaultSummary(activity),
-					Settings.getDefaultDescription(activity));
+
+			for (Uri photoUri : photoUris) {
+				File imageFile = UriUtils.getFileFromUri(photoUri, activity);
+				String imageName = UriUtils.getFileNameFromUri(photoUri,
+						activity);
+				G2ConnectionUtils.getInstance().sendImageToGallery(galleryUrl,
+						albumName, imageFile, imageName,
+						Settings.getDefaultSummary(activity),
+						Settings.getDefaultDescription(activity));
+				publishProgress((int) (((photoUris.indexOf(photoUri) + 1) / (float) photoUris
+						.size()) * 10000));
+			}
 		} catch (GalleryConnectionException e) {
 			exceptionMessage = e.getMessage();
 		}
-		return imageName;
+		return null;
 	}
 
 	@Override
-	protected void onPostExecute(String imageName) {
+	protected void onPostExecute(Void useless) {
 
 		progressDialog.dismiss();
 		if (exceptionMessage != null) {
@@ -80,10 +84,21 @@ public class AddPhotoTask extends AsyncTask<Object, Void, String> {
 			ShowUtils.getInstance().alertConnectionProblem(exceptionMessage,
 					galleryUrl, activity);
 		} else {
-			ShowUtils.getInstance().toastImageSuccessfullyAdded(activity,
-					imageName);
+			ShowUtils.getInstance().toastImagesSuccessfullyAdded(activity);
 		}
 
+	}
+
+	@Override
+	protected void onPreExecute() {
+		super.onPreExecute();
+		activity.getWindow().setFeatureInt(Window.FEATURE_PROGRESS, 0);
+	}
+
+	@Override
+	protected void onProgressUpdate(Integer... values) {
+		super.onProgressUpdate(values);
+		activity.getWindow().setFeatureInt(Window.FEATURE_PROGRESS, values[0]);
 	}
 
 }

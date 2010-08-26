@@ -11,4 +11,5 @@
 	<item android:title="@string/choose_photo_number" android:icon="@android:drawable/ic_menu_search"
 		android:id="@+id/choose_photo_number" />
 
+<item android:id="@+id/advanced_control" android:title="@string/advanced_control_title" android:icon="@android:drawable/ic_menu_preferences"></item>
 </menu>

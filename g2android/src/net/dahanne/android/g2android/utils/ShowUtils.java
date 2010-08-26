@@ -50,7 +50,8 @@ public class ShowUtils {
 		String message = context.getString(R.string.not_connected) + galleryUrl
 				+ context.getString(R.string.exception_thrown)
 				+ exceptionMessage;
-		builder.setTitle(R.string.problem).setMessage(message)
+		builder.setTitle(R.string.problem)
+				.setMessage(message)
 				.setPositiveButton(R.string.ok,
 						new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int id) {
@@ -60,16 +61,15 @@ public class ShowUtils {
 		AlertDialog alert = builder.create();
 		alert.show();
 	}
-	
-	
-	public void alertFileProblem(String exceptionMessage,
-			 Context context) {
+
+	public void alertFileProblem(String exceptionMessage, Context context) {
 		AlertDialog.Builder builder = new AlertDialog.Builder(context);
 		// if there was an exception thrown, show it, or tell to verify
 		// settings
-		String message =  context.getString(R.string.exception_thrown)
+		String message = context.getString(R.string.exception_thrown)
 				+ exceptionMessage;
-		builder.setTitle(R.string.problem).setMessage(message)
+		builder.setTitle(R.string.problem)
+				.setMessage(message)
 				.setPositiveButton(R.string.ok,
 						new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int id) {
@@ -88,17 +88,21 @@ public class ShowUtils {
 
 	public void toastImageSuccessfullyAdded(Context context, String imageName) {
 		StringBuilder stringBuilder = new StringBuilder();
-		stringBuilder.append(context.getString(R.string.image_successfully_created));
+		stringBuilder.append(context
+				.getString(R.string.image_successfully_created));
 		stringBuilder.append(" : ");
 		stringBuilder.append(imageName);
-		Toast.makeText(context,
-				stringBuilder.toString(),
+		Toast.makeText(context, stringBuilder.toString(), Toast.LENGTH_LONG)
+				.show();
+	}
+
+	public void toastImagesSuccessfullyAdded(Context context) {
+		Toast.makeText(context, R.string.images_successfully_created,
 				Toast.LENGTH_LONG).show();
 	}
-	
+
 	public void toastCacheSuccessfullyCleared(Context context) {
-		Toast.makeText(context,
-				context.getString(R.string.cache_cleared),
+		Toast.makeText(context, context.getString(R.string.cache_cleared),
 				Toast.LENGTH_LONG).show();
 	}
 

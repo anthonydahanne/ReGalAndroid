@@ -17,14 +17,17 @@
  */
 package net.dahanne.android.g2android.activity;
 
+import java.util.Collections;
 import java.util.List;
 
 import net.dahanne.android.g2android.G2AndroidApplication;
 import net.dahanne.android.g2android.R;
+import net.dahanne.android.g2android.adapters.AlbumAdapter;
 import net.dahanne.android.g2android.model.Album;
 import net.dahanne.android.g2android.tasks.CreateAlbumTask;
 import net.dahanne.android.g2android.tasks.FetchAlbumTask;
 import net.dahanne.android.g2android.tasks.LoginTask;
+import net.dahanne.android.g2android.utils.AlbumComparator;
 import net.dahanne.android.g2android.utils.G2DataUtils;
 import net.dahanne.android.g2android.utils.ShowUtils;
 import android.app.ListActivity;
@@ -40,7 +43,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
+import android.widget.ListAdapter;
 
 public class ShowAlbums extends ListActivity implements OnItemClickListener {
 
@@ -56,7 +59,9 @@ public class ShowAlbums extends ListActivity implements OnItemClickListener {
 	public void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
-		getListView().setTextFilterEnabled(true);
+		setContentView(R.layout.show_albums);
+
+		// getListView().setTextFilterEnabled(true);
 		getListView().setOnItemClickListener(this);
 
 	}
@@ -64,15 +69,17 @@ public class ShowAlbums extends ListActivity implements OnItemClickListener {
 	public void onItemClick(AdapterView<?> arg0, View arg1, int albumPosition,
 			long arg3) {
 		Intent intent;
-		Album newSelectedAlbum = G2DataUtils.getInstance()
+		Album newSelectedAlbum = G2DataUtils
+				.getInstance()
 				.findAlbumFromAlbumName(
 						((G2AndroidApplication) getApplication())
 								.getRootAlbum(),
 						((Album) getListAdapter().getItem(albumPosition))
 								.getName());
-		if (newSelectedAlbum.getName() == ((G2AndroidApplication) getApplication())
-				.getAlbumName()
-				|| newSelectedAlbum.getChildren().size() == 0) {
+		if (newSelectedAlbum != null
+				&& (newSelectedAlbum.getName() == ((G2AndroidApplication) getApplication())
+						.getAlbumName() || newSelectedAlbum.getChildren()
+						.size() == 0)) {
 			// the user wants to see the pictures
 			intent = new Intent(this, ShowGallery.class);
 		} else {
@@ -98,7 +105,7 @@ public class ShowAlbums extends ListActivity implements OnItemClickListener {
 			intent = new Intent(this, ChooseSubAlbumName.class);
 			startActivityForResult(intent, REQUEST_CREATE_ALBUM);
 			break;
-			
+
 		case R.id.take_picture:
 			intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 			startActivityForResult(intent, REQUEST_ADD_PHOTO);
@@ -126,12 +133,11 @@ public class ShowAlbums extends ListActivity implements OnItemClickListener {
 	protected void onActivityResult(int requestCode, int resultCode,
 			Intent intent) {
 		super.onActivityResult(requestCode, resultCode, intent);
+		mustLogIn = ShowUtils.getInstance().recoverContextFromDatabase(this);
 		if (((G2AndroidApplication) getApplication()).getRootAlbum() == null) {
 			// rootAlbum is null ? the app died
 			// we recover the context from the database
-			mustLogIn = ShowUtils.getInstance()
-					.recoverContextFromDatabase(this);
-			if(mustLogIn){
+			if (mustLogIn) {
 				new LoginTask(this, progressDialog, null, null, null);
 			}
 		}
@@ -139,9 +145,9 @@ public class ShowAlbums extends ListActivity implements OnItemClickListener {
 			switch (requestCode) {
 			case REQUEST_ADD_PHOTO:
 				// add a new photo
-				Intent intent2 = new Intent(this,UploadPhoto.class);
+				Intent intent2 = new Intent(this, UploadPhoto.class);
 				intent2.setData(intent.getData());
-				if(intent.getExtras()!=null){
+				if (intent.getExtras() != null) {
 					intent2.putExtras(intent.getExtras());
 				}
 				intent2.setAction(Intent.ACTION_SEND);
@@ -157,7 +163,7 @@ public class ShowAlbums extends ListActivity implements OnItemClickListener {
 				new CreateAlbumTask(this, progressDialog).execute(Settings
 						.getGalleryUrl(this),
 						((G2AndroidApplication) getApplication())
-								.getAlbumName(), subalbumName);
+								.getAlbumName(), subalbumName, mustLogIn);
 				break;
 			}
 		}
@@ -175,8 +181,10 @@ public class ShowAlbums extends ListActivity implements OnItemClickListener {
 					+ ((G2AndroidApplication) getApplication()).getRootAlbum()
 							.toString());
 		}
-		Log.i(TAG, "albumname "
-				+ ((G2AndroidApplication) getApplication()).getAlbumName());
+		Log.i(TAG,
+				"albumname "
+						+ ((G2AndroidApplication) getApplication())
+								.getAlbumName());
 		// we're back in this activity to select a sub album or to see the
 		// pictures
 
@@ -188,30 +196,32 @@ public class ShowAlbums extends ListActivity implements OnItemClickListener {
 		}
 		if (((G2AndroidApplication) getApplication()).getAlbumName() != 0) {
 			// we recover the selected album
-			Album selectedAlbum = G2DataUtils.getInstance()
+			Album selectedAlbum = G2DataUtils
+					.getInstance()
 					.findAlbumFromAlbumName(
 							((G2AndroidApplication) getApplication())
 									.getRootAlbum(),
 							((G2AndroidApplication) getApplication())
 									.getAlbumName());
-			// we create a fake album, it will be used to choose to view the
-			// pictures of the album
-			Album viewPicturesAlbum = new Album();
-			viewPicturesAlbum.setId(0);
-			viewPicturesAlbum.setTitle(getString(R.string.view_album_pictures));
-			viewPicturesAlbum.setName(selectedAlbum.getName());
-			List<Album> albumChildren = selectedAlbum.getChildren();
-			if (!albumChildren.contains(viewPicturesAlbum)) {
-				albumChildren.add(0, viewPicturesAlbum);
+
+			if (selectedAlbum != null) {
+				// we create a fake album, it will be used to choose to view the
+				// pictures of the album
+				Album viewPicturesAlbum = new Album();
+				viewPicturesAlbum.setId(0);
+				viewPicturesAlbum
+						.setTitle(getString(R.string.view_album_pictures));
+				viewPicturesAlbum.setName(selectedAlbum.getName());
+				List<Album> albumChildren = selectedAlbum.getChildren();
+				if (!albumChildren.contains(viewPicturesAlbum)) {
+					albumChildren.add(0, viewPicturesAlbum);
+				}
+				setTitle(selectedAlbum.getTitle());
+				Collections.sort(albumChildren, new AlbumComparator());
+				ListAdapter adapter = new AlbumAdapter(this,
+						R.layout.show_albums_row, albumChildren);
+				setListAdapter(adapter);
 			}
-			setTitle(selectedAlbum.getTitle());
-			setListAdapter(new ArrayAdapter<Album>(this,
-					android.R.layout.simple_list_item_1, albumChildren));
-
-			// now the root album is the current album
-			// ((G2AndroidApplication) getApplication())
-			// .setRootAlbum(selectedAlbum);
-
 		}
 		// it's the first time we get into this view, let's find the albums of
 		// the gallery
@@ -241,8 +251,10 @@ public class ShowAlbums extends ListActivity implements OnItemClickListener {
 					+ ((G2AndroidApplication) getApplication()).getRootAlbum()
 							.toString());
 		}
-		Log.i(TAG, "albumname "
-				+ ((G2AndroidApplication) getApplication()).getAlbumName());
+		Log.i(TAG,
+				"albumname "
+						+ ((G2AndroidApplication) getApplication())
+								.getAlbumName());
 
 	}
 
@@ -250,16 +262,17 @@ public class ShowAlbums extends ListActivity implements OnItemClickListener {
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		// the user tries to get back to the parent album
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
-			Album currentAlbum = G2DataUtils.getInstance()
+			Album currentAlbum = G2DataUtils
+					.getInstance()
 					.findAlbumFromAlbumName(
 							((G2AndroidApplication) getApplication())
 									.getRootAlbum(),
 							((G2AndroidApplication) getApplication())
 									.getAlbumName());
-			//TODO check if it makes sense when the currentAlbum is null
-			if(currentAlbum!=null){
-				((G2AndroidApplication) getApplication()).setAlbumName(currentAlbum
-						.getParentName());
+			// TODO check if it makes sense when the currentAlbum is null
+			if (currentAlbum != null) {
+				((G2AndroidApplication) getApplication())
+						.setAlbumName(currentAlbum.getParentName());
 			}
 			this.finish();
 			return true;

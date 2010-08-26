@@ -28,28 +28,38 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
-import org.apache.commons.lang.StringUtils;
+import net.dahanne.android.g2android.utils.ssl.FakeSocketFactory;
+
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpVersion;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.conn.ClientConnectionManager;
+import org.apache.http.conn.params.ConnManagerPNames;
+import org.apache.http.conn.params.ConnPerRouteBean;
+import org.apache.http.conn.scheme.PlainSocketFactory;
+import org.apache.http.conn.scheme.Scheme;
+import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.cookie.Cookie;
-import org.apache.http.cookie.CookieOrigin;
-import org.apache.http.cookie.MalformedCookieException;
+import org.apache.http.cookie.params.CookieSpecPNames;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import org.apache.http.impl.cookie.BasicClientCookie;
 import org.apache.http.impl.cookie.BrowserCompatSpec;
 import org.apache.http.impl.cookie.CookieSpecBase;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpParams;
+import org.apache.http.params.HttpProtocolParams;
 
 /**
  * 
@@ -84,7 +94,7 @@ public class G2ConnectionUtils {
 	private static final BasicNameValuePair PROTOCOL_VERSION_NAME_VALUE_PAIR = new BasicNameValuePair(
 			"g2_form[protocol_version]", "2.0");
 	private static final String MAIN_PHP = "main.php";
-	private static final String USER_AGENT_VALUE = "G2Android Version 1.5.0";
+	private static final String USER_AGENT_VALUE = "G2Android Version 1.6.0";
 	private static final String USER_AGENT = "User-Agent";
 	private static final BasicHeader BASIC_HEADER = new BasicHeader(USER_AGENT,
 			USER_AGENT_VALUE);
@@ -99,11 +109,13 @@ public class G2ConnectionUtils {
 	private final List<Cookie> sessionCookies = new ArrayList<Cookie>();
 
 	private static G2ConnectionUtils g2ConnectionUtils = new G2ConnectionUtils();
+	private final DefaultHttpClient defaultHttpClient;
 
 	private G2ConnectionUtils() {
-		getSessionCookies().add(new BasicClientCookie("", ""));
-		// we disable the SSL Trust Manager
-		// MyTrustManager.disable();
+		sessionCookies.add(new BasicClientCookie("", ""));
+		// the httpclient initialization is heavy, we create one for
+		// G2ConnectionUtils
+		defaultHttpClient = createHttpClient();
 
 	}
 
@@ -191,8 +203,8 @@ public class G2ConnectionUtils {
 	public String loginToGallery(String galleryUrl, String user, String password)
 			throws GalleryConnectionException {
 		// we reset the last login
-		getSessionCookies().clear();
-		getSessionCookies().add(new BasicClientCookie("", ""));
+		sessionCookies.clear();
+		sessionCookies.add(new BasicClientCookie("", ""));
 
 		List<NameValuePair> sb = new ArrayList<NameValuePair>();
 		sb.add(LOGIN_CMD_NAME_VALUE_PAIR);
@@ -211,199 +223,16 @@ public class G2ConnectionUtils {
 
 	}
 
-	/**
-	 * This is the central method for each command sent to the gallery
-	 * 
-	 * @param galleryUrl
-	 * @param nameValuePairsForThisCommand
-	 * @param multiPartEntity
-	 *            (for sendImageToGallery only)
-	 * @return
-	 * @throws GalleryConnectionException
-	 */
-	private HashMap<String, String> sendCommandToGallery(String galleryUrl,
-			List<NameValuePair> nameValuePairsForThisCommand,
-			HttpEntity multiPartEntity) throws GalleryConnectionException {
-		HashMap<String, String> properties = new HashMap<String, String>();
-		// URL url;
-		try {
-
-			// HttpParams parameters = new BasicHttpParams();
-			// SchemeRegistry schemeRegistry = new SchemeRegistry();
-			// SSLSocketFactory sslSocketFactory = SSLSocketFactory
-			// .getSocketFactory();
-			// sslSocketFactory
-			// .setHostnameVerifier(SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
-			// schemeRegistry.register(new Scheme("https", sslSocketFactory,
-			// 443));
-			// ClientConnectionManager manager = new
-			// ThreadSafeClientConnManager(
-			// parameters, schemeRegistry);
-			// HttpClient httpclient = new DefaultHttpClient(manager,
-			// parameters);
-
-			HttpClient httpclient = new DefaultHttpClient();
-			// disable expect-continue handshake (lighttpd doesn't supportit)
-			httpclient.getParams().setBooleanParameter(
-					"http.protocol.expect-continue", false);
-			// bug #25 : for embedded gallery, should not add main.php
-			String correctedGalleryUrl = galleryUrl;
-			if (!UriUtils.isEmbeddedGallery(galleryUrl)) {
-				correctedGalleryUrl = galleryUrl + "/" + MAIN_PHP;
-			}
-			HttpPost httpPost = new HttpPost(correctedGalleryUrl);
-			// if we send an image to the gallery, we pass it to the gallery
-			// through multipartEntity
-			httpPost.setHeader(BASIC_HEADER);
-			// Setting the cookie
-			httpPost.setHeader(getCookieHeader(cookieSpecBase));
-
-			if (multiPartEntity != null) {
-				((HttpEntityEnclosingRequestBase) httpPost)
-						.setEntity(multiPartEntity);
-			}
-			// otherwise, UrlEncodedFormEntity is used
-			else {
-				List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
-				nameValuePairs.add(G2_CONTROLLER_NAME_VALUE_PAIR);
-				nameValuePairs.add(new BasicNameValuePair("g2_authToken",
-						authToken));
-
-				nameValuePairs.add(PROTOCOL_VERSION_NAME_VALUE_PAIR);
-				nameValuePairs.addAll(nameValuePairsForThisCommand);
-				httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-			}
-
-			// Execute HTTP Post Request
-			HttpResponse response = httpclient.execute(httpPost);
-			InputStream content = response.getEntity().getContent();
-
-			BufferedReader rd = new BufferedReader(new InputStreamReader(
-					content), 4096);
-
-			Header[] allHeaders = response.getAllHeaders();
-			int galleryPort = getPortFromUrl(galleryUrl);
-			String galleryHost = getHostFromUrl(galleryUrl);
-			String galleryPath = getPathFromUrl(galleryUrl);
-			CookieOrigin origin = new CookieOrigin(galleryHost, galleryPort,
-					galleryPath, false);
-			// let's find the cookie
-			findSessionCookieAmongHeadersAndSaveIt(cookieSpecBase, allHeaders,
-					origin);
-			String line;
-			boolean gr2ProtoStringWasFound = false;
-			while ((line = rd.readLine()) != null) {
-				// Log.d(TAG, line);
-				if (line.contains(GR2PROTO)) {
-					gr2ProtoStringWasFound = true;
-				}
-				if (line.contains(EQUALS) && gr2ProtoStringWasFound) {
-					String key = line.substring(0, line.indexOf(EQUALS));
-					String value = line.substring(line.indexOf(EQUALS) + 1);
-					if (key.equals(STATUS) && value.equals("403")) {
-						new GalleryConnectionException(
-								"The file was received, but could not be processed or added to the album.");
-					}
-					// Log.d(TAG, key + "=" + value);
-					properties.put(key, value);
-				}
-			}
-			rd.close();
-		} catch (IOException e) {
-			// something went wrong, let's throw the info to the UI
-			// Log.e(TAG, "IOException" + e.getMessage());
-			throw new GalleryConnectionException("IOException" + e.getMessage());
-		} catch (MalformedCookieException e) {
-			// something went wrong, let's throw the info to the UI
-			// Log.e(TAG, "MalformedCookie" + e.getMessage());
-			throw new GalleryConnectionException("MalformedCookie"
-					+ e.getMessage());
-		}catch (IllegalArgumentException e) {
-			// the url is not correct
-			throw new GalleryConnectionException("Url is not correct : "
-					+ e.getMessage());
-		}
-		return properties;
-	}
-
-	String getPathFromUrl(String galleryUrl) {
-		String galleryPath = "/";
-		if (galleryUrl != null && StringUtils.isNotBlank(galleryUrl)) {
-			int indexSlashSlash = galleryUrl.indexOf("//");
-			String galleryUrlWithoutHttp = galleryUrl
-					.substring(indexSlashSlash + 2);
-			int indexSlash = galleryUrlWithoutHttp.indexOf("/");
-			// Log.d(TAG, "index : " + indexSlash);
-			if (indexSlash == -1) {
-				// galleryUrl just compound of host name
-				galleryPath = "/";
-			} else {
-				galleryPath = galleryUrlWithoutHttp.substring(indexSlash);
-			}
-		}
-		return galleryPath;
-	}
-
-	String getHostFromUrl(String galleryUrl) {
-		String galleryHost = "";
-		if (galleryUrl != null && StringUtils.isNotBlank(galleryUrl)) {
-			int indexSlashSlash = galleryUrl.indexOf("//");
-			String galleryUrlWithoutHttp = galleryUrl
-					.substring(indexSlashSlash + 2);
-			int indexSlash = galleryUrlWithoutHttp.indexOf("/");
-			if (indexSlash == -1) {
-				// galleryUrl just compound of host name
-				galleryHost = galleryUrlWithoutHttp;
-			} else {
-
-				galleryHost = galleryUrlWithoutHttp.substring(0, indexSlash);
-			}
-		}
-		// remove the port, if any specified
-		if (galleryHost.contains(":")) {
-			galleryHost = galleryHost.substring(0, galleryHost.indexOf(":"));
-		}
-		return galleryHost;
-	}
-
-	int getPortFromUrl(String galleryHost) {
-		boolean isHttps = galleryHost.contains("https://");
-
-		int indexOfColumn;
-		if (isHttps) {
-			indexOfColumn = galleryHost.indexOf(":", 8);
-		} else {
-			indexOfColumn = galleryHost.indexOf(":", 7);
-		}
-		if (indexOfColumn == -1) {
-			if (!isHttps) {
-				return 80;
-			}
-			return 443;
-		}
-		String galleryHostFromColumnToEnd = galleryHost
-				.substring(indexOfColumn + 1);
-		int indexOfSlashAfterColumn = galleryHostFromColumnToEnd.indexOf("/");
-		if (indexOfSlashAfterColumn == -1) {
-			return new Integer(galleryHostFromColumnToEnd);
-		}
-		String portAsString = galleryHostFromColumnToEnd.substring(0,
-				indexOfSlashAfterColumn);
-		return new Integer(portAsString);
-
-	}
-
 	public InputStream getInputStreamFromUrl(String url)
 			throws GalleryConnectionException {
 		InputStream content = null;
 		try {
 			HttpGet httpGet = new HttpGet(url);
-			HttpClient httpclient = new DefaultHttpClient();
 			httpGet.setHeader(BASIC_HEADER);
 			// Setting a cookie header
 			httpGet.setHeader(getCookieHeader(cookieSpecBase));
 			// Execute HTTP Get Request
-			HttpResponse response = httpclient.execute(httpGet);
+			HttpResponse response = defaultHttpClient.execute(httpGet);
 			// System.out.println(response.getEntity().getContentLength());
 			content = response.getEntity().getContent();
 		} catch (Exception e) {
@@ -412,38 +241,21 @@ public class G2ConnectionUtils {
 		return content;
 	}
 
-	private void findSessionCookieAmongHeadersAndSaveIt(
-			CookieSpecBase cookieSpecBase, Header[] allHeaders,
-			CookieOrigin origin) throws MalformedCookieException {
-		for (Header header : allHeaders) {
-			if (header.getName().equals(SET_COOKIE)) {
-				List<Cookie> parse = cookieSpecBase.parse(header, origin);
-				for (Cookie cookie : parse) {
-					// THE cookie
-					if (StringUtils.isNotBlank(cookie.getValue())) {
-						getSessionCookies().add(cookie);
-					}
-				}
-			}
-
-		}
-	}
-
 	private Header getCookieHeader(CookieSpecBase cookieSpecBase) {
 		List<Cookie> cookies = new ArrayList<Cookie>();
-		cookies.addAll(getSessionCookies());
+		cookies.addAll(sessionCookies);
 		List<Header> cookieHeader = cookieSpecBase.formatCookies(cookies);
 		return cookieHeader.get(0);
 	}
 
 	private MultipartEntity createMultiPartEntityForSendImageToGallery(
-			int albumName, File imageFile, String imageName)
-			throws GalleryConnectionException {
-		if(imageName==null){
+			int albumName, File imageFile, String imageName, String summary,
+			String description) throws GalleryConnectionException {
+		if (imageName == null) {
 			imageName = imageFile.getName().substring(0,
 					imageFile.getName().indexOf("."));
 		}
-		
+
 		MultipartEntity multiPartEntity;
 		try {
 			multiPartEntity = new MultipartEntity();
@@ -455,12 +267,12 @@ public class G2ConnectionUtils {
 					+ albumName, UTF_8));
 			multiPartEntity.addPart("g2_authToken", new StringBody(authToken,
 					UTF_8));
-			multiPartEntity.addPart("g2_form[caption]", new StringBody(imageName,
-					UTF_8));
-			multiPartEntity.addPart("g2_form[extrafield.Summary]", new StringBody("Sent from my android phone, with g2Android",
-					UTF_8));
-			multiPartEntity.addPart("g2_form[extrafield.Description]", new StringBody("Sent from my android phone, with g2Android",
-					UTF_8));
+			multiPartEntity.addPart("g2_form[caption]", new StringBody(
+					imageName, UTF_8));
+			multiPartEntity.addPart("g2_form[extrafield.Summary]",
+					new StringBody(summary, UTF_8));
+			multiPartEntity.addPart("g2_form[extrafield.Description]",
+					new StringBody(description, UTF_8));
 			multiPartEntity.addPart("g2_userfile", new FileBody(imageFile));
 		} catch (Exception e) {
 			throw new GalleryConnectionException(e.getMessage());
@@ -507,19 +319,20 @@ public class G2ConnectionUtils {
 	 * @param galleryUrl
 	 * @param parentAlbumName
 	 * @param albumName
-	 * @param imageName 
+	 * @param imageName
 	 * @param albumTitle
 	 * @param albumDescription
 	 * @return number of the new album
 	 * @throws GalleryConnectionException
 	 */
-	public synchronized int sendImageToGallery(String galleryUrl, int albumName,
-			File imageFile, String imageName) throws GalleryConnectionException {
+	public int sendImageToGallery(String galleryUrl, int albumName,
+			File imageFile, String imageName, String summary, String description)
+			throws GalleryConnectionException {
 
 		int imageCreatedName = 0;
-		
+
 		MultipartEntity multiPartEntity = createMultiPartEntityForSendImageToGallery(
-				albumName, imageFile,imageName);
+				albumName, imageFile, imageName, summary, description);
 		HashMap<String, String> properties = sendCommandToGallery(galleryUrl,
 				null, multiPartEntity);
 
@@ -536,7 +349,7 @@ public class G2ConnectionUtils {
 	}
 
 	public String getAuthToken() {
-		return this.authToken;
+		return authToken;
 	}
 
 	public void setAuthToken(String authToken) {
@@ -545,6 +358,135 @@ public class G2ConnectionUtils {
 
 	public List<Cookie> getSessionCookies() {
 		return sessionCookies;
+	}
+
+	private DefaultHttpClient createHttpClient() {
+		// avoid instanciating
+		SchemeRegistry schemeRegistry = new SchemeRegistry();
+		// http scheme
+		schemeRegistry.register(new Scheme("http", PlainSocketFactory
+				.getSocketFactory(), 80));
+		// https scheme
+		schemeRegistry.register(new Scheme("https", new FakeSocketFactory(),
+				443));
+
+		HttpParams params = new BasicHttpParams();
+		params.setParameter(ConnManagerPNames.MAX_TOTAL_CONNECTIONS, 30);
+		params.setParameter(ConnManagerPNames.MAX_CONNECTIONS_PER_ROUTE,
+				new ConnPerRouteBean(30));
+		params.setParameter(HttpProtocolParams.USE_EXPECT_CONTINUE, false);
+		HttpProtocolParams.setVersion(params, HttpVersion.HTTP_1_1);
+
+		ClientConnectionManager cm = new ThreadSafeClientConnManager(params,
+				schemeRegistry);
+
+		return new DefaultHttpClient(cm, params);
+	}
+
+	/**
+	 * This is the central method for each command sent to the gallery
+	 * 
+	 * @param galleryUrl
+	 * @param nameValuePairsForThisCommand
+	 * @param multiPartEntity
+	 *            (for sendImageToGallery only)
+	 * @return
+	 * @throws GalleryConnectionException
+	 */
+	private HashMap<String, String> sendCommandToGallery(String galleryUrl,
+			List<NameValuePair> nameValuePairsForThisCommand,
+			HttpEntity multiPartEntity) throws GalleryConnectionException {
+		HashMap<String, String> properties = new HashMap<String, String>();
+		try {
+
+			// retrieve previous cookies
+			List<Cookie> cookies = defaultHttpClient.getCookieStore()
+					.getCookies();
+			// if (cookies.isEmpty()) {
+			// System.out.println("None");
+			// } else {
+			// for (int i = 0; i < cookies.size(); i++) {
+			// System.out.println("- " + cookies.get(i).toString());
+			// }
+			// }
+
+			// disable expect-continue handshake (lighttpd doesn't supportit)
+			defaultHttpClient.getParams().setBooleanParameter(
+					"http.protocol.expect-continue", false);
+
+			// add apache patterns for cookies
+			String[] patternsArray = new String[2];
+			patternsArray[0] = "EEE, dd MMM-yyyy-HH:mm:ss z";
+			patternsArray[1] = "EEE, dd MMM yyyy HH:mm:ss z";
+			// be extremely careful here, android httpclient needs it to be an
+			// array of string, not an arraylist
+			defaultHttpClient.getParams().setParameter(
+					CookieSpecPNames.DATE_PATTERNS, patternsArray);
+
+			// bug #25 : for embedded gallery, should not add main.php
+			String correctedGalleryUrl = galleryUrl;
+			if (!UriUtils.isEmbeddedGallery(galleryUrl)) {
+				correctedGalleryUrl = galleryUrl + "/" + MAIN_PHP;
+			}
+
+			HttpPost httpPost = new HttpPost(correctedGalleryUrl);
+
+			// if we send an image to the gallery, we pass it to the gallery
+			// through multipartEntity
+			httpPost.setHeader(BASIC_HEADER);
+			// Setting the cookie
+			httpPost.setHeader(getCookieHeader(cookieSpecBase));
+			if (multiPartEntity != null) {
+				((HttpEntityEnclosingRequestBase) httpPost)
+						.setEntity(multiPartEntity);
+			}
+			// otherwise, UrlEncodedFormEntity is used
+			else {
+				List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+				nameValuePairs.add(G2_CONTROLLER_NAME_VALUE_PAIR);
+				nameValuePairs.add(new BasicNameValuePair("g2_authToken",
+						authToken));
+
+				nameValuePairs.add(PROTOCOL_VERSION_NAME_VALUE_PAIR);
+				nameValuePairs.addAll(nameValuePairsForThisCommand);
+				httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+			}
+
+			// Execute HTTP Post Request and retrieve content
+			HttpResponse response = defaultHttpClient.execute(httpPost);
+			InputStream content = response.getEntity().getContent();
+			BufferedReader rd = new BufferedReader(new InputStreamReader(
+					content), 4096);
+			// do not forget the cookies
+			sessionCookies.addAll(cookies);
+
+			String line;
+			boolean gr2ProtoStringWasFound = false;
+			while ((line = rd.readLine()) != null) {
+				if (line.contains(GR2PROTO)) {
+					gr2ProtoStringWasFound = true;
+				}
+				if (line.contains(EQUALS) && gr2ProtoStringWasFound) {
+					String key = line.substring(0, line.indexOf(EQUALS));
+					String value = line.substring(line.indexOf(EQUALS) + 1);
+					if (key.equals(STATUS) && value.equals("403")) {
+						new GalleryConnectionException(
+								"The file was received, but could not be processed or added to the album.");
+					}
+					properties.put(key, value);
+				}
+			}
+			rd.close();
+		} catch (IOException e) {
+			// something went wrong, let's throw the info to the UI
+			// Log.e(TAG, "IOException" + e.getMessage());
+			throw new GalleryConnectionException("IOException" + e.getMessage());
+		} catch (IllegalArgumentException e) {
+			// the url is not correct
+			throw new GalleryConnectionException("Url is not correct : "
+					+ e.getMessage());
+		}
+		return properties;
 	}
 
 }

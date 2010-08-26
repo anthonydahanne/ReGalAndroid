@@ -18,6 +18,7 @@
 package net.dahanne.android.g2android.tasks;
 
 import net.dahanne.android.g2android.G2AndroidApplication;
+import net.dahanne.android.g2android.activity.Settings;
 import net.dahanne.android.g2android.utils.G2ConnectionUtils;
 import net.dahanne.android.g2android.utils.G2DataUtils;
 import net.dahanne.android.g2android.utils.GalleryConnectionException;
@@ -35,11 +36,11 @@ public class CreateAlbumTask extends AsyncTask {
 	String exceptionMessage = null;
 	Activity activity;
 	private String galleryUrl;
-	private ProgressDialog progressDialog;
+	private final ProgressDialog progressDialog;
 
 	public CreateAlbumTask(Activity context, ProgressDialog progressDialog) {
 		super();
-		this.activity = context;
+		activity = context;
 		this.progressDialog = progressDialog;
 	}
 
@@ -48,10 +49,21 @@ public class CreateAlbumTask extends AsyncTask {
 		galleryUrl = (String) parameters[0];
 		Integer albumName = (Integer) parameters[1];
 		String subalbumName = (String) parameters[2];
+		boolean mustLogIn = (Boolean) parameters[3];
 		try {
+			if (mustLogIn) {
+				G2ConnectionUtils.getInstance().loginToGallery(galleryUrl,
+						Settings.getUsername(activity),
+						Settings.getPassword(activity));
+			}
 			int createdAlbumName = G2ConnectionUtils.getInstance()
 					.createNewAlbum(galleryUrl, albumName, subalbumName,
-							subalbumName, subalbumName);
+							subalbumName, Settings.getDefaultSummary(activity));
+			if (mustLogIn) {
+				G2ConnectionUtils.getInstance().loginToGallery(galleryUrl,
+						Settings.getUsername(activity),
+						Settings.getPassword(activity));
+			}
 			// we reload the rootAlbum and its hierarchy
 			((G2AndroidApplication) activity.getApplication())
 					.setRootAlbum(G2DataUtils.getInstance()

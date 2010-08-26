@@ -68,7 +68,7 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 	private static final int REQUEST_CODE_ADD_ALBUM = 2;
 	private static final int REQUEST_CODE_FULL_IMAGE = 3;
 	private static final String G2ANDROID_ALBUM = "g2android.Album";
-	private List<G2Picture> albumPictures = new ArrayList<G2Picture>();
+	private final List<G2Picture> albumPictures = new ArrayList<G2Picture>();
 	private static final String TAG = "ShowGallery";
 	private ImageSwitcher mSwitcher;
 	private Gallery gallery;
@@ -86,12 +86,8 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 		super.onResume();
 		Log.i(TAG, "resuming");
 
-		if (((G2AndroidApplication) getApplication()).getRootAlbum() == null) {
-			Log.i(TAG, "rootAlbum is null");
-			// we recover the context from the database
-			mustLogIn = ShowUtils.getInstance()
-					.recoverContextFromDatabase(this);
-		}
+		// we recover the context from the database
+		mustLogIn = ShowUtils.getInstance().recoverContextFromDatabase(this);
 		// we write the title
 		if (getTitle() == null || getTitle().equals("")
 				|| getTitle().equals(getString(R.string.show_gallery_title))) {
@@ -117,8 +113,8 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 
 	public class ImageAdapter extends BaseAdapter {
 		private static final String THUMB_PREFIX = "thumb_";
-		private Context mContext;
-		private Map<Integer, Bitmap> bitmapsCache = new HashMap<Integer, Bitmap>();
+		private final Context mContext;
+		private final Map<Integer, Bitmap> bitmapsCache = new HashMap<Integer, Bitmap>();
 
 		public ImageAdapter(Context c) {
 			mContext = c;
@@ -133,14 +129,25 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 		}
 
 		public long getItemId(int position) {
-			return albumPictures.get(position).getId();
+			// issue #45 : a photo has been erased, this position does not exist
+			// anymore
+			if (albumPictures.size() == 0) {
+				finish();
+			}
+
+			if (position < albumPictures.size()) {
+				return albumPictures.get(position).getId();
+			} else {
+				return 0;
+			}
+
 		}
 
 		public View getView(int position, View convertView, ViewGroup parent) {
 			G2Picture g2Picture = albumPictures.get(position);
-			File potentiallyAlreadyDownloadedFile = new File(Settings
-					.getG2AndroidCachePath(ShowGallery.this), THUMB_PREFIX
-					+ g2Picture.getTitle());
+			File potentiallyAlreadyDownloadedFile = new File(
+					Settings.getG2AndroidCachePath(ShowGallery.this),
+					THUMB_PREFIX + g2Picture.getTitle());
 			// maybe present in the local cache
 			Bitmap downloadImage = bitmapsCache.get(position);
 			if (downloadImage == null) {
@@ -188,8 +195,8 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 	public void onItemSelected(AdapterView<?> parent, View view, int position,
 			long id) {
 		G2Picture g2Picture = albumPictures.get(position);
-		File potentiallyAlreadyDownloadedFile = new File(Settings
-				.getG2AndroidCachePath(this), g2Picture.getTitle());
+		File potentiallyAlreadyDownloadedFile = new File(
+				Settings.getG2AndroidCachePath(this), g2Picture.getTitle());
 		mSwitcher.setId(position);
 		// remember the position where we were
 		((G2AndroidApplication) getApplication()).setCurrentPosition(position);
@@ -246,7 +253,7 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 			intent = new Intent(this, ChooseSubAlbumName.class);
 			startActivityForResult(intent, REQUEST_CODE_ADD_ALBUM);
 			break;
-			
+
 		case R.id.take_picture:
 			intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 			startActivityForResult(intent, REQUEST_CODE_ADD_PHOTO);
@@ -272,19 +279,14 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 	protected void onActivityResult(int requestCode, int resultCode,
 			Intent intent) {
 		super.onActivityResult(requestCode, resultCode, intent);
-		if (((G2AndroidApplication) getApplication()).getRootAlbum() == null) {
-			// rootAlbum is null ? the app died
-			// we recover the context from the database
-			mustLogIn = ShowUtils.getInstance()
-					.recoverContextFromDatabase(this);
-		}
+		mustLogIn = ShowUtils.getInstance().recoverContextFromDatabase(this);
 		if (resultCode == RESULT_OK) {
 			switch (requestCode) {
 			case REQUEST_CODE_ADD_PHOTO:
 				// add a new photo
-				Intent intent2 = new Intent(this,UploadPhoto.class);
+				Intent intent2 = new Intent(this, UploadPhoto.class);
 				intent2.setData(intent.getData());
-				if(intent.getExtras()!=null){
+				if (intent.getExtras() != null) {
 					intent2.putExtras(intent.getExtras());
 				}
 				intent2.setAction(Intent.ACTION_SEND);
@@ -299,11 +301,7 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 				new CreateAlbumTask(this, progressDialog).execute(Settings
 						.getGalleryUrl(this),
 						((G2AndroidApplication) getApplication())
-								.getAlbumName(), subalbumName);
-				break;
-
-			case REQUEST_CODE_FULL_IMAGE:
-
+								.getAlbumName(), subalbumName, mustLogIn);
 				break;
 
 			}
@@ -335,15 +333,12 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 				Log.d(TAG, "exception mess" + exceptionMessage);
 			}
 
-			// Log.d(TAG, imagesProperties.toString());
-
 			return imagesProperties;
 
 		}
 
 		@Override
 		protected void onPostExecute(Object imagesProperties) {
-			// if (progressDialog.isShowing()) {
 			progressDialog.dismiss();
 			// }
 			if (imagesProperties == null) {
@@ -378,6 +373,16 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 					gallery.setAdapter(adapter);
 					gallery.setOnItemSelectedListener(ShowGallery.this);
 
+					// issue #45 : a photo has been erased, this position does
+					// not exist anymore
+					if (albumPictures.size() == 0) {
+						finish();
+					}
+					if (((G2AndroidApplication) getApplication())
+							.getCurrentPosition() >= albumPictures.size()) {
+						((G2AndroidApplication) getApplication())
+								.setCurrentPosition(0);
+					}
 					// recover current position in current album
 					int currentPosition = ((G2AndroidApplication) getApplication())
 							.getCurrentPosition();
@@ -427,13 +432,14 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		// the user tries to get back to the parent album
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
-			Album currentAlbum = G2DataUtils.getInstance()
+			Album currentAlbum = G2DataUtils
+					.getInstance()
 					.findAlbumFromAlbumName(
 							((G2AndroidApplication) getApplication())
 									.getRootAlbum(),
 							((G2AndroidApplication) getApplication())
 									.getAlbumName());
-			if(currentAlbum!=null &&currentAlbum.getChildren().isEmpty()) {
+			if (currentAlbum != null && currentAlbum.getChildren().isEmpty()) {
 				((G2AndroidApplication) getApplication())
 						.setAlbumName(currentAlbum.getParentName());
 			}

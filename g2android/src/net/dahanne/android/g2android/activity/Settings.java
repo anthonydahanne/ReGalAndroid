@@ -41,6 +41,8 @@ public class Settings extends PreferenceActivity {
 	private static String OPT_GALLERY_URL_DEF = "http://g2.dahanne.net";
 	private static String OPT_G2ANDROID_PATH_DEF = "g2android";
 	private static String OPT_G2ANDROID_CACHE_PATH_DEF = "tmp";
+	private static String OPT_DEFAULT_SUMMARY_KEY = "DefaultSummary";
+	private static String OPT_DEFAULT_DESCRIPTION_KEY = "DefaultDescription";
 
 	private static final String OPT_BASE_URL_DEF = "main.php?g2_view=core.DownloadItem&g2_itemId=";
 	private static final String EMBEDDED_GALLERY_OPT_BASE_URL_DEF = "&g2_view=core.DownloadItem&g2_itemId=";
@@ -62,12 +64,12 @@ public class Settings extends PreferenceActivity {
 
 	/** Get the baseUrl */
 	public static String getBaseUrl(Context context) {
-		//bug #25 : for embedded gallery, should not add main.php
-		if(UriUtils.isEmbeddedGallery(getGalleryUrl(context))){
-			return getGalleryUrl(context) +  EMBEDDED_GALLERY_OPT_BASE_URL_DEF;
+		// bug #25 : for embedded gallery, should not add main.php
+		if (UriUtils.isEmbeddedGallery(getGalleryUrl(context))) {
+			return getGalleryUrl(context) + EMBEDDED_GALLERY_OPT_BASE_URL_DEF;
 		}
 		return getGalleryUrl(context) + "/" + OPT_BASE_URL_DEF;
-		
+
 	}
 
 	/** Get the current value of the username option */
@@ -86,9 +88,10 @@ public class Settings extends PreferenceActivity {
 	public static String getG2AndroidPath(Context context) {
 		File externalStorageDirectory = Environment
 				.getExternalStorageDirectory();
-		return new StringBuilder().append(
-				externalStorageDirectory.getAbsolutePath()).append("/").append(
-				PreferenceManager.getDefaultSharedPreferences(context)
+		return new StringBuilder()
+				.append(externalStorageDirectory.getAbsolutePath())
+				.append("/")
+				.append(PreferenceManager.getDefaultSharedPreferences(context)
 						.getString(OPT_G2ANDROID_PATH, OPT_G2ANDROID_PATH_DEF))
 				.toString();
 	}
@@ -108,5 +111,16 @@ public class Settings extends PreferenceActivity {
 				.getBoolean(OPT_CLEAR_CACHE_EVERY_SESSION, false);
 	}
 
+	/** Get the current value of the username option */
+	public static String getDefaultSummary(Context context) {
+		return PreferenceManager.getDefaultSharedPreferences(context)
+				.getString(OPT_DEFAULT_SUMMARY_KEY, "");
+	}
+
+	/** Get the current value of the username option */
+	public static String getDefaultDescription(Context context) {
+		return PreferenceManager.getDefaultSharedPreferences(context)
+				.getString(OPT_DEFAULT_DESCRIPTION_KEY, "");
+	}
 
 }

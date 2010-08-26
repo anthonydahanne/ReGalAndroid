@@ -19,9 +19,13 @@ package net.dahanne.android.g2android.tasks;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
+import net.dahanne.android.g2android.R;
+import net.dahanne.android.g2android.adapters.AlbumAdapterForUpload;
 import net.dahanne.android.g2android.model.Album;
+import net.dahanne.android.g2android.utils.AlbumComparator;
 import net.dahanne.android.g2android.utils.G2DataUtils;
 import net.dahanne.android.g2android.utils.GalleryConnectionException;
 import net.dahanne.android.g2android.utils.ShowUtils;
@@ -36,18 +40,21 @@ import android.widget.Spinner;
  * 
  */
 @SuppressWarnings("unchecked")
-public class FetchAlbumTask2 extends AsyncTask {
+public class FetchAlbumForUploadTask extends AsyncTask {
 	String exceptionMessage = null;
 	Activity activity;
 	private String galleryUrl;
-	private ProgressDialog progressDialog;
-	private Spinner albumList;
+	private final ProgressDialog progressDialog;
+	private final Spinner spinner;
+	private final Album currentAlbum;
 
-	public FetchAlbumTask2(Activity context, ProgressDialog progressDialog, Spinner albumList) {
+	public FetchAlbumForUploadTask(Activity context,
+			ProgressDialog progressDialog, Spinner spinner, Album currentAlbum) {
 		super();
-		this.activity = context;
-		this.albumList= albumList;
+		activity = context;
+		this.spinner = spinner;
 		this.progressDialog = progressDialog;
+		this.currentAlbum = currentAlbum;
 	}
 
 	@Override
@@ -55,8 +62,8 @@ public class FetchAlbumTask2 extends AsyncTask {
 		galleryUrl = (String) parameters[0];
 		Collection<Album> allAlbums;
 		try {
-			allAlbums = G2DataUtils.getInstance()
-					.getAllAlbums(galleryUrl).values();
+			allAlbums = G2DataUtils.getInstance().getAllAlbums(galleryUrl)
+					.values();
 		} catch (GalleryConnectionException e) {
 			allAlbums = null;
 			exceptionMessage = e.getMessage();
@@ -67,25 +74,19 @@ public class FetchAlbumTask2 extends AsyncTask {
 	@Override
 	protected void onPostExecute(Object allAlbums) {
 
-		if (allAlbums != null ) {
+		if (allAlbums != null) {
 			List<Album> albumChildren = new ArrayList<Album>();
 			albumChildren.addAll((Collection<? extends Album>) allAlbums);
-
-			// we create a fake album, it will be used to choose to view the
-			// pictures of the album
-//			Album viewPicturesAlbum = new Album();
-//			viewPicturesAlbum.setId(0);
-//			viewPicturesAlbum.setTitle(activity
-//					.getString(R.string.view_album_pictures));
-//			viewPicturesAlbum.setName(((Album) rootAlbum).getName());
-//			if (!albumChildren.contains(viewPicturesAlbum)) {
-//				albumChildren.add(0, viewPicturesAlbum);
-//			}
-			ArrayAdapter<Album> albumAdapter = new ArrayAdapter<Album>(
-					activity, android.R.layout.simple_spinner_item,
+			Collections.sort(albumChildren, new AlbumComparator());
+			int position = albumChildren.indexOf(currentAlbum);
+			ArrayAdapter<Album> arrayAdapter = new AlbumAdapterForUpload(
+					activity, R.layout.show_albums_for_upload_row,
 					albumChildren);
-			albumList.setAdapter(albumAdapter);
-			albumAdapter.notifyDataSetChanged();
+			spinner.setAdapter(arrayAdapter);
+			if (position != -1) {
+				spinner.setSelection(position);
+			}
+			arrayAdapter.notifyDataSetChanged();
 		} else {
 			// something went wrong
 			ShowUtils.getInstance().alertConnectionProblem(exceptionMessage,
