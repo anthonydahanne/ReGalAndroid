@@ -16,11 +16,18 @@ public class UriUtilsTest {
 		assertTrue(UriUtils.checkUrlIsValid(url));
 		url = "https://google.com:66/test";
 		assertTrue(UriUtils.checkUrlIsValid(url));
+		url = "http://läxhjälpen.se/";
+		assertTrue(UriUtils.checkUrlIsValid(url));
+		url = "http://xn--lxhjlpen-0zad.se/";
+		assertTrue(UriUtils.checkUrlIsValid(url));
+		url = "http://192.168.1.101:66/test";
+		assertTrue(UriUtils.checkUrlIsValid(url));
+		url = "https://192.168.1.101";
+		assertTrue(UriUtils.checkUrlIsValid(url));
 		url = "badurl.net";
 		assertFalse(UriUtils.checkUrlIsValid(url));
 		url = "toto";
 		assertFalse(UriUtils.checkUrlIsValid(url));
-
 	}
 
 	// @Test
