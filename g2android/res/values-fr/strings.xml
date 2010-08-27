@@ -5,7 +5,7 @@
         <string name="gallery_url_title">Url de la galerie</string>
         <string name="g2android_no_gallery_configured">Aucune galerie configurée! Allez dans Menu->Réglages pour arranger cela !</string>
         <string name="g2android_default_gallery_configured">Configurée avec la galerie par défaut, allez dans Menu->Réglages pour arranger cela !</string>
-        <string name="gallery_url_is_not_valid">L\\'url de la galerie saisie n\'est pas valide, allez dans Menu->Réglages pour arranger cela !</string>
+        <string name="gallery_url_is_not_valid">L\'url de la galerie saisie n\'est pas valide, allez dans Menu->Réglages pour arranger cela !</string>
         <string name="gallery_credentials_are_not_valid">Les identifiants saisis ne sont pas valides! allez dans Menu->Réglages pour arranger cela !(Essayez déjé de vous connecter sans identifiants si possible pour tester)</string>
         <string name="gallery_url_summary">Entrez ici l\'Url de base de votre galerie, ex : http://myhost.com/gallery2</string>
         <string name="gallery_url_dialog_message">Entrez ici l\'Url de base de votre galerie, ex : http://myhost.com/gallery2, ou http://myhost.com:8080 ou http://myhost.com:8080/path</string>
@@ -61,9 +61,9 @@
 		<string name="g2android_path_summary">où seront stockés les fichiers de G2Android sur votre carte SD</string>
 		<string name="g2android_temp_path_summary">le sous répertoire où sera stocké le cache</string>
 		<string name="clear_cache_title">Effacer le cache</string>
-		<string name="clear_cache_summary">effacer le cache à chaque démarrage de l'appli</string>
+		<string name="clear_cache_summary">effacer le cache à chaque démarrage de l\'appli</string>
 		<string name="cache_cleared">Cache effacé avec succès !</string>
-		<string name="external_storage_problem">Pas de carte SD montée; veuillez vérifier qu'elle est bien présente</string>
+		<string name="external_storage_problem">Pas de carte SD montée; veuillez vérifier qu\'elle est bien présente</string>
 		<string name="gallery_connection_settings">Paramétrage de connexion</string>
 		<string name="cache_settings">Paramétrage du cache</string>
 	    <string name="download_full_res_image_title">Télécharger en HD</string>
