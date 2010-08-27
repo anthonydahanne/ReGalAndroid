@@ -70,7 +70,7 @@
 		<string name="what_is_g2android">
                 G2Android is a client to access a remote Gallery2 installation.
                 The     gallery configured by default is a sample Gallery2 installation, for
-                you to test if you don't have a gallery configured yet.
+                you to test if you don\'t have a gallery configured yet.
                 You can change the default gallery Url in Menu->Settings
                 You can find more sample gallery addresses at this web address :
                 http://gallery.menalto.com/gallery/demosites/
