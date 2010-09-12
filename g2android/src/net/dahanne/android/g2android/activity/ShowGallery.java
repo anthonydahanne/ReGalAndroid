@@ -164,11 +164,15 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 							+ thumbName;
 					try {
 						File imageFileOnExternalDirectory = FileUtils
-								.getInstance().getFileFromGallery(
+								.getInstance()
+								.getFileFromGallery(
 										ShowGallery.this,
 										THUMB_PREFIX + g2Picture.getTitle(),
 										g2Picture.getForceExtension(),
-										uriString, true);
+										uriString,
+										true,
+										((G2AndroidApplication) getApplication())
+												.getCurrentAlbum().getName());
 						downloadImage = BitmapFactory
 								.decodeFile(imageFileOnExternalDirectory
 										.getPath());

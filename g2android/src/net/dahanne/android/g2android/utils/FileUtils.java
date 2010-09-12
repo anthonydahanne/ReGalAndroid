@@ -27,12 +27,25 @@ public class FileUtils {
 
 	}
 
-	private G2ConnectionUtils g2ConnectionUtils = G2ConnectionUtils
+	private final G2ConnectionUtils g2ConnectionUtils = G2ConnectionUtils
 			.getInstance();
 
+	/**
+	 * download the requested file from the gallery, and save it to cache
+	 * 
+	 * @param context
+	 * @param fileName
+	 * @param extension
+	 * @param imageUrl
+	 * @param isTemporary
+	 * @return
+	 * @throws GalleryConnectionException
+	 * @throws FileHandlingException
+	 */
 	public File getFileFromGallery(Context context, String fileName,
-			String extension, String imageUrl, boolean isTemporary)
-			throws GalleryConnectionException, FileHandlingException {
+			String extension, String imageUrl, boolean isTemporary,
+			int albumName) throws GalleryConnectionException,
+			FileHandlingException {
 
 		File imageFileOnExternalDirectory = null;
 		try {
@@ -40,23 +53,37 @@ public class FileUtils {
 			String storageState = Environment.getExternalStorageState();
 			if (storageState.contains("mounted")) {
 
-				File savePath = new File(Settings
-						.getG2AndroidCachePath(context));
+				File savePath = new File(
+						Settings.getG2AndroidCachePath(context) + "/"
+								+ albumName);
+				// if the cache has never been used before
 				if (!savePath.exists()) {
-					File g2AndroidDirectory = new File(Settings
-							.getG2AndroidPath(context));
+					// we make sure g2android path exists (/g2android)
+					File g2AndroidDirectory = new File(
+							Settings.getG2AndroidPath(context));
 					g2AndroidDirectory.mkdir();
-					File g2AndroidCacheDirectory = new File(Settings
-							.getG2AndroidCachePath(context));
+					// we then create g2android cache path (tmp)
+					File g2AndroidCacheDirectory = new File(
+							Settings.getG2AndroidCachePath(context));
 					g2AndroidCacheDirectory.mkdir();
-					//issue #30 : insert the .nomedia file so that the dir won't be parsed by other photo apps
-					File noMediaFile = new File(Settings
-							.getG2AndroidCachePath(context)+NO_CACHE_PATH);
-					if(!noMediaFile.createNewFile()){
-						throw new FileHandlingException(context
-								.getString(R.string.external_storage_problem));
+					// and also that the specific album folder exists, bug #65
+					File albumCacheDirectory = new File(
+							Settings.getG2AndroidCachePath(context) + "/"
+									+ albumName);
+					albumCacheDirectory.mkdir();
+
+					// issue #30 : insert the .nomedia file so that the dir
+					// won't be parsed by other photo apps
+					File noMediaFile = new File(
+							Settings.getG2AndroidCachePath(context)
+									+ NO_CACHE_PATH);
+					if (!noMediaFile.createNewFile()) {
+						throw new FileHandlingException(
+								context.getString(R.string.external_storage_problem));
 					}
 				}
+				// if the file downloaded is not a cache file, but a file to
+				// keep
 				if (!isTemporary) {
 					savePath = new File(Settings.getG2AndroidPath(context));
 					// if there is no file extension, we add the one that
@@ -71,8 +98,8 @@ public class FileUtils {
 				inputStreamFromUrl = g2ConnectionUtils
 						.getInputStreamFromUrl(imageUrl);
 			} else {
-				throw new FileHandlingException(context
-						.getString(R.string.external_storage_problem));
+				throw new FileHandlingException(
+						context.getString(R.string.external_storage_problem));
 			}
 			FileOutputStream fos;
 			fos = new FileOutputStream(imageFileOnExternalDirectory);
@@ -93,8 +120,8 @@ public class FileUtils {
 	}
 
 	public void clearCache(Context context) {
-		File tempG2AndroidPath = new File(Settings
-				.getG2AndroidCachePath(context));
+		File tempG2AndroidPath = new File(
+				Settings.getG2AndroidCachePath(context));
 		if (tempG2AndroidPath.exists()) {
 			for (File file : tempG2AndroidPath.listFiles()) {
 				file.delete();

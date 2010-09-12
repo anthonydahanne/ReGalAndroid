@@ -158,9 +158,11 @@ public class FullImage extends Activity implements OnGestureListener {
 			Bitmap downloadImage = null;
 			try {
 				File imageFileOnExternalDirectory = fileUtils
-						.getFileFromGallery(FullImage.this,
-								g2Picture.getTitle(),
-								g2Picture.getForceExtension(), fileUrl, true);
+						.getFileFromGallery(FullImage.this, g2Picture
+								.getTitle(), g2Picture.getForceExtension(),
+								fileUrl, true,
+								((G2AndroidApplication) getApplication())
+										.getCurrentAlbum().getName());
 				downloadImage = BitmapFactory
 						.decodeFile(imageFileOnExternalDirectory.getPath());
 				g2Picture.setResizedImagePath(imageFileOnExternalDirectory
@@ -271,7 +273,9 @@ public class FullImage extends Activity implements OnGestureListener {
 						g2Picture.getTitle(),
 						g2Picture.getForceExtension(),
 						Settings.getBaseUrl(FullImage.this)
-								+ g2Picture.getName(), false);
+								+ g2Picture.getName(), false,
+						((G2AndroidApplication) getApplication())
+								.getCurrentAlbum().getName());
 			} catch (GalleryConnectionException e) {
 				exceptionMessage = e.getMessage();
 			} catch (FileHandlingException e) {

@@ -19,12 +19,11 @@ package net.dahanne.android.g2android.tasks;
 
 import java.io.File;
 
-import net.dahanne.android.g2android.activity.Settings;
+import net.dahanne.android.g2android.G2AndroidApplication;
 import net.dahanne.android.g2android.model.G2Picture;
 import net.dahanne.android.g2android.utils.FileHandlingException;
 import net.dahanne.android.g2android.utils.FileUtils;
 import net.dahanne.android.g2android.utils.GalleryConnectionException;
-import net.dahanne.android.g2android.utils.ShowUtils;
 import net.dahanne.android.g2android.utils.modified_android_source.AsyncTask;
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -42,15 +41,15 @@ public class ReplaceMainImageTask extends AsyncTask {
 	private ImageSwitcher imageSwitcher = null;
 	private int originalPosition;
 	private String exceptionMessage = null;
-	private Gallery gallery;
+	private final Gallery gallery;
 
 	Activity activity;
-	private ProgressDialog progressDialog;
+	private final ProgressDialog progressDialog;
 
 	public ReplaceMainImageTask(Activity context,
 			ProgressDialog progressDialog, Gallery gallery) {
 		super();
-		this.activity = context;
+		activity = context;
 		this.progressDialog = progressDialog;
 		this.gallery = gallery;
 	}
@@ -66,8 +65,15 @@ public class ReplaceMainImageTask extends AsyncTask {
 		if (originalPosition == gallery.getSelectedItemPosition()) {
 			try {
 				File imageFileOnExternalDirectory = FileUtils.getInstance()
-						.getFileFromGallery(activity, g2Picture.getTitle(),
-								g2Picture.getForceExtension(), fileUrl, true);
+						.getFileFromGallery(
+								activity,
+								g2Picture.getTitle(),
+								g2Picture.getForceExtension(),
+								fileUrl,
+								true,
+								((G2AndroidApplication) activity
+										.getApplication()).getCurrentAlbum()
+										.getName());
 				downloadImage = BitmapFactory
 						.decodeFile(imageFileOnExternalDirectory.getPath());
 				g2Picture.setResizedImagePath(imageFileOnExternalDirectory
@@ -85,8 +91,8 @@ public class ReplaceMainImageTask extends AsyncTask {
 	@Override
 	protected void onPostExecute(Object result) {
 		if (result == null) {
-//			ShowUtils.getInstance().alertConnectionProblem(exceptionMessage,
-//					Settings.getGalleryUrl(activity), activity);
+			// ShowUtils.getInstance().alertConnectionProblem(exceptionMessage,
+			// Settings.getGalleryUrl(activity), activity);
 		}
 		// we check if the user is still looking at the same photo
 		// if not, we don't refresh the main view
