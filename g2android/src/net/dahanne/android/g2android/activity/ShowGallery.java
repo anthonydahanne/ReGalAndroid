@@ -171,8 +171,7 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 										g2Picture.getForceExtension(),
 										uriString,
 										true,
-										((G2AndroidApplication) getApplication())
-												.getCurrentAlbum().getName());
+										((G2AndroidApplication) getApplication()).getAlbumName());
 						downloadImage = BitmapFactory
 								.decodeFile(imageFileOnExternalDirectory
 										.getPath());

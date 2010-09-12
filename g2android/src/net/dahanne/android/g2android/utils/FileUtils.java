@@ -75,8 +75,8 @@ public class FileUtils {
 					// issue #30 : insert the .nomedia file so that the dir
 					// won't be parsed by other photo apps
 					File noMediaFile = new File(
-							Settings.getG2AndroidCachePath(context)
-									+ NO_CACHE_PATH);
+							Settings.getG2AndroidCachePath(context) + "/"
+									+ albumName + NO_CACHE_PATH);
 					if (!noMediaFile.createNewFile()) {
 						throw new FileHandlingException(
 								context.getString(R.string.external_storage_problem));
