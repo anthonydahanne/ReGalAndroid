@@ -15,24 +15,36 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package net.dahanne.gallery3.client.model;
+package net.dahanne.gallery3.client.business;
 
-import java.util.Collection;
-import java.util.HashSet;
+import static org.junit.Assert.assertEquals;
+import net.dahanne.gallery3.client.model.Item;
 
-import javax.xml.bind.annotation.XmlRootElement;
+import org.junit.Test;
 
-@XmlRootElement
-public class Tags {
-	private String url;
-	private final Collection<String> members = new HashSet<String>();
-	public Collection<String> getMembers() {
-		return members;
+
+public class ItemClientImplTest {
+
+	
+	
+
+	@Test
+	public void getItemTest__album() throws ItemGalleryException{
+		
+		ItemRestClient itemClient =  new ItemClientImpl("http://g3.dahanne.net/");
+		Item item1 = itemClient.getItem(1);
+		assertEquals("Gallery", item1.getEntity().getTitle());
+		
+		
+//		Client client = Client.create();
+//		ItemRestClientImpl itemRest = new ItemRestClientImpl("http://g3.dahanne.net/index.php/rest/item/");
+//		itemRest.setClient(client);
+//		Item item = itemRest.getItem(1);
+//		assertEquals(1, item.getEntity().getId());
+//		assertEquals("http://g3.dahanne.net/index.php/rest/item/1", item.getUrl());
+		
 	}
-	public String getUrl() {
-		return url;
-	}
-	public void setUrl(String url) {
-		this.url = url;
-	}
+	
+	
+	
 }

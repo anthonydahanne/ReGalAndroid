@@ -22,6 +22,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class RelationShips {
 	private Tags tags;
+	private Comments comments;
 
 	public void setTags(Tags tags) {
 		this.tags = tags;
@@ -29,5 +30,13 @@ public class RelationShips {
 
 	public Tags getTags() {
 		return tags;
+	}
+
+	public void setComments(Comments comments) {
+		this.comments = comments;
+	}
+
+	public Comments getComments() {
+		return comments;
 	}
 }

@@ -1,0 +1,165 @@
+/**
+ *  Gallery3-java-client
+ *  URLs: http://github.com/anthonydahanne/g3-java-client , http://blog.dahanne.net
+ *  Copyright (c) 2010 Anthony Dahanne
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+package net.dahanne.gallery3.client.utils;
+
+import static org.junit.Assert.assertEquals;
+
+import java.io.IOException;
+import java.net.URL;
+import java.util.Collection;
+import java.util.HashSet;
+
+import net.dahanne.gallery3.client.model.Entity;
+import net.dahanne.gallery3.client.model.Item;
+import net.dahanne.gallery3.client.model.RelationShips;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONTokener;
+import org.junit.Test;
+
+import com.google.common.base.Charsets;
+import com.google.common.io.Resources;
+
+public class ItemUtilsTest {
+	
+	
+	@Test
+	public void parseJSONTest__album() throws IOException, JSONException {
+		URL resource = Resources.getResource("get-album-1.json");
+		String string = Resources.toString(resource, Charsets.UTF_8);
+		JSONObject jsonResult = (JSONObject) new JSONTokener(string)
+				.nextValue();
+		Item item = ItemUtils.parseJSONToItem(jsonResult);
+		assertEquals("http://g3.dahanne.net/index.php/rest/item/1",item.getUrl());
+		
+		Entity entity = item.getEntity();
+		assertEquals(1,entity.getId());
+		assertEquals(0,entity.getCaptured());
+		assertEquals(1276227460,entity.getCreated());
+		assertEquals("",entity.getDescription());
+		assertEquals(0,entity.getHeight());
+		assertEquals(1,entity.getLevel());
+		assertEquals(null,entity.getMimeType());
+		assertEquals(null,entity.getName());
+		assertEquals(2,entity.getOwnerId());
+		assertEquals(0f,entity.getRandKey(),0);
+		assertEquals(0,entity.getResizeHeight());
+		assertEquals(0,entity.getResizeWidth());
+		assertEquals(null,entity.getSlug());
+		assertEquals("weight",entity.getSortColumn());
+		assertEquals("ASC",entity.getSortOrder());
+		assertEquals(200,entity.getThumbHeight());
+		assertEquals(150,entity.getThumbWidth());
+		assertEquals("Gallery",entity.getTitle());
+		assertEquals("album",entity.getType());
+		assertEquals(1276227718,entity.getUpdated());
+		//assertion not stable
+		//assertEquals(8,entity.getViewCount());
+		assertEquals(0,entity.getWidth());
+		assertEquals(1,entity.getView1());
+		assertEquals(1,entity.getView2());
+		assertEquals("http://g3.dahanne.net/index.php/rest/item/2",entity.getAlbumCover());
+		assertEquals("http://g3.dahanne.net/index.php/",entity.getWebUrl());
+		assertEquals("http://g3.dahanne.net/index.php/rest/data/1?size=thumb",entity.getThumbUrl());
+		assertEquals(17151,entity.getThumbSize());
+		assertEquals("http://g3.dahanne.net/var/thumbs//.album.jpg?m=1276227718",entity.getThumbUrlPublic());
+		assertEquals(false,entity.isCanEdit());
+		
+		RelationShips relationShips =  item.getRelationships();
+		assertEquals("http://g3.dahanne.net/index.php/rest/item_tags/1",relationShips.getTags().getUrl());
+		assertEquals(new HashSet<String>(),relationShips.getTags().getMembers());
+		assertEquals("http://g3.dahanne.net/index.php/rest/item_comments/1",relationShips.getComments().getUrl());
+		
+		Collection<String> members =  new HashSet<String>();
+		members.add("http://g3.dahanne.net/index.php/rest/item/2");
+		members.add("http://g3.dahanne.net/index.php/rest/item/3");
+		assertEquals(members, item.getMembers());
+		
+		
+	}
+	
+	@Test
+	public void parseJSONTest__photo() throws IOException, JSONException {
+		URL resource = Resources.getResource("get-photo-2.json");
+		String string = Resources.toString(resource, Charsets.UTF_8);
+		JSONObject jsonResult = (JSONObject) new JSONTokener(string)
+				.nextValue();
+		Item item = ItemUtils.parseJSONToItem(jsonResult);
+		assertEquals("http://g3.dahanne.net/index.php/rest/item/2",item.getUrl());
+		
+		Entity entity = item.getEntity();
+		assertEquals(2,entity.getId());
+		assertEquals(1272750491,entity.getCaptured());
+		assertEquals(1276227630,entity.getCreated());
+		assertEquals("La March\u00e9 bon secours \u00e0 Montr\u00e9al",entity.getDescription());
+		assertEquals(3072,entity.getHeight());
+		assertEquals(2,entity.getLevel());
+		assertEquals("image/jpeg",entity.getMimeType());
+		assertEquals("marche-bonsecours.JPG",entity.getName());
+		assertEquals(2,entity.getOwnerId());
+		assertEquals(0.451528,entity.getRandKey(),0.000001f);
+		assertEquals(640,entity.getResizeHeight());
+		assertEquals(480,entity.getResizeWidth());
+		assertEquals("marche-bonsecours",entity.getSlug());
+		assertEquals("created",entity.getSortColumn());
+		assertEquals("ASC",entity.getSortOrder());
+		assertEquals(200,entity.getThumbHeight());
+		assertEquals(150,entity.getThumbWidth());
+		assertEquals("March\u00e9 Bon secours",entity.getTitle());
+		assertEquals("photo",entity.getType());
+		assertEquals(1276229274,entity.getUpdated());
+		//assertion not stable
+		//assertEquals(8,entity.getViewCount());
+		assertEquals(2304,entity.getWidth());
+		assertEquals(1,entity.getView1());
+		assertEquals(1,entity.getView2());
+		assertEquals("http://g3.dahanne.net/index.php/rest/item/1",entity.getParent());
+		assertEquals("http://g3.dahanne.net/index.php/marche-bonsecours",entity.getWebUrl());
+
+		assertEquals("http://g3.dahanne.net/index.php/rest/data/2?size=full",entity.getFileUrl());
+		assertEquals(675745,entity.getFileSize());
+		assertEquals("http://g3.dahanne.net/var/albums/marche-bonsecours.JPG?m=1276229274",entity.getFileUrlPublic());
+		
+		assertEquals("http://g3.dahanne.net/index.php/rest/data/2?size=resize",entity.getResizeUrl());
+		assertEquals(58309,entity.getResizeSize());
+		assertEquals("http://g3.dahanne.net/var/resizes/marche-bonsecours.JPG?m=1276229274",entity.getResizeUrlPublic());
+		
+		
+		assertEquals("http://g3.dahanne.net/index.php/rest/data/2?size=thumb",entity.getThumbUrl());
+		assertEquals(17151,entity.getThumbSize());
+		assertEquals("http://g3.dahanne.net/var/thumbs/marche-bonsecours.JPG?m=1276229274",entity.getThumbUrlPublic());
+		assertEquals(false,entity.isCanEdit());
+		
+		RelationShips relationShips =  item.getRelationships();
+		assertEquals("http://g3.dahanne.net/index.php/rest/item_tags/2",relationShips.getTags().getUrl());
+		Collection<String> members =  new HashSet<String>();
+		members.add("http://g3.dahanne.net/index.php/rest/tag_item/6,2");
+		members.add("http://g3.dahanne.net/index.php/rest/tag_item/7,2");
+		members.add("http://g3.dahanne.net/index.php/rest/tag_item/8,2");
+		members.add("http://g3.dahanne.net/index.php/rest/tag_item/9,2");
+		members.add("http://g3.dahanne.net/index.php/rest/tag_item/10,2");
+		members.add("http://g3.dahanne.net/index.php/rest/tag_item/11,2");
+		members.add("http://g3.dahanne.net/index.php/rest/tag_item/12,2");
+		assertEquals(members, relationShips.getTags().getMembers());
+		assertEquals("http://g3.dahanne.net/index.php/rest/item_comments/2",relationShips.getComments().getUrl());
+		
+		
+		
+	}
+}

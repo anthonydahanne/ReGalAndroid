@@ -17,14 +17,10 @@
  */
 package net.dahanne.gallery3.client.model;
 
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-
-@XmlRootElement
 public class Entity {
 
 	private int id;
-//	private long captured;
+	private long captured;
 	private long created;
 	private String description;
 	private int height;
@@ -32,7 +28,7 @@ public class Entity {
 	private String mimeType;
 	private String name;
 	private int ownerId;
-//	private float randKey;
+	private float randKey;
 	private int resizeHeight;
 	private int resizeWidth;
 	private String slug;
@@ -44,12 +40,80 @@ public class Entity {
 	private long updated;
 	private int viewCount;
 	private int width;
-	//view_1, view2 ?
+	private int view1;
+	private int view2;
 	private String parent;
 	private String fileUrl;
 	private String resizeUrl;
 	private String thumbUrl;
 	private boolean canEdit;
+	private String albumCover;
+	private String webUrl;
+	private String thumbUrlPublic;
+	private int thumbSize;
+	private String type;
+	private int fileSize;
+	private int resizeSize;
+	public int getFileSize() {
+		return fileSize;
+	}
+	public void setFileSize(int fileSize) {
+		this.fileSize = fileSize;
+	}
+	public int getResizeSize() {
+		return resizeSize;
+	}
+	public void setResizeSize(int resizeSize) {
+		this.resizeSize = resizeSize;
+	}
+	public String getFileUrlPublic() {
+		return fileUrlPublic;
+	}
+	public void setFileUrlPublic(String fileUrlPublic) {
+		this.fileUrlPublic = fileUrlPublic;
+	}
+	public String getResizeUrlPublic() {
+		return resizeUrlPublic;
+	}
+	public void setResizeUrlPublic(String resizeUrlPublic) {
+		this.resizeUrlPublic = resizeUrlPublic;
+	}
+	private String fileUrlPublic;
+	private String resizeUrlPublic;
+	
+	
+	
+	
+	public String getType() {
+		return type;
+	}
+	public void setType(String type) {
+		this.type = type;
+	}
+	public String getAlbumCover() {
+		return albumCover;
+	}
+	public void setAlbumCover(String albumCover) {
+		this.albumCover = albumCover;
+	}
+	public String getWebUrl() {
+		return webUrl;
+	}
+	public void setWebUrl(String webUrl) {
+		this.webUrl = webUrl;
+	}
+	public String getThumbUrlPublic() {
+		return thumbUrlPublic;
+	}
+	public void setThumbUrlPublic(String thumbUrlPublic) {
+		this.thumbUrlPublic = thumbUrlPublic;
+	}
+	public int getThumbSize() {
+		return thumbSize;
+	}
+	public void setThumbSize(int thumbSize) {
+		this.thumbSize = thumbSize;
+	}
 	public void setId(int id) {
 		this.id = id;
 	}
@@ -59,12 +123,12 @@ public class Entity {
 	public void setFileUrl(String fileUrl) {
 		this.fileUrl = fileUrl;
 	}
-//	public long getCaptured() {
-//		return captured;
-//	}
-//	public void setCaptured(long captured) {
-//		this.captured = captured;
-//	}
+	public long getCaptured() {
+		return captured;
+	}
+	public void setCaptured(long captured) {
+		this.captured = captured;
+	}
 	public long getCreated() {
 		return created;
 	}
@@ -89,7 +153,6 @@ public class Entity {
 	public void setLevel(int level) {
 		this.level = level;
 	}
-	@XmlElement(name="mime_type") 
 	public String getMimeType() {
 		return mimeType;
 	}
@@ -102,28 +165,36 @@ public class Entity {
 	public void setName(String name) {
 		this.name = name;
 	}
-	@XmlElement(name="owner_id") 
 	public int getOwnerId() {
 		return ownerId;
 	}
 	public void setOwnerId(int ownerId) {
 		this.ownerId = ownerId;
 	}
-//	@XmlElement(name="rand_key")
-//	public float getRandKey() {
-//		return randKey;
-//	}
-//	public void setRandKey(float randKey) {
-//		this.randKey = randKey;
-//	}
-	@XmlElement(name="resize_height") 
+	public int getView1() {
+		return view1;
+	}
+	public void setView1(int view1) {
+		this.view1 = view1;
+	}
+	public int getView2() {
+		return view2;
+	}
+	public void setView2(int view2) {
+		this.view2 = view2;
+	}
+	public float getRandKey() {
+		return randKey;
+	}
+	public void setRandKey(float randKey) {
+		this.randKey = randKey;
+	}
 	public int getResizeHeight() {
 		return resizeHeight;
 	}
 	public void setResizeHeight(int resizeHeight) {
 		this.resizeHeight = resizeHeight;
 	}
-	@XmlElement(name="resize_width")
 	public int getResizeWidth() {
 		return resizeWidth;
 	}
@@ -136,28 +207,24 @@ public class Entity {
 	public void setSlug(String slug) {
 		this.slug = slug;
 	}
-	@XmlElement(name="sort_column")
 	public String getSortColumn() {
 		return sortColumn;
 	}
 	public void setSortColumn(String sortColumn) {
 		this.sortColumn = sortColumn;
 	}
-	@XmlElement(name="sort_order")
 	public String getSortOrder() {
 		return sortOrder;
 	}
 	public void setSortOrder(String sortOrder) {
 		this.sortOrder = sortOrder;
 	}
-	@XmlElement(name="thumb_height")
 	public int getThumbHeight() {
 		return thumbHeight;
 	}
 	public void setThumbHeight(int thumbHeight) {
 		this.thumbHeight = thumbHeight;
 	}
-	@XmlElement(name="thumb_width")
 	public int getThumbWidth() {
 		return thumbWidth;
 	}
@@ -176,7 +243,6 @@ public class Entity {
 	public void setUpdated(long updated) {
 		this.updated = updated;
 	}
-	@XmlElement(name="view_count")
 	public int getViewCount() {
 		return viewCount;
 	}
@@ -195,28 +261,24 @@ public class Entity {
 	public void setParent(String parent) {
 		this.parent = parent;
 	}
-	@XmlElement(name="resize_url")
 	public String getResizeUrl() {
 		return resizeUrl;
 	}
 	public void setResizeUrl(String resizeUrl) {
 		this.resizeUrl = resizeUrl;
 	}
-	@XmlElement(name="thumb_url")
 	public String getThumbUrl() {
 		return thumbUrl;
 	}
 	public void setThumbUrl(String thumUrl) {
 		this.thumbUrl = thumUrl;
 	}
-	@XmlElement(name="can_edit")
 	public boolean isCanEdit() {
 		return canEdit;
 	}
 	public void setCanEdit(boolean canEdit) {
 		this.canEdit = canEdit;
 	}
-	@XmlElement(name="file_url")
 	public String getFileUrl() {
 		return fileUrl;
 	}

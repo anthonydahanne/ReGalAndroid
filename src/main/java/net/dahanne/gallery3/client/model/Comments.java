@@ -17,22 +17,17 @@
  */
 package net.dahanne.gallery3.client.model;
 
-import java.util.Collection;
-import java.util.HashSet;
-
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
-public class Tags {
+public class Comments {
 	private String url;
-	private final Collection<String> members = new HashSet<String>();
-	public Collection<String> getMembers() {
-		return members;
-	}
-	public String getUrl() {
-		return url;
-	}
+
 	public void setUrl(String url) {
 		this.url = url;
+	}
+
+	public String getUrl() {
+		return url;
 	}
 }
