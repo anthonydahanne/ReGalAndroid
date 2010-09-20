@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.dahanne.gallery3</groupId>
 	<artifactId>g3-java-client</artifactId>
-	<version>0.1.0-SNAPSHOT</version>
+	<version>0.1.0</version>
 	<name>Gallery3 Java Client</name>
 
 	<dependencies>
