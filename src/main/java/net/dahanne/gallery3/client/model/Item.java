@@ -29,8 +29,7 @@ public class Item {
 	private Entity entity;
 	private RelationShips relationships;
 	private final Collection<String> members = new HashSet<String>();
-	
-	
+
 	public Entity getEntity() {
 		return entity;
 	}
@@ -55,6 +54,12 @@ public class Item {
 		return url;
 	}
 
+	/**
+	 * members are the sub items urls of the current item(which has to be an
+	 * album, as only albums have members)
+	 * 
+	 * @return
+	 */
 	public Collection<String> getMembers() {
 		return members;
 	}

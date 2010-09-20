@@ -27,6 +27,8 @@ import net.dahanne.gallery3.client.model.Item;
 import net.dahanne.gallery3.client.model.RelationShips;
 import net.dahanne.gallery3.client.model.Tags;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -41,9 +43,8 @@ public class ItemUtils {
 		item.setEntity(parseJSONToEntity(jsonResult));
 
 		item.setRelationships(parseJSONToRelationShips(jsonResult));
-		
-		
-		if(item.getEntity().getType().equals("album")){
+
+		if (item.getEntity().getType().equals("album")) {
 			JSONArray jsonArray = jsonResult.getJSONArray("members");
 			item.getMembers().addAll(convertJSONArrayToList(jsonArray));
 		}
@@ -91,8 +92,11 @@ public class ItemUtils {
 				: entityJSON.getString("slug"));
 		entity.setSortColumn(entityJSON.getString("sort_column"));
 		entity.setSortOrder(entityJSON.getString("sort_order"));
-		entity.setThumbHeight(entityJSON.getInt("thumb_height"));
-		entity.setThumbWidth(entityJSON.getInt("thumb_width"));
+		entity.setThumbHeight(entityJSON.getString("thumb_height").equals(
+				"null") ? 0 : Integer.parseInt(entityJSON
+				.getString("thumb_height")));
+		entity.setThumbWidth(entityJSON.getString("thumb_width").equals("null") ? 0
+				: Integer.parseInt(entityJSON.getString("thumb_width")));
 		entity.setTitle(entityJSON.getString("title"));
 		entity.setType(entityJSON.getString("type"));
 		entity.setUpdated(entityJSON.getString("updated").equals("null") ? 0
@@ -103,17 +107,38 @@ public class ItemUtils {
 		entity.setView1(entityJSON.getInt("view_1"));
 		entity.setView2(entityJSON.getInt("view_2"));
 		entity.setWebUrl(entityJSON.getString("web_url"));
-		entity.setThumbUrl(entityJSON.getString("thumb_url"));
-		entity.setThumbSize(entityJSON.getInt("thumb_size"));
-		entity.setThumbUrlPublic(entityJSON.getString("thumb_url_public"));
-		entity.setCanEdit(entityJSON.getBoolean("can_edit"));
-		
-		if(entity.getType().equals("album")){
-			entity.setAlbumCover(entityJSON.getString("album_cover"));
+		try {
+			entity.setThumbUrl(entityJSON.getString("thumb_url").equals("null") ? null
+					: entityJSON.getString("thumb_url"));
+		} catch (JSONException e) {
+			// nothing to do, it's just that there is no thumb url
 		}
-		
-		if(entity.getType().equals("photo")){
+		try {
+			entity.setThumbSize(entityJSON.getInt("thumb_size"));
+		} catch (JSONException e) {
+			// nothing to do, it's just that there is no thumb size
+		}
+		try {
+			entity.setThumbUrlPublic(entityJSON.getString("thumb_url_public"));
+		} catch (JSONException e) {
+			// nothing to do, it's just that there is no thumb url public
+		}
+		try {
 			entity.setParent(entityJSON.getString("parent"));
+		} catch (JSONException e) {
+			// nothing to do, it's just that there is no parent
+		}
+		entity.setCanEdit(entityJSON.getBoolean("can_edit"));
+
+		if (entity.getType().equals("album")) {
+			try {
+				entity.setAlbumCover(entityJSON.getString("album_cover"));
+			} catch (JSONException e) {
+				// nothing to do, it's just that there is no album_cover
+			}
+		}
+
+		if (entity.getType().equals("photo")) {
 			entity.setFileUrl(entityJSON.getString("file_url"));
 			entity.setFileSize(entityJSON.getInt("file_size"));
 			entity.setFileUrlPublic(entityJSON.getString("file_url_public"));
@@ -121,8 +146,6 @@ public class ItemUtils {
 			entity.setResizeSize(entityJSON.getInt("resize_size"));
 			entity.setResizeUrlPublic(entityJSON.getString("resize_url_public"));
 		}
-
-		
 
 		return entity;
 	}
@@ -146,6 +169,40 @@ public class ItemUtils {
 		relationShips.setComments(comments);
 		relationShips.setTags(tags);
 		return relationShips;
+	}
+
+	public static String convertAlbumEntityToJSON(Entity entity)
+			throws JSONException {
+
+		JSONObject entityJSON = new JSONObject();
+		entityJSON.put("title", entity.getTitle());
+		entityJSON.put("type", "album");
+		entityJSON.put("name", entity.getName());
+
+		return entityJSON.toString();
+	}
+
+	public static NameValuePair convertJSONStringToNameValuePair(String value) {
+		NameValuePair nameValuePair = new BasicNameValuePair("entity", value);
+		return nameValuePair;
+	}
+
+	public static String convertJsonResultToApiKey(String jsonResult) {
+		String apiKey;
+		apiKey = jsonResult.replaceAll("\"", "").replaceAll("\n", "");
+
+		return apiKey;
+	}
+
+	public static String convertJsonStringToUrl(String jsonResult)
+			throws JSONException {
+		JSONObject jsonObject = new JSONObject(jsonResult);
+		return (String) jsonObject.get("url");
+	}
+
+	public static Integer getItemIdFromUrl(String createdAlbumUrl) {
+		return Integer.valueOf(createdAlbumUrl.substring(createdAlbumUrl
+				.lastIndexOf("/") + 1));
 	}
 
 }

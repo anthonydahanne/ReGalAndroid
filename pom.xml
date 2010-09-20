@@ -3,62 +3,56 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.dahanne.gallery3</groupId>
 	<artifactId>g3-java-client</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<name>G3 Java Client</name>
-
-	<repositories>
-		<repository>
-			<id>Sun</id>
-			<name>Sun Repository</name>
-			<url>http://download.java.net/maven/2</url>
-		</repository>
-	</repositories>
-
+	<version>0.1.0-SNAPSHOT</version>
+	<name>Gallery3 Java Client</name>
 
 	<dependencies>
 		<dependency>
-			<groupId>com.sun.jersey</groupId>
-			<artifactId>jersey-client</artifactId>
-			<version>1.2</version>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<version>4.0.1</version>
+			<scope>compile</scope>
 		</dependency>
 		<dependency>
-			<groupId>com.sun.jersey</groupId>
-			<artifactId>jersey-test-framework</artifactId>
-			<version>1.1.5.1</version>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>20090211</version>
+			<type>jar</type>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>r06</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>com.sun.jersey</groupId>
-			<artifactId>jersey-json</artifactId>
-			<version>1.2</version>
-		</dependency>
-		<dependency>
-			<groupId>com.sun.jersey.contribs</groupId>
-			<artifactId>jersey-apache-client</artifactId>
-			<version>1.2</version>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.8.1</version>
+			<type>jar</type>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 
 	<build>
-
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-
 				<configuration>
 					<source>1.5</source>
 					<target>1.5</target>
 				</configuration>
+				<version>2.3.2</version>
 			</plugin>
 			<plugin>
-				<groupId>com.google.code.maven-license-plugin</groupId>
+				<groupId>com.mycila.maven-license-plugin</groupId>
 				<artifactId>maven-license-plugin</artifactId>
-				<version>1.4.0</version>
+				<version>1.8.0</version>
 				<configuration>
 					<header>${basedir}/src/main/resources/license-header.txt</header>
 					<failIfMissing>true</failIfMissing>
-
 					<executions>
 						<execution>
 							<goals>
@@ -66,13 +60,12 @@
 							</goals>
 						</execution>
 					</executions>
-
-
 				</configuration>
 			</plugin>
 		</plugins>
 	</build>
-
-
-
+	<scm>
+		<connection>scm:git:ssh://git@github.com:anthonydahanne/g3-java-client.git</connection>
+		<url>git:ssh://git@github.com:anthonydahanne/g3-java-client.git</url>
+	</scm>
 </project>
