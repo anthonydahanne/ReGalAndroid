@@ -28,6 +28,7 @@ import net.dahanne.gallery3.client.model.Entity;
 import net.dahanne.gallery3.client.model.Item;
 import net.dahanne.gallery3.client.model.RelationShips;
 
+import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
@@ -69,8 +70,7 @@ public class ItemUtilsTest {
 		assertEquals("Gallery",entity.getTitle());
 		assertEquals("album",entity.getType());
 		assertEquals(1276227718,entity.getUpdated());
-		//assertion not stable
-		//assertEquals(8,entity.getViewCount());
+		assertEquals(8,entity.getViewCount());
 		assertEquals(0,entity.getWidth());
 		assertEquals(1,entity.getView1());
 		assertEquals(1,entity.getView2());
@@ -93,6 +93,75 @@ public class ItemUtilsTest {
 		
 		
 	}
+	
+	
+	
+	@Test
+	public void parseJSONTest__secretalbum() throws IOException, JSONException {
+		URL resource = Resources.getResource("get-album-11.json");
+		String string = Resources.toString(resource, Charsets.UTF_8);
+		JSONObject jsonResult = (JSONObject) new JSONTokener(string)
+				.nextValue();
+		Item item = ItemUtils.parseJSONToItem(jsonResult);
+		assertEquals("http://g3.dahanne.net/index.php/rest/item/11",item.getUrl());
+		
+		Entity entity = item.getEntity();
+		assertEquals(11,entity.getId());
+		assertEquals(0,entity.getCaptured());
+		assertEquals(1284818165,entity.getCreated());
+		assertEquals("",entity.getDescription());
+		assertEquals(0,entity.getHeight());
+		assertEquals(2,entity.getLevel());
+		assertEquals(null,entity.getMimeType());
+		assertEquals("G2AndroidSecretAlbum",entity.getName());
+		assertEquals(2,entity.getOwnerId());
+		assertEquals(0.952582f,entity.getRandKey(),0.000001f);
+		assertEquals(0,entity.getResizeHeight());
+		assertEquals(0,entity.getResizeWidth());
+		assertEquals("G2AndroidSecretAlbum",entity.getSlug());
+		assertEquals("created",entity.getSortColumn());
+		assertEquals("ASC",entity.getSortOrder());
+		assertEquals(0,entity.getThumbHeight());
+		assertEquals(0,entity.getThumbWidth());
+		assertEquals("G2AndroidSecretAlbum",entity.getTitle());
+		assertEquals("album",entity.getType());
+		assertEquals(1284830781,entity.getUpdated());
+		assertEquals(6,entity.getViewCount());
+		assertEquals(0,entity.getWidth());
+		assertEquals(0,entity.getView1());
+		assertEquals(0,entity.getView2());
+		assertEquals("http://g3.dahanne.net/index.php/rest/item/1",entity.getParent());
+		assertEquals("http://g3.dahanne.net/index.php/G2AndroidSecretAlbum",entity.getWebUrl());
+		assertEquals(true,entity.isCanEdit());
+		
+		RelationShips relationShips =  item.getRelationships();
+		assertEquals("http://g3.dahanne.net/index.php/rest/item_tags/11",relationShips.getTags().getUrl());
+		assertEquals(new HashSet<String>(),relationShips.getTags().getMembers());
+		assertEquals("http://g3.dahanne.net/index.php/rest/item_comments/11",relationShips.getComments().getUrl());
+		
+		Collection<String> members =  new HashSet<String>();
+		members.add("http://g3.dahanne.net/index.php/rest/item/13");
+		members.add("http://g3.dahanne.net/index.php/rest/item/14");
+		members.add("http://g3.dahanne.net/index.php/rest/item/15");
+		members.add("http://g3.dahanne.net/index.php/rest/item/16");
+		members.add("http://g3.dahanne.net/index.php/rest/item/18");
+		members.add("http://g3.dahanne.net/index.php/rest/item/20");
+		members.add("http://g3.dahanne.net/index.php/rest/item/22");
+		members.add("http://g3.dahanne.net/index.php/rest/item/25");
+		members.add("http://g3.dahanne.net/index.php/rest/item/26");
+		members.add("http://g3.dahanne.net/index.php/rest/item/28");
+		members.add("http://g3.dahanne.net/index.php/rest/item/30");
+		members.add("http://g3.dahanne.net/index.php/rest/item/32");
+		members.add("http://g3.dahanne.net/index.php/rest/item/34");
+		members.add("http://g3.dahanne.net/index.php/rest/item/35");
+		assertEquals(members, item.getMembers());
+		
+		
+	}
+	
+	
+	
+	
 	
 	@Test
 	public void parseJSONTest__photo() throws IOException, JSONException {
@@ -124,8 +193,7 @@ public class ItemUtilsTest {
 		assertEquals("March\u00e9 Bon secours",entity.getTitle());
 		assertEquals("photo",entity.getType());
 		assertEquals(1276229274,entity.getUpdated());
-		//assertion not stable
-		//assertEquals(8,entity.getViewCount());
+		assertEquals(60,entity.getViewCount());
 		assertEquals(2304,entity.getWidth());
 		assertEquals(1,entity.getView1());
 		assertEquals(1,entity.getView2());
@@ -162,4 +230,63 @@ public class ItemUtilsTest {
 		
 		
 	}
+	
+	
+	
+	@Test
+	public void convertAlbumEntityToJSON() throws JSONException{
+		Entity albumEntity =  new Entity();
+		albumEntity.setTitle("This is my Sample Album");
+		albumEntity.setName("Sample Album");
+		
+		String convertEntityToJSON = ItemUtils.convertAlbumEntityToJSON(albumEntity);
+		
+		
+		
+		
+		
+		assertEquals("{\"title\":\"This is my Sample Album\",\"name\":\"Sample Album\",\"type\":\"album\"}", convertEntityToJSON);
+	}
+	
+	@Test
+	public void convertItemToNameValuePair(){
+		
+		
+		
+		Item item =  new Item();
+		Entity albumEntity =  new Entity();
+		albumEntity.setTitle("New Album");
+		albumEntity.setName("AlbumName");
+		item.setEntity(albumEntity );
+		
+		String value = "{\"title\":\"This is my Sample Album\",\"name\":\"Sample Album\",\"type\":\"album\"}";
+		BasicNameValuePair basicNameValuePair = new BasicNameValuePair("entity",value);
+		
+		assertEquals(basicNameValuePair, ItemUtils.convertJSONStringToNameValuePair(value));
+//		
+//		
+//		List<NameValuePair>  nameValuePairs = ItemUtils.convertItemToNameValuePairs(item);
+		
+		
+		
+	}
+	
+	@Test
+	public void convertJsonStringToApiKey() {
+		
+		String expectedKey = "e3450cdda082e6a2bddf5114a2bcc14d";
+String jsonResult="\"e3450cdda082e6a2bddf5114a2bcc14d\n\"";
+String key = ItemUtils.convertJsonResultToApiKey(jsonResult);
+assertEquals(expectedKey, key);
+	}
+	
+	
+	@Test
+	public void convertJsonStringToUrl() throws JSONException{
+		String jsonResult="{\"url\":\"http:\\/\\/g3.dahanne.net\\/index.php\\/rest\\/item\\/34\"}";
+		String expectedString = "http://g3.dahanne.net/index.php/rest/item/34";
+		String urlString = ItemUtils.convertJsonStringToUrl(jsonResult);
+		assertEquals(expectedString, urlString);
+	}
+	
 }
