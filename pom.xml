@@ -64,7 +64,8 @@
 		</plugins>
 	</build>
 	<scm>
-		<connection>scm:git:ssh://git@github.com/anthonydahanne/g3-java-client.git</connection>
-		<url>git:ssh://git@github.com/anthonydahanne/g3-java-client.git</url>
+		<connection>scm:git:git@github.com:anthonydahanne/g3-java-client.git</connection>
+		<url>scm:git:git@github.com:anthonydahanne/g3-java-client.git</url>
+		<developerConnection>scm:git:git@github.com:anthonydahanne/g3-java-client.git</developerConnection>
 	</scm>
 </project>
