@@ -124,7 +124,8 @@ public class ItemUtils {
 			// nothing to do, it's just that there is no thumb url public
 		}
 		try {
-			entity.setParent(entityJSON.getString("parent"));
+			entity.setParent(ItemUtils.getItemIdFromUrl(entityJSON
+					.getString("parent")));
 		} catch (JSONException e) {
 			// nothing to do, it's just that there is no parent
 		}
@@ -141,10 +142,19 @@ public class ItemUtils {
 		if (entity.getType().equals("photo")) {
 			entity.setFileUrl(entityJSON.getString("file_url"));
 			entity.setFileSize(entityJSON.getInt("file_size"));
-			entity.setFileUrlPublic(entityJSON.getString("file_url_public"));
+			try {
+				entity.setFileUrlPublic(entityJSON.getString("file_url_public"));
+			} catch (JSONException e) {
+				// nothing to do, it's just that there is no album_cover
+			}
 			entity.setResizeUrl(entityJSON.getString("resize_url"));
 			entity.setResizeSize(entityJSON.getInt("resize_size"));
-			entity.setResizeUrlPublic(entityJSON.getString("resize_url_public"));
+			try {
+				entity.setResizeUrlPublic(entityJSON
+						.getString("resize_url_public"));
+			} catch (JSONException e) {
+				// nothing to do, it's just that there is no album_cover
+			}
 		}
 
 		return entity;
@@ -178,6 +188,17 @@ public class ItemUtils {
 		entityJSON.put("title", entity.getTitle());
 		entityJSON.put("type", "album");
 		entityJSON.put("name", entity.getName());
+
+		return entityJSON.toString();
+	}
+
+	public static String convertPhotoEntityToJSON(Entity entity)
+			throws JSONException {
+
+		JSONObject entityJSON = new JSONObject();
+		entityJSON.put("type", "photo");
+		entityJSON.put("name", entity.getName());
+		entityJSON.put("title", entity.getTitle());
 
 		return entityJSON.toString();
 	}

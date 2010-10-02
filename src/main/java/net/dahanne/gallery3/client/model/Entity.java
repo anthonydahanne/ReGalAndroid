@@ -42,7 +42,7 @@ public class Entity {
 	private int width;
 	private int view1;
 	private int view2;
-	private String parent;
+	private int parent;
 	private String fileUrl;
 	private String resizeUrl;
 	private String thumbUrl;
@@ -255,10 +255,10 @@ public class Entity {
 	public void setWidth(int width) {
 		this.width = width;
 	}
-	public String getParent() {
+	public int getParent() {
 		return parent;
 	}
-	public void setParent(String parent) {
+	public void setParent(int parent) {
 		this.parent = parent;
 	}
 	public String getResizeUrl() {
@@ -282,5 +282,120 @@ public class Entity {
 	public String getFileUrl() {
 		return fileUrl;
 	}
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + id;
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result + ((type == null) ? 0 : type.hashCode());
+		return result;
+	}
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Entity other = (Entity) obj;
+		if (id != other.id)
+			return false;
+		if (name == null) {
+			if (other.name != null)
+				return false;
+		} else if (!name.equals(other.name))
+			return false;
+		if (type == null) {
+			if (other.type != null)
+				return false;
+		} else if (!type.equals(other.type))
+			return false;
+		return true;
+	}
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("Entity [id=");
+		builder.append(id);
+		builder.append(", captured=");
+		builder.append(captured);
+		builder.append(", created=");
+		builder.append(created);
+		builder.append(", description=");
+		builder.append(description);
+		builder.append(", height=");
+		builder.append(height);
+		builder.append(", level=");
+		builder.append(level);
+		builder.append(", mimeType=");
+		builder.append(mimeType);
+		builder.append(", name=");
+		builder.append(name);
+		builder.append(", ownerId=");
+		builder.append(ownerId);
+		builder.append(", randKey=");
+		builder.append(randKey);
+		builder.append(", resizeHeight=");
+		builder.append(resizeHeight);
+		builder.append(", resizeWidth=");
+		builder.append(resizeWidth);
+		builder.append(", slug=");
+		builder.append(slug);
+		builder.append(", sortColumn=");
+		builder.append(sortColumn);
+		builder.append(", sortOrder=");
+		builder.append(sortOrder);
+		builder.append(", thumbHeight=");
+		builder.append(thumbHeight);
+		builder.append(", thumbWidth=");
+		builder.append(thumbWidth);
+		builder.append(", title=");
+		builder.append(title);
+		builder.append(", updated=");
+		builder.append(updated);
+		builder.append(", viewCount=");
+		builder.append(viewCount);
+		builder.append(", width=");
+		builder.append(width);
+		builder.append(", view1=");
+		builder.append(view1);
+		builder.append(", view2=");
+		builder.append(view2);
+		builder.append(", parent=");
+		builder.append(parent);
+		builder.append(", fileUrl=");
+		builder.append(fileUrl);
+		builder.append(", resizeUrl=");
+		builder.append(resizeUrl);
+		builder.append(", thumbUrl=");
+		builder.append(thumbUrl);
+		builder.append(", canEdit=");
+		builder.append(canEdit);
+		builder.append(", albumCover=");
+		builder.append(albumCover);
+		builder.append(", webUrl=");
+		builder.append(webUrl);
+		builder.append(", thumbUrlPublic=");
+		builder.append(thumbUrlPublic);
+		builder.append(", thumbSize=");
+		builder.append(thumbSize);
+		builder.append(", type=");
+		builder.append(type);
+		builder.append(", fileSize=");
+		builder.append(fileSize);
+		builder.append(", resizeSize=");
+		builder.append(resizeSize);
+		builder.append(", fileUrlPublic=");
+		builder.append(fileUrlPublic);
+		builder.append(", resizeUrlPublic=");
+		builder.append(resizeUrlPublic);
+		builder.append("]");
+		return builder.toString();
+	}
+	
+	
+	
 	
 }

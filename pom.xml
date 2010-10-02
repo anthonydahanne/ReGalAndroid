@@ -7,8 +7,11 @@
 	<name>Gallery3 Java Client</name>
 	<version>0.2.0-SNAPSHOT</version>
 	<description>This project is aimed to provide a Gallery 3 remote api client implementation written in Java
-</description>
+	</description>
 	<url>http://github.com/anthonydahanne/g3-java-client</url>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
 	<licenses>
 		<license>
 			<name>GPL v3</name>
@@ -69,6 +72,13 @@
 			<version>4.8.1</version>
 			<type>jar</type>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpmime</artifactId>
+			<version>4.0.3</version>
+			<type>jar</type>
+			<scope>compile</scope>
 		</dependency>
 	</dependencies>
 

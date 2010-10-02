@@ -130,7 +130,7 @@ public class ItemUtilsTest {
 		assertEquals(0,entity.getWidth());
 		assertEquals(0,entity.getView1());
 		assertEquals(0,entity.getView2());
-		assertEquals("http://g3.dahanne.net/index.php/rest/item/1",entity.getParent());
+		assertEquals(ItemUtils.getItemIdFromUrl("http://g3.dahanne.net/index.php/rest/item/1"),new Integer(entity.getParent()));
 		assertEquals("http://g3.dahanne.net/index.php/G2AndroidSecretAlbum",entity.getWebUrl());
 		assertEquals(true,entity.isCanEdit());
 		
@@ -197,7 +197,7 @@ public class ItemUtilsTest {
 		assertEquals(2304,entity.getWidth());
 		assertEquals(1,entity.getView1());
 		assertEquals(1,entity.getView2());
-		assertEquals("http://g3.dahanne.net/index.php/rest/item/1",entity.getParent());
+		assertEquals(ItemUtils.getItemIdFromUrl("http://g3.dahanne.net/index.php/rest/item/1"),new Integer(entity.getParent()));
 		assertEquals("http://g3.dahanne.net/index.php/marche-bonsecours",entity.getWebUrl());
 
 		assertEquals("http://g3.dahanne.net/index.php/rest/data/2?size=full",entity.getFileUrl());
