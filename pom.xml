@@ -4,7 +4,7 @@
 	<artifactId>g3-java-client</artifactId>
 	<packaging>jar</packaging>
 	<name>Gallery3 Java Client</name>
-	<version>0.2.0</version>
+	<version>0.3.0-SNAPSHOT</version>
 	<description>This project is aimed to provide a Gallery 3 remote api client implementation written in Java
 	</description>
 	<url>http://github.com/anthonydahanne/g3-java-client</url>
