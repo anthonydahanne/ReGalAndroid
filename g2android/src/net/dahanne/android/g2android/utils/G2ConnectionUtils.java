@@ -24,6 +24,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
@@ -414,15 +415,6 @@ public class G2ConnectionUtils {
 			defaultHttpClient.getParams().setBooleanParameter(
 					"http.protocol.expect-continue", false);
 
-			// add apache patterns for cookies
-			String[] patternsArray = new String[2];
-			patternsArray[0] = "EEE, dd MMM-yyyy-HH:mm:ss z";
-			patternsArray[1] = "EEE, dd MMM yyyy HH:mm:ss z";
-			// be extremely careful here, android httpclient needs it to be an
-			// array of string, not an arraylist
-			defaultHttpClient.getParams().setParameter(
-					CookieSpecPNames.DATE_PATTERNS, patternsArray);
-
 			// bug #25 : for embedded gallery, should not add main.php
 			String correctedGalleryUrl = galleryUrl;
 			if (!UriUtils.isEmbeddedGallery(galleryUrl)) {
@@ -451,9 +443,25 @@ public class G2ConnectionUtils {
 				nameValuePairs.addAll(nameValuePairsForThisCommand);
 				httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 			}
-
+			// add apache patterns for cookies
+			String[] patternsArray = new String[2];
+			patternsArray[0] = "EEE, dd MMM-yyyy-HH:mm:ss z";
+			patternsArray[1] = "EEE, dd MMM yyyy HH:mm:ss z";
+			// be extremely careful here, android httpclient needs it to be an
+			// array of string, not an arraylist
+			defaultHttpClient.getParams().setParameter(
+					CookieSpecPNames.DATE_PATTERNS, patternsArray);
+			HttpResponse response = null;
 			// Execute HTTP Post Request and retrieve content
-			HttpResponse response = defaultHttpClient.execute(httpPost);
+			try {
+				response = defaultHttpClient.execute(httpPost);
+			} catch (ClassCastException e) {
+				// happens if using the http client not from android
+				List<String> patternsList = Arrays.asList(patternsArray);
+				defaultHttpClient.getParams().setParameter(
+						CookieSpecPNames.DATE_PATTERNS, patternsList);
+				response = defaultHttpClient.execute(httpPost);
+			}
 			InputStream content = response.getEntity().getContent();
 			BufferedReader rd = new BufferedReader(new InputStreamReader(
 					content), 4096);
