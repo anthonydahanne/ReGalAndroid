@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+	<!--
+		/* * G2Android * Copyright (c) 2009 Anthony Dahanne * This program is
+		free software; you can redistribute it and/or modify * it under the
+		terms of the GNU General Public License as published by * the Free
+		Software Foundation; either version 2 of the License, or * (at your
+		option) any later version. * * This program is distributed in the hope
+		that it will be useful, but * WITHOUT ANY WARRANTY; without even the
+		implied warranty of MERCHANTABILITY * or FITNESS FOR A PARTICULAR
+		PURPOSE. See the GNU General Public License * for more details. * *
+		You should have received a copy of the GNU General Public License
+		along * with this program; if not, write to the Free Software
+		Foundation, Inc., * 59 Temple Place, Suite 330, Boston, MA 02111-1307
+		USA */
+	-->
+
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
+
+	<net.dahanne.android.g2android.utils.modified_android_source.NumberPickerButton
+		android:id="@+id/increment" android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:background="@drawable/timepicker_up_normal"
+		 />
+
+
+
+	<EditText android:id="@+id/timepicker_input"
+		android:layout_width="fill_parent" android:layout_height="wrap_content"
+		android:gravity="center" android:singleLine="true"
+		style="?android:attr/textAppearanceLargeInverse" android:textColor="@android:color/primary_text_light"
+		android:textSize="30sp" />
+
+	<net.dahanne.android.g2android.utils.modified_android_source.NumberPickerButton
+		android:id="@+id/decrement" android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:background="@drawable/timepicker_down_normal"
+		 />
+
+</merge>
