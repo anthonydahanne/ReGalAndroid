@@ -120,9 +120,11 @@ public class FullImage extends Activity implements OnGestureListener {
 	@SuppressWarnings("unchecked")
 	private void loadingPicture() {
 		g2Picture = albumPictures.get(currentPosition);
+		int albumName = ((G2AndroidApplication) getApplication())
+				.getAlbumName();
 		File potentialAlreadyDownloadedFile = new File(
-				Settings.getG2AndroidCachePath(this), g2Picture.getTitle());
-
+				Settings.getG2AndroidCachePath(this) + albumName + "/",
+				g2Picture.getTitle());
 		if (potentialAlreadyDownloadedFile.exists()
 				&& potentialAlreadyDownloadedFile.length() != 0) {
 			imageView.setImageDrawable(Drawable

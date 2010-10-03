@@ -145,9 +145,12 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 
 		public View getView(int position, View convertView, ViewGroup parent) {
 			G2Picture g2Picture = albumPictures.get(position);
+			int albumName = ((G2AndroidApplication) getApplication())
+					.getAlbumName();
 			File potentiallyAlreadyDownloadedFile = new File(
-					Settings.getG2AndroidCachePath(ShowGallery.this),
-					THUMB_PREFIX + g2Picture.getTitle());
+					Settings.getG2AndroidCachePath(ShowGallery.this)
+							+ albumName + "/", THUMB_PREFIX
+							+ g2Picture.getTitle());
 			// maybe present in the local cache
 			Bitmap downloadImage = bitmapsCache.get(position);
 			if (downloadImage == null) {
@@ -171,7 +174,8 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 										g2Picture.getForceExtension(),
 										uriString,
 										true,
-										((G2AndroidApplication) getApplication()).getAlbumName());
+										((G2AndroidApplication) getApplication())
+												.getAlbumName());
 						downloadImage = BitmapFactory
 								.decodeFile(imageFileOnExternalDirectory
 										.getPath());
@@ -198,14 +202,17 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 	public void onItemSelected(AdapterView<?> parent, View view, int position,
 			long id) {
 		G2Picture g2Picture = albumPictures.get(position);
+		int albumName = ((G2AndroidApplication) getApplication())
+				.getAlbumName();
 		File potentiallyAlreadyDownloadedFile = new File(
-				Settings.getG2AndroidCachePath(this), g2Picture.getTitle());
+				Settings.getG2AndroidCachePath(this) + albumName + "/",
+				g2Picture.getTitle());
 		mSwitcher.setId(position);
 		// remember the position where we were
 		((G2AndroidApplication) getApplication()).setCurrentPosition(position);
 		// only download the picture IF it has not yet been downloaded
 		if (g2Picture.getResizedImagePath() != null
-				|| potentiallyAlreadyDownloadedFile.exists()
+				&& potentiallyAlreadyDownloadedFile.exists()
 				&& potentiallyAlreadyDownloadedFile.length() != 0) {
 			Bitmap bitmap = BitmapFactory
 					.decodeFile(potentiallyAlreadyDownloadedFile.getPath());
