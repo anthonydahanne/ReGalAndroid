@@ -20,6 +20,8 @@ package net.dahanne.android.g2android.utils;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.dahanne.android.regalandroid.utils.GalleryConnectionException;
+
 import org.apache.http.cookie.Cookie;
 import org.apache.http.impl.cookie.BasicClientCookie;
 

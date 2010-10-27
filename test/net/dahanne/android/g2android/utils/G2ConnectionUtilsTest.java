@@ -24,6 +24,9 @@ import java.util.Random;
 
 import junit.framework.Assert;
 
+import net.dahanne.android.regalandroid.utils.G2ConnectionUtils;
+import net.dahanne.android.regalandroid.utils.GalleryConnectionException;
+
 import org.junit.Before;
 import org.junit.Test;
 

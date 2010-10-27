@@ -3,6 +3,8 @@ package net.dahanne.android.g2android.utils;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import net.dahanne.android.regalandroid.utils.UriUtils;
+
 import org.junit.Test;
 
 public class UriUtilsTest {

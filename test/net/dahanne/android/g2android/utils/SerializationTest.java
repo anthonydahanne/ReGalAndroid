@@ -18,7 +18,8 @@
 package net.dahanne.android.g2android.utils;
 
 import junit.framework.Assert;
-import net.dahanne.android.g2android.model.Album;
+import net.dahanne.android.regalandroid.model.Album;
+import net.dahanne.android.regalandroid.utils.Serialization;
 
 import org.junit.Test;
 

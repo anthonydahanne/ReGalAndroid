@@ -4,8 +4,9 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.dahanne.android.g2android.model.Album;
-import net.dahanne.android.g2android.model.G2Picture;
+import net.dahanne.android.regalandroid.model.Album;
+import net.dahanne.android.regalandroid.model.G2Picture;
+import net.dahanne.android.regalandroid.utils.G2DataUtils;
 
 import org.junit.Assert;
 import org.junit.Before;
