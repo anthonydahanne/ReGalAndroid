@@ -17,6 +17,9 @@
  */
 package net.dahanne.android.regalandroid.remote;
 
+import net.dahanne.gallery.commons.remote.RemoteGallery;
+import net.dahanne.gallery.g2.java.client.G2ConnectionUtils;
+
 /**
  * 
  * @author Anthony Dahanne

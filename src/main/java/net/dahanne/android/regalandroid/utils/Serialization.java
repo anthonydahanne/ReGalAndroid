@@ -24,7 +24,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.StreamCorruptedException;
 
-import net.dahanne.android.regalandroid.model.Album;
+import net.dahanne.gallery.commons.model.Album;
 
 /**
  * @author Anthony Dahanne

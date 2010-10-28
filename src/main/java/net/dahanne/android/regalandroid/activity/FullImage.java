@@ -20,14 +20,14 @@ package net.dahanne.android.regalandroid.activity;
 import java.io.File;
 import java.util.List;
 
-import net.dahanne.android.regalandroid.RegalAndroidApplication;
 import net.dahanne.android.regalandroid.R;
-import net.dahanne.android.regalandroid.model.G2Picture;
-import net.dahanne.android.regalandroid.remote.GalleryConnectionException;
+import net.dahanne.android.regalandroid.RegalAndroidApplication;
 import net.dahanne.android.regalandroid.utils.FileHandlingException;
 import net.dahanne.android.regalandroid.utils.FileUtils;
 import net.dahanne.android.regalandroid.utils.ShowUtils;
 import net.dahanne.android.regalandroid.utils.modified_android_source.AsyncTask;
+import net.dahanne.gallery.commons.model.G2Picture;
+import net.dahanne.gallery.commons.remote.GalleryConnectionException;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -90,7 +90,8 @@ public class FullImage extends Activity implements OnGestureListener {
 	@Override
 	protected void onResume() {
 		super.onResume();
-		albumPictures = ((RegalAndroidApplication) getApplication()).getPictures();
+		albumPictures = ((RegalAndroidApplication) getApplication())
+				.getPictures();
 		if (albumPictures == null || albumPictures.size() == 0) {
 			finish();
 		} else {
@@ -106,7 +107,8 @@ public class FullImage extends Activity implements OnGestureListener {
 		super.onPause();
 		((RegalAndroidApplication) getApplication())
 				.setCurrentPosition(currentPosition);
-		albumPictures = ((RegalAndroidApplication) getApplication()).getPictures();
+		albumPictures = ((RegalAndroidApplication) getApplication())
+				.getPictures();
 		if (albumPictures != null && albumPictures.size() != 0) {
 			ShowUtils.getInstance().saveContextToDatabase(this);
 		}

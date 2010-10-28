@@ -2,7 +2,7 @@ package net.dahanne.android.regalandroid.utils;
 
 import java.util.Comparator;
 
-import net.dahanne.android.regalandroid.model.Album;
+import net.dahanne.gallery.commons.model.Album;
 
 public class AlbumComparator implements Comparator<Album> {
 

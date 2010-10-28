@@ -19,9 +19,9 @@ package net.dahanne.android.regalandroid.utils;
 
 import net.dahanne.android.regalandroid.R;
 import net.dahanne.android.regalandroid.RegalAndroidApplication;
-import net.dahanne.android.regalandroid.remote.RemoteGallery;
 import net.dahanne.android.regalandroid.remote.RemoteGalleryConnectionFactory;
 import net.dahanne.android.regalandroid.utils.DBHelper.G2AndroidContext;
+import net.dahanne.gallery.commons.remote.RemoteGallery;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;

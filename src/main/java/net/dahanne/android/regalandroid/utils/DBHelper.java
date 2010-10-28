@@ -1,6 +1,6 @@
 package net.dahanne.android.regalandroid.utils;
 
-import net.dahanne.android.regalandroid.model.Album;
+import net.dahanne.gallery.commons.model.Album;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -48,7 +48,7 @@ public class DBHelper {
 
 		@Override
 		public String toString() {
-			return this.id + " " + this.currentPosition + " " + this.albumName;
+			return id + " " + currentPosition + " " + albumName;
 		}
 	}
 
@@ -89,20 +89,20 @@ public class DBHelper {
 	//
 
 	public DBHelper(final Context context) {
-		this.dbOpenHelper = new DBOpenHelper(context);
+		dbOpenHelper = new DBOpenHelper(context);
 		establishDb();
 	}
 
 	private void establishDb() {
-		if (this.db == null) {
-			this.db = this.dbOpenHelper.getWritableDatabase();
+		if (db == null) {
+			db = dbOpenHelper.getWritableDatabase();
 		}
 	}
 
 	public void cleanup() {
-		if (this.db != null) {
-			this.db.close();
-			this.db = null;
+		if (db != null) {
+			db.close();
+			db = null;
 		}
 	}
 
@@ -113,8 +113,8 @@ public class DBHelper {
 		values.put("album_name", g2AndroidContext.albumName);
 		values.put("is_logged_in", g2AndroidContext.isLoggedIn);
 
-		this.db.insert(DBHelper.DB_TABLE, null, values);
-		
+		db.insert(DBHelper.DB_TABLE, null, values);
+
 		cleanup();
 	}
 
@@ -124,18 +124,17 @@ public class DBHelper {
 		values.put("root_album", g2AndroidContext.rootAlbum.serialize());
 		values.put("album_name", g2AndroidContext.albumName);
 		values.put("is_logged_in", g2AndroidContext.isLoggedIn);
-		this.db.update(DBHelper.DB_TABLE, values, "_id=" + g2AndroidContext.id,
-				null);
-		
+		db.update(DBHelper.DB_TABLE, values, "_id=" + g2AndroidContext.id, null);
+
 		cleanup();
 	}
 
 	public void delete(final long id) {
-		this.db.delete(DBHelper.DB_TABLE, "_id=" + id, null);
+		db.delete(DBHelper.DB_TABLE, "_id=" + id, null);
 	}
 
 	public void deleteAll() {
-		this.db.delete(DBHelper.DB_TABLE, null, null);
+		db.delete(DBHelper.DB_TABLE, null, null);
 	}
 
 	// public void delete(final String zip) {
@@ -146,8 +145,8 @@ public class DBHelper {
 		Cursor c = null;
 		G2AndroidContext g2AndroidContext = null;
 		try {
-			c = this.db.query(true, DBHelper.DB_TABLE, DBHelper.COLS, null,
-					null, null, null, "_id DESC", null);
+			c = db.query(true, DBHelper.DB_TABLE, DBHelper.COLS, null, null,
+					null, null, "_id DESC", null);
 			if (c.getCount() > 0) {
 				c.moveToFirst();
 				g2AndroidContext = new G2AndroidContext();
@@ -164,10 +163,10 @@ public class DBHelper {
 		} finally {
 			c.close();
 			cleanup();
-			
-//			if (c != null && !c.isClosed()) {
-//				c.close();
-//			}
+
+			// if (c != null && !c.isClosed()) {
+			// c.close();
+			// }
 		}
 		return g2AndroidContext;
 	}

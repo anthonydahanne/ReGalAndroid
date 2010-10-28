@@ -20,11 +20,11 @@ package net.dahanne.android.regalandroid.tasks;
 import java.io.File;
 
 import net.dahanne.android.regalandroid.RegalAndroidApplication;
-import net.dahanne.android.regalandroid.model.G2Picture;
-import net.dahanne.android.regalandroid.remote.GalleryConnectionException;
 import net.dahanne.android.regalandroid.utils.FileHandlingException;
 import net.dahanne.android.regalandroid.utils.FileUtils;
 import net.dahanne.android.regalandroid.utils.modified_android_source.AsyncTask;
+import net.dahanne.gallery.commons.model.G2Picture;
+import net.dahanne.gallery.commons.remote.GalleryConnectionException;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.graphics.Bitmap;

@@ -3,12 +3,12 @@ package net.dahanne.android.regalandroid;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.dahanne.android.regalandroid.model.Album;
-import net.dahanne.android.regalandroid.model.G2Picture;
+import net.dahanne.gallery.commons.model.Album;
+import net.dahanne.gallery.commons.model.G2Picture;
 import android.app.Application;
 
 public class RegalAndroidApplication extends Application {
-	private List<G2Picture> pictures = new ArrayList<G2Picture>();
+	private final List<G2Picture> pictures = new ArrayList<G2Picture>();
 	private Album rootAlbum;
 	private int currentPosition;
 	private int albumName;

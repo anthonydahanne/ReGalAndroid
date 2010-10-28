@@ -8,9 +8,9 @@ import java.io.InputStream;
 
 import net.dahanne.android.regalandroid.R;
 import net.dahanne.android.regalandroid.activity.Settings;
-import net.dahanne.android.regalandroid.remote.GalleryConnectionException;
-import net.dahanne.android.regalandroid.remote.RemoteGallery;
 import net.dahanne.android.regalandroid.remote.RemoteGalleryConnectionFactory;
+import net.dahanne.gallery.commons.remote.GalleryConnectionException;
+import net.dahanne.gallery.commons.remote.RemoteGallery;
 
 import org.apache.commons.lang.StringUtils;
 

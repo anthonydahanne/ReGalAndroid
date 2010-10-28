@@ -20,8 +20,8 @@ package net.dahanne.android.regalandroid.activity;
 import java.io.File;
 
 import net.dahanne.android.regalandroid.R;
-import net.dahanne.android.regalandroid.remote.RemoteGallery;
 import net.dahanne.android.regalandroid.remote.RemoteGalleryConnectionFactory;
+import net.dahanne.gallery.commons.remote.RemoteGallery;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Environment;

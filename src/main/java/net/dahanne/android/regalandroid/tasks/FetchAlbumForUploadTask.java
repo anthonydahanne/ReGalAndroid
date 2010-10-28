@@ -24,12 +24,12 @@ import java.util.List;
 
 import net.dahanne.android.regalandroid.R;
 import net.dahanne.android.regalandroid.adapters.AlbumAdapterForUpload;
-import net.dahanne.android.regalandroid.model.Album;
-import net.dahanne.android.regalandroid.remote.GalleryConnectionException;
-import net.dahanne.android.regalandroid.remote.RemoteGallery;
 import net.dahanne.android.regalandroid.remote.RemoteGalleryConnectionFactory;
 import net.dahanne.android.regalandroid.utils.AlbumComparator;
 import net.dahanne.android.regalandroid.utils.ShowUtils;
+import net.dahanne.gallery.commons.model.Album;
+import net.dahanne.gallery.commons.remote.GalleryConnectionException;
+import net.dahanne.gallery.commons.remote.RemoteGallery;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.AsyncTask;

@@ -3,7 +3,7 @@ package net.dahanne.android.regalandroid.adapters;
 import java.util.List;
 
 import net.dahanne.android.regalandroid.R;
-import net.dahanne.android.regalandroid.model.Album;
+import net.dahanne.gallery.commons.model.Album;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
