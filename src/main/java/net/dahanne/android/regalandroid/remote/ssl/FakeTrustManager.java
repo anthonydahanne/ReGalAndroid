@@ -4,7 +4,7 @@
  * 
  * 
  */
-package net.dahanne.android.regalandroid.utils.ssl;
+package net.dahanne.android.regalandroid.remote.ssl;
 
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;

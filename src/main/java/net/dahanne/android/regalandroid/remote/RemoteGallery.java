@@ -1,4 +1,4 @@
-package net.dahanne.android.regalandroid.utils;
+package net.dahanne.android.regalandroid.remote;
 
 import java.io.File;
 import java.io.InputStream;
@@ -79,5 +79,7 @@ public interface RemoteGallery {
 			throws GalleryConnectionException;
 
 	public abstract Album findAlbumFromAlbumName(Album rootAlbum, int name);
+
+	boolean isEmbeddedGallery(String url);
 
 }

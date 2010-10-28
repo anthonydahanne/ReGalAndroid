@@ -15,7 +15,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-package net.dahanne.android.regalandroid.utils;
+package net.dahanne.android.regalandroid.remote;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -33,7 +33,7 @@ import java.util.Map.Entry;
 
 import net.dahanne.android.regalandroid.model.Album;
 import net.dahanne.android.regalandroid.model.G2Picture;
-import net.dahanne.android.regalandroid.utils.ssl.FakeSocketFactory;
+import net.dahanne.android.regalandroid.remote.ssl.FakeSocketFactory;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.http.Header;
@@ -378,7 +378,7 @@ public class G2ConnectionUtils implements RemoteGallery {
 
 			// bug #25 : for embedded gallery, should not add main.php
 			String correctedGalleryUrl = galleryUrl;
-			if (!UriUtils.isEmbeddedGallery(galleryUrl)) {
+			if (!isEmbeddedGallery(galleryUrl)) {
 				correctedGalleryUrl = galleryUrl + "/" + MAIN_PHP;
 			}
 
@@ -740,6 +740,14 @@ public class G2ConnectionUtils implements RemoteGallery {
 			int albumName) throws GalleryConnectionException {
 		return extractG2PicturesFromProperties(fetchImages(galleryUrl,
 				albumName));
+	}
+
+	// bug #25 : for embedded gallery, should not add main.php
+	public boolean isEmbeddedGallery(String url) {
+		if (url.contains("action=gallery")) {
+			return true;
+		}
+		return false;
 	}
 
 }

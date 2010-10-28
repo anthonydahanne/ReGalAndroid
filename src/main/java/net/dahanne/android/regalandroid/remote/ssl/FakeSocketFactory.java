@@ -4,7 +4,7 @@
  * 
  * 
  */
-package net.dahanne.android.regalandroid.utils.ssl;
+package net.dahanne.android.regalandroid.remote.ssl;
 
 import java.io.IOException;
 import java.net.InetAddress;

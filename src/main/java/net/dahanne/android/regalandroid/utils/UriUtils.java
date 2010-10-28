@@ -87,14 +87,6 @@ public class UriUtils {
 		return true;
 	}
 
-	// bug #25 : for embedded gallery, should not add main.php
-	public static boolean isEmbeddedGallery(String url) {
-		if (url.contains("action=gallery")) {
-			return true;
-		}
-		return false;
-	}
-
 	public static String extractFilenameFromUri(Uri uri, Activity activity) {
 
 		String fileName = null;

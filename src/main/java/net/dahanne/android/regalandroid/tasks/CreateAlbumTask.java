@@ -19,9 +19,9 @@ package net.dahanne.android.regalandroid.tasks;
 
 import net.dahanne.android.regalandroid.RegalAndroidApplication;
 import net.dahanne.android.regalandroid.activity.Settings;
-import net.dahanne.android.regalandroid.utils.GalleryConnectionException;
-import net.dahanne.android.regalandroid.utils.RemoteGallery;
-import net.dahanne.android.regalandroid.utils.RemoteGalleryConnectionFactory;
+import net.dahanne.android.regalandroid.remote.GalleryConnectionException;
+import net.dahanne.android.regalandroid.remote.RemoteGallery;
+import net.dahanne.android.regalandroid.remote.RemoteGalleryConnectionFactory;
 import net.dahanne.android.regalandroid.utils.ShowUtils;
 import android.app.Activity;
 import android.app.ProgressDialog;

@@ -20,7 +20,8 @@ package net.dahanne.android.regalandroid.activity;
 import java.io.File;
 
 import net.dahanne.android.regalandroid.R;
-import net.dahanne.android.regalandroid.utils.UriUtils;
+import net.dahanne.android.regalandroid.remote.RemoteGallery;
+import net.dahanne.android.regalandroid.remote.RemoteGalleryConnectionFactory;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Environment;
@@ -48,6 +49,8 @@ public class Settings extends PreferenceActivity {
 	private static final String EMBEDDED_GALLERY_OPT_BASE_URL_DEF = "&g2_view=core.DownloadItem&g2_itemId=";
 	private static final String TAG = "Settings";
 	private static String galleryUrl;
+	private static RemoteGallery remoteGallery = RemoteGalleryConnectionFactory
+			.getInstance();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -65,7 +68,7 @@ public class Settings extends PreferenceActivity {
 	/** Get the baseUrl */
 	public static String getBaseUrl(Context context) {
 		// bug #25 : for embedded gallery, should not add main.php
-		if (UriUtils.isEmbeddedGallery(getGalleryUrl(context))) {
+		if (remoteGallery.isEmbeddedGallery(getGalleryUrl(context))) {
 			return getGalleryUrl(context) + EMBEDDED_GALLERY_OPT_BASE_URL_DEF;
 		}
 		return getGalleryUrl(context) + "/" + OPT_BASE_URL_DEF;

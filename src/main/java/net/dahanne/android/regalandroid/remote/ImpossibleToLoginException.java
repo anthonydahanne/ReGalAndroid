@@ -1,4 +1,4 @@
-package net.dahanne.android.regalandroid.utils;
+package net.dahanne.android.regalandroid.remote;
 
 public class ImpossibleToLoginException extends GalleryConnectionException {
 
