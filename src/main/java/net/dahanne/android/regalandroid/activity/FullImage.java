@@ -20,7 +20,7 @@ package net.dahanne.android.regalandroid.activity;
 import java.io.File;
 import java.util.List;
 
-import net.dahanne.android.regalandroid.G2AndroidApplication;
+import net.dahanne.android.regalandroid.RegalAndroidApplication;
 import net.dahanne.android.regalandroid.R;
 import net.dahanne.android.regalandroid.model.G2Picture;
 import net.dahanne.android.regalandroid.utils.FileHandlingException;
@@ -90,11 +90,11 @@ public class FullImage extends Activity implements OnGestureListener {
 	@Override
 	protected void onResume() {
 		super.onResume();
-		albumPictures = ((G2AndroidApplication) getApplication()).getPictures();
+		albumPictures = ((RegalAndroidApplication) getApplication()).getPictures();
 		if (albumPictures == null || albumPictures.size() == 0) {
 			finish();
 		} else {
-			currentPosition = ((G2AndroidApplication) getApplication())
+			currentPosition = ((RegalAndroidApplication) getApplication())
 					.getCurrentPosition();
 			loadingPicture();
 		}
@@ -104,9 +104,9 @@ public class FullImage extends Activity implements OnGestureListener {
 	@Override
 	protected void onPause() {
 		super.onPause();
-		((G2AndroidApplication) getApplication())
+		((RegalAndroidApplication) getApplication())
 				.setCurrentPosition(currentPosition);
-		albumPictures = ((G2AndroidApplication) getApplication()).getPictures();
+		albumPictures = ((RegalAndroidApplication) getApplication()).getPictures();
 		if (albumPictures != null && albumPictures.size() != 0) {
 			ShowUtils.getInstance().saveContextToDatabase(this);
 		}
@@ -120,7 +120,7 @@ public class FullImage extends Activity implements OnGestureListener {
 	@SuppressWarnings("unchecked")
 	private void loadingPicture() {
 		g2Picture = albumPictures.get(currentPosition);
-		int albumName = ((G2AndroidApplication) getApplication())
+		int albumName = ((RegalAndroidApplication) getApplication())
 				.getAlbumName();
 		File potentialAlreadyDownloadedFile = new File(
 				Settings.getG2AndroidCachePath(this) + albumName + "/",
@@ -163,7 +163,7 @@ public class FullImage extends Activity implements OnGestureListener {
 						.getFileFromGallery(FullImage.this, g2Picture
 								.getTitle(), g2Picture.getForceExtension(),
 								fileUrl, true,
-								((G2AndroidApplication) getApplication())
+								((RegalAndroidApplication) getApplication())
 										.getAlbumName());
 				downloadImage = BitmapFactory
 						.decodeFile(imageFileOnExternalDirectory.getPath());
@@ -276,7 +276,7 @@ public class FullImage extends Activity implements OnGestureListener {
 						g2Picture.getForceExtension(),
 						Settings.getBaseUrl(FullImage.this)
 								+ g2Picture.getName(), false,
-						((G2AndroidApplication) getApplication())
+						((RegalAndroidApplication) getApplication())
 								.getAlbumName());
 			} catch (GalleryConnectionException e) {
 				exceptionMessage = e.getMessage();
@@ -399,7 +399,7 @@ public class FullImage extends Activity implements OnGestureListener {
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
 			setResult(RESULT_OK);
-			((G2AndroidApplication) getApplication())
+			((RegalAndroidApplication) getApplication())
 					.setCurrentPosition(currentPosition);
 			this.finish();
 			return true;

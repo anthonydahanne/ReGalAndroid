@@ -7,7 +7,7 @@ import net.dahanne.android.regalandroid.model.Album;
 import net.dahanne.android.regalandroid.model.G2Picture;
 import android.app.Application;
 
-public class G2AndroidApplication extends Application {
+public class RegalAndroidApplication extends Application {
 	private List<G2Picture> pictures = new ArrayList<G2Picture>();
 	private Album rootAlbum;
 	private int currentPosition;

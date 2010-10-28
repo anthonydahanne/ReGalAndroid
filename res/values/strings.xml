@@ -17,7 +17,7 @@
 		<string name="licence">GNU General Public License v2</string>
 		<string name="port_default">80</string>
 		<string name="gallery_url_default">http://g2.dahanne.net</string>
-		<string name="app_name">G2Android</string>
+		<string name="app_name">ReGalAndroid</string>
 		<string name="g2android_path_default">g2android</string>
 		<string name="g2android_cache_path_default">tmp</string>
 		<!-- end of Default Values -->

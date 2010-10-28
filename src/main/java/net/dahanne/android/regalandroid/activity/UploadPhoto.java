@@ -24,14 +24,15 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import net.dahanne.android.regalandroid.G2AndroidApplication;
 import net.dahanne.android.regalandroid.R;
+import net.dahanne.android.regalandroid.RegalAndroidApplication;
 import net.dahanne.android.regalandroid.model.Album;
 import net.dahanne.android.regalandroid.tasks.AddPhotoTask;
 import net.dahanne.android.regalandroid.tasks.AddPhotosTask;
 import net.dahanne.android.regalandroid.tasks.FetchAlbumForUploadTask;
 import net.dahanne.android.regalandroid.tasks.LoginTask;
-import net.dahanne.android.regalandroid.utils.G2DataUtils;
+import net.dahanne.android.regalandroid.utils.RemoteGallery;
+import net.dahanne.android.regalandroid.utils.RemoteGalleryConnectionFactory;
 import net.dahanne.android.regalandroid.utils.ShowUtils;
 import net.dahanne.android.regalandroid.utils.UriUtils;
 import android.app.Activity;
@@ -66,6 +67,12 @@ public class UploadPhoto extends Activity implements OnClickListener {
 	private EditText filenameEditText;
 	private File imageFromCamera;
 	private ArrayList<Uri> mImageUris;
+	private RemoteGallery remoteGallery;
+
+	public UploadPhoto() {
+		remoteGallery = RemoteGalleryConnectionFactory
+				.getInstance();
+	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -183,10 +190,14 @@ public class UploadPhoto extends Activity implements OnClickListener {
 		// we recover the context from the database
 		ShowUtils.getInstance().recoverContextFromDatabase(this);
 		Album currentAlbum = null;
-		if (((G2AndroidApplication) getApplication()).getRootAlbum() != null) {
-			currentAlbum = G2DataUtils.getInstance().findAlbumFromAlbumName(
-					((G2AndroidApplication) getApplication()).getRootAlbum(),
-					((G2AndroidApplication) getApplication()).getAlbumName());
+		if (((RegalAndroidApplication) getApplication()).getRootAlbum() != null) {
+
+			currentAlbum = remoteGallery
+					.findAlbumFromAlbumName(
+							((RegalAndroidApplication) getApplication())
+									.getRootAlbum(),
+							((RegalAndroidApplication) getApplication())
+									.getAlbumName());
 		}
 		progressDialog = ProgressDialog.show(this,
 				getString(R.string.please_wait),

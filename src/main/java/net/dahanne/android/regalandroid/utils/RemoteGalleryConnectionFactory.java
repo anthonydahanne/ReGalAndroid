@@ -1,5 +1,5 @@
-/**
- * g2android
+/*
+ * G2Android
  * Copyright (c) 2009 Anthony Dahanne
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,24 +18,26 @@
 package net.dahanne.android.regalandroid.utils;
 
 /**
+ * 
  * @author Anthony Dahanne
  * 
  */
-public class GalleryConnectionException extends Exception {
+public class RemoteGalleryConnectionFactory {
 
-	private static final long serialVersionUID = 7190018624500833576L;
-	private final static String message = GalleryConnectionException.class
-			.getName();
+	private static RemoteGallery remoteGallery;
 
-	/**
-	 * @param msg
-	 */
-	public GalleryConnectionException(String msg) {
-		super(message + " : " + msg);
+	private RemoteGalleryConnectionFactory() {
+
 	}
 
-	public GalleryConnectionException(Throwable t) {
-		super(t);
+	public static RemoteGallery getInstance() {
+		if (remoteGallery == null) {
+			remoteGallery = new G2ConnectionUtils();
+		}
+		return remoteGallery;
 	}
 
+	public RemoteGallery getRemoteGallery() {
+		return remoteGallery;
+	}
 }

@@ -17,8 +17,8 @@
  */
 package net.dahanne.android.regalandroid.utils;
 
-import net.dahanne.android.regalandroid.G2AndroidApplication;
 import net.dahanne.android.regalandroid.R;
+import net.dahanne.android.regalandroid.RegalAndroidApplication;
 import net.dahanne.android.regalandroid.utils.DBHelper.G2AndroidContext;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -115,11 +115,11 @@ public class ShowUtils {
 		DBHelper dbHelper = new DBHelper(activity);
 		G2AndroidContext g2c = dbHelper.getLast();
 		if (g2c != null) {
-			((G2AndroidApplication) activity.getApplication())
+			((RegalAndroidApplication) activity.getApplication())
 					.setCurrentPosition(g2c.currentPosition);
-			((G2AndroidApplication) activity.getApplication())
+			((RegalAndroidApplication) activity.getApplication())
 					.setRootAlbum(g2c.rootAlbum);
-			((G2AndroidApplication) activity.getApplication())
+			((RegalAndroidApplication) activity.getApplication())
 					.setAlbumName(g2c.albumName);
 			if (g2c.isLoggedIn == 1) {
 				return true;
@@ -130,12 +130,14 @@ public class ShowUtils {
 
 	public void saveContextToDatabase(Activity activity) {
 		DBHelper dbHelper = new DBHelper(activity);
+		RemoteGallery remoteGallery = RemoteGalleryConnectionFactory
+				.getInstance();
 		dbHelper.insert(new G2AndroidContext(0,
-				((G2AndroidApplication) activity.getApplication())
-						.getCurrentPosition(), ((G2AndroidApplication) activity
-						.getApplication()).getRootAlbum(),
-				((G2AndroidApplication) activity.getApplication())
-						.getAlbumName(), G2ConnectionUtils.getInstance()
+				((RegalAndroidApplication) activity.getApplication())
+						.getCurrentPosition(),
+				((RegalAndroidApplication) activity.getApplication())
+						.getRootAlbum(), ((RegalAndroidApplication) activity
+						.getApplication()).getAlbumName(), remoteGallery
 						.getSessionCookies().size() > 1));
 	}
 

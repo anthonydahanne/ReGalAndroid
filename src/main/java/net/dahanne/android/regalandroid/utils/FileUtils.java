@@ -27,7 +27,7 @@ public class FileUtils {
 
 	}
 
-	private final G2ConnectionUtils g2ConnectionUtils = G2ConnectionUtils
+	private final RemoteGallery g2ConnectionUtils = RemoteGalleryConnectionFactory
 			.getInstance();
 
 	/**

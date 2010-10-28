@@ -17,11 +17,11 @@
  */
 package net.dahanne.android.regalandroid.tasks;
 
-import net.dahanne.android.regalandroid.G2AndroidApplication;
+import net.dahanne.android.regalandroid.RegalAndroidApplication;
 import net.dahanne.android.regalandroid.activity.Settings;
-import net.dahanne.android.regalandroid.utils.G2ConnectionUtils;
-import net.dahanne.android.regalandroid.utils.G2DataUtils;
 import net.dahanne.android.regalandroid.utils.GalleryConnectionException;
+import net.dahanne.android.regalandroid.utils.RemoteGallery;
+import net.dahanne.android.regalandroid.utils.RemoteGalleryConnectionFactory;
 import net.dahanne.android.regalandroid.utils.ShowUtils;
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -37,9 +37,11 @@ public class CreateAlbumTask extends AsyncTask {
 	Activity activity;
 	private String galleryUrl;
 	private final ProgressDialog progressDialog;
+	private final RemoteGallery remoteGallery;
 
 	public CreateAlbumTask(Activity context, ProgressDialog progressDialog) {
 		super();
+		remoteGallery = RemoteGalleryConnectionFactory.getInstance();
 		activity = context;
 		this.progressDialog = progressDialog;
 	}
@@ -52,21 +54,21 @@ public class CreateAlbumTask extends AsyncTask {
 		boolean mustLogIn = (Boolean) parameters[3];
 		try {
 			if (mustLogIn) {
-				G2ConnectionUtils.getInstance().loginToGallery(galleryUrl,
+				remoteGallery.loginToGallery(galleryUrl,
 						Settings.getUsername(activity),
 						Settings.getPassword(activity));
 			}
-			int createdAlbumName = G2ConnectionUtils.getInstance()
-					.createNewAlbum(galleryUrl, albumName, subalbumName,
-							subalbumName, Settings.getDefaultSummary(activity));
+			int createdAlbumName = remoteGallery.createNewAlbum(galleryUrl,
+					albumName, subalbumName, subalbumName,
+					Settings.getDefaultSummary(activity));
 			if (mustLogIn) {
-				G2ConnectionUtils.getInstance().loginToGallery(galleryUrl,
+				remoteGallery.loginToGallery(galleryUrl,
 						Settings.getUsername(activity),
 						Settings.getPassword(activity));
 			}
 			// we reload the rootAlbum and its hierarchy
-			((G2AndroidApplication) activity.getApplication())
-					.setRootAlbum(G2DataUtils.getInstance()
+			((RegalAndroidApplication) activity.getApplication())
+					.setRootAlbum(remoteGallery
 							.retrieveRootAlbumAndItsHierarchy(galleryUrl));
 			return createdAlbumName;
 		} catch (GalleryConnectionException e) {
@@ -82,15 +84,6 @@ public class CreateAlbumTask extends AsyncTask {
 		if ((Integer) createdAlbumName != null
 				&& (Integer) createdAlbumName != 0) {
 			ShowUtils.getInstance().toastAlbumSuccessfullyCreated(activity);
-			// we refresh the albums if we are in the ShowAlbums class
-			// if (ShowAlbums.class.isInstance(activity)) {
-			// progressDialog = ProgressDialog.show(activity, activity
-			// .getString(R.string.please_wait), activity
-			// .getString(R.string.fetching_gallery_albums), true);
-			// // now refresh the album hierarchy
-			// new FetchAlbumTask((ListActivity) activity, progressDialog)
-			// .execute(galleryUrl);
-			// }
 
 		} else if (exceptionMessage != null) {
 			// Something went wrong

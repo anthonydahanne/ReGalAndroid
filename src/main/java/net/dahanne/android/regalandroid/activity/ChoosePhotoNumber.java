@@ -17,7 +17,7 @@
  */
 package net.dahanne.android.regalandroid.activity;
 
-import net.dahanne.android.regalandroid.G2AndroidApplication;
+import net.dahanne.android.regalandroid.RegalAndroidApplication;
 import net.dahanne.android.regalandroid.R;
 import net.dahanne.android.regalandroid.utils.modified_android_source.NumberPicker;
 import android.app.Activity;
@@ -41,7 +41,7 @@ public class ChoosePhotoNumber extends Activity implements OnClickListener {
 
 		// view creation and context loading
 		setContentView(R.layout.choose_photo_number);
-		numberOfPictures = ((G2AndroidApplication) getApplication())
+		numberOfPictures = ((RegalAndroidApplication) getApplication())
 				.getPictures().size();
 		int currentPhoto = getIntent().getIntExtra(FullImage.CURRENT_POSITION,
 				0);
@@ -83,7 +83,7 @@ public class ChoosePhotoNumber extends Activity implements OnClickListener {
 		default:
 			break;
 		}
-		((G2AndroidApplication) getApplication())
+		((RegalAndroidApplication) getApplication())
 				.setCurrentPosition(chosenPhoto);
 		finish();
 

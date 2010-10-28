@@ -25,12 +25,17 @@ import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
+import net.dahanne.android.regalandroid.model.Album;
+import net.dahanne.android.regalandroid.model.G2Picture;
 import net.dahanne.android.regalandroid.utils.ssl.FakeSocketFactory;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -67,7 +72,7 @@ import org.apache.http.params.HttpProtocolParams;
  * @author Anthony Dahanne
  * 
  */
-public class G2ConnectionUtils {
+public class G2ConnectionUtils implements RemoteGallery {
 
 	private static final String UPLOAD_FAILED = "Upload Failed";
 	private static final String FAILED = "failed";
@@ -76,7 +81,6 @@ public class G2ConnectionUtils {
 	/**
 	 * Final static constants
 	 */
-	private static final String SET_COOKIE = "Set-Cookie";
 	private static final BasicNameValuePair LOGIN_CMD_NAME_VALUE_PAIR = new BasicNameValuePair(
 			"g2_form[cmd]", "login");
 	private static final BasicNameValuePair FETCH_ALBUMS_CMD_NAME_VALUE_PAIR = new BasicNameValuePair(
@@ -109,10 +113,9 @@ public class G2ConnectionUtils {
 	private final CookieSpecBase cookieSpecBase = new BrowserCompatSpec();
 	private final List<Cookie> sessionCookies = new ArrayList<Cookie>();
 
-	private static G2ConnectionUtils g2ConnectionUtils = new G2ConnectionUtils();
 	private final DefaultHttpClient defaultHttpClient;
 
-	private G2ConnectionUtils() {
+	public G2ConnectionUtils() {
 		sessionCookies.add(new BasicClientCookie("", ""));
 		// the httpclient initialization is heavy, we create one for
 		// G2ConnectionUtils
@@ -120,21 +123,12 @@ public class G2ConnectionUtils {
 
 	}
 
-	public static G2ConnectionUtils getInstance() {
-		return g2ConnectionUtils;
-	}
-
-	/**
-	 * fetchImages methods : retrieves all the infos needed to fetch images from
-	 * the gallery
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @param galleryUrl
-	 * @param albumName
-	 * @param galleryHost
-	 * @param galleryPath
-	 * @param galleryPort
-	 * @return
-	 * @throws GalleryConnectionException
+	 * @see
+	 * net.dahanne.android.regalandroid.utils.RemoteGallery#fetchImages(java
+	 * .lang.String, int)
 	 */
 	public HashMap<String, String> fetchImages(String galleryUrl, int albumName)
 			throws GalleryConnectionException {
@@ -148,12 +142,12 @@ public class G2ConnectionUtils {
 		return properties;
 	}
 
-	/**
-	 * Retrieve all the albums infos from the gallery
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @param galleryUrl
-	 * @return
-	 * @throws GalleryConnectionException
+	 * @see
+	 * net.dahanne.android.regalandroid.utils.RemoteGallery#fetchAlbums(java
+	 * .lang.String)
 	 */
 	public HashMap<String, String> fetchAlbums(String galleryUrl)
 			throws GalleryConnectionException {
@@ -166,43 +160,8 @@ public class G2ConnectionUtils {
 
 	}
 
-	/**
-	 * Check whether the galleryUrl provided is valid or not
-	 * 
-	 * @param galleryHost
-	 * @param galleryPath
-	 * @param galleryPort
-	 * @return boolean
-	 * @throws GalleryConnectionException
-	 */
-	public boolean checkGalleryUrlIsValid(String galleryUrl)
-			throws GalleryConnectionException {
-		boolean checkUrlIsValid = UriUtils.checkUrlIsValid(galleryUrl);
-		if (checkUrlIsValid == false) {
-			return false;
-		}
-		List<NameValuePair> nameValuePairsFetchAlbums = new ArrayList<NameValuePair>();
-		// an empty command should return a default string "no command passed" :
-		// enough to know that it is ok !
-		HashMap<String, String> properties = sendCommandToGallery(galleryUrl,
-				nameValuePairsFetchAlbums, null);
-
-		return properties.isEmpty() ? false : true;
-
-	}
-
-	/**
-	 * The login method, cookie handling is located in sendCommandToGallery
-	 * method
-	 * 
-	 * @param galleryUrl
-	 * @param user
-	 * @param password
-	 * @return
-	 * @throws GalleryConnectionException
-	 */
-	public String loginToGallery(String galleryUrl, String user, String password)
-			throws GalleryConnectionException {
+	public void loginToGallery(String galleryUrl, String user, String password)
+			throws ImpossibleToLoginException {
 		// we reset the last login
 		sessionCookies.clear();
 		sessionCookies.add(new BasicClientCookie("", ""));
@@ -211,16 +170,22 @@ public class G2ConnectionUtils {
 		sb.add(LOGIN_CMD_NAME_VALUE_PAIR);
 		sb.add(new BasicNameValuePair("g2_form[uname]", "" + user));
 		sb.add(new BasicNameValuePair("g2_form[password]", "" + password));
-		HashMap<String, String> properties = sendCommandToGallery(galleryUrl,
-				sb, null);
+		HashMap<String, String> properties;
+		try {
+			properties = sendCommandToGallery(galleryUrl, sb, null);
+		} catch (GalleryConnectionException e) {
+			throw new ImpossibleToLoginException(e);
+		}
 		// auth_token retrieval, used by G2 against cross site forgery
 		authToken = null;
-		if (properties.get("status") != null
-				&& properties.get("status").equals(GR_STAT_SUCCESS)) {
-			authToken = properties.get("auth_token");
+		if (properties.get("status") != null) {
+			if (properties.get("status").equals(GR_STAT_SUCCESS)) {
+				authToken = properties.get("auth_token");
+			} else {
+				throw new ImpossibleToLoginException(
+						properties.get("status_text"));
+			}
 		}
-
-		return authToken;
 
 	}
 
@@ -281,14 +246,12 @@ public class G2ConnectionUtils {
 		return multiPartEntity;
 	}
 
-	/**
-	 * @param galleryUrl
-	 * @param parentAlbumName
-	 * @param albumName
-	 * @param albumTitle
-	 * @param albumDescription
-	 * @return number of the new album
-	 * @throws GalleryConnectionException
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * net.dahanne.android.regalandroid.utils.RemoteGallery#createNewAlbum(java
+	 * .lang.String, int, java.lang.String, java.lang.String, java.lang.String)
 	 */
 	public int createNewAlbum(String galleryUrl, int parentAlbumName,
 			String albumName, String albumTitle, String albumDescription)
@@ -316,15 +279,13 @@ public class G2ConnectionUtils {
 		return newAlbumName;
 	}
 
-	/**
-	 * @param galleryUrl
-	 * @param parentAlbumName
-	 * @param albumName
-	 * @param imageName
-	 * @param albumTitle
-	 * @param albumDescription
-	 * @return number of the new album
-	 * @throws GalleryConnectionException
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * net.dahanne.android.regalandroid.utils.RemoteGallery#sendImageToGallery
+	 * (java.lang.String, int, java.io.File, java.lang.String, java.lang.String,
+	 * java.lang.String)
 	 */
 	public int sendImageToGallery(String galleryUrl, int albumName,
 			File imageFile, String imageName, String summary, String description)
@@ -471,6 +432,7 @@ public class G2ConnectionUtils {
 			String line;
 			boolean gr2ProtoStringWasFound = false;
 			while ((line = rd.readLine()) != null) {
+				System.out.println(line);
 				if (line.contains(GR2PROTO)) {
 					gr2ProtoStringWasFound = true;
 				}
@@ -478,7 +440,7 @@ public class G2ConnectionUtils {
 					String key = line.substring(0, line.indexOf(EQUALS));
 					String value = line.substring(line.indexOf(EQUALS) + 1);
 					if (key.equals(STATUS) && value.equals("403")) {
-						new GalleryConnectionException(
+						throw new GalleryConnectionException(
 								"The file was received, but could not be processed or added to the album.");
 					}
 					properties.put(key, value);
@@ -495,6 +457,289 @@ public class G2ConnectionUtils {
 					+ e.getMessage());
 		}
 		return properties;
+	}
+
+	/**
+	 * This is where we convert the infos from the gallery to G2Picture objects
+	 * 
+	 * @param fetchImages
+	 * @return
+	 */
+	public Collection<G2Picture> extractG2PicturesFromProperties(
+			HashMap<String, String> fetchImages) {
+		Map<Integer, G2Picture> picturesMap = new HashMap<Integer, G2Picture>();
+		List<Integer> tmpImageNumbers = new ArrayList<Integer>();
+		int imageNumber = 0;
+		for (Entry<String, String> entry : fetchImages.entrySet()) {
+			if (entry.getKey().contains("image")
+					&& !entry.getKey().contains("image_count")) {
+				// what is the picture id of this field ?
+				imageNumber = new Integer(entry.getKey().substring(
+						entry.getKey().lastIndexOf(".") + 1));
+				G2Picture picture = null;
+				// a new picture, let's create it!
+				if (!tmpImageNumbers.contains(imageNumber)) {
+					picture = new G2Picture();
+					picture.setId(imageNumber);
+					picturesMap.put(imageNumber, picture);
+					tmpImageNumbers.add(imageNumber);
+
+				}
+				// a known picture, let's get it back
+				else {
+					picture = picturesMap.get(imageNumber);
+				}
+
+				// TODO : change this, using album_count, loop on it, as we know
+				// that the number at the end is between 1 and album_count
+				try {
+					if (entry.getKey().contains("image.title.")) {
+						picture.setTitle(entry.getValue());
+					} else if (entry.getKey().contains("image.thumbName.")) {
+						picture.setThumbName(entry.getValue());
+					} else if (entry.getKey().contains("image.thumb_width.")) {
+						picture.setThumbWidth(new Integer(entry.getValue()));
+					} else if (entry.getKey().contains("image.thumb_height.")) {
+						picture.setThumbHeight(new Integer(entry.getValue()));
+					} else if (entry.getKey().contains("image.resizedName.")) {
+						picture.setResizedName(entry.getValue());
+					} else if (entry.getKey().contains("image.resized_width.")) {
+						picture.setResizedWidth(new Integer(entry.getValue()));
+					} else if (entry.getKey().contains("image.resized_height.")) {
+						picture.setResizedHeight(new Integer(entry.getValue()));
+					} else if (entry.getKey().contains("image.name.")) {
+						picture.setName(entry.getValue());
+					} else if (entry.getKey().contains("image.raw_width.")) {
+						picture.setRawWidth(new Integer(entry.getValue()));
+					} else if (entry.getKey().contains("image.raw_height.")) {
+						picture.setRawHeight(new Integer(entry.getValue()));
+					} else if (entry.getKey().contains("image.raw_filesize.")) {
+						picture.setRawFilesize(new Integer(entry.getValue()));
+					} else if (entry.getKey().contains("image.caption.")) {
+						picture.setCaption(entry.getValue());
+					} else if (entry.getKey().contains("image.forceExtension.")) {
+						picture.setForceExtension(entry.getValue());
+					} else if (entry.getKey().contains("image.hidden.")) {
+						picture.setHidden(Boolean.valueOf(entry.getValue()));
+					} else if (entry.getKey().contains("image.clicks.")) {
+						picture.setImageClicks(new Integer(entry.getValue()));
+					}
+					// else if (entry.getKey().contains(
+					// "image.capturedate.year.")) {
+					// picture.setCaptureDateYear(entry.getValue());
+					// } else if (entry.getKey()
+					// .contains("image.capturedate.mon.")) {
+					// picture.setCaptureDateMonth(entry.getValue());
+					// } else if (entry.getKey().contains(
+					// "image.capturedate.mday.")) {
+					// picture.setCaptureDateDay(entry.getValue());
+					// } else if (entry.getKey().contains(
+					// "image.capturedate.hours.")) {
+					// picture.setCaptureDateHour(entry.getValue());
+					// } else if (entry.getKey().contains(
+					// "image.capturedate.minutes.")) {
+					// picture.setCaptureDateMinute(entry.getValue());
+					// } else if (entry.getKey().contains(
+					// "image.capturedate.seconds.")) {
+					// picture.setCaptureDateSecond(entry.getValue());
+					// }
+
+				} catch (NumberFormatException nfe) {
+					// System.out.println("problem dealing with imageNumber :"
+					// + imageNumber);
+
+				}
+			}
+		}
+		return picturesMap.values();
+
+	}
+
+	public Album findAlbumFromAlbumName(Album rootAlbum, int i) {
+		if (rootAlbum.getName() == i) {
+			return rootAlbum;
+		}
+		for (Album album : rootAlbum.getChildren()) {
+			if (album.getName() == i) {
+				return album;
+			}
+			Album fromAlbumName = findAlbumFromAlbumName(album, i);
+			if (fromAlbumName != null) {
+				return fromAlbumName;
+			}
+
+		}
+		return null;
+	}
+
+	public Album retrieveRootAlbumAndItsHierarchy(String galleryUrl)
+			throws GalleryConnectionException {
+		Map<Integer, Album> nonSortedAlbums = getAllAlbums(galleryUrl);
+		Album rootAlbum = organizeAlbumsHierarchy(nonSortedAlbums);
+		return rootAlbum;
+	}
+
+	public Map<Integer, Album> getAllAlbums(String galleryUrl)
+			throws GalleryConnectionException {
+		HashMap<String, String> albumsProperties = this.fetchAlbums(galleryUrl);
+
+		Map<Integer, Album> nonSortedAlbums = extractAlbumFromProperties(albumsProperties);
+		return nonSortedAlbums;
+	}
+
+	/**
+	 * 
+	 * From an HashMap of albumProperties (obtained from the remote gallery),
+	 * returns a List of Albums
+	 * 
+	 * @param albumsProperties
+	 * @return List<Album>
+	 */
+	public Map<Integer, Album> extractAlbumFromProperties(
+			HashMap<String, String> albumsProperties) {
+		int albumNumber = 0;
+		Map<Integer, Album> albumsMap = new HashMap<Integer, Album>();
+		List<Integer> tmpAlbumNumbers = new ArrayList<Integer>();
+
+		for (Entry<String, String> entry : albumsProperties.entrySet()) {
+			if (entry.getKey().contains("album")
+					&& !entry.getKey().contains("debug")
+					&& !entry.getKey().contains("album_count")) {
+				// what is the album id of this field ?
+				albumNumber = new Integer(entry.getKey().substring(
+						entry.getKey().lastIndexOf(".") + 1));
+				Album album = null;
+				// a new album, let's create it!
+				if (!tmpAlbumNumbers.contains(albumNumber)) {
+					album = new Album();
+					album.setId(albumNumber);
+					albumsMap.put(albumNumber, album);
+					tmpAlbumNumbers.add(albumNumber);
+
+				}
+				// a known album, let's get it back
+				else {
+					album = albumsMap.get(albumNumber);
+				}
+				// TODO : use album_count for the loop
+				try {
+					if (entry.getKey().contains("album.title.")) {
+
+						String title = StringEscapeUtils.unescapeHtml(entry
+								.getValue());
+						title = StringEscapeUtils.unescapeJava(title);
+						album.setTitle(title);
+					} else if (entry.getKey().contains("album.name.")) {
+						album.setName(new Integer(entry.getValue()));
+					} else if (entry.getKey().contains("album.summary.")) {
+						album.setSummary(entry.getValue());
+					} else if (entry.getKey().contains("album.parent.")) {
+						album.setParentName(new Integer(entry.getValue()));
+					} else if (entry.getKey().contains(
+							"album.info.extrafields.")) {
+						album.setExtrafields(entry.getValue());
+					}
+
+				} catch (NumberFormatException nfe) {
+					// System.out.println("problem dealing with albumNumber :"
+					// + albumNumber);
+
+				}
+			}
+		}
+
+		return albumsMap;
+
+	}
+
+	/**
+	 * @param albums
+	 * @return
+	 */
+	public Album organizeAlbumsHierarchy(Map<Integer, Album> albums) {
+		Album rootAlbum = null;
+
+		for (Album album : albums.values()) {
+			// set the root album as soon as we discover it
+			if (album.getParentName() == 0) {
+				rootAlbum = album;
+			}
+
+			int parentName = album.getParentName();
+			// look for the parent id
+			int parentId = 0;
+			for (Album album2 : albums.values()) {
+				if (album2.getName() == parentName) {
+					parentId = album2.getId();
+					break;
+				}
+			}
+			Album parent = albums.get(parentId);
+			album.setParent(parent);
+			if (parent != null) {
+				parent.getChildren().add(album);
+			}
+		}
+
+		return rootAlbum;
+
+	}
+
+	public G2Picture extractG2PicturePropertiesFromProperties(
+			HashMap<String, String> properties, long itemId) {
+		G2Picture picture = null;
+		picture = new G2Picture();
+		picture.setId(itemId);
+
+		for (Entry<String, String> entry : properties.entrySet()) {
+			if (entry.getKey().contains("image")) {
+				// that the number at the end is between 1 and album_count
+				try {
+					if (entry.getKey().contains("image.title")) {
+						picture.setTitle(entry.getValue());
+					} else if (entry.getKey().contains("image.thumbName")) {
+						picture.setThumbName(entry.getValue());
+					} else if (entry.getKey().contains("image.thumb_width")) {
+						picture.setThumbWidth(new Integer(entry.getValue()));
+					} else if (entry.getKey().contains("image.thumb_height")) {
+						picture.setThumbHeight(new Integer(entry.getValue()));
+					} else if (entry.getKey().contains("image.resizedName")) {
+						picture.setResizedName(entry.getValue());
+					} else if (entry.getKey().contains("image.resized_width")) {
+						picture.setResizedWidth(new Integer(entry.getValue()));
+					} else if (entry.getKey().contains("image.resized_height")) {
+						picture.setResizedHeight(new Integer(entry.getValue()));
+					} else if (entry.getKey().contains("image.name")) {
+						picture.setName(entry.getValue());
+					} else if (entry.getKey().contains("image.raw_width")) {
+						picture.setRawWidth(new Integer(entry.getValue()));
+					} else if (entry.getKey().contains("image.raw_height")) {
+						picture.setRawHeight(new Integer(entry.getValue()));
+					} else if (entry.getKey().contains("image.raw_filesize")) {
+						picture.setRawFilesize(new Integer(entry.getValue()));
+					} else if (entry.getKey().contains("image.caption")) {
+						picture.setCaption(entry.getValue());
+					} else if (entry.getKey().contains("image.forceExtension")) {
+						picture.setForceExtension(entry.getValue());
+					} else if (entry.getKey().contains("image.hidden")) {
+						picture.setHidden(Boolean.getBoolean(entry.getValue()));
+					}
+
+				} catch (NumberFormatException nfe) {
+					// System.out.println("problem dealing with imageNumber :"
+					// + imageNumber);
+
+				}
+
+			}
+		}
+		return picture;
+	}
+
+	public Collection<G2Picture> getPicturesFromAlbum(String galleryUrl,
+			int albumName) throws GalleryConnectionException {
+		return extractG2PicturesFromProperties(fetchImages(galleryUrl,
+				albumName));
 	}
 
 }

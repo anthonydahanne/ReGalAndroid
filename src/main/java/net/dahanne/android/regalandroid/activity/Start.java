@@ -21,7 +21,6 @@ import net.dahanne.android.regalandroid.R;
 import net.dahanne.android.regalandroid.tasks.LoginTask;
 import net.dahanne.android.regalandroid.utils.DBHelper;
 import net.dahanne.android.regalandroid.utils.FileUtils;
-import net.dahanne.android.regalandroid.utils.G2ConnectionUtils;
 import net.dahanne.android.regalandroid.utils.ShowUtils;
 
 import org.apache.commons.lang.StringUtils;
@@ -45,9 +44,7 @@ public class Start extends Activity implements OnClickListener {
 	private TextView loggedInAsText;
 	private ProgressDialog progressDialog;
 	private DBHelper dbHelper;
-	private G2ConnectionUtils g2ConnectionUtils = G2ConnectionUtils
-			.getInstance();
-	private FileUtils fileUtils = FileUtils.getInstance();
+	private final FileUtils fileUtils = FileUtils.getInstance();
 
 	@Override
 	protected void onPause() {
@@ -86,8 +83,8 @@ public class Start extends Activity implements OnClickListener {
 	 */
 	@SuppressWarnings("unchecked")
 	private void checkGalleryUrlIsValid() {
+		// GalleryUrl is provided, but is it a valid Gallery2 URL ?
 		if (StringUtils.isNotBlank(Settings.getGalleryUrl(this))) {
-			// GalleryUrl is provided, but is it a valid Gallery2 URL ?
 			progressDialog = ProgressDialog.show(this,
 					getString(R.string.please_wait),
 					getString(R.string.connecting_to_the_gallery), true);
@@ -95,8 +92,10 @@ public class Start extends Activity implements OnClickListener {
 			String username = Settings.getUsername(this);
 			String password = Settings.getPassword(this);
 			String galleryUrl = Settings.getGalleryUrl(this);
-			new LoginTask(this, progressDialog, loggedInAsText, galleryConfiguredTextView, enterGalleryButton).execute(galleryUrl, username, password);
-		}else{
+			new LoginTask(this, progressDialog, loggedInAsText,
+					galleryConfiguredTextView, enterGalleryButton).execute(
+					galleryUrl, username, password);
+		} else {
 			enterGalleryButton.setEnabled(false);
 		}
 	}
@@ -129,10 +128,10 @@ public class Start extends Activity implements OnClickListener {
 			FileUtils.getInstance().clearCache(this);
 			ShowUtils.getInstance().toastCacheSuccessfullyCleared(this);
 			break;
-			
+
 		}
 		return false;
-		
+
 	}
 
 	public void onClick(View v) {
@@ -140,17 +139,14 @@ public class Start extends Activity implements OnClickListener {
 		case R.id.enter_gallery_button:
 			startActivity(new Intent(this, ShowAlbums.class));
 			break;
-//		case R.id.connect_to_gallery_button:
-//			checkGalleryUrlIsValid();
-//			break;
 		}
 	}
 
 	@Override
 	protected void onResume() {
 		super.onResume();
-		//we check if we already have a gallery configured
-			checkGalleryUrlIsValid();
+		// we check if we already have a gallery configured
+		checkGalleryUrlIsValid();
 	}
 
 }

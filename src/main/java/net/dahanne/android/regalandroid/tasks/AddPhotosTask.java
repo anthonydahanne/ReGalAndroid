@@ -21,8 +21,9 @@ import java.io.File;
 import java.util.ArrayList;
 
 import net.dahanne.android.regalandroid.activity.Settings;
-import net.dahanne.android.regalandroid.utils.G2ConnectionUtils;
 import net.dahanne.android.regalandroid.utils.GalleryConnectionException;
+import net.dahanne.android.regalandroid.utils.RemoteGallery;
+import net.dahanne.android.regalandroid.utils.RemoteGalleryConnectionFactory;
 import net.dahanne.android.regalandroid.utils.ShowUtils;
 import net.dahanne.android.regalandroid.utils.UriUtils;
 import android.app.Activity;
@@ -36,9 +37,11 @@ public class AddPhotosTask extends AsyncTask<Object, Integer, Void> {
 	Activity activity;
 	private String galleryUrl;
 	private final ProgressDialog progressDialog;
+	private final RemoteGallery remoteGallery;
 
 	public AddPhotosTask(Activity context, ProgressDialog progressDialog) {
 		super();
+		remoteGallery = RemoteGalleryConnectionFactory.getInstance();
 		activity = context;
 		this.progressDialog = progressDialog;
 	}
@@ -53,7 +56,7 @@ public class AddPhotosTask extends AsyncTask<Object, Integer, Void> {
 
 		try {
 			if (mustLogIn) {
-				G2ConnectionUtils.getInstance().loginToGallery(galleryUrl,
+				remoteGallery.loginToGallery(galleryUrl,
 						Settings.getUsername(activity),
 						Settings.getPassword(activity));
 			}
@@ -62,8 +65,8 @@ public class AddPhotosTask extends AsyncTask<Object, Integer, Void> {
 				File imageFile = UriUtils.getFileFromUri(photoUri, activity);
 				String imageName = UriUtils.getFileNameFromUri(photoUri,
 						activity);
-				G2ConnectionUtils.getInstance().sendImageToGallery(galleryUrl,
-						albumName, imageFile, imageName,
+				remoteGallery.sendImageToGallery(galleryUrl, albumName,
+						imageFile, imageName,
 						Settings.getDefaultSummary(activity),
 						Settings.getDefaultDescription(activity));
 				publishProgress((int) (((photoUris.indexOf(photoUri) + 1) / (float) photoUris

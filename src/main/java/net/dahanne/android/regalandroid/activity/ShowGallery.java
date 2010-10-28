@@ -19,20 +19,21 @@ package net.dahanne.android.regalandroid.activity;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.dahanne.android.regalandroid.G2AndroidApplication;
 import net.dahanne.android.regalandroid.R;
+import net.dahanne.android.regalandroid.RegalAndroidApplication;
 import net.dahanne.android.regalandroid.model.Album;
 import net.dahanne.android.regalandroid.model.G2Picture;
 import net.dahanne.android.regalandroid.tasks.CreateAlbumTask;
 import net.dahanne.android.regalandroid.tasks.ReplaceMainImageTask;
 import net.dahanne.android.regalandroid.utils.FileUtils;
-import net.dahanne.android.regalandroid.utils.G2ConnectionUtils;
-import net.dahanne.android.regalandroid.utils.G2DataUtils;
 import net.dahanne.android.regalandroid.utils.GalleryConnectionException;
+import net.dahanne.android.regalandroid.utils.RemoteGallery;
+import net.dahanne.android.regalandroid.utils.RemoteGalleryConnectionFactory;
 import net.dahanne.android.regalandroid.utils.ShowUtils;
 import net.dahanne.android.regalandroid.utils.modified_android_source.AsyncTask;
 import android.app.Activity;
@@ -74,13 +75,17 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 	private Gallery gallery;
 	private ProgressDialog progressDialog;
 	private boolean mustLogIn;
+	private final RemoteGallery remoteGallery;
+
+	public ShowGallery() {
+		remoteGallery = RemoteGalleryConnectionFactory.getInstance();
+	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	protected void onResume() {
 		super.onResume();
@@ -91,16 +96,19 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 		// we write the title
 		if (getTitle() == null || getTitle().equals("")
 				|| getTitle().equals(getString(R.string.show_gallery_title))) {
-			Album album = G2DataUtils.getInstance().findAlbumFromAlbumName(
-					((G2AndroidApplication) getApplication()).getRootAlbum(),
-					((G2AndroidApplication) getApplication()).getAlbumName());
+			Album album = remoteGallery
+					.findAlbumFromAlbumName(
+							((RegalAndroidApplication) getApplication())
+									.getRootAlbum(),
+							((RegalAndroidApplication) getApplication())
+									.getAlbumName());
 			setTitle(album.getTitle());
 		}
 		progressDialog = ProgressDialog.show(ShowGallery.this,
 				getString(R.string.please_wait),
 				getString(R.string.loading_first_photos_from_album), true);
 		new FetchImagesTask().execute(Settings.getGalleryUrl(this),
-				((G2AndroidApplication) getApplication()).getAlbumName());
+				((RegalAndroidApplication) getApplication()).getAlbumName());
 
 	}
 
@@ -145,7 +153,7 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 
 		public View getView(int position, View convertView, ViewGroup parent) {
 			G2Picture g2Picture = albumPictures.get(position);
-			int albumName = ((G2AndroidApplication) getApplication())
+			int albumName = ((RegalAndroidApplication) getApplication())
 					.getAlbumName();
 			File potentiallyAlreadyDownloadedFile = new File(
 					Settings.getG2AndroidCachePath(ShowGallery.this)
@@ -174,7 +182,7 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 										g2Picture.getForceExtension(),
 										uriString,
 										true,
-										((G2AndroidApplication) getApplication())
+										((RegalAndroidApplication) getApplication())
 												.getAlbumName());
 						downloadImage = BitmapFactory
 								.decodeFile(imageFileOnExternalDirectory
@@ -202,14 +210,15 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 	public void onItemSelected(AdapterView<?> parent, View view, int position,
 			long id) {
 		G2Picture g2Picture = albumPictures.get(position);
-		int albumName = ((G2AndroidApplication) getApplication())
+		int albumName = ((RegalAndroidApplication) getApplication())
 				.getAlbumName();
 		File potentiallyAlreadyDownloadedFile = new File(
 				Settings.getG2AndroidCachePath(this) + albumName + "/",
 				g2Picture.getTitle());
 		mSwitcher.setId(position);
 		// remember the position where we were
-		((G2AndroidApplication) getApplication()).setCurrentPosition(position);
+		((RegalAndroidApplication) getApplication())
+				.setCurrentPosition(position);
 		// only download the picture IF it has not yet been downloaded
 		if (g2Picture.getResizedImagePath() != null
 				&& potentiallyAlreadyDownloadedFile.exists()
@@ -310,7 +319,7 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 
 				new CreateAlbumTask(this, progressDialog).execute(Settings
 						.getGalleryUrl(this),
-						((G2AndroidApplication) getApplication())
+						((RegalAndroidApplication) getApplication())
 								.getAlbumName(), subalbumName, mustLogIn);
 				break;
 
@@ -320,38 +329,44 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 	}
 
 	@SuppressWarnings("unchecked")
-	private class FetchImagesTask extends AsyncTask {
+	private class FetchImagesTask extends
+			AsyncTask<Object, Void, Collection<G2Picture>> {
 
 		private String exceptionMessage;
+		private final RemoteGallery remoteGallery;
+
+		public FetchImagesTask() {
+			remoteGallery = RemoteGalleryConnectionFactory.getInstance();
+		}
 
 		@Override
-		protected HashMap<String, String> doInBackground(Object... parameters) {
+		protected Collection<G2Picture> doInBackground(Object... parameters) {
 			String galleryUrl = (String) parameters[0];
 			int albumName = (Integer) parameters[1];
-			HashMap<String, String> imagesProperties = null;
+			Collection<G2Picture> pictures = null;
 			try {
 				if (mustLogIn) {
-					G2ConnectionUtils.getInstance().loginToGallery(galleryUrl,
+					remoteGallery.loginToGallery(galleryUrl,
 							Settings.getUsername(ShowGallery.this),
 							Settings.getPassword(ShowGallery.this));
 					mustLogIn = false;
 				}
-				imagesProperties = G2ConnectionUtils.getInstance().fetchImages(
-						galleryUrl, albumName);
+				pictures = remoteGallery.getPicturesFromAlbum(galleryUrl,
+						albumName);
 			} catch (GalleryConnectionException e) {
 				exceptionMessage = e.getMessage();
 				Log.d(TAG, "exception mess" + exceptionMessage);
 			}
 
-			return imagesProperties;
+			return pictures;
 
 		}
 
 		@Override
-		protected void onPostExecute(Object imagesProperties) {
+		protected void onPostExecute(Collection<G2Picture> pictures) {
 			progressDialog.dismiss();
 			// }
-			if (imagesProperties == null) {
+			if (pictures == null) {
 				ShowUtils.getInstance().alertConnectionProblem(
 						exceptionMessage,
 						Settings.getGalleryUrl(ShowGallery.this),
@@ -360,9 +375,7 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 				// first check to avoid reloading all the pictures
 				// if (albumPictures.isEmpty()) {
 				albumPictures.clear();
-				albumPictures.addAll(G2DataUtils.getInstance()
-						.extractG2PicturesFromProperties(
-								(HashMap<String, String>) imagesProperties));
+				albumPictures.addAll(pictures);
 				// }
 				if (albumPictures.isEmpty()) {
 					setContentView(R.layout.album_is_empty);
@@ -388,13 +401,13 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 					if (albumPictures.size() == 0) {
 						finish();
 					}
-					if (((G2AndroidApplication) getApplication())
+					if (((RegalAndroidApplication) getApplication())
 							.getCurrentPosition() >= albumPictures.size()) {
-						((G2AndroidApplication) getApplication())
+						((RegalAndroidApplication) getApplication())
 								.setCurrentPosition(0);
 					}
 					// recover current position in current album
-					int currentPosition = ((G2AndroidApplication) getApplication())
+					int currentPosition = ((RegalAndroidApplication) getApplication())
 							.getCurrentPosition();
 					if (currentPosition != 0) {
 						gallery.setSelection(currentPosition);
@@ -424,10 +437,11 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 
 	public void onClick(View v) {
 		Intent intent = new Intent(this, FullImage.class);
-		((G2AndroidApplication) getApplication()).getPictures().clear();
-		((G2AndroidApplication) getApplication()).getPictures().addAll(
+		((RegalAndroidApplication) getApplication()).getPictures().clear();
+		((RegalAndroidApplication) getApplication()).getPictures().addAll(
 				albumPictures);
-		((G2AndroidApplication) getApplication()).setCurrentPosition(v.getId());
+		((RegalAndroidApplication) getApplication()).setCurrentPosition(v
+				.getId());
 		startActivityForResult(intent, REQUEST_CODE_FULL_IMAGE);
 
 	}
@@ -442,15 +456,14 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		// the user tries to get back to the parent album
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
-			Album currentAlbum = G2DataUtils
-					.getInstance()
+			Album currentAlbum = remoteGallery
 					.findAlbumFromAlbumName(
-							((G2AndroidApplication) getApplication())
+							((RegalAndroidApplication) getApplication())
 									.getRootAlbum(),
-							((G2AndroidApplication) getApplication())
+							((RegalAndroidApplication) getApplication())
 									.getAlbumName());
 			if (currentAlbum != null && currentAlbum.getChildren().isEmpty()) {
-				((G2AndroidApplication) getApplication())
+				((RegalAndroidApplication) getApplication())
 						.setAlbumName(currentAlbum.getParentName());
 			}
 			this.finish();

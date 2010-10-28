@@ -45,11 +45,18 @@
 			<plugin>
 				<groupId>com.jayway.maven.plugins.android.generation2</groupId>
 				<artifactId>maven-android-plugin</artifactId>
+				<version>2.6.0</version>
 				<configuration>
 					<sdk>
 						<platform>3</platform>
 					</sdk>
+					<emulator>
+						<avd>android2.2</avd>
+					</emulator>
+					<deleteConflictingFiles>true</deleteConflictingFiles>
+					<undeployBeforeDeploy>true</undeployBeforeDeploy>
 				</configuration>
+				<extensions>true</extensions>
 				<executions>
 					<execution>
 						<id>startemulator</id>
@@ -58,25 +65,8 @@
 							<goal>emulator-start</goal>
 						</goals>
 					</execution>
+					
 				</executions>
-			</plugin>
-			<plugin>
-				<groupId>com.jayway.maven.plugins.android.generation2</groupId>
-				<artifactId>maven-android-plugin</artifactId>
-				<!-- change to explicit version for standalone project or remove if version 
-					inherited from company pom -->
-				<version>2.6.0</version>
-				<configuration>
-					<sdk>
-						<platform>3</platform>
-					</sdk>
-					<emulator>
-						<avd>22</avd>
-					</emulator>
-					<deleteConflictingFiles>true</deleteConflictingFiles>
-					<undeployBeforeDeploy>true</undeployBeforeDeploy>
-				</configuration>
-				<extensions>true</extensions>
 			</plugin>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>

@@ -19,7 +19,7 @@ package net.dahanne.android.regalandroid.tasks;
 
 import java.io.File;
 
-import net.dahanne.android.regalandroid.G2AndroidApplication;
+import net.dahanne.android.regalandroid.RegalAndroidApplication;
 import net.dahanne.android.regalandroid.model.G2Picture;
 import net.dahanne.android.regalandroid.utils.FileHandlingException;
 import net.dahanne.android.regalandroid.utils.FileUtils;
@@ -71,7 +71,7 @@ public class ReplaceMainImageTask extends AsyncTask {
 								g2Picture.getForceExtension(),
 								fileUrl,
 								true,
-								((G2AndroidApplication) activity
+								((RegalAndroidApplication) activity
 										.getApplication()).getAlbumName());
 				downloadImage = BitmapFactory
 						.decodeFile(imageFileOnExternalDirectory.getPath());

@@ -2,8 +2,10 @@ package net.dahanne.android.regalandroid.tasks;
 
 import net.dahanne.android.regalandroid.R;
 import net.dahanne.android.regalandroid.activity.UploadPhoto;
-import net.dahanne.android.regalandroid.utils.G2ConnectionUtils;
-import net.dahanne.android.regalandroid.utils.GalleryConnectionException;
+import net.dahanne.android.regalandroid.utils.ImpossibleToLoginException;
+import net.dahanne.android.regalandroid.utils.RemoteGallery;
+import net.dahanne.android.regalandroid.utils.RemoteGalleryConnectionFactory;
+import net.dahanne.android.regalandroid.utils.UriUtils;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -15,26 +17,26 @@ import android.os.AsyncTask;
 import android.widget.Button;
 import android.widget.TextView;
 
-@SuppressWarnings("rawtypes")
-public class LoginTask extends AsyncTask {
+public class LoginTask extends AsyncTask<Object, Object, String> {
 
 	private static final String NOTLOGGEDIN = "NOTLOGGEDIN";
 	private static final String GUEST = "guest";
 	private String user;
 	private boolean galleryUrlIsValid = false;;
-	private String exceptionMessage = null;
-	private Activity activity;
-	private ProgressDialog progressDialog;
+	private final Activity activity;
+	private final ProgressDialog progressDialog;
 	private String galleryUrl;
-	private TextView loggedInAsText;
-	private TextView galleryConfiguredTextView;
-	private Button enterGalleryButton;
+	private final TextView loggedInAsText;
+	private final TextView galleryConfiguredTextView;
+	private final Button enterGalleryButton;
+	private final RemoteGallery remoteGallery;
 
 	public LoginTask(Activity context, ProgressDialog progressDialog,
 			TextView loggedInAsText, TextView galleryConfiguredTextView,
 			Button enterGalleryButton) {
 		super();
-		this.activity = context;
+		remoteGallery = RemoteGalleryConnectionFactory.getInstance();
+		activity = context;
 		this.progressDialog = progressDialog;
 		this.loggedInAsText = loggedInAsText;
 		this.galleryConfiguredTextView = galleryConfiguredTextView;
@@ -43,44 +45,40 @@ public class LoginTask extends AsyncTask {
 
 	@Override
 	protected String doInBackground(Object... parameters) {
-		String authToken = null;
+		String exceptionMessage = null;
 		try {
 			galleryUrl = (String) parameters[0];
 			user = (String) parameters[1];
 			String password = (String) parameters[2];
-			galleryUrlIsValid = G2ConnectionUtils.getInstance()
-					.checkGalleryUrlIsValid(galleryUrl);
+			galleryUrlIsValid = UriUtils.checkUrlIsValid(galleryUrl);
 			if (StringUtils.isNotBlank(user)) {
 				// the first thing is to login, if an username and password
 				// are supplied !
 				// This is done once and for all as the session cookie will
 				// be stored !
-				authToken = G2ConnectionUtils.getInstance().loginToGallery(
-						galleryUrl, user, password);
+				remoteGallery.loginToGallery(galleryUrl, user, password);
 			}
-			// if no username is provided or if the username did not match
-			// any access
-			if (authToken == null) {
-				authToken = NOTLOGGEDIN;
-			}
-		} catch (GalleryConnectionException e) {
+		} catch (ImpossibleToLoginException e) {
 			// the connection went wrong, the authToken is then null
-			authToken = null;
 			galleryUrlIsValid = false;
 			exceptionMessage = e.getMessage();
 		}
-		return authToken;
+		return exceptionMessage;
 	}
 
 	@Override
-	protected void onPostExecute(Object authToken) {
+	protected void onPostExecute(String exceptionMessage) {
 		if (galleryUrlIsValid) {
-
 			if (loggedInAsText != null) {
-				if (authToken.equals(NOTLOGGEDIN)) {
+				if (exceptionMessage != null) {
 					// we 're not logged in
 					loggedInAsText.setText(activity
 							.getString(R.string.loggedin_as) + " " + GUEST);
+					String message = activity.getString(R.string.not_connected)
+							+ galleryUrl
+							+ activity.getString(R.string.exception_thrown)
+							+ exceptionMessage;
+					showAlert(message);
 				} else {
 					// we are logged in
 					loggedInAsText.setText(activity
@@ -103,7 +101,6 @@ public class LoginTask extends AsyncTask {
 				loggedInAsText.setText(activity
 						.getString(R.string.not_logged_in));
 			}
-			AlertDialog.Builder builder = new AlertDialog.Builder(activity);
 			String message;
 			// if there was an exception thrown, show it, or say to verify
 			// settings
@@ -118,20 +115,24 @@ public class LoginTask extends AsyncTask {
 						+ galleryUrl
 						+ activity.getString(R.string.verify_your_settings);
 			}
-			builder.setTitle(R.string.problem)
-					.setMessage(message)
-					.setPositiveButton(R.string.ok,
-							new DialogInterface.OnClickListener() {
-								public void onClick(DialogInterface dialog,
-										int id) {
-									dialog.cancel();
-								}
-							});
-			AlertDialog alert = builder.create();
-			alert.show();
+			showAlert(message);
 
 		}
 		progressDialog.dismiss();
 
+	}
+
+	private void showAlert(String message) {
+		AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+		builder.setTitle(R.string.problem)
+				.setMessage(message)
+				.setPositiveButton(R.string.ok,
+						new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int id) {
+								dialog.cancel();
+							}
+						});
+		AlertDialog alert = builder.create();
+		alert.show();
 	}
 }

@@ -20,15 +20,16 @@ package net.dahanne.android.regalandroid.activity;
 import java.util.Collections;
 import java.util.List;
 
-import net.dahanne.android.regalandroid.G2AndroidApplication;
 import net.dahanne.android.regalandroid.R;
+import net.dahanne.android.regalandroid.RegalAndroidApplication;
 import net.dahanne.android.regalandroid.adapters.AlbumAdapter;
 import net.dahanne.android.regalandroid.model.Album;
 import net.dahanne.android.regalandroid.tasks.CreateAlbumTask;
 import net.dahanne.android.regalandroid.tasks.FetchAlbumTask;
 import net.dahanne.android.regalandroid.tasks.LoginTask;
 import net.dahanne.android.regalandroid.utils.AlbumComparator;
-import net.dahanne.android.regalandroid.utils.G2DataUtils;
+import net.dahanne.android.regalandroid.utils.RemoteGallery;
+import net.dahanne.android.regalandroid.utils.RemoteGalleryConnectionFactory;
 import net.dahanne.android.regalandroid.utils.ShowUtils;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
@@ -54,11 +55,13 @@ public class ShowAlbums extends ListActivity implements OnItemClickListener {
 	private static final String TAG = "ShowAlbums";
 	private ProgressDialog progressDialog;
 	private boolean mustLogIn;
+	private final RemoteGallery remoteGallery;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
+
 		setContentView(R.layout.show_albums);
 
 		// getListView().setTextFilterEnabled(true);
@@ -66,18 +69,18 @@ public class ShowAlbums extends ListActivity implements OnItemClickListener {
 
 	}
 
+	public ShowAlbums() {
+		remoteGallery = RemoteGalleryConnectionFactory.getInstance();
+	}
+
 	public void onItemClick(AdapterView<?> arg0, View arg1, int albumPosition,
 			long arg3) {
 		Intent intent;
-		Album newSelectedAlbum = G2DataUtils
-				.getInstance()
-				.findAlbumFromAlbumName(
-						((G2AndroidApplication) getApplication())
-								.getRootAlbum(),
-						((Album) getListAdapter().getItem(albumPosition))
-								.getName());
+		Album newSelectedAlbum = remoteGallery.findAlbumFromAlbumName(
+				((RegalAndroidApplication) getApplication()).getRootAlbum(),
+				((Album) getListAdapter().getItem(albumPosition)).getName());
 		if (newSelectedAlbum != null
-				&& (newSelectedAlbum.getName() == ((G2AndroidApplication) getApplication())
+				&& (newSelectedAlbum.getName() == ((RegalAndroidApplication) getApplication())
 						.getAlbumName() || newSelectedAlbum.getChildren()
 						.size() == 0)) {
 			// the user wants to see the pictures
@@ -85,8 +88,8 @@ public class ShowAlbums extends ListActivity implements OnItemClickListener {
 		} else {
 			intent = new Intent(this, ShowAlbums.class);
 		}
-		((G2AndroidApplication) getApplication()).setAlbumName(newSelectedAlbum
-				.getName());
+		((RegalAndroidApplication) getApplication())
+				.setAlbumName(newSelectedAlbum.getName());
 		startActivity(intent);
 
 	}
@@ -134,7 +137,7 @@ public class ShowAlbums extends ListActivity implements OnItemClickListener {
 			Intent intent) {
 		super.onActivityResult(requestCode, resultCode, intent);
 		mustLogIn = ShowUtils.getInstance().recoverContextFromDatabase(this);
-		if (((G2AndroidApplication) getApplication()).getRootAlbum() == null) {
+		if (((RegalAndroidApplication) getApplication()).getRootAlbum() == null) {
 			// rootAlbum is null ? the app died
 			// we recover the context from the database
 			if (mustLogIn) {
@@ -162,7 +165,7 @@ public class ShowAlbums extends ListActivity implements OnItemClickListener {
 
 				new CreateAlbumTask(this, progressDialog).execute(Settings
 						.getGalleryUrl(this),
-						((G2AndroidApplication) getApplication())
+						((RegalAndroidApplication) getApplication())
 								.getAlbumName(), subalbumName, mustLogIn);
 				break;
 			}
@@ -175,33 +178,32 @@ public class ShowAlbums extends ListActivity implements OnItemClickListener {
 	protected void onResume() {
 		super.onResume();
 		Log.i(TAG, "resuming");
-		if (((G2AndroidApplication) getApplication()).getRootAlbum() != null) {
+		if (((RegalAndroidApplication) getApplication()).getRootAlbum() != null) {
 
 			Log.i(TAG, "rootalbum "
-					+ ((G2AndroidApplication) getApplication()).getRootAlbum()
-							.toString());
+					+ ((RegalAndroidApplication) getApplication())
+							.getRootAlbum().toString());
 		}
 		Log.i(TAG,
 				"albumname "
-						+ ((G2AndroidApplication) getApplication())
+						+ ((RegalAndroidApplication) getApplication())
 								.getAlbumName());
 		// we're back in this activity to select a sub album or to see the
 		// pictures
 
-		if (((G2AndroidApplication) getApplication()).getRootAlbum() == null) {
+		if (((RegalAndroidApplication) getApplication()).getRootAlbum() == null) {
 			Log.i(TAG, "rootAlbum is null");
 			// we recover the context from the database
 			mustLogIn = ShowUtils.getInstance()
 					.recoverContextFromDatabase(this);
 		}
-		if (((G2AndroidApplication) getApplication()).getAlbumName() != 0) {
+		if (((RegalAndroidApplication) getApplication()).getAlbumName() != 0) {
 			// we recover the selected album
-			Album selectedAlbum = G2DataUtils
-					.getInstance()
+			Album selectedAlbum = remoteGallery
 					.findAlbumFromAlbumName(
-							((G2AndroidApplication) getApplication())
+							((RegalAndroidApplication) getApplication())
 									.getRootAlbum(),
-							((G2AndroidApplication) getApplication())
+							((RegalAndroidApplication) getApplication())
 									.getAlbumName());
 
 			if (selectedAlbum != null) {
@@ -236,7 +238,7 @@ public class ShowAlbums extends ListActivity implements OnItemClickListener {
 
 		// we have to clear the currentPosition in album as the user is going to
 		// choose another album
-		((G2AndroidApplication) getApplication()).setCurrentPosition(0);
+		((RegalAndroidApplication) getApplication()).setCurrentPosition(0);
 
 	}
 
@@ -245,15 +247,15 @@ public class ShowAlbums extends ListActivity implements OnItemClickListener {
 		super.onPause();
 		Log.i(TAG, "pausing");
 		ShowUtils.getInstance().saveContextToDatabase(this);
-		if (((G2AndroidApplication) getApplication()).getRootAlbum() != null) {
+		if (((RegalAndroidApplication) getApplication()).getRootAlbum() != null) {
 
 			Log.i(TAG, "rootalbum "
-					+ ((G2AndroidApplication) getApplication()).getRootAlbum()
-							.toString());
+					+ ((RegalAndroidApplication) getApplication())
+							.getRootAlbum().toString());
 		}
 		Log.i(TAG,
 				"albumname "
-						+ ((G2AndroidApplication) getApplication())
+						+ ((RegalAndroidApplication) getApplication())
 								.getAlbumName());
 
 	}
@@ -262,16 +264,15 @@ public class ShowAlbums extends ListActivity implements OnItemClickListener {
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		// the user tries to get back to the parent album
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
-			Album currentAlbum = G2DataUtils
-					.getInstance()
+			Album currentAlbum = remoteGallery
 					.findAlbumFromAlbumName(
-							((G2AndroidApplication) getApplication())
+							((RegalAndroidApplication) getApplication())
 									.getRootAlbum(),
-							((G2AndroidApplication) getApplication())
+							((RegalAndroidApplication) getApplication())
 									.getAlbumName());
 			// TODO check if it makes sense when the currentAlbum is null
 			if (currentAlbum != null) {
-				((G2AndroidApplication) getApplication())
+				((RegalAndroidApplication) getApplication())
 						.setAlbumName(currentAlbum.getParentName());
 			}
 			this.finish();

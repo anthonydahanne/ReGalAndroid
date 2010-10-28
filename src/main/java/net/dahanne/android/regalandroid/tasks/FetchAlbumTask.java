@@ -20,13 +20,14 @@ package net.dahanne.android.regalandroid.tasks;
 import java.util.Collections;
 import java.util.List;
 
-import net.dahanne.android.regalandroid.G2AndroidApplication;
 import net.dahanne.android.regalandroid.R;
+import net.dahanne.android.regalandroid.RegalAndroidApplication;
 import net.dahanne.android.regalandroid.adapters.AlbumAdapter;
 import net.dahanne.android.regalandroid.model.Album;
 import net.dahanne.android.regalandroid.utils.AlbumComparator;
-import net.dahanne.android.regalandroid.utils.G2DataUtils;
 import net.dahanne.android.regalandroid.utils.GalleryConnectionException;
+import net.dahanne.android.regalandroid.utils.RemoteGallery;
+import net.dahanne.android.regalandroid.utils.RemoteGalleryConnectionFactory;
 import net.dahanne.android.regalandroid.utils.ShowUtils;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
@@ -37,15 +38,16 @@ import android.widget.ArrayAdapter;
  * @author Anthony Dahanne
  * 
  */
-@SuppressWarnings("unchecked")
 public class FetchAlbumTask extends AsyncTask {
 	String exceptionMessage = null;
 	ListActivity activity;
 	private String galleryUrl;
 	private final ProgressDialog progressDialog;
+	private final RemoteGallery remoteGallery;
 
 	public FetchAlbumTask(ListActivity context, ProgressDialog progressDialog) {
 		super();
+		remoteGallery = RemoteGalleryConnectionFactory.getInstance();
 		activity = context;
 		this.progressDialog = progressDialog;
 	}
@@ -55,7 +57,7 @@ public class FetchAlbumTask extends AsyncTask {
 		galleryUrl = (String) parameters[0];
 		Album freshRootAlbum;
 		try {
-			freshRootAlbum = G2DataUtils.getInstance()
+			freshRootAlbum = remoteGallery
 					.retrieveRootAlbumAndItsHierarchy(galleryUrl);
 		} catch (GalleryConnectionException e) {
 			freshRootAlbum = null;
@@ -68,7 +70,7 @@ public class FetchAlbumTask extends AsyncTask {
 	protected void onPostExecute(Object rootAlbum) {
 
 		if (rootAlbum != null) {
-			((G2AndroidApplication) activity.getApplication())
+			((RegalAndroidApplication) activity.getApplication())
 					.setRootAlbum((Album) rootAlbum);
 			activity.setTitle(((Album) rootAlbum).getTitle());
 			List<Album> albumChildren = ((Album) rootAlbum).getChildren();
