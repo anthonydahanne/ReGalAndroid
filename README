@@ -1,0 +1,17 @@
+-------------
+ReGalAndroid
+-------------
+Formerly named g2android, ReGalAndroid is a Menalto Gallery 2 client; but aimed to be also compatible with G3, Piwigo galleries, etc...
+
+-----------------------
+How to compile/install
+----------------------
+Create a new working directory (it will become your workspace)
+>mkdir workspace && cd workspace
+Checkout the whole project using :
+>git clone git@github.com:anthonydahanne/ReGalAndroid.git ./
+Go to the parent project
+>cd regalandroid-parent
+Compile everything
+>mvn clean install
+The APK should be in regalandroid/target; you can send it to your phone.
