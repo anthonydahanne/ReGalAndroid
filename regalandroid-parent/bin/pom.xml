@@ -1,0 +1,64 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>net.dahanne.android</groupId>
+	<artifactId>regalandroid-parent</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
+	<packaging>pom</packaging>
+	<name>ReGalAndroid parent project</name>
+	<!-- dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>com.google.android</groupId>
+				<artifactId>android</artifactId>
+				<version>1.5_r4</version>
+			</dependency>
+			<dependency>
+				<groupId>com.google.android</groupId>
+				<artifactId>android-test</artifactId>
+				<version>1.5_r4</version>
+			</dependency>
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>4.4</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement-->
+	<build>
+		<!-- pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>com.jayway.maven.plugins.android.generation2</groupId>
+					<artifactId>maven-android-plugin</artifactId>
+					< change to explicit version for standalone project or remove if 
+						version inherited from company pom >
+					<version>2.6.0</version>
+					<configuration>
+						<sdk>
+							<platform>3</platform>
+						</sdk>
+						<emulator>
+							<avd>22</avd>
+						</emulator>
+						<deleteConflictingFiles>true</deleteConflictingFiles>
+						<undeployBeforeDeploy>true</undeployBeforeDeploy>
+					</configuration>
+					<extensions>true</extensions>
+				</plugin>
+				<plugin>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>2.3</version>
+				</plugin>
+			</plugins>
+
+		</pluginManagement-->
+
+	</build>
+	<modules>
+		<module>../regalandroid</module>
+		<module>../commons-galleryd</module>
+		<module>../g2-java-client</module>
+	</modules>
+
+</project>
