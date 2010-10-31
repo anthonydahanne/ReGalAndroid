@@ -32,7 +32,7 @@ import net.dahanne.android.regalandroid.tasks.AddPhotosTask;
 import net.dahanne.android.regalandroid.tasks.FetchAlbumForUploadTask;
 import net.dahanne.android.regalandroid.tasks.LoginTask;
 import net.dahanne.android.regalandroid.utils.ShowUtils;
-import net.dahanne.android.regalandroid.utils.UriUtils;
+import net.dahanne.android.regalandroid.utils.AndroidUriUtils;
 import net.dahanne.gallery.commons.model.Album;
 import net.dahanne.gallery.commons.remote.RemoteGallery;
 import android.app.Activity;
@@ -139,7 +139,7 @@ public class UploadPhoto extends Activity implements OnClickListener {
 				}
 			}
 			if (fileName.equals(SENT_WITH_G2_ANDROID)) {
-				fileName = UriUtils.extractFilenameFromUri(mImageUri, this);
+				fileName = AndroidUriUtils.extractFilenameFromUri(mImageUri, this);
 			}
 			filenameEditText.setText(fileName);
 		}

@@ -1,9 +1,7 @@
-package net.dahanne.android.g2android.utils;
+package net.dahanne.gallery.commons.utils;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-
-import net.dahanne.android.regalandroid.utils.UriUtils;
 
 import org.junit.Test;
 
@@ -31,11 +29,4 @@ public class UriUtilsTest {
 		url = "toto";
 		assertFalse(UriUtils.checkUrlIsValid(url));
 	}
-
-	// @Test
-	// public void extractFilenameFromUri__file() {
-	// Uri uri = Uri.parse("file:///sdcard/g2android/truc.jpg");
-	// assertEquals("truc.jpg", UriUtils.extractFilenameFromUri(uri, null));
-	//
-	// }
 }

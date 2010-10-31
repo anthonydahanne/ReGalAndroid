@@ -1,8 +1,7 @@
 package net.dahanne.android.regalandroid.api;
 
 import net.dahanne.android.regalandroid.R;
-import net.dahanne.android.regalandroid.utils.UriUtils;
-
+import net.dahanne.gallery.commons.utils.UriUtils;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;

@@ -14,35 +14,33 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
 
-public class UriUtils {
+public class AndroidUriUtils {
 
-	public final static String URL_PATTERN = "^(http|https):\\/\\/(?:\\P{M}\\p{M}*)+([\\-\\.]{1}(?:\\P{M}\\p{M}*)+)*\\.[a-z]{2,5}(:[0-9]{1,5})?(\\/.*)?$";
-	public final static String IP_ADDRESS_PATTERN = "^(http|https):\\/\\/\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}(:[0-9]{1,5})?(\\/.*)?$";
 
-	public static File createFileFromUri(InputStream openInputStream,
-			String mimeType) throws FileNotFoundException, IOException {
-
-		String fileExtension = null;
-		if (mimeType.equals("image/jpeg")) {
-			fileExtension = ".jpg";
-		} else if (mimeType.equals("image/png")) {
-			fileExtension = ".png";
-		} else if (mimeType.equals("image/gif")) {
-			fileExtension = ".gif";
-		} else {
-			fileExtension = ".image";
-		}
-		File imageFile = File.createTempFile("G2AndroidPhoto", fileExtension);
-		OutputStream out = new FileOutputStream(imageFile);
-		byte buf[] = new byte[1024];
-		int len;
-		while ((len = openInputStream.read(buf)) > 0) {
-			out.write(buf, 0, len);
-		}
-		out.close();
-		openInputStream.close();
-		return imageFile;
-	}
+//	public static File createFileFromUri(InputStream openInputStream,
+//			String mimeType) throws FileNotFoundException, IOException {
+//
+//		String fileExtension = null;
+//		if (mimeType.equals("image/jpeg")) {
+//			fileExtension = ".jpg";
+//		} else if (mimeType.equals("image/png")) {
+//			fileExtension = ".png";
+//		} else if (mimeType.equals("image/gif")) {
+//			fileExtension = ".gif";
+//		} else {
+//			fileExtension = ".image";
+//		}
+//		File imageFile = File.createTempFile("G2AndroidPhoto", fileExtension);
+//		OutputStream out = new FileOutputStream(imageFile);
+//		byte buf[] = new byte[1024];
+//		int len;
+//		while ((len = openInputStream.read(buf)) > 0) {
+//			out.write(buf, 0, len);
+//		}
+//		out.close();
+//		openInputStream.close();
+//		return imageFile;
+//	}
 
 	public static File getFileFromUri(Uri uri, Activity activity) {
 		String filePath = null;
@@ -75,17 +73,6 @@ public class UriUtils {
 
 	}
 
-	public static boolean checkUrlIsValid(String url) {
-		Pattern p = Pattern.compile(URL_PATTERN);
-		Matcher m = p.matcher(url);
-		if (!m.matches()) {
-			// not an url ? maybe an ip address
-			p = Pattern.compile(IP_ADDRESS_PATTERN);
-			m = p.matcher(url);
-			return m.matches();
-		}
-		return true;
-	}
 
 	public static String extractFilenameFromUri(Uri uri, Activity activity) {
 

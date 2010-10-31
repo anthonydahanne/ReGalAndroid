@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import net.dahanne.android.regalandroid.activity.Settings;
 import net.dahanne.android.regalandroid.remote.RemoteGalleryConnectionFactory;
 import net.dahanne.android.regalandroid.utils.ShowUtils;
-import net.dahanne.android.regalandroid.utils.UriUtils;
+import net.dahanne.android.regalandroid.utils.AndroidUriUtils;
 import net.dahanne.gallery.commons.remote.GalleryConnectionException;
 import net.dahanne.gallery.commons.remote.RemoteGallery;
 import android.app.Activity;
@@ -62,8 +62,8 @@ public class AddPhotosTask extends AsyncTask<Object, Integer, Void> {
 			}
 
 			for (Uri photoUri : photoUris) {
-				File imageFile = UriUtils.getFileFromUri(photoUri, activity);
-				String imageName = UriUtils.getFileNameFromUri(photoUri,
+				File imageFile = AndroidUriUtils.getFileFromUri(photoUri, activity);
+				String imageName = AndroidUriUtils.getFileNameFromUri(photoUri,
 						activity);
 				remoteGallery.sendImageToGallery(galleryUrl, albumName,
 						imageFile, imageName,

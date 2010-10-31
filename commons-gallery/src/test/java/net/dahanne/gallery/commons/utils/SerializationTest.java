@@ -15,13 +15,13 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-package net.dahanne.android.g2android.utils;
 
-import junit.framework.Assert;
-import net.dahanne.android.regalandroid.model.Album;
-import net.dahanne.android.regalandroid.utils.Serialization;
+package net.dahanne.gallery.commons.utils;
 
+import org.junit.Assert;
 import org.junit.Test;
+
+import net.dahanne.gallery.commons.model.Album;
 
 /**
  * @author Anthony Dahanne
@@ -37,9 +37,8 @@ public class SerializationTest {
 				new Album(2, 4343, "a sub album", "nothing more here !", 43,
 						true, true, true, true, "Some fields!"));
 
-		Serialization serialization = new Serialization();
-		byte[] serialize = serialization.serialize(myAlbum);
-		Album unserializedAlbum = serialization.unSerialize(serialize);
+		byte[] serialize = Serialization.serialize(myAlbum);
+		Album unserializedAlbum = Serialization.unSerialize(serialize);
 		Assert.assertEquals(myAlbum, unserializedAlbum);
 
 	}

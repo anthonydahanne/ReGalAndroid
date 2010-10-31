@@ -3,9 +3,10 @@ package net.dahanne.android.regalandroid.tasks;
 import net.dahanne.android.regalandroid.R;
 import net.dahanne.android.regalandroid.activity.UploadPhoto;
 import net.dahanne.android.regalandroid.remote.RemoteGalleryConnectionFactory;
-import net.dahanne.android.regalandroid.utils.UriUtils;
+import net.dahanne.android.regalandroid.utils.AndroidUriUtils;
 import net.dahanne.gallery.commons.remote.ImpossibleToLoginException;
 import net.dahanne.gallery.commons.remote.RemoteGallery;
+import net.dahanne.gallery.commons.utils.UriUtils;
 
 import org.apache.commons.lang.StringUtils;
 
