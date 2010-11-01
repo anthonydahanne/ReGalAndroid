@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+	<string-array name="gallery_types">
+		<item>Gallery2 (full support)</item>
+		<item>Gallery3 (limited support)</item>
+		<item>Piwigo (not yet supported)</item>
+	</string-array>
+
+	<!-- could be integer-array; yeah but there is a bug in android, #2096 that 
+		prevents to use it in a ListPreference... -->
+	<string-array name="gallery_types_values">
+		<item>0</item>
+		<item>1</item>
+		<item>2</item>
+	</string-array>
+
+</resources>

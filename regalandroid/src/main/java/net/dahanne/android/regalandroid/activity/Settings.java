@@ -44,6 +44,8 @@ public class Settings extends PreferenceActivity {
 	private static String OPT_G2ANDROID_CACHE_PATH_DEF = "tmp";
 	private static String OPT_DEFAULT_SUMMARY_KEY = "DefaultSummary";
 	private static String OPT_DEFAULT_DESCRIPTION_KEY = "DefaultDescription";
+	private static String OPT_GALLERY_CONNECTION_TYPE = "GalleryType";
+	private static String OPT_GALLERY_CONNECTION_TYPE_DEF = "0";
 
 	private static final String OPT_BASE_URL_DEF = "main.php?g2_view=core.DownloadItem&g2_itemId=";
 	private static final String EMBEDDED_GALLERY_OPT_BASE_URL_DEF = "&g2_view=core.DownloadItem&g2_itemId=";
@@ -124,6 +126,16 @@ public class Settings extends PreferenceActivity {
 	public static String getDefaultDescription(Context context) {
 		return PreferenceManager.getDefaultSharedPreferences(context)
 				.getString(OPT_DEFAULT_DESCRIPTION_KEY, "");
+	}
+
+	/**
+	 * Get the gallery connection type, it is used by the
+	 * RemoteGalleryConnectionFactory class to know what type of gallery the
+	 * user is trying to connect to
+	 */
+	public static String getGalleryConnectionType(Context context) {
+		return PreferenceManager.getDefaultSharedPreferences(context).getString(
+				OPT_GALLERY_CONNECTION_TYPE, OPT_GALLERY_CONNECTION_TYPE_DEF);
 	}
 
 }

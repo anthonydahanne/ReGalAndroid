@@ -17,6 +17,8 @@
  */
 package net.dahanne.android.regalandroid.remote;
 
+import android.content.Context;
+import net.dahanne.android.regalandroid.activity.Settings;
 import net.dahanne.gallery.commons.remote.RemoteGallery;
 import net.dahanne.gallery.g2.java.client.G2ConnectionUtils;
 
@@ -27,7 +29,11 @@ import net.dahanne.gallery.g2.java.client.G2ConnectionUtils;
  */
 public class RemoteGalleryConnectionFactory {
 
+	private static final int GALLERY2 = 0;
+	private static final int GALLERY3 = 1;
+	private static final int PIWIGO = 2;
 	private static RemoteGallery remoteGallery;
+	private static Context context;
 
 	private RemoteGalleryConnectionFactory() {
 
@@ -35,12 +41,38 @@ public class RemoteGalleryConnectionFactory {
 
 	public static RemoteGallery getInstance() {
 		if (remoteGallery == null) {
-			remoteGallery = new G2ConnectionUtils();
+			String connectionType = Settings.getGalleryConnectionType(context);
+			//if we have "" then let's assume we can go to defaults
+			int galleryConnectionType = Settings
+					.getGalleryConnectionType(context) .equals("") ? 0 : Integer.valueOf(connectionType);
+			switch (galleryConnectionType) {
+			case GALLERY2:
+				remoteGallery = new G2ConnectionUtils();
+				break;
+//			case GALLERY3:
+//				remoteGallery = new G2ConnectionUtils();
+//				break;
+//			case PIWIGO:
+//				remoteGallery = new G2ConnectionUtils();
+//				break;
+
+			}
 		}
 		return remoteGallery;
 	}
 
 	public RemoteGallery getRemoteGallery() {
 		return remoteGallery;
+	}
+
+	public static void setContext(Context context) {
+		RemoteGalleryConnectionFactory.context = context;
+	}
+	
+	/**
+	 * iif the user changes the gallery type, we reset it
+	 */
+	public static void resetInstance(){
+		remoteGallery = null;
 	}
 }

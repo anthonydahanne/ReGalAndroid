@@ -36,8 +36,11 @@ public class LoginTask extends AsyncTask<Object, Object, String> {
 			TextView loggedInAsText, TextView galleryConfiguredTextView,
 			Button enterGalleryButton) {
 		super();
+		//to make sure we use the right gallery connection type
+//		RemoteGalleryConnectionFactory.resetInstance();
+//		RemoteGalleryConnectionFactory.setContext(context);
 		remoteGallery = RemoteGalleryConnectionFactory.getInstance();
-		activity = context;
+		this.activity = context;
 		this.progressDialog = progressDialog;
 		this.loggedInAsText = loggedInAsText;
 		this.galleryConfiguredTextView = galleryConfiguredTextView;

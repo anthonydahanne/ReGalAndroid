@@ -10,6 +10,7 @@
 		<string name="g2android_temp_path_key">g2android_cache_path</string>
 		<string name="default_summary_key">DefaultSummary</string>
 		<string name="default_description_key">DefaultDescription</string>
+		<string name="gallery_connection_type_key">GalleryType</string>
 		<!-- end of Keys -->
 		
 		<!--Default values , NOT TO TRANSLATE !-->
@@ -158,6 +159,10 @@
 		<string name="no_summary_available">No summary available</string>
 		<string name="advanced_control_title">Advanced controls</string>
 
+		<!-- new strings since ReGalAndroid 1.0 -->
+		<string name="gallery_connection_type_title">Gallery type</string>
+		<string name="gallery_connection_type_summary">You can specify the type of your remote gallery : G2, G3, Piwigo, etc...</string>
+		
 		
 		
 </resources>

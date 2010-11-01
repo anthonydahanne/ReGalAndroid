@@ -3,6 +3,7 @@ package net.dahanne.android.regalandroid;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.dahanne.android.regalandroid.remote.RemoteGalleryConnectionFactory;
 import net.dahanne.gallery.commons.model.Album;
 import net.dahanne.gallery.commons.model.G2Picture;
 import android.app.Application;
@@ -12,6 +13,15 @@ public class RegalAndroidApplication extends Application {
 	private Album rootAlbum;
 	private int currentPosition;
 	private int albumName;
+	
+	
+	
+	
+	public RegalAndroidApplication() {
+		super();
+		RemoteGalleryConnectionFactory.setContext(this);
+		
+	}
 
 	public void setRootAlbum(Album rootAlbum) {
 		this.rootAlbum = rootAlbum;
