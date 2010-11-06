@@ -117,6 +117,7 @@ public class G2ConnectionUtils implements RemoteGallery {
 	private final List<Cookie> sessionCookies = new ArrayList<Cookie>();
 
 	private final DefaultHttpClient defaultHttpClient;
+	private Album rootAlbum;
 
 	public G2ConnectionUtils() {
 		sessionCookies.add(new BasicClientCookie("", ""));
@@ -575,6 +576,27 @@ public class G2ConnectionUtils implements RemoteGallery {
 		return null;
 	}
 
+	public List<Album> findSubAlbums(Album rootAlbum, int i) {
+		List<Album> subAlbums = new ArrayList<Album>();
+		if (rootAlbum == null) {
+			return subAlbums;
+		}
+		if (rootAlbum.getName() == i) {
+			return rootAlbum.getChildren();
+		}
+		for (Album album : rootAlbum.getChildren()) {
+			if (album.getName() == i) {
+				return album.getChildren();
+			}
+			Album fromAlbumName = findAlbumFromAlbumName(album, i);
+			if (fromAlbumName != null) {
+				return fromAlbumName.getChildren();
+			}
+
+		}
+		return null;
+	}
+
 	public Album retrieveRootAlbumAndItsHierarchy(String galleryUrl)
 			throws GalleryConnectionException {
 		Map<Integer, Album> nonSortedAlbums = getAllAlbums(galleryUrl);
@@ -751,6 +773,17 @@ public class G2ConnectionUtils implements RemoteGallery {
 			return true;
 		}
 		return false;
+	}
+
+	public List<Album> getSubAlbums(String galleryUrl, int parentAlbumId)
+			throws GalleryConnectionException {
+		if(rootAlbum!=null){
+			//it means we already have the list of albums
+			HashMap<String, String> fetchAlbums = fetchAlbums(galleryUrl);
+			Map<Integer, Album> albumsFromProperties = extractAlbumFromProperties(fetchAlbums);
+			rootAlbum = organizeAlbumsHierarchy(albumsFromProperties);
+		}
+		return findSubAlbums(rootAlbum, parentAlbumId);
 	}
 
 }

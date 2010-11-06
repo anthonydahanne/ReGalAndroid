@@ -18,13 +18,14 @@
 package net.dahanne.android.g2android.utils;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
@@ -333,5 +334,45 @@ public class G2ConnectionUtilsTest extends Assert {
 
 	}
 
+	
+	@Test
+	public void findSubAlbumsTest(){
+		Album rootAlbum = new Album();
+		rootAlbum.setName(999);
+		Album album1 = new Album();
+		album1.setName(1);
+		rootAlbum.getChildren().add(album1);
+		Album album2 = new Album();
+		album2.setName(2);
+		rootAlbum.getChildren().add(album2);
+		Album album3 = new Album();
+		album3.setName(3);
+		rootAlbum.getChildren().add(album3);
+		Album album4 = new Album();
+		album4.setName(4);
+		rootAlbum.getChildren().add(album4);
+		Album album31 = new Album();
+		album31.setName(31);
+		album3.getChildren().add(album31);
+		Album album311 = new Album();
+		album311.setName(311);
+		album31.getChildren().add(album311);
+		List<Album> albumsFound = g2ConnectionUtils.findSubAlbums(rootAlbum, 999);
+		List<Album> expectedSubAlbumsOfRootAlbum = new ArrayList<Album>();
+		expectedSubAlbumsOfRootAlbum.add(album1);
+		expectedSubAlbumsOfRootAlbum.add(album2);
+		expectedSubAlbumsOfRootAlbum.add(album3);
+		expectedSubAlbumsOfRootAlbum.add(album4);
+		
+		assertEquals(expectedSubAlbumsOfRootAlbum, albumsFound);
+		
+		albumsFound = g2ConnectionUtils.findSubAlbums(rootAlbum, 31);
+		List<Album> expectedSubAlbumsOfAlbum31 = new ArrayList<Album>();
+		expectedSubAlbumsOfAlbum31.add(album311);
+		
+		assertEquals(expectedSubAlbumsOfAlbum31, albumsFound);
+		
+
+	}
 
 }

@@ -64,7 +64,6 @@ public class ShowAlbums extends ListActivity implements OnItemClickListener {
 
 		setContentView(R.layout.show_albums);
 
-		// getListView().setTextFilterEnabled(true);
 		getListView().setOnItemClickListener(this);
 
 	}

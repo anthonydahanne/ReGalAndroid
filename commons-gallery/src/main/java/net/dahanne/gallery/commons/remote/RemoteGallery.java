@@ -80,6 +80,9 @@ public interface RemoteGallery {
 
 	public abstract Album findAlbumFromAlbumName(Album rootAlbum, int name);
 
+	public List<Album> getSubAlbums(String galleryUrl,int parentAlbumId) throws GalleryConnectionException;
+	
+	
 	boolean isEmbeddedGallery(String url);
 
 }
