@@ -38,7 +38,7 @@ import android.widget.ArrayAdapter;
  * @author Anthony Dahanne
  * 
  */
-public class FetchAlbumTask extends AsyncTask {
+public class FetchAlbumTask extends AsyncTask<Object, Void, Album> {
 	String exceptionMessage = null;
 	ListActivity activity;
 	private String galleryUrl;
@@ -55,25 +55,26 @@ public class FetchAlbumTask extends AsyncTask {
 	@Override
 	protected Album doInBackground(Object... parameters) {
 		galleryUrl = (String) parameters[0];
-		Album freshRootAlbum;
+		int albumId = (Integer) parameters[1];
+		
+		Album albumAndSubAlbums;
 		try {
-			freshRootAlbum = remoteGallery
-					.retrieveRootAlbumAndItsHierarchy(galleryUrl);
+			albumAndSubAlbums = remoteGallery
+					.getAlbumAndSubAlbums(galleryUrl,albumId);
 		} catch (GalleryConnectionException e) {
-			freshRootAlbum = null;
+			albumAndSubAlbums = null;
 			exceptionMessage = e.getMessage();
 		}
-		return freshRootAlbum;
+		return albumAndSubAlbums;
 	}
 
 	@Override
-	protected void onPostExecute(Object rootAlbum) {
+	protected void onPostExecute(Album albumAndSubAlbums) {
 
-		if (rootAlbum != null) {
-			((RegalAndroidApplication) activity.getApplication())
-					.setRootAlbum((Album) rootAlbum);
-			activity.setTitle(((Album) rootAlbum).getTitle());
-			List<Album> albumChildren = ((Album) rootAlbum).getChildren();
+		if (albumAndSubAlbums != null) {
+			((RegalAndroidApplication) activity.getApplication()).setCurrentAlbum(albumAndSubAlbums);
+			activity.setTitle(((Album) albumAndSubAlbums).getTitle());
+			List<Album> albumChildren = ((Album) albumAndSubAlbums).getChildren();
 			Collections.sort(albumChildren, new AlbumComparator());
 			// we create a fake album, it will be used to choose to view the
 			// pictures of the album
@@ -81,15 +82,10 @@ public class FetchAlbumTask extends AsyncTask {
 			viewPicturesAlbum.setId(0);
 			viewPicturesAlbum.setTitle(activity
 					.getString(R.string.view_album_pictures));
-			viewPicturesAlbum.setName(((Album) rootAlbum).getName());
+			viewPicturesAlbum.setName(((Album) albumAndSubAlbums).getName());
 			if (!albumChildren.contains(viewPicturesAlbum)) {
 				albumChildren.add(0, viewPicturesAlbum);
 			}
-
-			// ArrayAdapter<Album> arrayAdapter = new ArrayAdapter<Album>(
-			// activity, android.R.layout.simple_list_item_1,
-			// albumChildren);
-			// activity.setListAdapter(arrayAdapter);
 			ArrayAdapter<Album> arrayAdapter = new AlbumAdapter(activity,
 					R.layout.show_albums_row, albumChildren);
 

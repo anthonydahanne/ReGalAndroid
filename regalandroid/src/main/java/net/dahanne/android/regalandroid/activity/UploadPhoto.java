@@ -68,6 +68,7 @@ public class UploadPhoto extends Activity implements OnClickListener {
 	private File imageFromCamera;
 	private ArrayList<Uri> mImageUris;
 	private final RemoteGallery remoteGallery;
+	private RegalAndroidApplication 		application;
 
 	public UploadPhoto() {
 		remoteGallery = RemoteGalleryConnectionFactory.getInstance();
@@ -163,11 +164,10 @@ public class UploadPhoto extends Activity implements OnClickListener {
 
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	protected void onResume() {
 		super.onResume();
-
+		application = ((RegalAndroidApplication) getApplication());
 		spinner = (Spinner) findViewById(R.id.album_list);
 		spinner.setAdapter(albumAdapter);
 
@@ -189,14 +189,13 @@ public class UploadPhoto extends Activity implements OnClickListener {
 		// we recover the context from the database
 		ShowUtils.getInstance().recoverContextFromDatabase(this);
 		Album currentAlbum = null;
-		if (((RegalAndroidApplication) getApplication()).getRootAlbum() != null) {
+		if (((RegalAndroidApplication) getApplication()).getCurrentAlbum() != null) {
 
 			currentAlbum = remoteGallery
 					.findAlbumFromAlbumName(
-							((RegalAndroidApplication) getApplication())
-									.getRootAlbum(),
-							((RegalAndroidApplication) getApplication())
-									.getAlbumName());
+							application
+									.getCurrentAlbum(),
+									application.getCurrentAlbum().getName());
 		}
 		progressDialog = ProgressDialog.show(this,
 				getString(R.string.please_wait),
@@ -206,7 +205,6 @@ public class UploadPhoto extends Activity implements OnClickListener {
 
 	}
 
-	@SuppressWarnings("unchecked")
 	public void onClick(View v) {
 
 		switch (v.getId()) {
@@ -220,7 +218,7 @@ public class UploadPhoto extends Activity implements OnClickListener {
 						Toast.LENGTH_LONG);
 			} else {
 
-				boolean mustLogIn = ShowUtils.getInstance()
+				ShowUtils.getInstance()
 						.recoverContextFromDatabase(this);
 				progressDialog = ProgressDialog.show(this,
 						getString(R.string.please_wait),
@@ -231,7 +229,7 @@ public class UploadPhoto extends Activity implements OnClickListener {
 					new AddPhotoTask(this, progressDialog).execute(
 							Settings.getGalleryUrl(this),
 							Integer.valueOf(selectAlbum.getName()), mImageUri,
-							mustLogIn, filenameEditText.getText().toString(),
+							false, filenameEditText.getText().toString(),
 							imageFromCamera);
 				}
 				// multiple file upload
@@ -239,7 +237,7 @@ public class UploadPhoto extends Activity implements OnClickListener {
 					new AddPhotosTask(this, progressDialog).execute(
 							Settings.getGalleryUrl(this),
 							Integer.valueOf(selectAlbum.getName()), mImageUris,
-							mustLogIn);
+							false);
 				}
 			}
 

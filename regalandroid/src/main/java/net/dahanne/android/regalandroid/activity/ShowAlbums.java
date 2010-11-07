@@ -54,8 +54,8 @@ public class ShowAlbums extends ListActivity implements OnItemClickListener {
 	private static final String G2ANDROID_ALBUM = "g2android.Album";
 	private static final String TAG = "ShowAlbums";
 	private ProgressDialog progressDialog;
-	private boolean mustLogIn;
 	private final RemoteGallery remoteGallery;
+	private RegalAndroidApplication application;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -76,19 +76,19 @@ public class ShowAlbums extends ListActivity implements OnItemClickListener {
 			long arg3) {
 		Intent intent;
 		Album newSelectedAlbum = remoteGallery.findAlbumFromAlbumName(
-				((RegalAndroidApplication) getApplication()).getRootAlbum(),
+				((RegalAndroidApplication) getApplication()).getCurrentAlbum(),
 				((Album) getListAdapter().getItem(albumPosition)).getName());
 		if (newSelectedAlbum != null
-				&& (newSelectedAlbum.getName() == ((RegalAndroidApplication) getApplication())
-						.getAlbumName() || newSelectedAlbum.getChildren()
+				&& (newSelectedAlbum.getName() == application.getCurrentAlbum()
+						.getName() || newSelectedAlbum.getChildren()
 						.size() == 0)) {
 			// the user wants to see the pictures
 			intent = new Intent(this, ShowGallery.class);
 		} else {
 			intent = new Intent(this, ShowAlbums.class);
 		}
-		((RegalAndroidApplication) getApplication())
-				.setAlbumName(newSelectedAlbum.getName());
+		application
+				.setCurrentAlbum(newSelectedAlbum);
 		startActivity(intent);
 
 	}
@@ -135,14 +135,14 @@ public class ShowAlbums extends ListActivity implements OnItemClickListener {
 	protected void onActivityResult(int requestCode, int resultCode,
 			Intent intent) {
 		super.onActivityResult(requestCode, resultCode, intent);
-		mustLogIn = ShowUtils.getInstance().recoverContextFromDatabase(this);
-		if (((RegalAndroidApplication) getApplication()).getRootAlbum() == null) {
-			// rootAlbum is null ? the app died
-			// we recover the context from the database
-			if (mustLogIn) {
-				new LoginTask(this, progressDialog, null, null, null);
-			}
-		}
+//		mustLogIn = ShowUtils.getInstance().recoverContextFromDatabase(this);
+//		if (((RegalAndroidApplication) getApplication()).getRootAlbum() == null) {
+//			// rootAlbum is null ? the app died
+//			// we recover the context from the database
+//			if (mustLogIn) {
+//				new LoginTask(this, progressDialog, null, null, null);
+//			}
+//		}
 		if (resultCode == RESULT_OK) {
 			switch (requestCode) {
 			case REQUEST_ADD_PHOTO:
@@ -164,8 +164,8 @@ public class ShowAlbums extends ListActivity implements OnItemClickListener {
 
 				new CreateAlbumTask(this, progressDialog).execute(Settings
 						.getGalleryUrl(this),
-						((RegalAndroidApplication) getApplication())
-								.getAlbumName(), subalbumName, mustLogIn);
+						application
+								.getCurrentAlbum().getName(), subalbumName);
 				break;
 			}
 		}
@@ -176,68 +176,60 @@ public class ShowAlbums extends ListActivity implements OnItemClickListener {
 	@Override
 	protected void onResume() {
 		super.onResume();
+		application = (RegalAndroidApplication) getApplication();
 		Log.i(TAG, "resuming");
-		if (((RegalAndroidApplication) getApplication()).getRootAlbum() != null) {
-
-			Log.i(TAG, "rootalbum "
-					+ ((RegalAndroidApplication) getApplication())
-							.getRootAlbum().toString());
-		}
-		Log.i(TAG,
-				"albumname "
-						+ ((RegalAndroidApplication) getApplication())
-								.getAlbumName());
 		// we're back in this activity to select a sub album or to see the
 		// pictures
-
-		if (((RegalAndroidApplication) getApplication()).getRootAlbum() == null) {
-			Log.i(TAG, "rootAlbum is null");
+		if (((RegalAndroidApplication) getApplication()).getCurrentAlbum() == null) {
 			// we recover the context from the database
-			mustLogIn = ShowUtils.getInstance()
+			ShowUtils.getInstance()
 					.recoverContextFromDatabase(this);
 		}
-		if (((RegalAndroidApplication) getApplication()).getAlbumName() != 0) {
-			// we recover the selected album
-			Album selectedAlbum = remoteGallery
-					.findAlbumFromAlbumName(
-							((RegalAndroidApplication) getApplication())
-									.getRootAlbum(),
-							((RegalAndroidApplication) getApplication())
-									.getAlbumName());
-
-			if (selectedAlbum != null) {
-				// we create a fake album, it will be used to choose to view the
-				// pictures of the album
-				Album viewPicturesAlbum = new Album();
-				viewPicturesAlbum.setId(0);
-				viewPicturesAlbum
-						.setTitle(getString(R.string.view_album_pictures));
-				viewPicturesAlbum.setName(selectedAlbum.getName());
-				List<Album> albumChildren = selectedAlbum.getChildren();
-				if (!albumChildren.contains(viewPicturesAlbum)) {
-					albumChildren.add(0, viewPicturesAlbum);
-				}
-				setTitle(selectedAlbum.getTitle());
-				Collections.sort(albumChildren, new AlbumComparator());
-				ListAdapter adapter = new AlbumAdapter(this,
-						R.layout.show_albums_row, albumChildren);
-				setListAdapter(adapter);
-			}
+		progressDialog = ProgressDialog.show(this,
+				getString(R.string.please_wait),
+				getString(R.string.fetching_gallery_albums), true);
+//		if (((RegalAndroidApplication) getApplication()).getAlbumName() != 0) {
+//			// we recover the selected album
+//			Album selectedAlbum = remoteGallery
+//					.findAlbumFromAlbumName(
+//							((RegalAndroidApplication) getApplication())
+//									.getCurrentAlbum(),
+//							((RegalAndroidApplication) getApplication())
+//									.getAlbumName());
+//
+//			if (selectedAlbum != null) {
+//				// we create a fake album, it will be used to choose to view the
+//				// pictures of the album
+//				Album viewPicturesAlbum = new Album();
+//				viewPicturesAlbum.setId(0);
+//				viewPicturesAlbum
+//						.setTitle(getString(R.string.view_album_pictures));
+//				viewPicturesAlbum.setName(selectedAlbum.getName());
+//				List<Album> albumChildren = selectedAlbum.getChildren();
+//				if (!albumChildren.contains(viewPicturesAlbum)) {
+//					albumChildren.add(0, viewPicturesAlbum);
+//				}
+//				setTitle(selectedAlbum.getTitle());
+//				Collections.sort(albumChildren, new AlbumComparator());
+//				ListAdapter adapter = new AlbumAdapter(this,
+//						R.layout.show_albums_row, albumChildren);
+//				setListAdapter(adapter);
+//			}
+//		}
+		if(application.getCurrentAlbum()!=null){
+			new FetchAlbumTask(this, progressDialog).execute(Settings
+					.getGalleryUrl(this),application.getCurrentAlbum().getName());
 		}
 		// it's the first time we get into this view, let's find the albums of
 		// the gallery
-		else {
-			progressDialog = ProgressDialog.show(this,
-					getString(R.string.please_wait),
-					getString(R.string.fetching_gallery_albums), true);
-
+		else{
 			new FetchAlbumTask(this, progressDialog).execute(Settings
-					.getGalleryUrl(this));
+					.getGalleryUrl(this),0);
 		}
 
 		// we have to clear the currentPosition in album as the user is going to
 		// choose another album
-		((RegalAndroidApplication) getApplication()).setCurrentPosition(0);
+		application.setCurrentPosition(0);
 
 	}
 
@@ -246,34 +238,23 @@ public class ShowAlbums extends ListActivity implements OnItemClickListener {
 		super.onPause();
 		Log.i(TAG, "pausing");
 		ShowUtils.getInstance().saveContextToDatabase(this);
-		if (((RegalAndroidApplication) getApplication()).getRootAlbum() != null) {
-
-			Log.i(TAG, "rootalbum "
-					+ ((RegalAndroidApplication) getApplication())
-							.getRootAlbum().toString());
-		}
-		Log.i(TAG,
-				"albumname "
-						+ ((RegalAndroidApplication) getApplication())
-								.getAlbumName());
-
 	}
 
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		// the user tries to get back to the parent album
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
-			Album currentAlbum = remoteGallery
-					.findAlbumFromAlbumName(
-							((RegalAndroidApplication) getApplication())
-									.getRootAlbum(),
-							((RegalAndroidApplication) getApplication())
-									.getAlbumName());
-			// TODO check if it makes sense when the currentAlbum is null
-			if (currentAlbum != null) {
-				((RegalAndroidApplication) getApplication())
-						.setAlbumName(currentAlbum.getParentName());
-			}
+//			Album currentAlbum = remoteGallery
+//					.findAlbumFromAlbumName(
+//							application
+//									.getRootAlbum(),
+//							((RegalAndroidApplication) getApplication())
+//									.getAlbumName());
+//			// TODO check if it makes sense when the currentAlbum is null
+//			if (currentAlbum != null) {
+//				((RegalAndroidApplication) getApplication())
+//						.setAlbumName(currentAlbum.getParentName());
+//			}
 			this.finish();
 			return true;
 		}

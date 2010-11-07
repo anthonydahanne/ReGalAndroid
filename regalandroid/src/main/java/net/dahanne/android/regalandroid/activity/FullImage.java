@@ -74,6 +74,7 @@ public class FullImage extends Activity implements OnGestureListener {
 	private GestureDetector gestureScanner;
 	private Toast toast;
 	private final FileUtils fileUtils = FileUtils.getInstance();
+	private RegalAndroidApplication application;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -90,7 +91,8 @@ public class FullImage extends Activity implements OnGestureListener {
 	@Override
 	protected void onResume() {
 		super.onResume();
-		albumPictures = ((RegalAndroidApplication) getApplication())
+		application = ((RegalAndroidApplication) getApplication());
+		albumPictures = application
 				.getPictures();
 		if (albumPictures == null || albumPictures.size() == 0) {
 			finish();
@@ -105,9 +107,9 @@ public class FullImage extends Activity implements OnGestureListener {
 	@Override
 	protected void onPause() {
 		super.onPause();
-		((RegalAndroidApplication) getApplication())
+		application
 				.setCurrentPosition(currentPosition);
-		albumPictures = ((RegalAndroidApplication) getApplication())
+		albumPictures = application
 				.getPictures();
 		if (albumPictures != null && albumPictures.size() != 0) {
 			ShowUtils.getInstance().saveContextToDatabase(this);
@@ -122,8 +124,7 @@ public class FullImage extends Activity implements OnGestureListener {
 	@SuppressWarnings("unchecked")
 	private void loadingPicture() {
 		g2Picture = albumPictures.get(currentPosition);
-		int albumName = ((RegalAndroidApplication) getApplication())
-				.getAlbumName();
+		int albumName =application.getCurrentAlbum().getName();
 		File potentialAlreadyDownloadedFile = new File(
 				Settings.getG2AndroidCachePath(this) + albumName + "/",
 				g2Picture.getTitle());
@@ -165,8 +166,7 @@ public class FullImage extends Activity implements OnGestureListener {
 						.getFileFromGallery(FullImage.this, g2Picture
 								.getTitle(), g2Picture.getForceExtension(),
 								fileUrl, true,
-								((RegalAndroidApplication) getApplication())
-										.getAlbumName());
+								application.getCurrentAlbum().getName());
 				downloadImage = BitmapFactory
 						.decodeFile(imageFileOnExternalDirectory.getPath());
 				g2Picture.setResizedImagePath(imageFileOnExternalDirectory
@@ -278,8 +278,7 @@ public class FullImage extends Activity implements OnGestureListener {
 						g2Picture.getForceExtension(),
 						Settings.getBaseUrl(FullImage.this)
 								+ g2Picture.getName(), false,
-						((RegalAndroidApplication) getApplication())
-								.getAlbumName());
+						application.getCurrentAlbum().getName());
 			} catch (GalleryConnectionException e) {
 				exceptionMessage = e.getMessage();
 			} catch (FileHandlingException e) {

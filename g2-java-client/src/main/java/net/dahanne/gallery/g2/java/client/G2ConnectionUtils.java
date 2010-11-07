@@ -436,7 +436,7 @@ public class G2ConnectionUtils implements RemoteGallery {
 			String line;
 			boolean gr2ProtoStringWasFound = false;
 			while ((line = rd.readLine()) != null) {
-				System.out.println(line);
+//				System.out.println(line);
 				if (line.contains(GR2PROTO)) {
 					gr2ProtoStringWasFound = true;
 				}
@@ -559,15 +559,15 @@ public class G2ConnectionUtils implements RemoteGallery {
 
 	}
 
-	public Album findAlbumFromAlbumName(Album rootAlbum, int i) {
-		if (rootAlbum.getName() == i) {
+	public Album findAlbumFromAlbumName(Album rootAlbum, int albumName) {
+		if (rootAlbum.getName() == albumName) {
 			return rootAlbum;
 		}
 		for (Album album : rootAlbum.getChildren()) {
-			if (album.getName() == i) {
+			if (album.getName() == albumName) {
 				return album;
 			}
-			Album fromAlbumName = findAlbumFromAlbumName(album, i);
+			Album fromAlbumName = findAlbumFromAlbumName(album, albumName);
 			if (fromAlbumName != null) {
 				return fromAlbumName;
 			}
@@ -775,15 +775,19 @@ public class G2ConnectionUtils implements RemoteGallery {
 		return false;
 	}
 
-	public List<Album> getSubAlbums(String galleryUrl, int parentAlbumId)
+	public Album getAlbumAndSubAlbums(String galleryUrl, int parentAlbumId)
 			throws GalleryConnectionException {
-		if(rootAlbum!=null){
+		if(rootAlbum==null){
 			//it means we already have the list of albums
 			HashMap<String, String> fetchAlbums = fetchAlbums(galleryUrl);
 			Map<Integer, Album> albumsFromProperties = extractAlbumFromProperties(fetchAlbums);
 			rootAlbum = organizeAlbumsHierarchy(albumsFromProperties);
 		}
-		return findSubAlbums(rootAlbum, parentAlbumId);
+		//if 0 is specified as the parentAlbumId, it means we have to return the rootAlbum
+		if(parentAlbumId==0){
+			return rootAlbum;
+		}
+		return findAlbumFromAlbumName(rootAlbum, parentAlbumId);
 	}
 
 }

@@ -51,25 +51,25 @@ public class CreateAlbumTask extends AsyncTask {
 		galleryUrl = (String) parameters[0];
 		Integer albumName = (Integer) parameters[1];
 		String subalbumName = (String) parameters[2];
-		boolean mustLogIn = (Boolean) parameters[3];
+//		boolean mustLogIn = (Boolean) parameters[3];
 		try {
-			if (mustLogIn) {
-				remoteGallery.loginToGallery(galleryUrl,
-						Settings.getUsername(activity),
-						Settings.getPassword(activity));
-			}
+//			if (mustLogIn) {
+//				remoteGallery.loginToGallery(galleryUrl,
+//						Settings.getUsername(activity),
+//						Settings.getPassword(activity));
+//			}
 			int createdAlbumName = remoteGallery.createNewAlbum(galleryUrl,
 					albumName, subalbumName, subalbumName,
 					Settings.getDefaultSummary(activity));
-			if (mustLogIn) {
-				remoteGallery.loginToGallery(galleryUrl,
-						Settings.getUsername(activity),
-						Settings.getPassword(activity));
-			}
+//			if (mustLogIn) {
+//				remoteGallery.loginToGallery(galleryUrl,
+//						Settings.getUsername(activity),
+//						Settings.getPassword(activity));
+//			}
 			// we reload the rootAlbum and its hierarchy
-			((RegalAndroidApplication) activity.getApplication())
-					.setRootAlbum(remoteGallery
-							.retrieveRootAlbumAndItsHierarchy(galleryUrl));
+//			((RegalAndroidApplication) activity.getApplication())
+//					.setRootAlbum(remoteGallery
+//							.retrieveRootAlbumAndItsHierarchy(galleryUrl));
 			return createdAlbumName;
 		} catch (GalleryConnectionException e) {
 			exceptionMessage = e.getMessage();

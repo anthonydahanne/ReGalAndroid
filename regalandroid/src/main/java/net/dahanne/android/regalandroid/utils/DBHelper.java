@@ -10,13 +10,13 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class DBHelper {
 
-	public static final String DB_NAME = "g2android_context";
-	public static final String DB_TABLE = "g2android_context_table";
+	public static final String DB_NAME = "regalandroid_context";
+	public static final String DB_TABLE = "regalandroid_context_table";
 	public static final int DB_VERSION = 3;
 
 	private static final String CLASSNAME = DBHelper.class.getSimpleName();
 	private static final String[] COLS = new String[] { "_id",
-			"current_position", "root_album", "album_name", "is_logged_in" };
+			"current_position", "current_album" };
 
 	private SQLiteDatabase db;
 	private final DBOpenHelper dbOpenHelper;
@@ -29,26 +29,21 @@ public class DBHelper {
 
 		public long id;
 		public int currentPosition;
-		public Album rootAlbum;
-		public int albumName;
-		public short isLoggedIn;
+		public Album currentAlbum;
 
 		public G2AndroidContext() {
 		}
 
 		public G2AndroidContext(final long id, final int currentPosition,
-				final Album rootAlbum, final int albumName,
-				final boolean isLoggedIn) {
+				final Album currentAlbum) {
 			this.id = id;
 			this.currentPosition = currentPosition;
-			this.rootAlbum = rootAlbum;
-			this.albumName = albumName;
-			this.isLoggedIn = isLoggedIn ? (short) 1 : 0;
+			this.currentAlbum = currentAlbum;
 		}
 
 		@Override
 		public String toString() {
-			return id + " " + currentPosition + " " + albumName;
+			return id + " " + currentPosition + " " + currentAlbum;
 		}
 	}
 
@@ -56,7 +51,7 @@ public class DBHelper {
 
 		private static final String DB_CREATE = "CREATE TABLE "
 				+ DBHelper.DB_TABLE
-				+ " (_id INTEGER PRIMARY KEY, current_position INTEGER, root_album BLOB, album_name INTEGER, is_logged_in SHORT );";
+				+ " (_id INTEGER PRIMARY KEY, current_position INTEGER, current_album BLOB );";
 
 		public DBOpenHelper(final Context context) {
 			super(context, DBHelper.DB_NAME, null, DBHelper.DB_VERSION);
@@ -109,9 +104,7 @@ public class DBHelper {
 	public void insert(final G2AndroidContext g2AndroidContext) {
 		ContentValues values = new ContentValues();
 		values.put("current_position", g2AndroidContext.currentPosition);
-		values.put("root_album", g2AndroidContext.rootAlbum.serialize());
-		values.put("album_name", g2AndroidContext.albumName);
-		values.put("is_logged_in", g2AndroidContext.isLoggedIn);
+		values.put("root_album", g2AndroidContext.currentAlbum.serialize());
 
 		db.insert(DBHelper.DB_TABLE, null, values);
 
@@ -121,11 +114,8 @@ public class DBHelper {
 	public void update(final G2AndroidContext g2AndroidContext) {
 		ContentValues values = new ContentValues();
 		values.put("current_position", g2AndroidContext.currentPosition);
-		values.put("root_album", g2AndroidContext.rootAlbum.serialize());
-		values.put("album_name", g2AndroidContext.albumName);
-		values.put("is_logged_in", g2AndroidContext.isLoggedIn);
+		values.put("root_album", g2AndroidContext.currentAlbum.serialize());
 		db.update(DBHelper.DB_TABLE, values, "_id=" + g2AndroidContext.id, null);
-
 		cleanup();
 	}
 
@@ -137,9 +127,6 @@ public class DBHelper {
 		db.delete(DBHelper.DB_TABLE, null, null);
 	}
 
-	// public void delete(final String zip) {
-	// this.db.delete(DBHelper.DB_TABLE, "zip='" + zip + "'", null);
-	// }
 
 	public G2AndroidContext getLast() {
 		Cursor c = null;
@@ -152,21 +139,15 @@ public class DBHelper {
 				g2AndroidContext = new G2AndroidContext();
 				g2AndroidContext.id = c.getLong(0);
 				g2AndroidContext.currentPosition = c.getInt(1);
-				g2AndroidContext.rootAlbum = Album.unserializeAlbum(c
+				g2AndroidContext.currentAlbum = Album.unserializeAlbum(c
 						.getBlob(2));
-				g2AndroidContext.albumName = c.getInt(3);
-				g2AndroidContext.isLoggedIn = c.getShort(4);
 
 			}
 		} catch (SQLException e) {
-			// Log.v(Constants.LOGTAG, DBHelper.CLASSNAME, e);
+			// TODO we should catch this exception instead of killing it !!!
 		} finally {
 			c.close();
 			cleanup();
-
-			// if (c != null && !c.isClosed()) {
-			// c.close();
-			// }
 		}
 		return g2AndroidContext;
 	}

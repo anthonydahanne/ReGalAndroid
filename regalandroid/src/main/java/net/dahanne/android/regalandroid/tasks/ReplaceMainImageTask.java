@@ -72,7 +72,7 @@ public class ReplaceMainImageTask extends AsyncTask {
 								fileUrl,
 								true,
 								((RegalAndroidApplication) activity
-										.getApplication()).getAlbumName());
+										.getApplication()).getCurrentAlbum().getName());
 				downloadImage = BitmapFactory
 						.decodeFile(imageFileOnExternalDirectory.getPath());
 				g2Picture.setResizedImagePath(imageFileOnExternalDirectory

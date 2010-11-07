@@ -76,6 +76,7 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 	private ProgressDialog progressDialog;
 	private boolean mustLogIn;
 	private final RemoteGallery remoteGallery;
+	private RegalAndroidApplication application;
 
 	public ShowGallery() {
 		remoteGallery = RemoteGalleryConnectionFactory.getInstance();
@@ -90,25 +91,25 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 	protected void onResume() {
 		super.onResume();
 		Log.i(TAG, "resuming");
-
+		application = (RegalAndroidApplication) getApplication();
 		// we recover the context from the database
-		mustLogIn = ShowUtils.getInstance().recoverContextFromDatabase(this);
+		ShowUtils.getInstance().recoverContextFromDatabase(this);
 		// we write the title
 		if (getTitle() == null || getTitle().equals("")
 				|| getTitle().equals(getString(R.string.show_gallery_title))) {
-			Album album = remoteGallery
-					.findAlbumFromAlbumName(
-							((RegalAndroidApplication) getApplication())
-									.getRootAlbum(),
-							((RegalAndroidApplication) getApplication())
-									.getAlbumName());
-			setTitle(album.getTitle());
+//			Album album = remoteGallery
+//					.findAlbumFromAlbumName(
+//							application
+//									.getCurrentAlbum(),
+//									application
+//									.getAlbumName());
+			setTitle(application.getCurrentAlbum().getTitle());
 		}
 		progressDialog = ProgressDialog.show(ShowGallery.this,
 				getString(R.string.please_wait),
 				getString(R.string.loading_first_photos_from_album), true);
 		new FetchImagesTask().execute(Settings.getGalleryUrl(this),
-				((RegalAndroidApplication) getApplication()).getAlbumName());
+				application.getCurrentAlbum().getName());
 
 	}
 
@@ -153,8 +154,7 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 
 		public View getView(int position, View convertView, ViewGroup parent) {
 			G2Picture g2Picture = albumPictures.get(position);
-			int albumName = ((RegalAndroidApplication) getApplication())
-					.getAlbumName();
+			int albumName = application.getCurrentAlbum().getName();
 			File potentiallyAlreadyDownloadedFile = new File(
 					Settings.getG2AndroidCachePath(ShowGallery.this)
 							+ albumName + "/", THUMB_PREFIX
@@ -182,8 +182,7 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 										g2Picture.getForceExtension(),
 										uriString,
 										true,
-										((RegalAndroidApplication) getApplication())
-												.getAlbumName());
+										albumName);
 						downloadImage = BitmapFactory
 								.decodeFile(imageFileOnExternalDirectory
 										.getPath());
@@ -210,8 +209,7 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 	public void onItemSelected(AdapterView<?> parent, View view, int position,
 			long id) {
 		G2Picture g2Picture = albumPictures.get(position);
-		int albumName = ((RegalAndroidApplication) getApplication())
-				.getAlbumName();
+		int albumName = application.getCurrentAlbum().getName();
 		File potentiallyAlreadyDownloadedFile = new File(
 				Settings.getG2AndroidCachePath(this) + albumName + "/",
 				g2Picture.getTitle());
@@ -298,7 +296,8 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 	protected void onActivityResult(int requestCode, int resultCode,
 			Intent intent) {
 		super.onActivityResult(requestCode, resultCode, intent);
-		mustLogIn = ShowUtils.getInstance().recoverContextFromDatabase(this);
+		ShowUtils.getInstance().recoverContextFromDatabase(this);
+		int albumName = application.getCurrentAlbum().getName();
 		if (resultCode == RESULT_OK) {
 			switch (requestCode) {
 			case REQUEST_CODE_ADD_PHOTO:
@@ -319,8 +318,7 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 
 				new CreateAlbumTask(this, progressDialog).execute(Settings
 						.getGalleryUrl(this),
-						((RegalAndroidApplication) getApplication())
-								.getAlbumName(), subalbumName, mustLogIn);
+						albumName, subalbumName, mustLogIn);
 				break;
 
 			}
@@ -455,16 +453,16 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		// the user tries to get back to the parent album
+		
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
 			Album currentAlbum = remoteGallery
 					.findAlbumFromAlbumName(
-							((RegalAndroidApplication) getApplication())
-									.getRootAlbum(),
-							((RegalAndroidApplication) getApplication())
-									.getAlbumName());
+							application
+									.getCurrentAlbum(),
+							application
+									.getCurrentAlbum().getName());
 			if (currentAlbum != null && currentAlbum.getChildren().isEmpty()) {
-				((RegalAndroidApplication) getApplication())
-						.setAlbumName(currentAlbum.getParentName());
+				application.setCurrentAlbum(currentAlbum);
 			}
 			this.finish();
 			return true;

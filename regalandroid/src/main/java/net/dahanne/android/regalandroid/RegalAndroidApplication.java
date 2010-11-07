@@ -10,9 +10,8 @@ import android.app.Application;
 
 public class RegalAndroidApplication extends Application {
 	private final List<G2Picture> pictures = new ArrayList<G2Picture>();
-	private Album rootAlbum;
+	private Album currentAlbum;
 	private int currentPosition;
-	private int albumName;
 	
 	
 	
@@ -23,20 +22,12 @@ public class RegalAndroidApplication extends Application {
 		
 	}
 
-	public void setRootAlbum(Album rootAlbum) {
-		this.rootAlbum = rootAlbum;
-	}
-
-	public Album getRootAlbum() {
-		return rootAlbum;
-	}
-
-	public void currentAlbum(Album rootAlbum) {
-		this.rootAlbum = rootAlbum;
+	public void setCurrentAlbum(Album currentAlbum) {
+		this.currentAlbum = currentAlbum;
 	}
 
 	public Album getCurrentAlbum() {
-		return rootAlbum;
+		return currentAlbum;
 	}
 
 	public List<G2Picture> getPictures() {
@@ -51,11 +42,4 @@ public class RegalAndroidApplication extends Application {
 		return currentPosition;
 	}
 
-	public void setAlbumName(int albumName) {
-		this.albumName = albumName;
-	}
-
-	public int getAlbumName() {
-		return albumName;
-	}
 }
