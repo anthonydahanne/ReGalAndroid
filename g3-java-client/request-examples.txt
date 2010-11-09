@@ -1,0 +1,7 @@
+http://g3.dahanne.net/index.php/rest/items?http://g3.dahanne.net/index.php/rest/item/1&output=html
+http://g3.dahanne.net/index.php/rest/items?http://g3.dahanne.net/index.php/rest/item/1&output=html
+
+/index.php/rest/items?urls=[&quot;http://g3.dahanne.net/index.php/rest/item/172&quot;,&quot;http://g3.dahanne.net/index.php/rest/item/3&quot;,&quot;]
+
+/index.php/rest/items?urls=["http://g3.dahanne.net/index.php/rest/item/4","http://g3.dahanne.net/index.php/rest/item/5"] 
+http://g3.dahanne.net/index.php/rest/items?ancestors_for=http://g3.dahanne.net/index.php/rest/item/2&output=html
