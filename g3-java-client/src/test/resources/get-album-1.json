@@ -1,0 +1,44 @@
+{"url":"http:\/\/g3.dahanne.net\/index.php\/rest\/item\/1",
+"entity":{
+	"id":"1",
+	"captured":null,
+	"created":"1276227460",
+	"description":"",
+	"height":null,
+	"level":"1",
+	"mime_type":null,
+	"name":null,
+	"owner_id":"2",
+	"rand_key":null,
+	"resize_height":null,
+	"resize_width":null,
+	"slug":null,
+	"sort_column":"weight",
+	"sort_order":"ASC",
+	"thumb_height":"200",
+	"thumb_width":"150",
+	"title":"Gallery",
+	"type":"album",
+	"updated":"1276227718",
+	"view_count":"8",
+	"width":null,
+	"view_1":"1",
+	"view_2":"1",
+	"album_cover":"http:\/\/g3.dahanne.net\/index.php\/rest\/item\/2",
+	"web_url":"http:\/\/g3.dahanne.net\/index.php\/",
+	"thumb_url":"http:\/\/g3.dahanne.net\/index.php\/rest\/data\/1?size=thumb",
+	"thumb_size":17151,
+	"thumb_url_public":"http:\/\/g3.dahanne.net\/var\/thumbs\/\/.album.jpg?m=1276227718",
+	"can_edit":false
+},
+"relationships":{
+	"comments":{
+		"url":"http:\/\/g3.dahanne.net\/index.php\/rest\/item_comments\/1"
+	},
+	"tags":{
+		"url":"http:\/\/g3.dahanne.net\/index.php\/rest\/item_tags\/1",
+		"members":[]
+	}
+},
+"members":["http:\/\/g3.dahanne.net\/index.php\/rest\/item\/2","http:\/\/g3.dahanne.net\/index.php\/rest\/item\/3"]
+}
