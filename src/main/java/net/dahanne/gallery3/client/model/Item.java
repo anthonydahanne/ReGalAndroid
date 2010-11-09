@@ -20,9 +20,6 @@ package net.dahanne.gallery3.client.model;
 import java.util.Collection;
 import java.util.HashSet;
 
-import javax.xml.bind.annotation.XmlRootElement;
-
-@XmlRootElement
 public class Item {
 
 	private String url;

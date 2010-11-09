@@ -292,7 +292,11 @@ public class G3Client implements IG3Client {
 		this.existingApiKey = existingApiKey;
 	}
 
-	public List<Item> getSubAlbums(int albumId) throws G3GalleryException {
+	/**
+	 * get the entire item representing the AlbumId + all its album sub items
+	 */
+	public List<Item> getAlbumAndSubAlbums(int albumId)
+			throws G3GalleryException {
 		List<Item> items = new ArrayList<Item>();
 		Item item = this.getItem(albumId, true);
 		Collection<String> members = item.getMembers();
@@ -301,8 +305,8 @@ public class G3Client implements IG3Client {
 		try {
 			String encodedUrls = URLEncoder.encode(urls.toString(), "UTF-8");
 			String sendHttpRequest = sendHttpRequest(INDEX_PHP_REST_ITEMS
-					+ "?urls=" + encodedUrls, new ArrayList<NameValuePair>(), true,
-					GET, null);
+					+ "?urls=" + encodedUrls, new ArrayList<NameValuePair>(),
+					true, GET, null);
 
 			JSONTokener jsonTokener = new JSONTokener(sendHttpRequest);
 			JSONArray jsonResult = (JSONArray) jsonTokener.nextValue();
@@ -314,6 +318,7 @@ public class G3Client implements IG3Client {
 		} catch (Exception e1) {
 			throw new G3GalleryException(e1);
 		}
+		items.add(0,item);
 		return items;
 	}
 

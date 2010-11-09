@@ -15,6 +15,7 @@ import net.dahanne.gallery.commons.remote.ImpossibleToLoginException;
 import net.dahanne.gallery.commons.remote.RemoteGallery;
 import net.dahanne.gallery3.client.business.exceptions.G3GalleryException;
 import net.dahanne.gallery3.client.model.Item;
+import net.dahanne.gallery3.client.utils.G3ConvertUtils;
 import net.dahanne.gallery3.client.utils.ItemUtils;
 
 import org.apache.http.cookie.Cookie;
@@ -105,6 +106,28 @@ public class G3Connection implements RemoteGallery {
 			throws GalleryConnectionException {
 		throw new GalleryOperationNotYetSupportedException(
 				"Not available in G3 yet");
+	}
+
+	public Album getAlbumAndSubAlbums(String galleryUrl, int parentAlbumId)
+			throws GalleryConnectionException {
+		Album parentAlbum=null;
+		try {
+			List<Item> albumAndSubAlbums = client.getAlbumAndSubAlbums(parentAlbumId);
+			parentAlbum = G3ConvertUtils.itemToAlbum(albumAndSubAlbums.get(0));
+			for (Item item : albumAndSubAlbums) {
+				if(item==albumAndSubAlbums.get(0)){
+					//no need to add the first one, it is the parent
+					continue;
+				}
+				Album itemToAlbum = G3ConvertUtils.itemToAlbum(item);
+				itemToAlbum.setParentName(parentAlbum.getName());
+				parentAlbum.getChildren().add(itemToAlbum);
+			}
+			
+		} catch (G3GalleryException e) {
+			throw new GalleryConnectionException(e);
+		}
+		return parentAlbum;
 	}
 
 }

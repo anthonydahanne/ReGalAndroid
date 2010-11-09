@@ -122,7 +122,7 @@ public class G3ClientTest {
 	
 	@Test
 	public void getSubAlbumsTest() throws G3GalleryException{
-		List<Item> subAlbums = itemClient.getSubAlbums(11);
+		List<Item> subAlbums = itemClient.getAlbumAndSubAlbums(11);
 		boolean foundRecentlyAddedAlbum =  false;
 		for (Item album : subAlbums) {
 			if(album.getEntity().getId()==createdAlbumId){
