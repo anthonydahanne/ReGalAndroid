@@ -1,4 +1,4 @@
-package net.dahanne.gallery3.client.utils;
+package net.dahanne.android.regalandroid.remote.utils;
 
 import net.dahanne.gallery.commons.model.Album;
 import net.dahanne.gallery3.client.model.Item;

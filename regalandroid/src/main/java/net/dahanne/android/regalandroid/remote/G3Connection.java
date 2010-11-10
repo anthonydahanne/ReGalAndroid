@@ -1,4 +1,4 @@
-package net.dahanne.gallery3.client.business;
+package net.dahanne.android.regalandroid.remote;
 
 import java.io.File;
 import java.io.InputStream;
@@ -7,15 +7,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.dahanne.android.regalandroid.remote.utils.G3ConvertUtils;
 import net.dahanne.gallery.commons.model.Album;
 import net.dahanne.gallery.commons.model.G2Picture;
 import net.dahanne.gallery.commons.remote.GalleryConnectionException;
 import net.dahanne.gallery.commons.remote.GalleryOperationNotYetSupportedException;
 import net.dahanne.gallery.commons.remote.ImpossibleToLoginException;
 import net.dahanne.gallery.commons.remote.RemoteGallery;
+import net.dahanne.gallery3.client.business.G3Client;
 import net.dahanne.gallery3.client.business.exceptions.G3GalleryException;
 import net.dahanne.gallery3.client.model.Item;
-import net.dahanne.gallery3.client.utils.G3ConvertUtils;
 import net.dahanne.gallery3.client.utils.ItemUtils;
 
 import org.apache.http.cookie.Cookie;
@@ -24,8 +25,11 @@ public class G3Connection implements RemoteGallery {
 
 	private G3Client client;
 
-	public G3Connection(String galleryUrl) {
+	public G3Connection(String galleryUrl, String username, String password) {
 		client = new G3Client(galleryUrl);
+		client.setUsername(username);
+		client.setPassword(password);
+		
 
 	}
 
@@ -51,10 +55,10 @@ public class G3Connection implements RemoteGallery {
 		
 		
 		try {
-			Item item = client.getItem(1, false);
+			Item item = client.getItem(1);
 			for (String member : item.getMembers()) {
 				Integer itemIdFromUrl = ItemUtils.getItemIdFromUrl(member);
-				Item item2 = client.getItem(itemIdFromUrl, false);
+				Item item2 = client.getItem(itemIdFromUrl);
 			}
 		} catch (G3GalleryException e) {
 			throw new GalleryConnectionException(e);
@@ -110,6 +114,12 @@ public class G3Connection implements RemoteGallery {
 
 	public Album getAlbumAndSubAlbums(String galleryUrl, int parentAlbumId)
 			throws GalleryConnectionException {
+		
+		//dirty hack to load the root album
+		if(parentAlbumId==0){
+			parentAlbumId=1;
+		}
+		
 		Album parentAlbum=null;
 		try {
 			List<Item> albumAndSubAlbums = client.getAlbumAndSubAlbums(parentAlbumId);

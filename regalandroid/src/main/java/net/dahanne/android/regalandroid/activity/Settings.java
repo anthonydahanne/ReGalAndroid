@@ -21,12 +21,14 @@ import java.io.File;
 
 import net.dahanne.android.regalandroid.R;
 import net.dahanne.android.regalandroid.remote.RemoteGalleryConnectionFactory;
+import net.dahanne.android.regalandroid.utils.ShowUtils;
 import net.dahanne.gallery.commons.remote.RemoteGallery;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 public class Settings extends PreferenceActivity {
 
@@ -136,6 +138,13 @@ public class Settings extends PreferenceActivity {
 	public static String getGalleryConnectionType(Context context) {
 		return PreferenceManager.getDefaultSharedPreferences(context).getString(
 				OPT_GALLERY_CONNECTION_TYPE, OPT_GALLERY_CONNECTION_TYPE_DEF);
+	}
+	
+	@Override
+	protected void onPause() {
+		super.onPause();
+		//we are about to leave the settings activity; let's clean things up
+		RemoteGalleryConnectionFactory.resetInstance();
 	}
 
 }

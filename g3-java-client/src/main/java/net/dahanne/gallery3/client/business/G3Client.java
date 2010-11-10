@@ -72,18 +72,18 @@ public class G3Client implements IG3Client {
 
 	private final String galleryItemUrl;
 	private String existingApiKey;
+
 	private String password;
 	private String username;
 
 	public G3Client(String galleryUrl) {
-		this.galleryItemUrl = galleryUrl;
+		this.galleryItemUrl = galleryUrl + "/";
 	}
 
-	public Item getItem(int itemId, boolean useExistingApiKey)
-			throws G3GalleryException {
+	public Item getItem(int itemId) throws G3GalleryException {
 		Item item = null;
 		String stringResult = sendHttpRequest(INDEX_PHP_REST_ITEM + itemId,
-				new ArrayList<NameValuePair>(), useExistingApiKey, GET, null);
+				new ArrayList<NameValuePair>(), GET, null);
 		try {
 			JSONObject jsonResult = (JSONObject) new JSONTokener(stringResult)
 					.nextValue();
@@ -109,7 +109,7 @@ public class G3Client implements IG3Client {
 			nameValuePairs.add(nameValuePair);
 			resultUrl = sendHttpRequest(
 					INDEX_PHP_REST_ITEM + entity.getParent(), nameValuePairs,
-					true, POST, file);
+					POST, file);
 
 			resultUrl = ItemUtils.convertJsonStringToUrl(resultUrl);
 		}
@@ -129,7 +129,7 @@ public class G3Client implements IG3Client {
 			List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
 			nameValuePairs.add(nameValuePair);
 			sendHttpRequest(INDEX_PHP_REST_ITEM + entity.getId(),
-					nameValuePairs, true, PUT, null);
+					nameValuePairs, PUT, null);
 		} catch (JSONException e) {
 			throw new G3GalleryException(e.getMessage());
 		}
@@ -138,7 +138,7 @@ public class G3Client implements IG3Client {
 
 	public void deleteItem(int itemId) throws G3GalleryException {
 		sendHttpRequest(INDEX_PHP_REST_ITEM + itemId,
-				new ArrayList<NameValuePair>(), true, DELETE, null);
+				new ArrayList<NameValuePair>(), DELETE, null);
 
 	}
 
@@ -154,15 +154,22 @@ public class G3Client implements IG3Client {
 	 * @throws G3GalleryException
 	 */
 	private String sendHttpRequest(String appendToGalleryUrl,
-			List<NameValuePair> nameValuePairs, boolean useExistingApiKey,
-			String requestMethod, File file) throws G3GalleryException {
+			List<NameValuePair> nameValuePairs, String requestMethod, File file)
+			throws G3GalleryException {
 
 		String result;
 		HttpClient defaultHttpClient = new DefaultHttpClient();
 
-		// do we have to use the existingApiKey ?
-		if (useExistingApiKey) {
-			if (existingApiKey == null) {
+		// do we need to login ? do we have the apikey ?
+		if (username != null && existingApiKey == null) {
+			// we are inside a call of getApiKey
+			if (nameValuePairs != null && nameValuePairs.size() != 0) {
+				if (nameValuePairs.get(0).getName().equals("user")) {
+
+				} else {
+					existingApiKey = getApiKey(username, password);
+				}
+			} else {
 				existingApiKey = getApiKey(username, password);
 			}
 		}
@@ -202,7 +209,9 @@ public class G3Client implements IG3Client {
 			} else {
 				httpMethod = new HttpGet(galleryItemUrl + appendToGalleryUrl);
 			}
-			httpMethod.setHeader(X_GALLERY_REQUEST_KEY, existingApiKey);
+			if(existingApiKey!=null){
+				httpMethod.setHeader(X_GALLERY_REQUEST_KEY, existingApiKey);
+			}
 			HttpResponse response = null;
 
 			String[] patternsArray = new String[3];
@@ -273,7 +282,7 @@ public class G3Client implements IG3Client {
 		nameValuePairs.add(new BasicNameValuePair("password", password));
 
 		String jsonResult = sendHttpRequest("index.php/rest", nameValuePairs,
-				false, POST, null);
+				POST, null);
 
 		String key = ItemUtils.convertJsonResultToApiKey(jsonResult);
 
@@ -292,13 +301,17 @@ public class G3Client implements IG3Client {
 		this.existingApiKey = existingApiKey;
 	}
 
+	public String getExistingApiKey() {
+		return existingApiKey;
+	}
+
 	/**
 	 * get the entire item representing the AlbumId + all its album sub items
 	 */
 	public List<Item> getAlbumAndSubAlbums(int albumId)
 			throws G3GalleryException {
 		List<Item> items = new ArrayList<Item>();
-		Item item = this.getItem(albumId, true);
+		Item item = this.getItem(albumId);
 		Collection<String> members = item.getMembers();
 		JSONArray urls = new JSONArray(members);
 
@@ -306,7 +319,7 @@ public class G3Client implements IG3Client {
 			String encodedUrls = URLEncoder.encode(urls.toString(), "UTF-8");
 			String sendHttpRequest = sendHttpRequest(INDEX_PHP_REST_ITEMS
 					+ "?urls=" + encodedUrls, new ArrayList<NameValuePair>(),
-					true, GET, null);
+					GET, null);
 
 			JSONTokener jsonTokener = new JSONTokener(sendHttpRequest);
 			JSONArray jsonResult = (JSONArray) jsonTokener.nextValue();
@@ -318,7 +331,7 @@ public class G3Client implements IG3Client {
 		} catch (Exception e1) {
 			throw new G3GalleryException(e1);
 		}
-		items.add(0,item);
+		items.add(0, item);
 		return items;
 	}
 

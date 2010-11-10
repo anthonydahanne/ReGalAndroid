@@ -75,6 +75,7 @@
 		<module>../regalandroid</module>
 		<module>../commons-gallery</module>
 		<module>../g2-java-client</module>
+		<module>../g3-java-client</module>
 	</modules>
 
 </project>

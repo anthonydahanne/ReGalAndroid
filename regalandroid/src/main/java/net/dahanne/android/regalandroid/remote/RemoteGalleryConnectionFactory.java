@@ -20,7 +20,6 @@ package net.dahanne.android.regalandroid.remote;
 import net.dahanne.android.regalandroid.activity.Settings;
 import net.dahanne.gallery.commons.remote.RemoteGallery;
 import net.dahanne.gallery.g2.java.client.G2ConnectionUtils;
-import net.dahanne.gallery3.client.business.G3Connection;
 import android.content.Context;
 
 /**
@@ -52,7 +51,9 @@ public class RemoteGalleryConnectionFactory {
 				break;
 			case GALLERY3:
 				remoteGallery = new G3Connection(Settings
-					.getGalleryUrl(context));
+					.getGalleryUrl(context),Settings
+					.getUsername(context),Settings
+					.getPassword(context));
 				break;
 //			case PIWIGO:
 //				remoteGallery = new G2ConnectionUtils();

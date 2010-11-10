@@ -26,7 +26,7 @@ import net.dahanne.gallery3.client.model.Item;
 
 public interface IG3Client {
 
-	Item getItem(int itemId, boolean useExistingApi)throws G3GalleryException;
+	Item getItem(int itemId)throws G3GalleryException;
 	int createItem(Entity entity,File file) throws G3GalleryException;
 	void updateItem(Entity entity)throws G3GalleryException;
 	void deleteItem(int itemId)throws G3GalleryException;
