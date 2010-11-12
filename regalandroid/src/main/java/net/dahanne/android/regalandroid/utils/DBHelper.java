@@ -104,7 +104,7 @@ public class DBHelper {
 	public void insert(final G2AndroidContext g2AndroidContext) {
 		ContentValues values = new ContentValues();
 		values.put("current_position", g2AndroidContext.currentPosition);
-		values.put("root_album", g2AndroidContext.currentAlbum.serialize());
+		values.put("current_album", g2AndroidContext.currentAlbum.serialize());
 
 		db.insert(DBHelper.DB_TABLE, null, values);
 
@@ -114,7 +114,7 @@ public class DBHelper {
 	public void update(final G2AndroidContext g2AndroidContext) {
 		ContentValues values = new ContentValues();
 		values.put("current_position", g2AndroidContext.currentPosition);
-		values.put("root_album", g2AndroidContext.currentAlbum.serialize());
+		values.put("current_album", g2AndroidContext.currentAlbum.serialize());
 		db.update(DBHelper.DB_TABLE, values, "_id=" + g2AndroidContext.id, null);
 		cleanup();
 	}

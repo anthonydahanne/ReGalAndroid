@@ -32,4 +32,5 @@ public interface IG3Client {
 	void deleteItem(int itemId)throws G3GalleryException;
 	String getApiKey(String username, String password)throws G3GalleryException;
 	List<Item> getAlbumAndSubAlbums(int albumId) throws G3GalleryException;
+	public List<Item> getPictures(int albumId) throws G3GalleryException;
 }

@@ -2,6 +2,7 @@ package net.dahanne.android.regalandroid.remote;
 
 import java.io.File;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -45,10 +46,6 @@ public class G3Connection implements RemoteGallery {
 				"Not available in G3 yet");
 	}
 
-	public Album findAlbumFromAlbumName(Album arg0, int arg1) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	public Map<Integer, Album> getAllAlbums(String arg0)
 			throws GalleryConnectionException {
@@ -73,10 +70,19 @@ public class G3Connection implements RemoteGallery {
 				"Not available in G3 yet");
 	}
 
-	public Collection<G2Picture> getPicturesFromAlbum(String arg0, int arg1)
+	public Collection<G2Picture> getPicturesFromAlbum(String galleryUrl, int albumName)
 			throws GalleryConnectionException {
-		throw new GalleryOperationNotYetSupportedException(
-				"Not available in G3 yet");
+		Collection<G2Picture> pictures = new ArrayList<G2Picture>();
+		try {
+			List<Item> picturesAsItems = client.getPictures(albumName);
+			for (Item item : picturesAsItems) {
+				pictures.add(G3ConvertUtils.itemToG2Picture(item));
+			}
+			
+		} catch (G3GalleryException e) {
+			throw new GalleryConnectionException(e);
+		}
+		return pictures;
 	}
 
 	public List<Cookie> getSessionCookies() {
@@ -115,7 +121,7 @@ public class G3Connection implements RemoteGallery {
 	public Album getAlbumAndSubAlbums(String galleryUrl, int parentAlbumId)
 			throws GalleryConnectionException {
 		
-		//dirty hack to load the root album
+		//dirty hack to load the root album, number 1 in G3
 		if(parentAlbumId==0){
 			parentAlbumId=1;
 		}

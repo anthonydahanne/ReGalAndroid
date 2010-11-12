@@ -35,6 +35,7 @@ import net.dahanne.android.regalandroid.utils.ShowUtils;
 import net.dahanne.android.regalandroid.utils.AndroidUriUtils;
 import net.dahanne.gallery.commons.model.Album;
 import net.dahanne.gallery.commons.remote.RemoteGallery;
+import net.dahanne.gallery.commons.utils.AlbumUtils;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -191,7 +192,7 @@ public class UploadPhoto extends Activity implements OnClickListener {
 		Album currentAlbum = null;
 		if (((RegalAndroidApplication) getApplication()).getCurrentAlbum() != null) {
 
-			currentAlbum = remoteGallery
+			currentAlbum = AlbumUtils
 					.findAlbumFromAlbumName(
 							application
 									.getCurrentAlbum(),

@@ -174,34 +174,6 @@ public class G2ConnectionUtilsTest extends Assert {
 	
 	
 	
-	@Test
-	public void findAlbumFromAlbumNameTest() {
-		Album rootAlbum = new Album();
-		rootAlbum.setName(999);
-		Album album1 = new Album();
-		album1.setName(1);
-		rootAlbum.getChildren().add(album1);
-		Album album2 = new Album();
-		album2.setName(2);
-		rootAlbum.getChildren().add(album2);
-		Album album3 = new Album();
-		album3.setName(3);
-		rootAlbum.getChildren().add(album3);
-		Album album4 = new Album();
-		album4.setName(4);
-		rootAlbum.getChildren().add(album4);
-		Album album31 = new Album();
-		album31.setName(31);
-		album3.getChildren().add(album31);
-		Album album311 = new Album();
-		album311.setName(311);
-		album31.getChildren().add(album311);
-		Album albumFound = g2ConnectionUtils.findAlbumFromAlbumName(rootAlbum, 311);
-		assertEquals(album311, albumFound);
-
-		assertNull(g2ConnectionUtils.findAlbumFromAlbumName(rootAlbum, 312));
-
-	}
 
 	@Test
 	public void extractG2FromPropertiesTest() {
@@ -335,44 +307,44 @@ public class G2ConnectionUtilsTest extends Assert {
 	}
 
 	
-	@Test
-	public void findSubAlbumsTest(){
-		Album rootAlbum = new Album();
-		rootAlbum.setName(999);
-		Album album1 = new Album();
-		album1.setName(1);
-		rootAlbum.getChildren().add(album1);
-		Album album2 = new Album();
-		album2.setName(2);
-		rootAlbum.getChildren().add(album2);
-		Album album3 = new Album();
-		album3.setName(3);
-		rootAlbum.getChildren().add(album3);
-		Album album4 = new Album();
-		album4.setName(4);
-		rootAlbum.getChildren().add(album4);
-		Album album31 = new Album();
-		album31.setName(31);
-		album3.getChildren().add(album31);
-		Album album311 = new Album();
-		album311.setName(311);
-		album31.getChildren().add(album311);
-		List<Album> albumsFound = g2ConnectionUtils.findSubAlbums(rootAlbum, 999);
-		List<Album> expectedSubAlbumsOfRootAlbum = new ArrayList<Album>();
-		expectedSubAlbumsOfRootAlbum.add(album1);
-		expectedSubAlbumsOfRootAlbum.add(album2);
-		expectedSubAlbumsOfRootAlbum.add(album3);
-		expectedSubAlbumsOfRootAlbum.add(album4);
-		
-		assertEquals(expectedSubAlbumsOfRootAlbum, albumsFound);
-		
-		albumsFound = g2ConnectionUtils.findSubAlbums(rootAlbum, 31);
-		List<Album> expectedSubAlbumsOfAlbum31 = new ArrayList<Album>();
-		expectedSubAlbumsOfAlbum31.add(album311);
-		
-		assertEquals(expectedSubAlbumsOfAlbum31, albumsFound);
-		
-
-	}
+//	@Test
+//	public void findSubAlbumsTest(){
+//		Album rootAlbum = new Album();
+//		rootAlbum.setName(999);
+//		Album album1 = new Album();
+//		album1.setName(1);
+//		rootAlbum.getChildren().add(album1);
+//		Album album2 = new Album();
+//		album2.setName(2);
+//		rootAlbum.getChildren().add(album2);
+//		Album album3 = new Album();
+//		album3.setName(3);
+//		rootAlbum.getChildren().add(album3);
+//		Album album4 = new Album();
+//		album4.setName(4);
+//		rootAlbum.getChildren().add(album4);
+//		Album album31 = new Album();
+//		album31.setName(31);
+//		album3.getChildren().add(album31);
+//		Album album311 = new Album();
+//		album311.setName(311);
+//		album31.getChildren().add(album311);
+//		List<Album> albumsFound = g2ConnectionUtils.findSubAlbums(rootAlbum, 999);
+//		List<Album> expectedSubAlbumsOfRootAlbum = new ArrayList<Album>();
+//		expectedSubAlbumsOfRootAlbum.add(album1);
+//		expectedSubAlbumsOfRootAlbum.add(album2);
+//		expectedSubAlbumsOfRootAlbum.add(album3);
+//		expectedSubAlbumsOfRootAlbum.add(album4);
+//		
+//		assertEquals(expectedSubAlbumsOfRootAlbum, albumsFound);
+//		
+//		albumsFound = g2ConnectionUtils.findSubAlbums(rootAlbum, 31);
+//		List<Album> expectedSubAlbumsOfAlbum31 = new ArrayList<Album>();
+//		expectedSubAlbumsOfAlbum31.add(album311);
+//		
+//		assertEquals(expectedSubAlbumsOfAlbum31, albumsFound);
+//		
+//
+//	}
 
 }

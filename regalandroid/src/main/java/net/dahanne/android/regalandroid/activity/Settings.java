@@ -20,6 +20,7 @@ package net.dahanne.android.regalandroid.activity;
 import java.io.File;
 
 import net.dahanne.android.regalandroid.R;
+import net.dahanne.android.regalandroid.RegalAndroidApplication;
 import net.dahanne.android.regalandroid.remote.RemoteGalleryConnectionFactory;
 import net.dahanne.android.regalandroid.utils.ShowUtils;
 import net.dahanne.gallery.commons.remote.RemoteGallery;
@@ -145,6 +146,9 @@ public class Settings extends PreferenceActivity {
 		super.onPause();
 		//we are about to leave the settings activity; let's clean things up
 		RemoteGalleryConnectionFactory.resetInstance();
+		((RegalAndroidApplication) this.getApplication()).setCurrentAlbum(null);
+		((RegalAndroidApplication) this.getApplication()).setCurrentPosition(0);
+		
 	}
 
 }

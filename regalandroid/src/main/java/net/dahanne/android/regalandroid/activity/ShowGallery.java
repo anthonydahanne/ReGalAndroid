@@ -399,9 +399,9 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 					if (albumPictures.size() == 0) {
 						finish();
 					}
-					if (((RegalAndroidApplication) getApplication())
+					if (application
 							.getCurrentPosition() >= albumPictures.size()) {
-						((RegalAndroidApplication) getApplication())
+						application
 								.setCurrentPosition(0);
 					}
 					// recover current position in current album
@@ -455,14 +455,19 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 		// the user tries to get back to the parent album
 		
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
-			Album currentAlbum = remoteGallery
-					.findAlbumFromAlbumName(
-							application
-									.getCurrentAlbum(),
-							application
-									.getCurrentAlbum().getName());
-			if (currentAlbum != null && currentAlbum.getChildren().isEmpty()) {
-				application.setCurrentAlbum(currentAlbum);
+//			Album currentAlbum = remoteGallery
+//					.findAlbumFromAlbumName(
+//							application
+//									.getCurrentAlbum(),
+//							application
+//									.getCurrentAlbum().getName());
+//			if (currentAlbum != null && currentAlbum.getChildren().isEmpty()) {
+//				application.setCurrentAlbum(currentAlbum);
+//			}
+			//we are leaving the gallery view, so we want to remember we want to see the parent album
+			//unless there are several albums; in this case we want to browse the album
+			if(application.getCurrentAlbum().getChildren().size()==0){
+				application.setCurrentAlbum(application.getCurrentAlbum().getParent());
 			}
 			this.finish();
 			return true;

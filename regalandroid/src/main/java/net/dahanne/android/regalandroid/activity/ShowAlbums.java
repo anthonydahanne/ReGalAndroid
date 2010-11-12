@@ -31,6 +31,7 @@ import net.dahanne.android.regalandroid.utils.AlbumComparator;
 import net.dahanne.android.regalandroid.utils.ShowUtils;
 import net.dahanne.gallery.commons.model.Album;
 import net.dahanne.gallery.commons.remote.RemoteGallery;
+import net.dahanne.gallery.commons.utils.AlbumUtils;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -75,8 +76,8 @@ public class ShowAlbums extends ListActivity implements OnItemClickListener {
 	public void onItemClick(AdapterView<?> arg0, View arg1, int albumPosition,
 			long arg3) {
 		Intent intent;
-		Album newSelectedAlbum = remoteGallery.findAlbumFromAlbumName(
-				((RegalAndroidApplication) getApplication()).getCurrentAlbum(),
+		Album newSelectedAlbum = AlbumUtils.findAlbumFromAlbumName(
+				application.getCurrentAlbum(),
 				((Album) getListAdapter().getItem(albumPosition)).getName());
 		if (newSelectedAlbum != null
 				&& (newSelectedAlbum.getName() == application.getCurrentAlbum()
@@ -244,6 +245,11 @@ public class ShowAlbums extends ListActivity implements OnItemClickListener {
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		// the user tries to get back to the parent album
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
+			//we are leaving the gallery view, so we want to remember we want to see the parent album
+			if(application.getCurrentAlbum().getParent()!=null){
+				application.setCurrentAlbum(application.getCurrentAlbum().getParent());
+			}
+			this.finish();
 //			Album currentAlbum = remoteGallery
 //					.findAlbumFromAlbumName(
 //							application

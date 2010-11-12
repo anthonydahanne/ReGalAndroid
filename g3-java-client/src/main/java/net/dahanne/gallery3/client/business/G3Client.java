@@ -20,7 +20,9 @@ package net.dahanne.gallery3.client.business;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
@@ -29,6 +31,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+import net.dahanne.gallery.commons.remote.GalleryConnectionException;
 import net.dahanne.gallery3.client.business.exceptions.G3BadRequestException;
 import net.dahanne.gallery3.client.business.exceptions.G3ForbiddenException;
 import net.dahanne.gallery3.client.business.exceptions.G3GalleryException;
@@ -77,7 +80,12 @@ public class G3Client implements IG3Client {
 	private String username;
 
 	public G3Client(String galleryUrl) {
-		this.galleryItemUrl = galleryUrl + "/";
+		if(!galleryUrl.endsWith("/")){
+			this.galleryItemUrl = galleryUrl + "/";
+		}else{
+			this.galleryItemUrl = galleryUrl;
+		}
+		
 	}
 
 	public Item getItem(int itemId) throws G3GalleryException {
@@ -158,7 +166,7 @@ public class G3Client implements IG3Client {
 			throws G3GalleryException {
 
 		String result;
-		HttpClient defaultHttpClient = new DefaultHttpClient();
+		
 
 		// do we need to login ? do we have the apikey ?
 		if (username != null && existingApiKey == null) {
@@ -175,81 +183,16 @@ public class G3Client implements IG3Client {
 		}
 
 		try {
-			HttpRequestBase httpMethod;
-			if (POST.equals(requestMethod)) {
-				httpMethod = new HttpPost(galleryItemUrl + appendToGalleryUrl);
-				httpMethod.setHeader(X_GALLERY_REQUEST_METHOD, requestMethod);
-				if (file != null) {
-					MultipartEntity multipartEntity = new MultipartEntity();
-
-					String string = nameValuePairs.toString();
-					// dirty fix to remove the enclosing entity{}
-					String substring = string.substring(string.indexOf("{"),
-							string.lastIndexOf("}") + 1);
-
-					StringBody contentBody = new StringBody(substring,
-							Charset.forName("UTF-8"));
-					// System.out.println(substring);
-					multipartEntity.addPart("entity", contentBody);
-					FileBody fileBody = new FileBody(file);
-					multipartEntity.addPart("file", fileBody);
-					((HttpPost) httpMethod).setEntity(multipartEntity);
-				} else {
-					((HttpPost) httpMethod).setEntity(new UrlEncodedFormEntity(
-							nameValuePairs));
-				}
-			} else if (PUT.equals(requestMethod)) {
-				httpMethod = new HttpPost(galleryItemUrl + appendToGalleryUrl);
-				httpMethod.setHeader(X_GALLERY_REQUEST_METHOD, requestMethod);
-				((HttpPost) httpMethod).setEntity(new UrlEncodedFormEntity(
-						nameValuePairs));
-			} else if (DELETE.equals(requestMethod)) {
-				httpMethod = new HttpGet(galleryItemUrl + appendToGalleryUrl);
-				httpMethod.setHeader(X_GALLERY_REQUEST_METHOD, requestMethod);
-			} else {
-				httpMethod = new HttpGet(galleryItemUrl + appendToGalleryUrl);
-			}
-			if(existingApiKey!=null){
-				httpMethod.setHeader(X_GALLERY_REQUEST_KEY, existingApiKey);
-			}
-			HttpResponse response = null;
-
-			String[] patternsArray = new String[3];
-			patternsArray[0] = "EEE, dd MMM-yyyy-HH:mm:ss z";
-			patternsArray[1] = "EEE, dd MMM yyyy HH:mm:ss z";
-			patternsArray[2] = "EEE, dd-MMM-yyyy HH:mm:ss z";
-			try {
-				// be extremely careful here, android httpclient needs it to be
-				// an
-				// array of string, not an arraylist
-				defaultHttpClient.getParams().setParameter(
-						CookieSpecPNames.DATE_PATTERNS, patternsArray);
-				response = defaultHttpClient.execute(httpMethod);
-			} catch (ClassCastException e) {
-				List<String> patternsList = Arrays.asList(patternsArray);
-				defaultHttpClient.getParams().setParameter(
-						CookieSpecPNames.DATE_PATTERNS, patternsList);
-				response = defaultHttpClient.execute(httpMethod);
-			}
-
-			int responseStatusCode = response.getStatusLine().getStatusCode();
-
-			switch (responseStatusCode) {
-			case HttpURLConnection.HTTP_CREATED:
-				break;
-			case HttpURLConnection.HTTP_OK:
-				break;
-			case HttpURLConnection.HTTP_BAD_REQUEST:
-				throw new G3BadRequestException();
-			case HttpURLConnection.HTTP_FORBIDDEN:
-				throw new G3ForbiddenException();
-			case HttpURLConnection.HTTP_NOT_FOUND:
-				throw new G3ItemNotFoundException();
-			default:
-				throw new G3GalleryException("HTTP code " + responseStatusCode);
-			}
-
-			HttpEntity responseEntity = response.getEntity();
+			HttpEntity responseEntity = extracted(appendToGalleryUrl,
+					nameValuePairs, requestMethod, file);
+			
+			
+			
+			
+			
+			
+			
+			
 			responseEntity = new BufferedHttpEntity(responseEntity);
 
 			BufferedReader reader = new BufferedReader(new InputStreamReader(
@@ -273,6 +216,90 @@ public class G3Client implements IG3Client {
 			throw new G3GalleryException(e.getMessage());
 		}
 		return result;
+	}
+
+	private HttpEntity extracted(String appendToGalleryUrl,
+			List<NameValuePair> nameValuePairs, String requestMethod,
+			File file)
+			throws UnsupportedEncodingException, IOException,
+			ClientProtocolException, G3GalleryException {
+		HttpClient defaultHttpClient = new DefaultHttpClient();
+		HttpRequestBase httpMethod;
+		if (POST.equals(requestMethod)) {
+			httpMethod = new HttpPost(galleryItemUrl + appendToGalleryUrl);
+			httpMethod.setHeader(X_GALLERY_REQUEST_METHOD, requestMethod);
+			if (file != null) {
+				MultipartEntity multipartEntity = new MultipartEntity();
+
+				String string = nameValuePairs.toString();
+				// dirty fix to remove the enclosing entity{}
+				String substring = string.substring(string.indexOf("{"),
+						string.lastIndexOf("}") + 1);
+
+				StringBody contentBody = new StringBody(substring,
+						Charset.forName("UTF-8"));
+				// System.out.println(substring);
+				multipartEntity.addPart("entity", contentBody);
+				FileBody fileBody = new FileBody(file);
+				multipartEntity.addPart("file", fileBody);
+				((HttpPost) httpMethod).setEntity(multipartEntity);
+			} else {
+				((HttpPost) httpMethod).setEntity(new UrlEncodedFormEntity(
+						nameValuePairs));
+			}
+		} else if (PUT.equals(requestMethod)) {
+			httpMethod = new HttpPost(galleryItemUrl + appendToGalleryUrl);
+			httpMethod.setHeader(X_GALLERY_REQUEST_METHOD, requestMethod);
+			((HttpPost) httpMethod).setEntity(new UrlEncodedFormEntity(
+					nameValuePairs));
+		} else if (DELETE.equals(requestMethod)) {
+			httpMethod = new HttpGet(galleryItemUrl + appendToGalleryUrl);
+			httpMethod.setHeader(X_GALLERY_REQUEST_METHOD, requestMethod);
+		} else {
+			httpMethod = new HttpGet(galleryItemUrl + appendToGalleryUrl);
+		}
+		if (existingApiKey != null) {
+			httpMethod.setHeader(X_GALLERY_REQUEST_KEY, existingApiKey);
+		}
+		HttpResponse response = null;
+
+		String[] patternsArray = new String[3];
+		patternsArray[0] = "EEE, dd MMM-yyyy-HH:mm:ss z";
+		patternsArray[1] = "EEE, dd MMM yyyy HH:mm:ss z";
+		patternsArray[2] = "EEE, dd-MMM-yyyy HH:mm:ss z";
+		try {
+			// be extremely careful here, android httpclient needs it to be
+			// an
+			// array of string, not an arraylist
+			defaultHttpClient.getParams().setParameter(
+					CookieSpecPNames.DATE_PATTERNS, patternsArray);
+			response = defaultHttpClient.execute(httpMethod);
+		} catch (ClassCastException e) {
+			List<String> patternsList = Arrays.asList(patternsArray);
+			defaultHttpClient.getParams().setParameter(
+					CookieSpecPNames.DATE_PATTERNS, patternsList);
+			response = defaultHttpClient.execute(httpMethod);
+		}
+
+		int responseStatusCode = response.getStatusLine().getStatusCode();
+
+		switch (responseStatusCode) {
+		case HttpURLConnection.HTTP_CREATED:
+			break;
+		case HttpURLConnection.HTTP_OK:
+			break;
+		case HttpURLConnection.HTTP_BAD_REQUEST:
+			throw new G3BadRequestException();
+		case HttpURLConnection.HTTP_FORBIDDEN:
+			throw new G3ForbiddenException();
+		case HttpURLConnection.HTTP_NOT_FOUND:
+			throw new G3ItemNotFoundException();
+		default:
+			throw new G3GalleryException("HTTP code " + responseStatusCode);
+		}
+
+		HttpEntity responseEntity = response.getEntity();
+		return responseEntity;
 	}
 
 	public String getApiKey(String username, String password)
@@ -311,14 +338,41 @@ public class G3Client implements IG3Client {
 	public List<Item> getAlbumAndSubAlbums(int albumId)
 			throws G3GalleryException {
 		List<Item> items = new ArrayList<Item>();
+		Item item = getItems(albumId, items, "album");
+		// we add to the list the parent album
+		items.add(0, item);
+		return items;
+	}
+
+	/**
+	 * Get the photos of the album albumId
+	 * 
+	 * @param albumId
+	 * @return
+	 * @throws G3GalleryException
+	 */
+	public List<Item> getPictures(int albumId) throws G3GalleryException {
+		List<Item> items = new ArrayList<Item>();
+		getItems(albumId, items, "photo");
+		return items;
+	}
+
+	private Item getItems(int albumId, List<Item> items, String type)
+			throws G3GalleryException {
 		Item item = this.getItem(albumId);
 		Collection<String> members = item.getMembers();
 		JSONArray urls = new JSONArray(members);
-
 		try {
-			String encodedUrls = URLEncoder.encode(urls.toString(), "UTF-8");
-			String sendHttpRequest = sendHttpRequest(INDEX_PHP_REST_ITEMS
-					+ "?urls=" + encodedUrls, new ArrayList<NameValuePair>(),
+			String encodedUrls;
+			encodedUrls = URLEncoder.encode(urls.toString(), "UTF-8");
+			StringBuilder requestToAppend = new StringBuilder();
+			requestToAppend.append(INDEX_PHP_REST_ITEMS);
+			requestToAppend.append("?urls=");
+			requestToAppend.append(encodedUrls);
+			requestToAppend.append("&type=");
+			requestToAppend.append(type);
+			String sendHttpRequest = sendHttpRequest(
+					requestToAppend.toString(), new ArrayList<NameValuePair>(),
 					GET, null);
 
 			JSONTokener jsonTokener = new JSONTokener(sendHttpRequest);
@@ -327,12 +381,30 @@ public class G3Client implements IG3Client {
 				items.add(ItemUtils.parseJSONToItem((JSONObject) jsonResult
 						.get(i)));
 			}
-
-		} catch (Exception e1) {
-			throw new G3GalleryException(e1);
+		} catch (UnsupportedEncodingException e) {
+			throw new G3GalleryException(e);
+		} catch (JSONException e) {
+			throw new G3GalleryException(e);
 		}
-		items.add(0, item);
-		return items;
+		return item;
+	}
+
+	public InputStream getPhotoInputStream(String url)
+			throws G3GalleryException {
+		InputStream content = null;
+		String appendToGalleryUrl =  url.substring(url.indexOf(galleryItemUrl)+galleryItemUrl.length());
+		try {
+			content = extracted(appendToGalleryUrl, null, GET, null).getContent();
+		} catch (IllegalStateException e) {
+			throw new G3GalleryException(e);
+		} catch (UnsupportedEncodingException e) {
+			throw new G3GalleryException(e);
+		} catch (ClientProtocolException e) {
+			throw new G3GalleryException(e);
+		} catch (IOException e) {
+			throw new G3GalleryException(e);
+		}
+		return content;
 	}
 
 }

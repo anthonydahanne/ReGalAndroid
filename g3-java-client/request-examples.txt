@@ -1,7 +1,11 @@
-http://g3.dahanne.net/index.php/rest/items?http://g3.dahanne.net/index.php/rest/item/1&output=html
-http://g3.dahanne.net/index.php/rest/items?http://g3.dahanne.net/index.php/rest/item/1&output=html
+----------Item remote api examples
+#get the item 172
+http://g3.dahanne.net/index.php/rest/item/172?output=html
 
-/index.php/rest/items?urls=[&quot;http://g3.dahanne.net/index.php/rest/item/172&quot;,&quot;http://g3.dahanne.net/index.php/rest/item/3&quot;,&quot;]
 
-/index.php/rest/items?urls=["http://g3.dahanne.net/index.php/rest/item/4","http://g3.dahanne.net/index.php/rest/item/5"] 
-http://g3.dahanne.net/index.php/rest/items?ancestors_for=http://g3.dahanne.net/index.php/rest/item/2&output=html
+----------Items remote api examples
+#get the items 4 and 5
+http://g3.dahanne.net//index.php/rest/items?urls=[%22http://g3.dahanne.net/index.php/rest/item/4%22,%22http://g3.dahanne.net/index.php/rest/item/5%22]%20&output=html
+
+#get the items 173,178,179 and 180, but only the photos items among them
+http://g3.dahanne.net//index.php/rest/items?urls=[%22http://g3.dahanne.net/index.php/rest/item/173%22,%22http://g3.dahanne.net/index.php/rest/item/178%22,%22http://g3.dahanne.net/index.php/rest/item/179%22,%22http://g3.dahanne.net/index.php/rest/item/180%22]%20&type=photo&output=html

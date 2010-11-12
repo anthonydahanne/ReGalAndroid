@@ -36,6 +36,7 @@ import net.dahanne.gallery.commons.model.G2Picture;
 import net.dahanne.gallery.commons.remote.GalleryConnectionException;
 import net.dahanne.gallery.commons.remote.ImpossibleToLoginException;
 import net.dahanne.gallery.commons.remote.RemoteGallery;
+import net.dahanne.gallery.commons.utils.AlbumUtils;
 import net.dahanne.gallery.g2.java.client.ssl.FakeSocketFactory;
 
 import org.apache.commons.lang.StringEscapeUtils;
@@ -559,43 +560,27 @@ public class G2ConnectionUtils implements RemoteGallery {
 
 	}
 
-	public Album findAlbumFromAlbumName(Album rootAlbum, int albumName) {
-		if (rootAlbum.getName() == albumName) {
-			return rootAlbum;
-		}
-		for (Album album : rootAlbum.getChildren()) {
-			if (album.getName() == albumName) {
-				return album;
-			}
-			Album fromAlbumName = findAlbumFromAlbumName(album, albumName);
-			if (fromAlbumName != null) {
-				return fromAlbumName;
-			}
 
-		}
-		return null;
-	}
-
-	public List<Album> findSubAlbums(Album rootAlbum, int i) {
-		List<Album> subAlbums = new ArrayList<Album>();
-		if (rootAlbum == null) {
-			return subAlbums;
-		}
-		if (rootAlbum.getName() == i) {
-			return rootAlbum.getChildren();
-		}
-		for (Album album : rootAlbum.getChildren()) {
-			if (album.getName() == i) {
-				return album.getChildren();
-			}
-			Album fromAlbumName = findAlbumFromAlbumName(album, i);
-			if (fromAlbumName != null) {
-				return fromAlbumName.getChildren();
-			}
-
-		}
-		return null;
-	}
+//	public List<Album> findSubAlbums(Album rootAlbum, int i) {
+//		List<Album> subAlbums = new ArrayList<Album>();
+//		if (rootAlbum == null) {
+//			return subAlbums;
+//		}
+//		if (rootAlbum.getName() == i) {
+//			return rootAlbum.getChildren();
+//		}
+//		for (Album album : rootAlbum.getChildren()) {
+//			if (album.getName() == i) {
+//				return album.getChildren();
+//			}
+//			Album fromAlbumName = findAlbumFromAlbumName(album, i);
+//			if (fromAlbumName != null) {
+//				return fromAlbumName.getChildren();
+//			}
+//
+//		}
+//		return null;
+//	}
 
 	public Album retrieveRootAlbumAndItsHierarchy(String galleryUrl)
 			throws GalleryConnectionException {
@@ -787,7 +772,7 @@ public class G2ConnectionUtils implements RemoteGallery {
 		if(parentAlbumId==0){
 			return rootAlbum;
 		}
-		return findAlbumFromAlbumName(rootAlbum, parentAlbumId);
+		return  AlbumUtils.findAlbumFromAlbumName(rootAlbum, parentAlbumId);
 	}
 
 }

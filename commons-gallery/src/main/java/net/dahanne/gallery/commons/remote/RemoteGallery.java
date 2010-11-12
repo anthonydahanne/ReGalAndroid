@@ -78,8 +78,6 @@ public interface RemoteGallery {
 	public abstract Map<Integer, Album> getAllAlbums(String galleryUrl)
 			throws GalleryConnectionException;
 
-	public abstract Album findAlbumFromAlbumName(Album rootAlbum, int name);
-
 	public Album getAlbumAndSubAlbums(String galleryUrl,int parentAlbumId) throws GalleryConnectionException;
 	
 	
