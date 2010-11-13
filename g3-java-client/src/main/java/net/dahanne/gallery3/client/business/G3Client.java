@@ -335,6 +335,19 @@ public class G3Client implements IG3Client {
 	/**
 	 * get the entire item representing the AlbumId + all its album sub items
 	 */
+	public List<Item> getAlbumAndSubAlbumsAndPictures(int albumId)
+			throws G3GalleryException {
+		List<Item> items = new ArrayList<Item>();
+		Item item = getItems(albumId, items, "photo,album");
+		// we add to the list the parent album
+		items.add(0, item);
+		return items;
+	}
+	
+	
+	/**
+	 * get the entire item representing the AlbumId + all its album sub items
+	 */
 	public List<Item> getAlbumAndSubAlbums(int albumId)
 			throws G3GalleryException {
 		List<Item> items = new ArrayList<Item>();

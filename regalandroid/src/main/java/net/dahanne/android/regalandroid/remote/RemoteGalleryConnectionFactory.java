@@ -47,7 +47,10 @@ public class RemoteGalleryConnectionFactory {
 					.getGalleryConnectionType(context) .equals("") ? 0 : Integer.valueOf(connectionType);
 			switch (galleryConnectionType) {
 			case GALLERY2:
-				remoteGallery = new G2ConnectionUtils();
+				remoteGallery = new G2ConnectionUtils(Settings
+						.getGalleryUrl(context),Settings
+						.getUsername(context),Settings
+						.getPassword(context));
 				break;
 			case GALLERY3:
 				remoteGallery = new G3Connection(Settings

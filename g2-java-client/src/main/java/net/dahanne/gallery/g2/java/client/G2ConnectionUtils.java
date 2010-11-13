@@ -32,7 +32,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import net.dahanne.gallery.commons.model.Album;
-import net.dahanne.gallery.commons.model.G2Picture;
+import net.dahanne.gallery.commons.model.Picture;
 import net.dahanne.gallery.commons.remote.GalleryConnectionException;
 import net.dahanne.gallery.commons.remote.ImpossibleToLoginException;
 import net.dahanne.gallery.commons.remote.RemoteGallery;
@@ -70,6 +70,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.params.HttpProtocolParams;
+
 
 /**
  * 
@@ -109,6 +110,8 @@ public class G2ConnectionUtils implements RemoteGallery {
 			USER_AGENT_VALUE);
 	private static final String TAG = "G2Utils";
 	static final String GR_STAT_SUCCESS = "0";
+	private static final String BASE_URL_DEF = "main.php?g2_view=core.DownloadItem&g2_itemId=";
+	private static final String EMBEDDED_GALLERY_BASE_URL_DEF = "&g2_view=core.DownloadItem&g2_itemId=";
 
 	/**
 	 * instance variables
@@ -119,13 +122,20 @@ public class G2ConnectionUtils implements RemoteGallery {
 
 	private final DefaultHttpClient defaultHttpClient;
 	private Album rootAlbum;
+	private String galleryUrl;
+	private String username;
+	private String password;
 
-	public G2ConnectionUtils() {
+
+	public G2ConnectionUtils(String galleryUrl, String username, String password) {
+		this.galleryUrl = galleryUrl;
+		this.username=username;
+		this.password=password;
+		
 		sessionCookies.add(new BasicClientCookie("", ""));
 		// the httpclient initialization is heavy, we create one for
 		// G2ConnectionUtils
 		defaultHttpClient = createHttpClient();
-
 	}
 
 	/*
@@ -470,21 +480,22 @@ public class G2ConnectionUtils implements RemoteGallery {
 	 * @param fetchImages
 	 * @return
 	 */
-	public Collection<G2Picture> extractG2PicturesFromProperties(
+	public Collection<Picture> extractG2PicturesFromProperties(
 			HashMap<String, String> fetchImages) {
-		Map<Integer, G2Picture> picturesMap = new HashMap<Integer, G2Picture>();
+		Map<Integer, Picture> picturesMap = new HashMap<Integer, Picture>();
 		List<Integer> tmpImageNumbers = new ArrayList<Integer>();
 		int imageNumber = 0;
+		String baseUrl = getBaseUrl();
 		for (Entry<String, String> entry : fetchImages.entrySet()) {
 			if (entry.getKey().contains("image")
 					&& !entry.getKey().contains("image_count")) {
 				// what is the picture id of this field ?
 				imageNumber = new Integer(entry.getKey().substring(
 						entry.getKey().lastIndexOf(".") + 1));
-				G2Picture picture = null;
+				Picture picture = null;
 				// a new picture, let's create it!
 				if (!tmpImageNumbers.contains(imageNumber)) {
-					picture = new G2Picture();
+					picture = new Picture();
 					picture.setId(imageNumber);
 					picturesMap.put(imageNumber, picture);
 					tmpImageNumbers.add(imageNumber);
@@ -495,40 +506,41 @@ public class G2ConnectionUtils implements RemoteGallery {
 					picture = picturesMap.get(imageNumber);
 				}
 
-				// TODO : change this, using album_count, loop on it, as we know
-				// that the number at the end is between 1 and album_count
 				try {
 					if (entry.getKey().contains("image.title.")) {
 						picture.setTitle(entry.getValue());
+						picture.setName(entry.getValue());
+						
 					} else if (entry.getKey().contains("image.thumbName.")) {
-						picture.setThumbName(entry.getValue());
+						picture.setThumbUrl(baseUrl+entry.getValue());
 					} else if (entry.getKey().contains("image.thumb_width.")) {
 						picture.setThumbWidth(new Integer(entry.getValue()));
 					} else if (entry.getKey().contains("image.thumb_height.")) {
 						picture.setThumbHeight(new Integer(entry.getValue()));
 					} else if (entry.getKey().contains("image.resizedName.")) {
-						picture.setResizedName(entry.getValue());
+						picture.setResizedUrl(baseUrl+entry.getValue());
 					} else if (entry.getKey().contains("image.resized_width.")) {
 						picture.setResizedWidth(new Integer(entry.getValue()));
 					} else if (entry.getKey().contains("image.resized_height.")) {
 						picture.setResizedHeight(new Integer(entry.getValue()));
 					} else if (entry.getKey().contains("image.name.")) {
-						picture.setName(entry.getValue());
+						picture.setFileUrl( baseUrl+ entry.getValue());
 					} else if (entry.getKey().contains("image.raw_width.")) {
-						picture.setRawWidth(new Integer(entry.getValue()));
+						picture.setWidth(new Integer(entry.getValue()));
 					} else if (entry.getKey().contains("image.raw_height.")) {
-						picture.setRawHeight(new Integer(entry.getValue()));
+						picture.setHeight(new Integer(entry.getValue()));
 					} else if (entry.getKey().contains("image.raw_filesize.")) {
-						picture.setRawFilesize(new Integer(entry.getValue()));
+						picture.setFileSize(new Integer(entry.getValue()));
 					} else if (entry.getKey().contains("image.caption.")) {
 						picture.setCaption(entry.getValue());
 					} else if (entry.getKey().contains("image.forceExtension.")) {
 						picture.setForceExtension(entry.getValue());
 					} else if (entry.getKey().contains("image.hidden.")) {
 						picture.setHidden(Boolean.valueOf(entry.getValue()));
-					} else if (entry.getKey().contains("image.clicks.")) {
-						picture.setImageClicks(new Integer(entry.getValue()));
-					}
+					} 
+//					else if (entry.getKey().contains("image.clicks.")) {
+//						picture.setImageClicks(new Integer(entry.getValue()));
+//					}
 					// else if (entry.getKey().contains(
 					// "image.capturedate.year.")) {
 					// picture.setCaptureDateYear(entry.getValue());
@@ -695,58 +707,58 @@ public class G2ConnectionUtils implements RemoteGallery {
 
 	}
 
-	public G2Picture extractG2PicturePropertiesFromProperties(
-			HashMap<String, String> properties, long itemId) {
-		G2Picture picture = null;
-		picture = new G2Picture();
-		picture.setId(itemId);
+//	public Picture extractG2PicturePropertiesFromProperties(
+//			HashMap<String, String> properties, long itemId) {
+//		Picture picture = null;
+//		picture = new Picture();
+//		picture.setId(itemId);
+//
+//		for (Entry<String, String> entry : properties.entrySet()) {
+//			if (entry.getKey().contains("image")) {
+//				// that the number at the end is between 1 and album_count
+//				try {
+//					if (entry.getKey().contains("image.title")) {
+//						picture.setTitle(entry.getValue());
+//					} else if (entry.getKey().contains("image.thumbName")) {
+//						picture.setThumbUrl(entry.getValue());
+//					} else if (entry.getKey().contains("image.thumb_width")) {
+//						picture.setThumbWidth(new Integer(entry.getValue()));
+//					} else if (entry.getKey().contains("image.thumb_height")) {
+//						picture.setThumbHeight(new Integer(entry.getValue()));
+//					} else if (entry.getKey().contains("image.resizedName")) {
+//						picture.setResizedUrl(entry.getValue());
+//					} else if (entry.getKey().contains("image.resized_width")) {
+//						picture.setResizedWidth(new Integer(entry.getValue()));
+//					} else if (entry.getKey().contains("image.resized_height")) {
+//						picture.setResizedHeight(new Integer(entry.getValue()));
+//					} else if (entry.getKey().contains("image.name")) {
+//						picture.setName(entry.getValue());
+//					} else if (entry.getKey().contains("image.raw_width")) {
+//						picture.setWidth(new Integer(entry.getValue()));
+//					} else if (entry.getKey().contains("image.raw_height")) {
+//						picture.setHeight(new Integer(entry.getValue()));
+//					} else if (entry.getKey().contains("image.raw_filesize")) {
+//						picture.setFileSize(new Integer(entry.getValue()));
+//					} else if (entry.getKey().contains("image.caption")) {
+//						picture.setCaption(entry.getValue());
+//					} else if (entry.getKey().contains("image.forceExtension")) {
+//						picture.setForceExtension(entry.getValue());
+//					} else if (entry.getKey().contains("image.hidden")) {
+//						picture.setHidden(Boolean.getBoolean(entry.getValue()));
+//					}
+//
+//				} catch (NumberFormatException nfe) {
+//					// System.out.println("problem dealing with imageNumber :"
+//					// + imageNumber);
+//
+//				}
+//
+//			}
+//		}
+//		return picture;
+//	}
 
-		for (Entry<String, String> entry : properties.entrySet()) {
-			if (entry.getKey().contains("image")) {
-				// that the number at the end is between 1 and album_count
-				try {
-					if (entry.getKey().contains("image.title")) {
-						picture.setTitle(entry.getValue());
-					} else if (entry.getKey().contains("image.thumbName")) {
-						picture.setThumbName(entry.getValue());
-					} else if (entry.getKey().contains("image.thumb_width")) {
-						picture.setThumbWidth(new Integer(entry.getValue()));
-					} else if (entry.getKey().contains("image.thumb_height")) {
-						picture.setThumbHeight(new Integer(entry.getValue()));
-					} else if (entry.getKey().contains("image.resizedName")) {
-						picture.setResizedName(entry.getValue());
-					} else if (entry.getKey().contains("image.resized_width")) {
-						picture.setResizedWidth(new Integer(entry.getValue()));
-					} else if (entry.getKey().contains("image.resized_height")) {
-						picture.setResizedHeight(new Integer(entry.getValue()));
-					} else if (entry.getKey().contains("image.name")) {
-						picture.setName(entry.getValue());
-					} else if (entry.getKey().contains("image.raw_width")) {
-						picture.setRawWidth(new Integer(entry.getValue()));
-					} else if (entry.getKey().contains("image.raw_height")) {
-						picture.setRawHeight(new Integer(entry.getValue()));
-					} else if (entry.getKey().contains("image.raw_filesize")) {
-						picture.setRawFilesize(new Integer(entry.getValue()));
-					} else if (entry.getKey().contains("image.caption")) {
-						picture.setCaption(entry.getValue());
-					} else if (entry.getKey().contains("image.forceExtension")) {
-						picture.setForceExtension(entry.getValue());
-					} else if (entry.getKey().contains("image.hidden")) {
-						picture.setHidden(Boolean.getBoolean(entry.getValue()));
-					}
-
-				} catch (NumberFormatException nfe) {
-					// System.out.println("problem dealing with imageNumber :"
-					// + imageNumber);
-
-				}
-
-			}
-		}
-		return picture;
-	}
-
-	public Collection<G2Picture> getPicturesFromAlbum(String galleryUrl,
+	public Collection<Picture> getPicturesFromAlbum(String galleryUrl,
 			int albumName) throws GalleryConnectionException {
 		return extractG2PicturesFromProperties(fetchImages(galleryUrl,
 				albumName));
@@ -775,4 +787,15 @@ public class G2ConnectionUtils implements RemoteGallery {
 		return  AlbumUtils.findAlbumFromAlbumName(rootAlbum, parentAlbumId);
 	}
 
+	/** Get the baseUrl */
+	String getBaseUrl() {
+		// bug #25 : for embedded gallery, should not add main.php
+		if (this.isEmbeddedGallery(galleryUrl)) {
+			return new StringBuilder().append(galleryUrl).append(EMBEDDED_GALLERY_BASE_URL_DEF).toString();
+		}
+		return new StringBuilder().append(galleryUrl).append("/").append(BASE_URL_DEF).toString();
+
+	}
+	
+	
 }

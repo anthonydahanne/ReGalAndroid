@@ -8,13 +8,13 @@ import java.util.List;
 import java.util.Map;
 
 import net.dahanne.gallery.commons.model.Album;
-import net.dahanne.gallery.commons.model.G2Picture;
+import net.dahanne.gallery.commons.model.Picture;
 
 import org.apache.http.cookie.Cookie;
 
 public interface RemoteGallery {
 
-	public Collection<G2Picture> getPicturesFromAlbum(String galleryUrl,
+	public Collection<Picture> getPicturesFromAlbum(String galleryUrl,
 			int albumName) throws GalleryConnectionException;
 
 	/**
@@ -81,6 +81,5 @@ public interface RemoteGallery {
 	public Album getAlbumAndSubAlbums(String galleryUrl,int parentAlbumId) throws GalleryConnectionException;
 	
 	
-	boolean isEmbeddedGallery(String url);
 
 }

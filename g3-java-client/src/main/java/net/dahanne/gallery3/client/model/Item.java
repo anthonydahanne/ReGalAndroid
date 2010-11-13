@@ -20,6 +20,7 @@ package net.dahanne.gallery3.client.model;
 import java.util.Collection;
 import java.util.HashSet;
 
+
 public class Item {
 
 	private String url;
@@ -60,5 +61,12 @@ public class Item {
 	public Collection<String> getMembers() {
 		return members;
 	}
+	@Override
+	public String toString() {
+		return new StringBuilder().append(" url : ").append(url)
+		.append(" entity : ").append(entity.toString() )
+		.toString();
+	}
+	
 
 }

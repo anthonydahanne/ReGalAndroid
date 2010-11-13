@@ -104,7 +104,9 @@ public class DBHelper {
 	public void insert(final G2AndroidContext g2AndroidContext) {
 		ContentValues values = new ContentValues();
 		values.put("current_position", g2AndroidContext.currentPosition);
-		values.put("current_album", g2AndroidContext.currentAlbum.serialize());
+		if(g2AndroidContext.currentAlbum!=null){
+			values.put("current_album", g2AndroidContext.currentAlbum.serialize());
+		}
 
 		db.insert(DBHelper.DB_TABLE, null, values);
 
@@ -139,8 +141,11 @@ public class DBHelper {
 				g2AndroidContext = new G2AndroidContext();
 				g2AndroidContext.id = c.getLong(0);
 				g2AndroidContext.currentPosition = c.getInt(1);
-				g2AndroidContext.currentAlbum = Album.unserializeAlbum(c
-						.getBlob(2));
+				byte[] blob = c
+						.getBlob(2);
+				if(blob!=null){
+					g2AndroidContext.currentAlbum = Album.unserializeAlbum(blob);
+				}
 
 			}
 		} catch (SQLException e) {

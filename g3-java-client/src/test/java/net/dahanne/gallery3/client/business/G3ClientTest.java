@@ -28,7 +28,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import net.dahanne.gallery3.client.business.exceptions.G3BadRequestException;
 import net.dahanne.gallery3.client.business.exceptions.G3ForbiddenException;
@@ -140,7 +142,6 @@ public class G3ClientTest {
 			if (album.getEntity().getId() == createdAlbumId) {
 				foundRecentlyAddedAlbum = true;
 			}
-			// we test if there are only albums returned by the request
 		}
 		assertTrue(foundRecentlyAddedAlbum);
 
@@ -152,6 +153,30 @@ public class G3ClientTest {
 			}
 		}
 	}
+	
+	
+
+	@Test
+	public void getAlbumAndSubAlbumsAndPicturesTest() throws G3GalleryException {
+		List<Item> albumAndSubAlbumsAndPictures = itemClient.getAlbumAndSubAlbumsAndPictures(172);
+		
+		Map<Integer,String> actual =  new HashMap<Integer, String>();
+		for (Item album : albumAndSubAlbumsAndPictures) {
+			actual.put(album.getEntity().getId(), album.getEntity().getName());
+		}
+		Map<Integer,String> expected =  new HashMap<Integer, String>();
+		expected.put(172, "Ottawa");
+		expected.put(173, "GP7AEU~V.JPG");
+		expected.put(178, "G3LKDB~A.JPG");
+		expected.put(179, "Canadian-parliament");
+		expected.put(180, "Canal Rideau");
+		
+		assertEquals(expected, actual);
+		
+		
+	}
+
+	
 
 	@Test
 	public void getPicturesTest() throws G3GalleryException {

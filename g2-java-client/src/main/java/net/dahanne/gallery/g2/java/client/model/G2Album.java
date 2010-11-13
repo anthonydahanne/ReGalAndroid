@@ -15,7 +15,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-package net.dahanne.gallery.commons.model;
+package net.dahanne.gallery.g2.java.client.model;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -27,7 +27,7 @@ import java.io.StreamCorruptedException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Album implements Serializable {
+public class G2Album implements Serializable {
 
 	private int id;
 	private int name;
@@ -40,18 +40,17 @@ public class Album implements Serializable {
 	private boolean createSubAlbum;
 	private String extrafields;
 	private String albumUrl;
-	private Album parent;
+	private G2Album parent;
 
-	
-	private final List<Album> children = new ArrayList<Album>();
+	private final List<G2Album> children = new ArrayList<G2Album>();
 
-	public Album() {
+	public G2Album() {
 		super();
 	}
 
 	private static final long serialVersionUID = -671355798682957050L;
 
-	public Album(int id, int name, String title, String summary, int parent,
+	public G2Album(int id, int name, String title, String summary, int parent,
 			boolean add, boolean write, boolean deleteAlbum,
 			boolean createSubAlbum, String extrafields) {
 		super();
@@ -67,7 +66,7 @@ public class Album implements Serializable {
 		this.extrafields = extrafields;
 	}
 
-	public Album(int id) {
+	public G2Album(int id) {
 		this.id = id;
 	}
 
@@ -159,15 +158,15 @@ public class Album implements Serializable {
 		return id;
 	}
 
-	public Album getParent() {
+	public G2Album getParent() {
 		return parent;
 	}
 
-	public void setParent(Album parent) {
+	public void setParent(G2Album parent) {
 		this.parent = parent;
 	}
 
-	public List<Album> getChildren() {
+	public List<G2Album> getChildren() {
 		return children;
 	}
 
@@ -177,6 +176,8 @@ public class Album implements Serializable {
 				.append(" name : ").append(name).append(" title : ")
 				.append(title).append(" parentName : ").append(parentName)
 				.toString();
+
+		// return new StringBuilder().append(title).toString();
 	}
 
 	@Override
@@ -201,7 +202,7 @@ public class Album implements Serializable {
 		if (getClass() != obj.getClass()) {
 			return false;
 		}
-		Album other = (Album) obj;
+		G2Album other = (G2Album) obj;
 		if (id != other.id) {
 			return false;
 		}
@@ -237,13 +238,13 @@ public class Album implements Serializable {
 
 	}
 
-	public static Album unserializeAlbum(byte[] serializedAlbum) {
-		Album album = null;
+	public static G2Album unserializeAlbum(byte[] serializedAlbum) {
+		G2Album album = null;
 		try {
 			ByteArrayInputStream bais = new ByteArrayInputStream(
 					serializedAlbum);
 			ObjectInputStream ois = new ObjectInputStream(bais);
-			album = (Album) ois.readObject();
+			album = (G2Album) ois.readObject();
 			ois.close();
 		} catch (StreamCorruptedException e) {
 			// Log.e("PLOUF", e.getLocalizedMessage());

@@ -5,11 +5,11 @@ import java.util.List;
 
 import net.dahanne.android.regalandroid.remote.RemoteGalleryConnectionFactory;
 import net.dahanne.gallery.commons.model.Album;
-import net.dahanne.gallery.commons.model.G2Picture;
+import net.dahanne.gallery.commons.model.Picture;
 import android.app.Application;
 
 public class RegalAndroidApplication extends Application {
-	private final List<G2Picture> pictures = new ArrayList<G2Picture>();
+	private final List<Picture> pictures = new ArrayList<Picture>();
 	private Album currentAlbum;
 	private int currentPosition;
 	
@@ -30,7 +30,7 @@ public class RegalAndroidApplication extends Application {
 		return currentAlbum;
 	}
 
-	public List<G2Picture> getPictures() {
+	public List<Picture> getPictures() {
 		return pictures;
 	}
 

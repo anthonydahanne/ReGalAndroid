@@ -23,7 +23,7 @@ import net.dahanne.android.regalandroid.RegalAndroidApplication;
 import net.dahanne.android.regalandroid.utils.FileHandlingException;
 import net.dahanne.android.regalandroid.utils.FileUtils;
 import net.dahanne.android.regalandroid.utils.modified_android_source.AsyncTask;
-import net.dahanne.gallery.commons.model.G2Picture;
+import net.dahanne.gallery.commons.model.Picture;
 import net.dahanne.gallery.commons.remote.GalleryConnectionException;
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -59,7 +59,7 @@ public class ReplaceMainImageTask extends AsyncTask {
 		String fileUrl = (String) urls[0];
 		imageSwitcher = (ImageSwitcher) urls[1];
 		originalPosition = (Integer) urls[2];
-		G2Picture g2Picture = (G2Picture) urls[3];
+		Picture g2Picture = (Picture) urls[3];
 		Bitmap downloadImage = null;
 		// make sure the user is watching the picture
 		if (originalPosition == gallery.getSelectedItemPosition()) {
@@ -75,7 +75,7 @@ public class ReplaceMainImageTask extends AsyncTask {
 										.getApplication()).getCurrentAlbum().getName());
 				downloadImage = BitmapFactory
 						.decodeFile(imageFileOnExternalDirectory.getPath());
-				g2Picture.setResizedImagePath(imageFileOnExternalDirectory
+				g2Picture.setResizedImageCachePath(imageFileOnExternalDirectory
 						.getPath());
 
 			} catch (GalleryConnectionException e) {

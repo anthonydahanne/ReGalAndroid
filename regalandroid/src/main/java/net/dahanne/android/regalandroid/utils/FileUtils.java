@@ -7,8 +7,10 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import net.dahanne.android.regalandroid.R;
+import net.dahanne.android.regalandroid.activity.FullImage;
 import net.dahanne.android.regalandroid.activity.Settings;
 import net.dahanne.android.regalandroid.remote.RemoteGalleryConnectionFactory;
+import net.dahanne.gallery.commons.model.Picture;
 import net.dahanne.gallery.commons.remote.GalleryConnectionException;
 import net.dahanne.gallery.commons.remote.RemoteGallery;
 
@@ -133,4 +135,20 @@ public class FileUtils {
 		}
 
 	}
+	/**
+	 * 
+	 * issue #23 : when there is no resized picture, we fetch the
+	 * original picture
+	 * 
+	 * @param picture
+	 * @return
+	 */
+	public String chooseBetweenResizedAndOriginalUrl(Picture picture){
+		String resizedName = picture.getResizedUrl();
+		if (resizedName == null) {
+			resizedName = picture.getFileUrl();
+		} 
+		return resizedName;
+	}
+	
 }

@@ -8,9 +8,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.dahanne.android.regalandroid.remote.utils.G3ConvertUtils;
 import net.dahanne.gallery.commons.model.Album;
-import net.dahanne.gallery.commons.model.G2Picture;
+import net.dahanne.gallery.commons.model.Picture;
 import net.dahanne.gallery.commons.remote.GalleryConnectionException;
 import net.dahanne.gallery.commons.remote.GalleryOperationNotYetSupportedException;
 import net.dahanne.gallery.commons.remote.ImpossibleToLoginException;
@@ -18,6 +17,7 @@ import net.dahanne.gallery.commons.remote.RemoteGallery;
 import net.dahanne.gallery3.client.business.G3Client;
 import net.dahanne.gallery3.client.business.exceptions.G3GalleryException;
 import net.dahanne.gallery3.client.model.Item;
+import net.dahanne.gallery3.client.utils.G3ConvertUtils;
 import net.dahanne.gallery3.client.utils.ItemUtils;
 
 import org.apache.http.cookie.Cookie;
@@ -51,32 +51,35 @@ public class G3Connection implements RemoteGallery {
 			throws GalleryConnectionException {
 		
 		
-		try {
-			Item item = client.getItem(1);
-			for (String member : item.getMembers()) {
-				Integer itemIdFromUrl = ItemUtils.getItemIdFromUrl(member);
-				Item item2 = client.getItem(itemIdFromUrl);
-			}
-		} catch (G3GalleryException e) {
-			throw new GalleryConnectionException(e);
-		}
+//		try {
+//			Item item = client.getItem(1);
+//			for (String member : item.getMembers()) {
+//				Integer itemIdFromUrl = ItemUtils.getItemIdFromUrl(member);
+//				Item item2 = client.getItem(itemIdFromUrl);
+//			}
+//		} catch (G3GalleryException e) {
+//			throw new GalleryConnectionException(e);
+//		}
 
 		return null;
 	}
 
 	public InputStream getInputStreamFromUrl(String arg0)
 			throws GalleryConnectionException {
-		throw new GalleryOperationNotYetSupportedException(
-				"Not available in G3 yet");
+		try {
+			return client.getPhotoInputStream(arg0);
+		} catch (G3GalleryException e) {
+			throw new GalleryConnectionException(e);
+		}
 	}
 
-	public Collection<G2Picture> getPicturesFromAlbum(String galleryUrl, int albumName)
+	public Collection<Picture> getPicturesFromAlbum(String galleryUrl, int albumName)
 			throws GalleryConnectionException {
-		Collection<G2Picture> pictures = new ArrayList<G2Picture>();
+		Collection<Picture> pictures = new ArrayList<Picture>();
 		try {
 			List<Item> picturesAsItems = client.getPictures(albumName);
 			for (Item item : picturesAsItems) {
-				pictures.add(G3ConvertUtils.itemToG2Picture(item));
+				pictures.add(G3ConvertUtils.itemToPicture(item));
 			}
 			
 		} catch (G3GalleryException e) {
@@ -90,10 +93,6 @@ public class G3Connection implements RemoteGallery {
 		return null;
 	}
 
-	public boolean isEmbeddedGallery(String arg0) {
-		// TODO Auto-generated method stub
-		return false;
-	}
 
 	public void loginToGallery(String galleryUrl, String username,
 			String password) throws ImpossibleToLoginException {

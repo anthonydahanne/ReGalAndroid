@@ -55,7 +55,6 @@ public class ShowAlbums extends ListActivity implements OnItemClickListener {
 	private static final String G2ANDROID_ALBUM = "g2android.Album";
 	private static final String TAG = "ShowAlbums";
 	private ProgressDialog progressDialog;
-	private final RemoteGallery remoteGallery;
 	private RegalAndroidApplication application;
 
 	@Override
@@ -67,10 +66,6 @@ public class ShowAlbums extends ListActivity implements OnItemClickListener {
 
 		getListView().setOnItemClickListener(this);
 
-	}
-
-	public ShowAlbums() {
-		remoteGallery = RemoteGalleryConnectionFactory.getInstance();
 	}
 
 	public void onItemClick(AdapterView<?> arg0, View arg1, int albumPosition,

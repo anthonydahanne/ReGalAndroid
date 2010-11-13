@@ -17,43 +17,54 @@
  */
 package net.dahanne.gallery3.client.model;
 
+
 public class Entity {
 
 	private int id;
+	private String title;
+	private String name;
+	
+	private String thumbUrl;
+	private int thumbWidth;
+	private int thumbHeight;
+	private int thumbSize;
+	private String thumbUrlPublic;
+
+	private String resizeUrl;
+	private int resizeWidth;
+	private int resizeHeight;
+	private int resizeSize;
+	private String resizeUrlPublic;
+	
+	private String fileUrl;
+	private int width;
+	private int height;
+	private int fileSize;
+	private String fileUrlPublic;
+
 	private long captured;
 	private long created;
 	private String description;
-	private int height;
 	private int level;
 	private String mimeType;
-	private String name;
 	private int ownerId;
 	private float randKey;
-	private int resizeHeight;
-	private int resizeWidth;
 	private String slug;
 	private String sortColumn;
 	private String sortOrder;
-	private int thumbHeight;
-	private int thumbWidth;
-	private String title;
 	private long updated;
 	private int viewCount;
-	private int width;
 	private int view1;
 	private int view2;
 	private int parent;
-	private String fileUrl;
-	private String resizeUrl;
-	private String thumbUrl;
 	private boolean canEdit;
 	private String albumCover;
 	private String webUrl;
-	private String thumbUrlPublic;
-	private int thumbSize;
 	private String type;
-	private int fileSize;
-	private int resizeSize;
+
+	
+	
+	
 	public int getFileSize() {
 		return fileSize;
 	}
@@ -78,12 +89,6 @@ public class Entity {
 	public void setResizeUrlPublic(String resizeUrlPublic) {
 		this.resizeUrlPublic = resizeUrlPublic;
 	}
-	private String fileUrlPublic;
-	private String resizeUrlPublic;
-	
-	
-	
-	
 	public String getType() {
 		return type;
 	}
@@ -316,83 +321,18 @@ public class Entity {
 	}
 	@Override
 	public String toString() {
-		StringBuilder builder = new StringBuilder();
-		builder.append("Entity [id=");
-		builder.append(id);
-		builder.append(", captured=");
-		builder.append(captured);
-		builder.append(", created=");
-		builder.append(created);
-		builder.append(", description=");
-		builder.append(description);
-		builder.append(", height=");
-		builder.append(height);
-		builder.append(", level=");
-		builder.append(level);
-		builder.append(", mimeType=");
-		builder.append(mimeType);
-		builder.append(", name=");
-		builder.append(name);
-		builder.append(", ownerId=");
-		builder.append(ownerId);
-		builder.append(", randKey=");
-		builder.append(randKey);
-		builder.append(", resizeHeight=");
-		builder.append(resizeHeight);
-		builder.append(", resizeWidth=");
-		builder.append(resizeWidth);
-		builder.append(", slug=");
-		builder.append(slug);
-		builder.append(", sortColumn=");
-		builder.append(sortColumn);
-		builder.append(", sortOrder=");
-		builder.append(sortOrder);
-		builder.append(", thumbHeight=");
-		builder.append(thumbHeight);
-		builder.append(", thumbWidth=");
-		builder.append(thumbWidth);
-		builder.append(", title=");
-		builder.append(title);
-		builder.append(", updated=");
-		builder.append(updated);
-		builder.append(", viewCount=");
-		builder.append(viewCount);
-		builder.append(", width=");
-		builder.append(width);
-		builder.append(", view1=");
-		builder.append(view1);
-		builder.append(", view2=");
-		builder.append(view2);
-		builder.append(", parent=");
-		builder.append(parent);
-		builder.append(", fileUrl=");
-		builder.append(fileUrl);
-		builder.append(", resizeUrl=");
-		builder.append(resizeUrl);
-		builder.append(", thumbUrl=");
-		builder.append(thumbUrl);
-		builder.append(", canEdit=");
-		builder.append(canEdit);
-		builder.append(", albumCover=");
-		builder.append(albumCover);
-		builder.append(", webUrl=");
-		builder.append(webUrl);
-		builder.append(", thumbUrlPublic=");
-		builder.append(thumbUrlPublic);
-		builder.append(", thumbSize=");
-		builder.append(thumbSize);
-		builder.append(", type=");
-		builder.append(type);
-		builder.append(", fileSize=");
-		builder.append(fileSize);
-		builder.append(", resizeSize=");
-		builder.append(resizeSize);
-		builder.append(", fileUrlPublic=");
-		builder.append(fileUrlPublic);
-		builder.append(", resizeUrlPublic=");
-		builder.append(resizeUrlPublic);
-		builder.append("]");
-		return builder.toString();
+		return new StringBuilder()
+		.append(" id : ")
+		.append(id)
+		.append(" name : ")
+		.append(name)
+		.append(" title : ")
+		.append(title)
+		.append(" description : ")
+		.append(description)
+		.append(" fileUrl : ")
+		.append(fileUrl)
+		.toString();
 	}
 	
 	

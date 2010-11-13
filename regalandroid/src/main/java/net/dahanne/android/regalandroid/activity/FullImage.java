@@ -26,7 +26,7 @@ import net.dahanne.android.regalandroid.utils.FileHandlingException;
 import net.dahanne.android.regalandroid.utils.FileUtils;
 import net.dahanne.android.regalandroid.utils.ShowUtils;
 import net.dahanne.android.regalandroid.utils.modified_android_source.AsyncTask;
-import net.dahanne.gallery.commons.model.G2Picture;
+import net.dahanne.gallery.commons.model.Picture;
 import net.dahanne.gallery.commons.remote.GalleryConnectionException;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -66,9 +66,9 @@ public class FullImage extends Activity implements OnGestureListener {
 	private static final String TAG = "FullImage";
 	static final String CURRENT_POSITION = "currentPhoto";
 	private ImageView imageView;
-	private G2Picture g2Picture;
+	private Picture picture;
 	private String galleryUrl;
-	private List<G2Picture> albumPictures;
+	private List<Picture> albumPictures;
 	private int currentPosition;
 	private ProgressDialog progressDialog;
 	private GestureDetector gestureScanner;
@@ -123,11 +123,11 @@ public class FullImage extends Activity implements OnGestureListener {
 
 	@SuppressWarnings("unchecked")
 	private void loadingPicture() {
-		g2Picture = albumPictures.get(currentPosition);
+		picture = albumPictures.get(currentPosition);
 		int albumName =application.getCurrentAlbum().getName();
 		File potentialAlreadyDownloadedFile = new File(
 				Settings.getG2AndroidCachePath(this) + albumName + "/",
-				g2Picture.getTitle());
+				picture.getTitle());
 		if (potentialAlreadyDownloadedFile.exists()
 				&& potentialAlreadyDownloadedFile.length() != 0) {
 			imageView.setImageDrawable(Drawable
@@ -135,20 +135,11 @@ public class FullImage extends Activity implements OnGestureListener {
 		}
 		// only download the picture IF it has not yet been downloaded
 		else {
-			String uriString;
-			String resizedName = g2Picture.getResizedName();
-			// issue #23 : when there is no resized picture, we fetch the
-			// original picture
-			if (resizedName == null) {
-				uriString = Settings.getBaseUrl(FullImage.this)
-						+ g2Picture.getName();
-			} else {
-				uriString = Settings.getBaseUrl(FullImage.this) + resizedName;
-			}
+			String uriString = FileUtils.getInstance().chooseBetweenResizedAndOriginalUrl(picture);
 			progressDialog = ProgressDialog.show(FullImage.this,
 					getString(R.string.please_wait),
 					getString(R.string.loading_photo), true);
-			new LoadImageTask().execute(uriString, g2Picture);
+			new LoadImageTask().execute(uriString, picture);
 		}
 	}
 
@@ -159,7 +150,7 @@ public class FullImage extends Activity implements OnGestureListener {
 		@Override
 		protected Bitmap doInBackground(Object... urls) {
 			String fileUrl = (String) urls[0];
-			G2Picture g2Picture = (G2Picture) urls[1];
+			Picture g2Picture = (Picture) urls[1];
 			Bitmap downloadImage = null;
 			try {
 				File imageFileOnExternalDirectory = fileUtils
@@ -169,7 +160,7 @@ public class FullImage extends Activity implements OnGestureListener {
 								application.getCurrentAlbum().getName());
 				downloadImage = BitmapFactory
 						.decodeFile(imageFileOnExternalDirectory.getPath());
-				g2Picture.setResizedImagePath(imageFileOnExternalDirectory
+				g2Picture.setResizedImageCachePath(imageFileOnExternalDirectory
 						.getPath());
 
 			} catch (GalleryConnectionException e) {
@@ -205,24 +196,23 @@ public class FullImage extends Activity implements OnGestureListener {
 		Intent intent = new Intent(Intent.ACTION_SEND);
 		switch (item.getItemId()) {
 		case R.id.download_full_res_image:
-			new DownloadImageTask().execute(g2Picture);
+			new DownloadImageTask().execute(picture);
 			break;
 		case R.id.show_image_properties:
-			showImageProperties(g2Picture);
+			showImageProperties(picture);
 			break;
 		case R.id.share_image:
 			intent.setType(TEXT_PLAIN);
-			intent.putExtra(Intent.EXTRA_TEXT, Settings.getGalleryUrl(this)
-					+ MAIN_PHP_G2_ITEM_ID + g2Picture.getName());
+			intent.putExtra(Intent.EXTRA_TEXT, picture.getFileUrl());
 			startActivity(Intent.createChooser(intent,
 					getString(R.string.choose_action)));
 			break;
 		case R.id.send_image:
 			// we first download the full res image
-			new DownloadImageTask().execute(g2Picture);
+			new DownloadImageTask().execute(picture);
 			String filePath = Settings.getG2AndroidPath(this) + SLASH
-					+ g2Picture.getTitle();
-			String extension = g2Picture.getForceExtension();
+					+ picture.getTitle();
+			String extension = picture.getForceExtension();
 			// if no extension is found, let's assume it's a jpeg...
 			if (extension == null || extension.equals("jpg")) {
 				intent.setType(IMAGE_JPEG);
@@ -247,11 +237,11 @@ public class FullImage extends Activity implements OnGestureListener {
 			// imageFilePath is a path to a file located on the sd card
 			// such "/sdcard/temp.jpg"
 			filePath = Settings.getG2AndroidPath(this) + SLASH
-					+ g2Picture.getTitle();
+					+ picture.getTitle();
 			File file = new File(filePath);
 			if (!file.exists()) {
 				filePath = Settings.getG2AndroidCachePath(this) + SLASH
-						+ g2Picture.getTitle();
+						+ picture.getTitle();
 				file = new File(filePath);
 			}
 			intent.setDataAndType(Uri.fromFile(file), "image/*");
@@ -269,15 +259,14 @@ public class FullImage extends Activity implements OnGestureListener {
 
 		@Override
 		protected File doInBackground(Object... urls) {
-			G2Picture g2Picture = (G2Picture) urls[0];
+			Picture picture = (Picture) urls[0];
 			File downloadImage = null;
 			try {
 				downloadImage = fileUtils.getFileFromGallery(
 						FullImage.this,
-						g2Picture.getTitle(),
-						g2Picture.getForceExtension(),
-						Settings.getBaseUrl(FullImage.this)
-								+ g2Picture.getName(), false,
+						picture.getTitle(),
+						picture.getForceExtension(),
+						picture.getFileUrl(), false,
 						application.getCurrentAlbum().getName());
 			} catch (GalleryConnectionException e) {
 				exceptionMessage = e.getMessage();
@@ -319,7 +308,7 @@ public class FullImage extends Activity implements OnGestureListener {
 		alert.show();
 	}
 
-	private void showImageProperties(G2Picture picture) {
+	private void showImageProperties(Picture picture) {
 		AlertDialog.Builder builder = new AlertDialog.Builder(FullImage.this);
 		StringBuilder message = new StringBuilder()
 				.append(getString(R.string.name)).append(" : ")
@@ -331,11 +320,11 @@ public class FullImage extends Activity implements OnGestureListener {
 				.append(getString(R.string.hidden)).append(" : ")
 				.append(Boolean.toString(picture.isHidden())).append("\n")
 				.append(getString(R.string.full_res_filesize)).append(" : ")
-				.append(picture.getRawFilesize()).append("\n")
+				.append(picture.getFileSize()).append("\n")
 				.append(getString(R.string.full_res_width)).append(" : ")
-				.append(picture.getRawWidth()).append("px.\n")
+				.append(picture.getWidth()).append("px.\n")
 				.append(getString(R.string.full_res_height)).append(" : ")
-				.append(picture.getRawHeight()).append("px.\n");
+				.append(picture.getHeight()).append("px.\n");
 
 		// NOT USED IN G2...
 		// append(

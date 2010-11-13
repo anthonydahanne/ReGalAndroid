@@ -32,7 +32,7 @@ import java.util.Random;
 
 import junit.framework.Assert;
 import net.dahanne.gallery.commons.model.Album;
-import net.dahanne.gallery.commons.model.G2Picture;
+import net.dahanne.gallery.commons.model.Picture;
 import net.dahanne.gallery.commons.remote.GalleryConnectionException;
 import net.dahanne.gallery.commons.remote.ImpossibleToLoginException;
 import net.dahanne.gallery.g2.java.client.G2ConnectionUtils;
@@ -58,7 +58,7 @@ public class G2ConnectionUtilsTest extends Assert {
 		galleryUrl = "https://g2.dahanne.net/";
 		user = "g2android";
 		password = "g2android";
-		g2ConnectionUtils = new G2ConnectionUtils();
+		g2ConnectionUtils = new G2ConnectionUtils(galleryUrl,user,password);
 	}
 
 	@Test
@@ -205,22 +205,22 @@ public class G2ConnectionUtilsTest extends Assert {
 				.put("baseurl",
 						"http://g2.dahanne.net/main.php?g2_view=core.DownloadItem&g2_itemId=");
 
-		Collection<G2Picture> pictures = g2ConnectionUtils
+		Collection<Picture> pictures = g2ConnectionUtils
 				.extractG2PicturesFromProperties(fetchImages);
-		G2Picture picture = pictures.iterator().next();
+		Picture picture = pictures.iterator().next();
 		assertEquals(150, picture.getThumbHeight());
 		assertEquals("picture.jpg", picture.getTitle());
-		assertEquals("12600", picture.getResizedName());
+		assertEquals("https://g2.dahanne.net//main.php?g2_view=core.DownloadItem&g2_itemId=12600",  picture.getResizedUrl());
 		assertEquals(800, picture.getResizedWidth());
-		assertEquals(2848, picture.getRawHeight());
-		assertEquals("12598", picture.getName());
-		assertEquals("12599", picture.getThumbName());
+		assertEquals(2848, picture.getHeight());
+		assertEquals("picture.jpg", picture.getName());
+		assertEquals("https://g2.dahanne.net//main.php?g2_view=core.DownloadItem&g2_itemId=12599", picture.getThumbUrl());
 		assertEquals(150, picture.getThumbWidth());
-		assertEquals(4288, picture.getRawWidth());
+		assertEquals(4288, picture.getWidth());
 		assertEquals("caption", picture.getCaption());
 		assertEquals("jpg", picture.getForceExtension());
 		assertEquals(true, picture.isHidden());
-		assertEquals(45, picture.getImageClicks());
+//		assertEquals(45, picture.getImageClicks());
 
 	}
 

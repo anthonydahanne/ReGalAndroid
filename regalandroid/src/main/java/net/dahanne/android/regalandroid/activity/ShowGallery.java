@@ -33,7 +33,7 @@ import net.dahanne.android.regalandroid.utils.FileUtils;
 import net.dahanne.android.regalandroid.utils.ShowUtils;
 import net.dahanne.android.regalandroid.utils.modified_android_source.AsyncTask;
 import net.dahanne.gallery.commons.model.Album;
-import net.dahanne.gallery.commons.model.G2Picture;
+import net.dahanne.gallery.commons.model.Picture;
 import net.dahanne.gallery.commons.remote.GalleryConnectionException;
 import net.dahanne.gallery.commons.remote.RemoteGallery;
 import android.app.Activity;
@@ -69,7 +69,7 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 	private static final int REQUEST_CODE_ADD_ALBUM = 2;
 	private static final int REQUEST_CODE_FULL_IMAGE = 3;
 	private static final String G2ANDROID_ALBUM = "g2android.Album";
-	private final List<G2Picture> albumPictures = new ArrayList<G2Picture>();
+	private final List<Picture> albumPictures = new ArrayList<Picture>();
 	private static final String TAG = "ShowGallery";
 	private ImageSwitcher mSwitcher;
 	private Gallery gallery;
@@ -153,41 +153,49 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 		}
 
 		public View getView(int position, View convertView, ViewGroup parent) {
-			G2Picture g2Picture = albumPictures.get(position);
+			ImageView i = new ImageView(mContext);
+			Bitmap downloadImage = findBitmapWithPosition(position);
+			
+			i.setImageBitmap(downloadImage);
+			return i;
+		}
+
+		private Bitmap findBitmapWithPosition(int position) {
+			Picture picture = albumPictures.get(position);
 			int albumName = application.getCurrentAlbum().getName();
 			File potentiallyAlreadyDownloadedFile = new File(
 					Settings.getG2AndroidCachePath(ShowGallery.this)
 							+ albumName + "/", THUMB_PREFIX
-							+ g2Picture.getTitle());
+							+ picture.getName());
 			// maybe present in the local cache
 			Bitmap downloadImage = bitmapsCache.get(position);
 			if (downloadImage == null) {
 				// only download the picture IF it has not yet been downloaded
-				if (g2Picture.getThumbImagePath() != null
+				if (picture.getThumbImageCachePath() != null
 						|| potentiallyAlreadyDownloadedFile.exists()
 						&& potentiallyAlreadyDownloadedFile.length() != 0) {
 					downloadImage = BitmapFactory
 							.decodeFile(potentiallyAlreadyDownloadedFile
 									.getPath());
-				} else {
-					String thumbName = g2Picture.getThumbName();
-					String uriString = Settings.getBaseUrl(ShowGallery.this)
-							+ thumbName;
+				} 
+				//not downloaded yet
+				else {
+					String thumbUrl = picture.getThumbUrl();
 					try {
 						File imageFileOnExternalDirectory = FileUtils
 								.getInstance()
 								.getFileFromGallery(
 										ShowGallery.this,
-										THUMB_PREFIX + g2Picture.getTitle(),
-										g2Picture.getForceExtension(),
-										uriString,
+										THUMB_PREFIX + picture.getName(),
+										picture.getForceExtension(),
+										thumbUrl,
 										true,
 										albumName);
 						downloadImage = BitmapFactory
 								.decodeFile(imageFileOnExternalDirectory
 										.getPath());
-						g2Picture
-								.setThumbImagePath(imageFileOnExternalDirectory
+						picture
+								.setThumbImageCachePath(imageFileOnExternalDirectory
 										.getPath());
 						bitmapsCache.put(position, downloadImage);
 					} catch (Exception e) {
@@ -199,26 +207,24 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 				}
 
 			}
-			ImageView i = new ImageView(mContext);
-			i.setImageBitmap(downloadImage);
-			return i;
+			return downloadImage;
 		}
 	}
 
 	@SuppressWarnings("unchecked")
 	public void onItemSelected(AdapterView<?> parent, View view, int position,
 			long id) {
-		G2Picture g2Picture = albumPictures.get(position);
+		Picture picture = albumPictures.get(position);
 		int albumName = application.getCurrentAlbum().getName();
 		File potentiallyAlreadyDownloadedFile = new File(
 				Settings.getG2AndroidCachePath(this) + albumName + "/",
-				g2Picture.getTitle());
+				picture.getName());
 		mSwitcher.setId(position);
 		// remember the position where we were
-		((RegalAndroidApplication) getApplication())
+		application
 				.setCurrentPosition(position);
 		// only download the picture IF it has not yet been downloaded
-		if (g2Picture.getResizedImagePath() != null
+		if (picture.getResizedImageCachePath() != null
 				&& potentiallyAlreadyDownloadedFile.exists()
 				&& potentiallyAlreadyDownloadedFile.length() != 0) {
 			Bitmap bitmap = BitmapFactory
@@ -226,23 +232,14 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 			BitmapDrawable bitmapDrawable = new BitmapDrawable(bitmap);
 			mSwitcher.setImageDrawable(bitmapDrawable);
 		} else {
-			String uriString;
-			String resizedName = g2Picture.getResizedName();
-			// issue #23 : when there is no resized picture, we fetch the
-			// original picture
-			if (resizedName == null) {
-				uriString = Settings.getBaseUrl(ShowGallery.this)
-						+ g2Picture.getName();
-			} else {
-				uriString = Settings.getBaseUrl(ShowGallery.this) + resizedName;
-			}
+			String uriString = FileUtils.getInstance().chooseBetweenResizedAndOriginalUrl(picture);
 			Bitmap currentThumbBitmap = (Bitmap) gallery
 					.getItemAtPosition(position);
 			BitmapDrawable bitmapDrawable = new BitmapDrawable(
 					currentThumbBitmap);
 			mSwitcher.setImageDrawable(bitmapDrawable);
 			new ReplaceMainImageTask(this, progressDialog, gallery).execute(
-					uriString, mSwitcher, position, g2Picture);
+					uriString, mSwitcher, position, picture);
 		}
 	}
 
@@ -328,7 +325,7 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 
 	@SuppressWarnings("unchecked")
 	private class FetchImagesTask extends
-			AsyncTask<Object, Void, Collection<G2Picture>> {
+			AsyncTask<Object, Void, Collection<Picture>> {
 
 		private String exceptionMessage;
 		private final RemoteGallery remoteGallery;
@@ -338,10 +335,10 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 		}
 
 		@Override
-		protected Collection<G2Picture> doInBackground(Object... parameters) {
+		protected Collection<Picture> doInBackground(Object... parameters) {
 			String galleryUrl = (String) parameters[0];
 			int albumName = (Integer) parameters[1];
-			Collection<G2Picture> pictures = null;
+			Collection<Picture> pictures = null;
 			try {
 				if (mustLogIn) {
 					remoteGallery.loginToGallery(galleryUrl,
@@ -361,7 +358,7 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 		}
 
 		@Override
-		protected void onPostExecute(Collection<G2Picture> pictures) {
+		protected void onPostExecute(Collection<Picture> pictures) {
 			progressDialog.dismiss();
 			// }
 			if (pictures == null) {
@@ -409,23 +406,12 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 							.getCurrentPosition();
 					if (currentPosition != 0) {
 						gallery.setSelection(currentPosition);
-						G2Picture g2Picture = albumPictures
+						Picture picture = albumPictures
 								.get(currentPosition);
-						String resizedName = g2Picture.getResizedName();
-						// issue #23 : when there is no resized picture, we
-						// fetch the
-						// original picture
-						String uriString;
-						if (resizedName == null) {
-							uriString = Settings.getBaseUrl(ShowGallery.this)
-									+ g2Picture.getName();
-						} else {
-							uriString = Settings.getBaseUrl(ShowGallery.this)
-									+ resizedName;
-						}
+						String uriString = FileUtils.getInstance().chooseBetweenResizedAndOriginalUrl(picture);
 						new ReplaceMainImageTask(ShowGallery.this,
 								progressDialog, gallery).execute(uriString,
-								mSwitcher, currentPosition, g2Picture);
+								mSwitcher, currentPosition, picture);
 					}
 
 				}
@@ -453,17 +439,7 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		// the user tries to get back to the parent album
-		
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
-//			Album currentAlbum = remoteGallery
-//					.findAlbumFromAlbumName(
-//							application
-//									.getCurrentAlbum(),
-//							application
-//									.getCurrentAlbum().getName());
-//			if (currentAlbum != null && currentAlbum.getChildren().isEmpty()) {
-//				application.setCurrentAlbum(currentAlbum);
-//			}
 			//we are leaving the gallery view, so we want to remember we want to see the parent album
 			//unless there are several albums; in this case we want to browse the album
 			if(application.getCurrentAlbum().getChildren().size()==0){
