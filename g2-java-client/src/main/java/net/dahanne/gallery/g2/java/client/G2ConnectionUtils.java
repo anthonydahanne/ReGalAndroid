@@ -699,7 +699,7 @@ public class G2ConnectionUtils implements RemoteGallery {
 			Album parent = albums.get(parentId);
 			album.setParent(parent);
 			if (parent != null) {
-				parent.getChildren().add(album);
+				parent.getSubAlbums().add(album);
 			}
 		}
 
@@ -772,7 +772,7 @@ public class G2ConnectionUtils implements RemoteGallery {
 		return false;
 	}
 
-	public Album getAlbumAndSubAlbums(String galleryUrl, int parentAlbumId)
+	public Album getAlbumAndSubAlbumsAndPictures(String galleryUrl, int parentAlbumId)
 			throws GalleryConnectionException {
 		if(rootAlbum==null){
 			//it means we already have the list of albums
@@ -782,9 +782,12 @@ public class G2ConnectionUtils implements RemoteGallery {
 		}
 		//if 0 is specified as the parentAlbumId, it means we have to return the rootAlbum
 		if(parentAlbumId==0){
+			rootAlbum.getPictures().addAll(getPicturesFromAlbum(galleryUrl, parentAlbumId));
 			return rootAlbum;
 		}
-		return  AlbumUtils.findAlbumFromAlbumName(rootAlbum, parentAlbumId);
+		Album findAlbumFromAlbumName = AlbumUtils.findAlbumFromAlbumName(rootAlbum, parentAlbumId);
+		findAlbumFromAlbumName.getPictures().addAll(getPicturesFromAlbum(galleryUrl, parentAlbumId));
+		return  findAlbumFromAlbumName;
 	}
 
 	/** Get the baseUrl */

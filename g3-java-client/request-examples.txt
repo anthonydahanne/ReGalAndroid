@@ -1,9 +1,11 @@
 ----------Item remote api examples
+https://github.com/gallery/gallery3/blob/master/modules/gallery/helpers/item_rest.php
 #get the item 172
 http://g3.dahanne.net/index.php/rest/item/172?output=html
 
 
 ----------Items remote api examples
+https://github.com/gallery/gallery3/blob/master/modules/gallery/helpers/items_rest.php
 #get the items 4 and 5
 http://g3.dahanne.net//index.php/rest/items?urls=[%22http://g3.dahanne.net/index.php/rest/item/4%22,%22http://g3.dahanne.net/index.php/rest/item/5%22]%20&output=html
 

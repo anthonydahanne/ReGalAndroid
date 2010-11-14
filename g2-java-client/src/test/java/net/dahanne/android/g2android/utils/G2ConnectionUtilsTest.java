@@ -296,12 +296,12 @@ public class G2ConnectionUtilsTest extends Assert {
 
 		Album finalALbum = g2ConnectionUtils.organizeAlbumsHierarchy(albums);
 		assertEquals(10, finalALbum.getName());
-		assertEquals(20, finalALbum.getChildren().get(0).getName());
-		assertEquals(4, finalALbum.getChildren().get(1).getName());
-		assertEquals(3, finalALbum.getChildren().get(2).getName());
-		assertEquals(5, finalALbum.getChildren().get(0).getChildren().get(0)
+		assertEquals(20, finalALbum.getSubAlbums().get(0).getName());
+		assertEquals(4, finalALbum.getSubAlbums().get(1).getName());
+		assertEquals(3, finalALbum.getSubAlbums().get(2).getName());
+		assertEquals(5, finalALbum.getSubAlbums().get(0).getSubAlbums().get(0)
 				.getName());
-		assertEquals(6, finalALbum.getChildren().get(0).getChildren().get(1)
+		assertEquals(6, finalALbum.getSubAlbums().get(0).getSubAlbums().get(1)
 				.getName());
 
 	}

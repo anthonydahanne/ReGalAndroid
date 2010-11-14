@@ -117,26 +117,32 @@ public class G3Connection implements RemoteGallery {
 				"Not available in G3 yet");
 	}
 
-	public Album getAlbumAndSubAlbums(String galleryUrl, int parentAlbumId)
+	public Album getAlbumAndSubAlbumsAndPictures(String galleryUrl, int parentAlbumId)
 			throws GalleryConnectionException {
 		
-		//dirty hack to load the root album, number 1 in G3
+		//dirty hack to load the root album, id 1 in G3
 		if(parentAlbumId==0){
 			parentAlbumId=1;
 		}
 		
 		Album parentAlbum=null;
 		try {
-			List<Item> albumAndSubAlbums = client.getAlbumAndSubAlbums(parentAlbumId);
+			List<Item> albumAndSubAlbums = client.getAlbumAndSubAlbumsAndPictures(parentAlbumId);
+			//the first is item is an album
 			parentAlbum = G3ConvertUtils.itemToAlbum(albumAndSubAlbums.get(0));
 			for (Item item : albumAndSubAlbums) {
 				if(item==albumAndSubAlbums.get(0)){
 					//no need to add the first one, it is the parent
 					continue;
 				}
-				Album itemToAlbum = G3ConvertUtils.itemToAlbum(item);
-				itemToAlbum.setParentName(parentAlbum.getName());
-				parentAlbum.getChildren().add(itemToAlbum);
+				if(item.getEntity().getType().equals("album")){
+					Album itemToAlbum = G3ConvertUtils.itemToAlbum(item);
+					itemToAlbum.setParentName(parentAlbum.getName());
+					itemToAlbum.setParent(parentAlbum);
+					parentAlbum.getSubAlbums().add(itemToAlbum);
+				}else{
+					parentAlbum.getPictures().add(G3ConvertUtils.itemToPicture(item));
+				}
 			}
 			
 		} catch (G3GalleryException e) {

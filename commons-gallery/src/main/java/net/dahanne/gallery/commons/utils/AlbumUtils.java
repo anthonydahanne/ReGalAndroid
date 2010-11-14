@@ -7,7 +7,7 @@ public class AlbumUtils {
 		if (rootAlbum.getName() == albumName) {
 			return rootAlbum;
 		}
-		for (Album album : rootAlbum.getChildren()) {
+		for (Album album : rootAlbum.getSubAlbums()) {
 			if (album.getName() == albumName) {
 				return album;
 			}

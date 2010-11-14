@@ -18,26 +18,6 @@ public class G3ConvertUtils {
 		album.setAlbumUrl(item.getEntity().getWebUrl());
 		return album;
 	}
-	private long id;
-	private String title;
-	private String name;
-
-	private String thumbUrl;
-	private int thumbWidth;
-	private int thumbHeight;
-	private int thumbSize;
-	private String thumbImageCachePath;
-
-	private String resizedUrl;
-	private int resizedWidth;
-	private int resizedHeight;
-	private int resizeSize;
-	private String resizedImageCachePath;
-
-	private String fileUrl;
-	private int width;
-	private int height;
-	private int fileSize;
 	public static Picture itemToPicture(Item item) {
 		if(item==null ||item.getEntity()==null){
 			return null;

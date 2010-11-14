@@ -41,9 +41,10 @@ public class Album implements Serializable {
 	private String extrafields;
 	private String albumUrl;
 	private Album parent;
+	private final List<Picture> pictures = new ArrayList<Picture>();
+	private final List<Album> subAlbums = new ArrayList<Album>();
 
 	
-	private final List<Album> children = new ArrayList<Album>();
 
 	public Album() {
 		super();
@@ -167,8 +168,12 @@ public class Album implements Serializable {
 		this.parent = parent;
 	}
 
-	public List<Album> getChildren() {
-		return children;
+	public List<Album> getSubAlbums() {
+		return subAlbums;
+	}
+	
+	public List<Picture> getPictures() {
+		return pictures;
 	}
 
 	@Override

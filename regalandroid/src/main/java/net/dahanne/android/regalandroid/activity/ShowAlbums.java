@@ -23,15 +23,11 @@ import java.util.List;
 import net.dahanne.android.regalandroid.R;
 import net.dahanne.android.regalandroid.RegalAndroidApplication;
 import net.dahanne.android.regalandroid.adapters.AlbumAdapter;
-import net.dahanne.android.regalandroid.remote.RemoteGalleryConnectionFactory;
 import net.dahanne.android.regalandroid.tasks.CreateAlbumTask;
-import net.dahanne.android.regalandroid.tasks.FetchAlbumTask;
-import net.dahanne.android.regalandroid.tasks.LoginTask;
+import net.dahanne.android.regalandroid.tasks.FetchAlbumAndSubAlbumsAndPicturesTask;
 import net.dahanne.android.regalandroid.utils.AlbumComparator;
 import net.dahanne.android.regalandroid.utils.ShowUtils;
 import net.dahanne.gallery.commons.model.Album;
-import net.dahanne.gallery.commons.remote.RemoteGallery;
-import net.dahanne.gallery.commons.utils.AlbumUtils;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -45,7 +41,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ListAdapter;
+import android.widget.ArrayAdapter;
 
 public class ShowAlbums extends ListActivity implements OnItemClickListener {
 
@@ -68,24 +64,32 @@ public class ShowAlbums extends ListActivity implements OnItemClickListener {
 
 	}
 
+	@Override
 	public void onItemClick(AdapterView<?> arg0, View arg1, int albumPosition,
 			long arg3) {
-		Intent intent;
-		Album newSelectedAlbum = AlbumUtils.findAlbumFromAlbumName(
-				application.getCurrentAlbum(),
-				((Album) getListAdapter().getItem(albumPosition)).getName());
-		if (newSelectedAlbum != null
-				&& (newSelectedAlbum.getName() == application.getCurrentAlbum()
-						.getName() || newSelectedAlbum.getChildren()
-						.size() == 0)) {
-			// the user wants to see the pictures
-			intent = new Intent(this, ShowGallery.class);
-		} else {
-			intent = new Intent(this, ShowAlbums.class);
-		}
-		application
-				.setCurrentAlbum(newSelectedAlbum);
-		startActivity(intent);
+//		Intent intent;
+		int albumName = ((Album) getListAdapter().getItem(albumPosition)).getName();
+		progressDialog = ProgressDialog.show(this,
+				getString(R.string.please_wait),
+				getString(R.string.fetching_gallery_albums), true);
+		boolean refreshView = false;
+		new FetchAlbumAndSubAlbumsAndPicturesTask(this, progressDialog,refreshView ).execute(Settings
+				.getGalleryUrl(this),albumName);
+//		if(application.getCurrentAlbum()!=null && application.getCurrentAlbum().getSubAlbums().size()!=0 ){
+//			
+//		
+////		if (newSelectedAlbum != null
+////				&& (newSelectedAlbum.getName() == application.getCurrentAlbum()
+////						.getName() || newSelectedAlbum.getSubAlbums()
+////						.size() == 0)) {
+//			// the user wants to see the pictures
+//			intent = new Intent(this, ShowGallery.class);
+//		} else {
+//			intent = new Intent(this, ShowAlbums.class);
+//		}
+//		application
+//				.setCurrentAlbum(newSelectedAlbum);
+//		startActivity(intent);
 
 	}
 
@@ -181,9 +185,7 @@ public class ShowAlbums extends ListActivity implements OnItemClickListener {
 			ShowUtils.getInstance()
 					.recoverContextFromDatabase(this);
 		}
-		progressDialog = ProgressDialog.show(this,
-				getString(R.string.please_wait),
-				getString(R.string.fetching_gallery_albums), true);
+		
 //		if (((RegalAndroidApplication) getApplication()).getAlbumName() != 0) {
 //			// we recover the selected album
 //			Album selectedAlbum = remoteGallery
@@ -213,13 +215,21 @@ public class ShowAlbums extends ListActivity implements OnItemClickListener {
 //			}
 //		}
 		if(application.getCurrentAlbum()!=null){
-			new FetchAlbumTask(this, progressDialog).execute(Settings
-					.getGalleryUrl(this),application.getCurrentAlbum().getName());
+//			new FetchAlbumTask(this, progressDialog).execute(Settings
+//					.getGalleryUrl(this),application.getCurrentAlbum().getName());
+			
+			setUpView();
+			
+			
 		}
 		// it's the first time we get into this view, let's find the albums of
 		// the gallery
 		else{
-			new FetchAlbumTask(this, progressDialog).execute(Settings
+			progressDialog = ProgressDialog.show(this,
+					getString(R.string.please_wait),
+					getString(R.string.fetching_gallery_albums), true);
+			boolean refreshView = true;
+			new FetchAlbumAndSubAlbumsAndPicturesTask(this, progressDialog, refreshView).execute(Settings
 					.getGalleryUrl(this),0);
 		}
 
@@ -227,6 +237,29 @@ public class ShowAlbums extends ListActivity implements OnItemClickListener {
 		// choose another album
 		application.setCurrentPosition(0);
 
+	}
+
+	public void setUpView() {
+		this.setTitle((application.getCurrentAlbum()).getTitle());
+		List<Album> albumChildren = (application.getCurrentAlbum()).getSubAlbums();
+		Collections.sort(albumChildren, new AlbumComparator());
+		// if there are pictures in this album we create a fake album, it will be used to choose to view the
+		// pictures of the album
+		if((application.getCurrentAlbum()).getPictures().size()!=0){
+			Album fakeAlbum = new Album();
+			fakeAlbum.setId(0);
+			fakeAlbum.setTitle(this
+					.getString(R.string.view_album_pictures));
+			fakeAlbum.setName((application.getCurrentAlbum()).getName());
+			if (!albumChildren.contains(fakeAlbum)) {
+				albumChildren.add(0, fakeAlbum);
+			}
+		}
+		ArrayAdapter<Album> arrayAdapter = new AlbumAdapter(this,
+				R.layout.show_albums_row, albumChildren);
+
+		this.setListAdapter(arrayAdapter);
+		arrayAdapter.notifyDataSetChanged();
 	}
 
 	@Override

@@ -92,8 +92,7 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 		super.onResume();
 		Log.i(TAG, "resuming");
 		application = (RegalAndroidApplication) getApplication();
-		// we recover the context from the database
-		ShowUtils.getInstance().recoverContextFromDatabase(this);
+		
 		// we write the title
 		if (getTitle() == null || getTitle().equals("")
 				|| getTitle().equals(getString(R.string.show_gallery_title))) {
@@ -105,17 +104,31 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 //									.getAlbumName());
 			setTitle(application.getCurrentAlbum().getTitle());
 		}
-		progressDialog = ProgressDialog.show(ShowGallery.this,
-				getString(R.string.please_wait),
-				getString(R.string.loading_first_photos_from_album), true);
-		new FetchImagesTask().execute(Settings.getGalleryUrl(this),
-				application.getCurrentAlbum().getName());
-
+		albumPictures.clear();
+		//we already have the pictures
+		if(application.getCurrentAlbum() !=null &&application.getCurrentAlbum().getPictures().size()!=0){
+			albumPictures .addAll(application.getCurrentAlbum().getPictures());
+			setUpView();
+		}else{
+			// we recover the context from the database
+			ShowUtils.getInstance().recoverContextFromDatabase(this);
+			if(application.getCurrentAlbum() !=null &&application.getCurrentAlbum().getPictures().size()!=0){
+				albumPictures .addAll(application.getCurrentAlbum().getPictures());
+				setUpView();
+			}else{
+				progressDialog = ProgressDialog.show(ShowGallery.this,
+						getString(R.string.please_wait),
+						getString(R.string.loading_first_photos_from_album), true);
+				new FetchImagesTask().execute(Settings.getGalleryUrl(this),
+						application.getCurrentAlbum().getName());
+			}
+		}
 	}
 
 	@Override
 	protected void onPause() {
 		super.onPause();
+		
 		ShowUtils.getInstance().saveContextToDatabase(this);
 
 	}
@@ -375,50 +388,54 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 				if (albumPictures.isEmpty()) {
 					setContentView(R.layout.album_is_empty);
 				} else {
-					// we set up the view
-					setContentView(R.layout.show_gallery);
-					gallery = (Gallery) findViewById(R.id.gallery);
-					mSwitcher = (ImageSwitcher) findViewById(R.id.switcher);
-					mSwitcher.setOnClickListener(ShowGallery.this);
-
-					mSwitcher.setFactory(ShowGallery.this);
-					mSwitcher.setInAnimation(AnimationUtils.loadAnimation(
-							ShowGallery.this, android.R.anim.fade_in));
-					mSwitcher.setOutAnimation(AnimationUtils.loadAnimation(
-							ShowGallery.this, android.R.anim.fade_out));
-
-					ImageAdapter adapter = new ImageAdapter(ShowGallery.this);
-					gallery.setAdapter(adapter);
-					gallery.setOnItemSelectedListener(ShowGallery.this);
-
-					// issue #45 : a photo has been erased, this position does
-					// not exist anymore
-					if (albumPictures.size() == 0) {
-						finish();
-					}
-					if (application
-							.getCurrentPosition() >= albumPictures.size()) {
-						application
-								.setCurrentPosition(0);
-					}
-					// recover current position in current album
-					int currentPosition = ((RegalAndroidApplication) getApplication())
-							.getCurrentPosition();
-					if (currentPosition != 0) {
-						gallery.setSelection(currentPosition);
-						Picture picture = albumPictures
-								.get(currentPosition);
-						String uriString = FileUtils.getInstance().chooseBetweenResizedAndOriginalUrl(picture);
-						new ReplaceMainImageTask(ShowGallery.this,
-								progressDialog, gallery).execute(uriString,
-								mSwitcher, currentPosition, picture);
-					}
+					setUpView();
 
 				}
 			}
 		}
+
 	}
 
+	void setUpView() {
+		// we set up the view
+		setContentView(R.layout.show_gallery);
+		gallery = (Gallery) findViewById(R.id.gallery);
+		mSwitcher = (ImageSwitcher) findViewById(R.id.switcher);
+		mSwitcher.setOnClickListener(ShowGallery.this);
+		
+		mSwitcher.setFactory(ShowGallery.this);
+		mSwitcher.setInAnimation(AnimationUtils.loadAnimation(
+				ShowGallery.this, android.R.anim.fade_in));
+		mSwitcher.setOutAnimation(AnimationUtils.loadAnimation(
+				ShowGallery.this, android.R.anim.fade_out));
+		
+		ImageAdapter adapter = new ImageAdapter(ShowGallery.this);
+		gallery.setAdapter(adapter);
+		gallery.setOnItemSelectedListener(ShowGallery.this);
+		
+//		if (albumPictures.size() == 0) {
+//			finish();
+//		}
+		// issue #45 : a photo has been erased, this position does
+		// not exist anymore
+		if (application
+				.getCurrentPosition() >= albumPictures.size()) {
+			application
+			.setCurrentPosition(0);
+		}
+		// recover current position in current album
+		int currentPosition = ((RegalAndroidApplication) getApplication())
+		.getCurrentPosition();
+		if (currentPosition != 0) {
+			gallery.setSelection(currentPosition);
+			Picture picture = albumPictures
+			.get(currentPosition);
+			String uriString = FileUtils.getInstance().chooseBetweenResizedAndOriginalUrl(picture);
+			new ReplaceMainImageTask(ShowGallery.this,
+					progressDialog, gallery).execute(uriString,
+							mSwitcher, currentPosition, picture);
+		}
+	}
 	public void onClick(View v) {
 		Intent intent = new Intent(this, FullImage.class);
 		((RegalAndroidApplication) getApplication()).getPictures().clear();
@@ -442,7 +459,7 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
 			//we are leaving the gallery view, so we want to remember we want to see the parent album
 			//unless there are several albums; in this case we want to browse the album
-			if(application.getCurrentAlbum().getChildren().size()==0){
+			if(application.getCurrentAlbum().getSubAlbums().size()==0){
 				application.setCurrentAlbum(application.getCurrentAlbum().getParent());
 			}
 			this.finish();
