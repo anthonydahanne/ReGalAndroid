@@ -4,8 +4,9 @@ ReGalAndroid
 Formerly named g2android, ReGalAndroid is a Menalto Gallery 2 client; but aimed to be also compatible with G3, Piwigo galleries, etc...
 
 There are 4 module present :
-- g2-java-client : the gallery2 (G2) compatibility layer, providing a lightweight Java API (and its unit tests) to communicate with thte gallery2 remote interface (described here : http://codex.gallery2.org/Gallery_Remote:Protocol)
-- g3-java-client : the gallery3 (G3) compatibility layer, providing a lightweight Java API (and its unit tests) to communicate with thte G3 remote interface (described here : http://codex.gallery2.org/Gallery3:API:REST)
+
+- g2-java-client : the gallery2 (G2) compatibility layer, providing a lightweight Java API (and its unit tests) to communicate with the gallery2 remote interface (described here : http://codex.gallery2.org/Gallery_Remote:Protocol)
+- g3-java-client : the gallery3 (G3) compatibility layer, providing a lightweight Java API (and its unit tests) to communicate with the G3 remote interface (described here : http://codex.gallery2.org/Gallery3:API:REST)
 - commons-gallery : a project providing common (!) API elements, for all gallery implementations ; that is, for now, mainly an Album and a Picture class
 - regalandroid : this is the android application; compatible with all Android enabled phones and tablets starting from 1.5
 - regalandroid-parent : this is the parent of all the project; build this one and you'll build all the projects at once.
