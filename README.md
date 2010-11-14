@@ -39,7 +39,7 @@ The APK should be in regalandroid/target; you can send it to your phone.
 How to deploy (to an emulator/phone/any android 1.5+ device)
 ------------------------------------------------------------
 
-Quickly deploy to your device
+==Quickly deploy to your device==
 
 You can grab the compiled regalandroid APK (or build it using maven, it will be in regalandroid/target) and then copy it to your device sdcard; then browse this file on your device (using Astro for example) and install it (you need your device to be in dev mode : Menu->Settings->Applications->check Unknow sources and enable Development options)
 
