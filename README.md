@@ -26,13 +26,13 @@ You will need the following components installed on your machine :
 Make sure your environment is ok (ie the environment variables : ANDROID_HOME, JAVA_HOME and M2_HOME should be set properly and also added to the path, for example, add $ANDROID_HOME/tools , $JAVA_HOME/bin and $M2_HOME/bin to your $PATH)
 
 Create a new working directory (it will become your workspace)
->mkdir workspace && cd workspace
+	mkdir workspace && cd workspace
 Checkout the whole project using :
->git clone git@github.com:anthonydahanne/ReGalAndroid.git ./
+	git clone git@github.com:anthonydahanne/ReGalAndroid.git ./
 Go to the parent project
->cd regalandroid-parent
+	cd regalandroid-parent
 Compile everything
->mvn clean install
+	mvn clean install
 The APK should be in regalandroid/target; you can send it to your phone.
 
 
