@@ -22,14 +22,13 @@ import java.io.File;
 import net.dahanne.android.regalandroid.R;
 import net.dahanne.android.regalandroid.RegalAndroidApplication;
 import net.dahanne.android.regalandroid.remote.RemoteGalleryConnectionFactory;
-import net.dahanne.android.regalandroid.utils.ShowUtils;
+import net.dahanne.android.regalandroid.utils.DBUtils;
 import net.dahanne.gallery.commons.remote.RemoteGallery;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
-import android.util.Log;
 
 public class Settings extends PreferenceActivity {
 
@@ -139,6 +138,7 @@ public class Settings extends PreferenceActivity {
 		RemoteGalleryConnectionFactory.resetInstance();
 		((RegalAndroidApplication) this.getApplication()).setCurrentAlbum(null);
 		((RegalAndroidApplication) this.getApplication()).setCurrentPosition(0);
+		DBUtils.getInstance().destroyContextFromDataBase(this);
 		
 	}
 

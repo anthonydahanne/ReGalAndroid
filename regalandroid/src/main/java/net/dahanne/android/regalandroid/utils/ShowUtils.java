@@ -18,13 +18,7 @@
 package net.dahanne.android.regalandroid.utils;
 
 import net.dahanne.android.regalandroid.R;
-import net.dahanne.android.regalandroid.RegalAndroidApplication;
-import net.dahanne.android.regalandroid.remote.RemoteGalleryConnectionFactory;
-import net.dahanne.android.regalandroid.utils.DBHelper.G2AndroidContext;
-import net.dahanne.gallery.commons.remote.RemoteGallery;
-import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Application;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.widget.Toast;
@@ -57,6 +51,7 @@ public class ShowUtils {
 				.setMessage(message)
 				.setPositiveButton(R.string.ok,
 						new DialogInterface.OnClickListener() {
+							@Override
 							public void onClick(DialogInterface dialog, int id) {
 								dialog.cancel();
 							}
@@ -75,6 +70,7 @@ public class ShowUtils {
 				.setMessage(message)
 				.setPositiveButton(R.string.ok,
 						new DialogInterface.OnClickListener() {
+							@Override
 							public void onClick(DialogInterface dialog, int id) {
 								dialog.cancel();
 							}
@@ -108,31 +104,5 @@ public class ShowUtils {
 		Toast.makeText(context, context.getString(R.string.cache_cleared),
 				Toast.LENGTH_LONG).show();
 	}
-
-	/**
-	 * 
-	 * @param activity
-	 * @return true if we need to login
-	 */
-	public void recoverContextFromDatabase(Activity activity) {
-		RegalAndroidApplication application = (RegalAndroidApplication) activity.getApplication();
-		DBHelper dbHelper = new DBHelper(activity);
-		G2AndroidContext g2c = dbHelper.getLast();
-		if (g2c != null) {
-			application
-					.setCurrentPosition(g2c.currentPosition);
-			application
-					.setCurrentAlbum(g2c.currentAlbum);
-		}
-	}
-
-	public void saveContextToDatabase(Activity activity) {
-		RegalAndroidApplication application = (RegalAndroidApplication) activity.getApplication();
-		DBHelper dbHelper = new DBHelper(activity);
-		dbHelper.insert(new G2AndroidContext(0,
-				application
-						.getCurrentPosition(),
-						application
-						.getCurrentAlbum()));
-	}
+	
 }

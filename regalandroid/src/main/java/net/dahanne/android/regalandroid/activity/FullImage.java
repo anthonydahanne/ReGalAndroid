@@ -22,9 +22,9 @@ import java.util.List;
 
 import net.dahanne.android.regalandroid.R;
 import net.dahanne.android.regalandroid.RegalAndroidApplication;
+import net.dahanne.android.regalandroid.utils.DBUtils;
 import net.dahanne.android.regalandroid.utils.FileHandlingException;
 import net.dahanne.android.regalandroid.utils.FileUtils;
-import net.dahanne.android.regalandroid.utils.ShowUtils;
 import net.dahanne.android.regalandroid.utils.modified_android_source.AsyncTask;
 import net.dahanne.gallery.commons.model.Picture;
 import net.dahanne.gallery.commons.remote.GalleryConnectionException;
@@ -112,7 +112,7 @@ public class FullImage extends Activity implements OnGestureListener {
 		albumPictures = application
 				.getPictures();
 		if (albumPictures != null && albumPictures.size() != 0) {
-			ShowUtils.getInstance().saveContextToDatabase(this);
+			DBUtils.getInstance().saveContextToDatabase(this);
 		}
 	}
 
@@ -300,6 +300,7 @@ public class FullImage extends Activity implements OnGestureListener {
 				.setMessage(message)
 				.setPositiveButton(R.string.ok,
 						new DialogInterface.OnClickListener() {
+							@Override
 							public void onClick(DialogInterface dialog, int id) {
 								dialog.cancel();
 							}
@@ -340,6 +341,7 @@ public class FullImage extends Activity implements OnGestureListener {
 				.setMessage(message.toString())
 				.setPositiveButton(R.string.ok,
 						new DialogInterface.OnClickListener() {
+							@Override
 							public void onClick(DialogInterface dialog, int id) {
 								dialog.cancel();
 							}
@@ -348,6 +350,7 @@ public class FullImage extends Activity implements OnGestureListener {
 		alert.show();
 	}
 
+	@Override
 	public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
 			float velocityY) {
 
@@ -397,21 +400,26 @@ public class FullImage extends Activity implements OnGestureListener {
 		return false;
 	}
 
+	@Override
 	public void onLongPress(MotionEvent e) {
 	}
 
+	@Override
 	public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX,
 			float distanceY) {
 		return true;
 	}
 
+	@Override
 	public boolean onDown(MotionEvent e) {
 		return false;
 	}
 
+	@Override
 	public void onShowPress(MotionEvent e) {
 	}
 
+	@Override
 	public boolean onSingleTapUp(MotionEvent e) {
 		return false;
 	}

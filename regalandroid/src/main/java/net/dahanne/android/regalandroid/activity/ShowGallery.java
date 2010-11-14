@@ -29,10 +29,10 @@ import net.dahanne.android.regalandroid.RegalAndroidApplication;
 import net.dahanne.android.regalandroid.remote.RemoteGalleryConnectionFactory;
 import net.dahanne.android.regalandroid.tasks.CreateAlbumTask;
 import net.dahanne.android.regalandroid.tasks.ReplaceMainImageTask;
+import net.dahanne.android.regalandroid.utils.DBUtils;
 import net.dahanne.android.regalandroid.utils.FileUtils;
 import net.dahanne.android.regalandroid.utils.ShowUtils;
 import net.dahanne.android.regalandroid.utils.modified_android_source.AsyncTask;
-import net.dahanne.gallery.commons.model.Album;
 import net.dahanne.gallery.commons.model.Picture;
 import net.dahanne.gallery.commons.remote.GalleryConnectionException;
 import net.dahanne.gallery.commons.remote.RemoteGallery;
@@ -111,7 +111,7 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 			setUpView();
 		}else{
 			// we recover the context from the database
-			ShowUtils.getInstance().recoverContextFromDatabase(this);
+			DBUtils.getInstance().recoverContextFromDatabase(this);
 			if(application.getCurrentAlbum() !=null &&application.getCurrentAlbum().getPictures().size()!=0){
 				albumPictures .addAll(application.getCurrentAlbum().getPictures());
 				setUpView();
@@ -129,7 +129,7 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 	protected void onPause() {
 		super.onPause();
 		
-		ShowUtils.getInstance().saveContextToDatabase(this);
+		DBUtils.getInstance().saveContextToDatabase(this);
 
 	}
 
@@ -142,14 +142,17 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 			mContext = c;
 		}
 
+		@Override
 		public int getCount() {
 			return albumPictures.size();
 		}
 
+		@Override
 		public Object getItem(int position) {
 			return bitmapsCache.get(position);
 		}
 
+		@Override
 		public long getItemId(int position) {
 			// issue #45 : a photo has been erased, this position does not exist
 			// anymore
@@ -165,6 +168,7 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 
 		}
 
+		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 			ImageView i = new ImageView(mContext);
 			Bitmap downloadImage = findBitmapWithPosition(position);
@@ -224,6 +228,7 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 		}
 	}
 
+	@Override
 	@SuppressWarnings("unchecked")
 	public void onItemSelected(AdapterView<?> parent, View view, int position,
 			long id) {
@@ -256,6 +261,7 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 		}
 	}
 
+	@Override
 	public View makeView() {
 		ImageView i = new ImageView(this);
 		i.setBackgroundColor(0xFF000000);
@@ -306,7 +312,7 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 	protected void onActivityResult(int requestCode, int resultCode,
 			Intent intent) {
 		super.onActivityResult(requestCode, resultCode, intent);
-		ShowUtils.getInstance().recoverContextFromDatabase(this);
+		DBUtils.getInstance().recoverContextFromDatabase(this);
 		int albumName = application.getCurrentAlbum().getName();
 		if (resultCode == RESULT_OK) {
 			switch (requestCode) {
@@ -436,6 +442,7 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 							mSwitcher, currentPosition, picture);
 		}
 	}
+	@Override
 	public void onClick(View v) {
 		Intent intent = new Intent(this, FullImage.class);
 		((RegalAndroidApplication) getApplication()).getPictures().clear();
@@ -450,6 +457,7 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 	/**
 	 * this method comes with OnItemSelectedListener interface
 	 */
+	@Override
 	public void onNothingSelected(AdapterView<?> parent) {
 	}
 

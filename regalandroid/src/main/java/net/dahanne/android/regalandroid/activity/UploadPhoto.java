@@ -31,8 +31,9 @@ import net.dahanne.android.regalandroid.tasks.AddPhotoTask;
 import net.dahanne.android.regalandroid.tasks.AddPhotosTask;
 import net.dahanne.android.regalandroid.tasks.FetchAlbumForUploadTask;
 import net.dahanne.android.regalandroid.tasks.LoginTask;
-import net.dahanne.android.regalandroid.utils.ShowUtils;
 import net.dahanne.android.regalandroid.utils.AndroidUriUtils;
+import net.dahanne.android.regalandroid.utils.DBUtils;
+import net.dahanne.android.regalandroid.utils.ShowUtils;
 import net.dahanne.gallery.commons.model.Album;
 import net.dahanne.gallery.commons.remote.RemoteGallery;
 import net.dahanne.gallery.commons.utils.AlbumUtils;
@@ -188,7 +189,7 @@ public class UploadPhoto extends Activity implements OnClickListener {
 	@SuppressWarnings("unchecked")
 	public void showAlbumList() {
 		// we recover the context from the database
-		ShowUtils.getInstance().recoverContextFromDatabase(this);
+		DBUtils.getInstance().recoverContextFromDatabase(this);
 		Album currentAlbum = null;
 		if (((RegalAndroidApplication) getApplication()).getCurrentAlbum() != null) {
 
@@ -206,6 +207,7 @@ public class UploadPhoto extends Activity implements OnClickListener {
 
 	}
 
+	@Override
 	public void onClick(View v) {
 
 		switch (v.getId()) {
@@ -219,7 +221,7 @@ public class UploadPhoto extends Activity implements OnClickListener {
 						Toast.LENGTH_LONG);
 			} else {
 
-				ShowUtils.getInstance()
+				DBUtils.getInstance()
 						.recoverContextFromDatabase(this);
 				progressDialog = ProgressDialog.show(this,
 						getString(R.string.please_wait),

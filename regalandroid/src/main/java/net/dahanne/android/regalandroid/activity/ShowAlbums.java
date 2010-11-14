@@ -26,7 +26,7 @@ import net.dahanne.android.regalandroid.adapters.AlbumAdapter;
 import net.dahanne.android.regalandroid.tasks.CreateAlbumTask;
 import net.dahanne.android.regalandroid.tasks.FetchAlbumAndSubAlbumsAndPicturesTask;
 import net.dahanne.android.regalandroid.utils.AlbumComparator;
-import net.dahanne.android.regalandroid.utils.ShowUtils;
+import net.dahanne.android.regalandroid.utils.DBUtils;
 import net.dahanne.gallery.commons.model.Album;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
@@ -67,8 +67,15 @@ public class ShowAlbums extends ListActivity implements OnItemClickListener {
 	@Override
 	public void onItemClick(AdapterView<?> arg0, View arg1, int albumPosition,
 			long arg3) {
-//		Intent intent;
+
 		int albumName = ((Album) getListAdapter().getItem(albumPosition)).getName();
+		if(application.getCurrentAlbum()!=null && application.getCurrentAlbum().getName()==albumName){
+			//we want to get back to the same album
+			//probably because we want to see the pictures this time
+			this.startActivity(new Intent(this, ShowGallery.class));
+			return;
+		}
+		
 		progressDialog = ProgressDialog.show(this,
 				getString(R.string.please_wait),
 				getString(R.string.fetching_gallery_albums), true);
@@ -182,7 +189,7 @@ public class ShowAlbums extends ListActivity implements OnItemClickListener {
 		// pictures
 		if (((RegalAndroidApplication) getApplication()).getCurrentAlbum() == null) {
 			// we recover the context from the database
-			ShowUtils.getInstance()
+			DBUtils.getInstance()
 					.recoverContextFromDatabase(this);
 		}
 		
@@ -266,7 +273,7 @@ public class ShowAlbums extends ListActivity implements OnItemClickListener {
 	protected void onPause() {
 		super.onPause();
 		Log.i(TAG, "pausing");
-		ShowUtils.getInstance().saveContextToDatabase(this);
+		DBUtils.getInstance().saveContextToDatabase(this);
 	}
 
 	@Override
