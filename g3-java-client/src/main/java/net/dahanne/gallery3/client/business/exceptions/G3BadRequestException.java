@@ -1,6 +1,6 @@
 /**
- *  Gallery3-java-client
- *  URLs: http://github.com/anthonydahanne/g3-java-client , http://blog.dahanne.net
+ *  g3-java-client, a Menalto Gallery3 Java Client API
+ *  URLs: https://github.com/anthonydahanne/ReGalAndroid , http://blog.dahanne.net
  *  Copyright (c) 2010 Anthony Dahanne
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -15,6 +15,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+
 package net.dahanne.gallery3.client.business.exceptions;
 
 public class G3BadRequestException extends G3GalleryException {

@@ -1,11 +1,18 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>net.dahanne.gallery</groupId>
-  <artifactId>commons-gallery</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
-  <name>Gallery Commons</name>
-  <description>This project provides interfaces and models commons to all remote gallery layers (G2, G3, Piwigo, etc..)</description>
-<url>http://github.com/anthonydahanne/g2-java-client</url>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<parent>
+		<artifactId>regalandroid-parent</artifactId>
+		<groupId>net.dahanne.android</groupId>
+		<version>1.0.0-SNAPSHOT</version>
+	</parent>
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>net.dahanne.gallery</groupId>
+	<artifactId>commons-gallery</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>Gallery Commons</name>
+	<description>This project provides interfaces and models commons to all remote gallery layers (G2, G3, Piwigo, etc..)
+It is a submodule of the ReGalAndroid project</description>
+	<url>http://github.com/anthonydahanne/ReGalAndroid</url>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
@@ -17,9 +24,9 @@
 		</license>
 	</licenses>
 	<scm>
-		<connection>scm:git:git@github.com:anthonydahanne/g2-java-client.git</connection>
-		<url>scm:git:git@github.com:anthonydahanne/g2-java-client.git</url>
-		<developerConnection>scm:git:git@github.com:anthonydahanne/g2-java-client.git</developerConnection>
+		<connection>git@github.com:anthonydahanne/ReGalAndroid.git</connection>
+		<url>git@github.com:anthonydahanne/ReGalAndroid.git</url>
+		<developerConnection>git@github.com:anthonydahanne/ReGalAndroid.git</developerConnection>
 	</scm>
 	<developers>
 		<developer>
@@ -49,7 +56,7 @@
 			<version>4.0.1</version>
 			<scope>compile</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
@@ -62,19 +69,18 @@
 	<build>
 		<plugins>
 			<plugin>
-	        <groupId>org.apache.maven.plugins</groupId>
-	        <artifactId>maven-source-plugin</artifactId>
-	        <version>2.1.2</version>
-	        <executions>
-	          <execution>
-	            <id>attach-sources</id>
-	            <phase>verify</phase>
-	            <goals>
-	              <goal>jar-no-fork</goal>
-	            </goals>
-	          </execution>
-	        </executions>
-	      </plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>jar-no-fork</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -82,14 +88,12 @@
 					<source>1.5</source>
 					<target>1.5</target>
 				</configuration>
-				<version>2.3.2</version>
 			</plugin>
 			<plugin>
 				<groupId>com.mycila.maven-license-plugin</groupId>
 				<artifactId>maven-license-plugin</artifactId>
-				<version>1.8.0</version>
 				<configuration>
-					<header>${basedir}/src/main/resources/license-header.txt</header>
+					<header>${basedir}/resources/license-header.txt</header>
 					<failIfMissing>true</failIfMissing>
 					<executions>
 						<execution>

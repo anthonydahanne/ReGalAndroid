@@ -1,5 +1,5 @@
- Gallery3-java-client
- URLs: http://github.com/anthonydahanne/g3-java-client , http://blog.dahanne.net
+ commons-gallery, a common API module for ReGalAndroid
+ URLs: https://github.com/anthonydahanne/ReGalAndroid , http://blog.dahanne.net
  Copyright (c) 2010 Anthony Dahanne
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by

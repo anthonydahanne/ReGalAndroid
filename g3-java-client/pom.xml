@@ -1,5 +1,11 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<parent>
+		<artifactId>regalandroid-parent</artifactId>
+		<groupId>net.dahanne.android</groupId>
+		<version>1.0.0-SNAPSHOT</version>
+	</parent>
+	
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.dahanne.gallery3</groupId>
 	<artifactId>g3-java-client</artifactId>
@@ -103,7 +109,6 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
-				<version>2.1.2</version>
 				<executions>
 					<execution>
 						<id>attach-sources</id>
@@ -121,14 +126,12 @@
 					<source>1.5</source>
 					<target>1.5</target>
 				</configuration>
-				<version>2.3.2</version>
 			</plugin>
 			<plugin>
 				<groupId>com.mycila.maven-license-plugin</groupId>
 				<artifactId>maven-license-plugin</artifactId>
-				<version>1.8.0</version>
 				<configuration>
-					<header>${basedir}/src/main/resources/license-header.txt</header>
+					<header>${basedir}/resources/license-header.txt</header>
 					<failIfMissing>true</failIfMissing>
 					<executions>
 						<execution>
