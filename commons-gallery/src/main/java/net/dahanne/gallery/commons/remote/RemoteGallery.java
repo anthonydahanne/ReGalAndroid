@@ -4,13 +4,10 @@ import java.io.File;
 import java.io.InputStream;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import net.dahanne.gallery.commons.model.Album;
 import net.dahanne.gallery.commons.model.Picture;
-
-import org.apache.http.cookie.Cookie;
 
 public interface RemoteGallery {
 
@@ -70,10 +67,7 @@ public interface RemoteGallery {
 	public abstract InputStream getInputStreamFromUrl(String imageUrl)
 			throws GalleryConnectionException;
 
-	public abstract List<Cookie> getSessionCookies();
 
-	public abstract Album retrieveRootAlbumAndItsHierarchy(String galleryUrl)
-			throws GalleryConnectionException;
 
 	public abstract Map<Integer, Album> getAllAlbums(String galleryUrl)
 			throws GalleryConnectionException;

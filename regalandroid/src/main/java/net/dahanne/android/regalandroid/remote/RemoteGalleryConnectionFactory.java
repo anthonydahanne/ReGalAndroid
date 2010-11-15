@@ -19,7 +19,6 @@ package net.dahanne.android.regalandroid.remote;
 
 import net.dahanne.android.regalandroid.activity.Settings;
 import net.dahanne.gallery.commons.remote.RemoteGallery;
-import net.dahanne.gallery.g2.java.client.G2ConnectionUtils;
 import android.content.Context;
 
 /**
@@ -47,7 +46,7 @@ public class RemoteGalleryConnectionFactory {
 					.getGalleryConnectionType(context) .equals("") ? 0 : Integer.valueOf(connectionType);
 			switch (galleryConnectionType) {
 			case GALLERY2:
-				remoteGallery = new G2ConnectionUtils(Settings
+				remoteGallery = new G2Connection(Settings
 						.getGalleryUrl(context),Settings
 						.getUsername(context),Settings
 						.getPassword(context));
