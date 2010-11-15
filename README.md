@@ -19,8 +19,8 @@ You can whether use Linux, Windows or MacOsX to build any of regalandroid sub-pr
 You will need the following components installed on your machine :
 
 - Sun (Oracle) JDK 5.0 (though I'm using JDK 6.0)
-- Maven 2 (though I'm using Maven 3)
-- Android SDK (http://developer.android.com/sdk/index.html)
+- [Maven 2](http://maven.apache.org/) (though I'm using Maven 3)
+- [Android SDK](http://developer.android.com/sdk/index.html)
 - an IDE with proper Android tooling (I'm using Eclipse 3.6.1)
 
 Make sure your environment is ok (ie the environment variables : ANDROID_HOME, JAVA_HOME and M2_HOME should be set properly and also added to the path, for example, add $ANDROID_HOME/tools , $JAVA_HOME/bin and $M2_HOME/bin to your $PATH)
@@ -63,6 +63,6 @@ ReGalAndroid is distributed under [GNU General Public License v3](http://www.gnu
 Want to participate?
 --------------------
 
-You can fork this project and contact me ! (anthony.dahanne)
+You can fork this project and contact me ! (anthony.dahanne AT gmail DOT com)
 
 
