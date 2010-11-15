@@ -58,8 +58,7 @@ public class FetchAlbumAndSubAlbumsAndPicturesTask extends
 
 		Album albumAndSubAlbums;
 		try {
-			albumAndSubAlbums = remoteGallery.getAlbumAndSubAlbumsAndPictures(
-					galleryUrl, albumId);
+			albumAndSubAlbums = remoteGallery.getAlbumAndSubAlbumsAndPictures(albumId);
 		} catch (GalleryConnectionException e) {
 			albumAndSubAlbums = null;
 			exceptionMessage = e.getMessage();

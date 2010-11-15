@@ -119,15 +119,11 @@ public class G2Client {
 
 	private final DefaultHttpClient defaultHttpClient;
 	private G2Album rootAlbum;
-	private final String galleryUrl;
-	private final String username;
-	private final String password;
 
 
-	public G2Client(String galleryUrl, String username, String password) {
-		this.galleryUrl = galleryUrl;
-		this.username=username;
-		this.password=password;
+
+	public G2Client() {
+
 		
 		sessionCookies.add(new BasicClientCookie("", ""));
 		// the httpclient initialization is heavy, we create one for
@@ -546,13 +542,6 @@ public class G2Client {
 	}
 
 
-//	public G2Album retrieveRootAlbumAndItsHierarchy(String galleryUrl)
-//			throws GalleryConnectionException {
-//		Map<Integer, G2Album> nonSortedAlbums = getAllAlbums(galleryUrl);
-//		G2Album rootAlbum = organizeAlbumsHierarchy(nonSortedAlbums);
-//		return rootAlbum;
-//	}
-
 	public Map<Integer, Album> getAllAlbums(String galleryUrl)
 			throws GalleryConnectionException {
 		HashMap<String, String> albumsProperties = this.fetchAlbums(galleryUrl);
@@ -632,39 +621,6 @@ public class G2Client {
 
 	}
 
-//	/**
-//	 * @param albums
-//	 * @return
-//	 */
-//	public G2Album organizeAlbumsHierarchy(Map<Integer, G2Album> albums) {
-//		G2Album rootAlbum = null;
-//
-//		for (G2Album album : albums.values()) {
-//			// set the root album as soon as we discover it
-//			if (album.getParentName() == 0) {
-//				rootAlbum = album;
-//			}
-//
-//			int parentName = album.getParentName();
-//			// look for the parent id
-//			int parentId = 0;
-//			for (G2Album album2 : albums.values()) {
-//				if (album2.getName() == parentName) {
-//					parentId = album2.getId();
-//					break;
-//				}
-//			}
-//			G2Album parent = albums.get(parentId);
-//			album.setParent(parent);
-//			if (parent != null) {
-//				parent.getSubAlbums().add(album);
-//			}
-//		}
-//
-//		return rootAlbum;
-//
-//	}
-
 	/**
 	 * This method converts G2Album into Album and then organize the album hierarchy
 	 * 
@@ -706,32 +662,6 @@ public class G2Client {
 
 	}
 
-	
-	
-	public Collection<G2Picture> getPicturesFromAlbum(String galleryUrl,
-			int albumName) throws GalleryConnectionException {
-		return extractG2PicturesFromProperties(fetchImages(galleryUrl,
-				albumName));
-	}
-
-
-//	public G2Album getAlbumAndSubAlbumsAndPictures(String galleryUrl, int parentAlbumId)
-//			throws GalleryConnectionException {
-//		if(getRootAlbum()==null){
-//			//it means we already have the list of albums
-//			HashMap<String, String> fetchAlbums = fetchAlbums(galleryUrl);
-//			Map<Integer, G2Album> albumsFromProperties = extractAlbumFromProperties(fetchAlbums);
-//			setRootAlbum(organizeAlbumsHierarchy(albumsFromProperties));
-//		}
-//		//if 0 is specified as the parentAlbumId, it means we have to return the rootAlbum
-//		if(parentAlbumId==0){
-//			getRootAlbum().getPictures().addAll(getPicturesFromAlbum(galleryUrl, parentAlbumId));
-//			return getRootAlbum();
-//		}
-//		G2Album findAlbumFromAlbumName = AlbumUtils.findAlbumFromAlbumName(getRootAlbum(), parentAlbumId);
-//		findAlbumFromAlbumName.getPictures().addAll(getPicturesFromAlbum(galleryUrl, parentAlbumId));
-//		return  findAlbumFromAlbumName;
-//	}
 
 	public void setRootAlbum(G2Album rootAlbum) {
 		this.rootAlbum = rootAlbum;

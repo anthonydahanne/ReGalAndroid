@@ -3,7 +3,6 @@ package net.dahanne.android.regalandroid.tasks;
 import net.dahanne.android.regalandroid.R;
 import net.dahanne.android.regalandroid.activity.UploadPhoto;
 import net.dahanne.android.regalandroid.remote.RemoteGalleryConnectionFactory;
-import net.dahanne.android.regalandroid.utils.AndroidUriUtils;
 import net.dahanne.gallery.commons.remote.ImpossibleToLoginException;
 import net.dahanne.gallery.commons.remote.RemoteGallery;
 import net.dahanne.gallery.commons.utils.UriUtils;
@@ -36,9 +35,6 @@ public class LoginTask extends AsyncTask<Object, Object, String> {
 			TextView loggedInAsText, TextView galleryConfiguredTextView,
 			Button enterGalleryButton) {
 		super();
-		//to make sure we use the right gallery connection type
-//		RemoteGalleryConnectionFactory.resetInstance();
-//		RemoteGalleryConnectionFactory.setContext(context);
 		remoteGallery = RemoteGalleryConnectionFactory.getInstance();
 		this.activity = context;
 		this.progressDialog = progressDialog;
@@ -60,7 +56,7 @@ public class LoginTask extends AsyncTask<Object, Object, String> {
 				// are supplied !
 				// This is done once and for all as the session cookie will
 				// be stored !
-				remoteGallery.loginToGallery(galleryUrl, user, password);
+				remoteGallery.loginToGallery();
 			}
 		} catch (ImpossibleToLoginException e) {
 			// the connection went wrong, the authToken is then null
@@ -132,6 +128,7 @@ public class LoginTask extends AsyncTask<Object, Object, String> {
 				.setMessage(message)
 				.setPositiveButton(R.string.ok,
 						new DialogInterface.OnClickListener() {
+							@Override
 							public void onClick(DialogInterface dialog, int id) {
 								dialog.cancel();
 							}

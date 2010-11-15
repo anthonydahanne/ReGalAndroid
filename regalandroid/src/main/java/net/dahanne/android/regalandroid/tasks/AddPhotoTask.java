@@ -21,8 +21,8 @@ import java.io.File;
 
 import net.dahanne.android.regalandroid.activity.Settings;
 import net.dahanne.android.regalandroid.remote.RemoteGalleryConnectionFactory;
-import net.dahanne.android.regalandroid.utils.ShowUtils;
 import net.dahanne.android.regalandroid.utils.AndroidUriUtils;
+import net.dahanne.android.regalandroid.utils.ShowUtils;
 import net.dahanne.gallery.commons.remote.GalleryConnectionException;
 import net.dahanne.gallery.commons.remote.RemoteGallery;
 import android.app.Activity;
@@ -60,11 +60,9 @@ public class AddPhotoTask extends AsyncTask<Object, Void, String> {
 
 		try {
 			if (mustLogIn) {
-				remoteGallery.loginToGallery(galleryUrl,
-						Settings.getUsername(activity),
-						Settings.getPassword(activity));
+				remoteGallery.loginToGallery();
 			}
-			remoteGallery.sendImageToGallery(galleryUrl, albumName, imageFile,
+			remoteGallery.uploadPictureToGallery(galleryUrl, albumName, imageFile,
 					imageName, Settings.getDefaultSummary(activity),
 					Settings.getDefaultDescription(activity));
 		} catch (GalleryConnectionException e) {

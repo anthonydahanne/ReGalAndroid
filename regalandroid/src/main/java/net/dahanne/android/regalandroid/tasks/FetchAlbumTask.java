@@ -60,7 +60,7 @@ public class FetchAlbumTask extends AsyncTask<Object, Void, Album> {
 		Album albumAndSubAlbums;
 		try {
 			albumAndSubAlbums = remoteGallery
-					.getAlbumAndSubAlbumsAndPictures(galleryUrl,albumId);
+					.getAlbumAndSubAlbumsAndPictures(albumId);
 		} catch (GalleryConnectionException e) {
 			albumAndSubAlbums = null;
 			exceptionMessage = e.getMessage();
@@ -73,8 +73,8 @@ public class FetchAlbumTask extends AsyncTask<Object, Void, Album> {
 
 		if (albumAndSubAlbums != null) {
 			((RegalAndroidApplication) activity.getApplication()).setCurrentAlbum(albumAndSubAlbums);
-			activity.setTitle(((Album) albumAndSubAlbums).getTitle());
-			List<Album> albumChildren = ((Album) albumAndSubAlbums).getSubAlbums();
+			activity.setTitle((albumAndSubAlbums).getTitle());
+			List<Album> albumChildren = (albumAndSubAlbums).getSubAlbums();
 			Collections.sort(albumChildren, new AlbumComparator());
 			// we create a fake album, it will be used to choose to view the
 			// pictures of the album
@@ -82,7 +82,7 @@ public class FetchAlbumTask extends AsyncTask<Object, Void, Album> {
 			viewPicturesAlbum.setId(0);
 			viewPicturesAlbum.setTitle(activity
 					.getString(R.string.view_album_pictures));
-			viewPicturesAlbum.setName(((Album) albumAndSubAlbums).getName());
+			viewPicturesAlbum.setName((albumAndSubAlbums).getName());
 			if (!albumChildren.contains(viewPicturesAlbum)) {
 				albumChildren.add(0, viewPicturesAlbum);
 			}

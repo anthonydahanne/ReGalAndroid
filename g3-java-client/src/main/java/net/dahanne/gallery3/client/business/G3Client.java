@@ -31,7 +31,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import net.dahanne.gallery.commons.remote.GalleryConnectionException;
 import net.dahanne.gallery3.client.business.exceptions.G3BadRequestException;
 import net.dahanne.gallery3.client.business.exceptions.G3ForbiddenException;
 import net.dahanne.gallery3.client.business.exceptions.G3GalleryException;
@@ -175,10 +174,10 @@ public class G3Client implements IG3Client {
 				if (nameValuePairs.get(0).getName().equals("user")) {
 
 				} else {
-					existingApiKey = getApiKey(username, password);
+					existingApiKey = getApiKey();
 				}
 			} else {
-				existingApiKey = getApiKey(username, password);
+				existingApiKey = getApiKey();
 			}
 		}
 
@@ -302,7 +301,7 @@ public class G3Client implements IG3Client {
 		return responseEntity;
 	}
 
-	public String getApiKey(String username, String password)
+	public String getApiKey()
 			throws G3GalleryException {
 		List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
 		nameValuePairs.add(new BasicNameValuePair("user", username));

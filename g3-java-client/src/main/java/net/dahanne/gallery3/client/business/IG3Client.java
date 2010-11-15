@@ -30,7 +30,7 @@ public interface IG3Client {
 	int createItem(Entity entity,File file) throws G3GalleryException;
 	void updateItem(Entity entity)throws G3GalleryException;
 	void deleteItem(int itemId)throws G3GalleryException;
-	String getApiKey(String username, String password)throws G3GalleryException;
+	String getApiKey()throws G3GalleryException;
 	List<Item> getAlbumAndSubAlbums(int albumId) throws G3GalleryException;
 	public List<Item> getPictures(int albumId) throws G3GalleryException;
 }

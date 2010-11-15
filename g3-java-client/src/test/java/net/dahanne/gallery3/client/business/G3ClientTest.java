@@ -78,7 +78,7 @@ public class G3ClientTest {
 
 	@Test
 	public void getApiKey() throws G3GalleryException {
-		String apiKey = itemClient.getApiKey("g2android", "g2android");
+		String apiKey = itemClient.getApiKey();
 		assertNotNull(apiKey);
 	}
 

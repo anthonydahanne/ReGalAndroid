@@ -37,79 +37,84 @@ import net.dahanne.gallery.g2.java.client.model.G2Picture;
 import net.dahanne.gallery.g2.java.client.utils.G2ConvertUtils;
 
 public class G2Connection implements RemoteGallery {
-	
+
 	private final G2Client client;
 	private Album rootAlbum;
 	private final String galleryUrl;
+	private final String username;
+	private final String password;
 
 	public G2Connection(String galleryUrl, String username, String password) {
-		client = new G2Client(galleryUrl,username,password);
+		client = new G2Client();
 		this.galleryUrl = galleryUrl;
+		this.username = username;
+		this.password = password;
 	}
-	
-	
+
 	@Override
-	public Collection<Picture> getPicturesFromAlbum(String galleryUrl,
-			int albumName) throws GalleryConnectionException {
-		
+	public Collection<Picture> getPicturesFromAlbum(int albumName)
+			throws GalleryConnectionException {
+
 		List<Picture> pictures = new ArrayList<Picture>();
-		
-		Collection<G2Picture> extractG2PicturesFromProperties = client.extractG2PicturesFromProperties(client.fetchImages(galleryUrl,
-				albumName));
-		
+
+		Collection<G2Picture> extractG2PicturesFromProperties = client
+				.extractG2PicturesFromProperties(client.fetchImages(galleryUrl,
+						albumName));
+
 		for (G2Picture g2Picture : extractG2PicturesFromProperties) {
-			pictures.add(G2ConvertUtils.g2PictureToPicture(g2Picture, galleryUrl));
+			pictures.add(G2ConvertUtils.g2PictureToPicture(g2Picture,
+					galleryUrl));
 		}
-		
-		
+
 		return pictures;
 	}
 
-
 	@Override
-	public Album getAlbumAndSubAlbumsAndPictures(String galleryUrl, int parentAlbumId)
+	public Album getAlbumAndSubAlbumsAndPictures(int parentAlbumId)
 			throws GalleryConnectionException {
-		if(rootAlbum==null){
-			//it means we already have the list of albums
-			HashMap<String, String> fetchAlbums = fetchAlbums(galleryUrl);
-			Map<Integer, G2Album> albumsFromProperties = client.extractAlbumFromProperties(fetchAlbums);
+		if (rootAlbum == null) {
+			// it means we already have the list of albums
+			HashMap<String, String> fetchAlbums = client
+					.fetchAlbums(galleryUrl);
+			Map<Integer, G2Album> albumsFromProperties = client
+					.extractAlbumFromProperties(fetchAlbums);
 			rootAlbum = client.organizeAlbumsHierarchy(albumsFromProperties);
 		}
-		//if 0 is specified as the parentAlbumId, it means we have to return the rootAlbum
-		if(parentAlbumId==0){
-			rootAlbum.getPictures().addAll(getPicturesFromAlbum(galleryUrl, parentAlbumId));
+		// if 0 is specified as the parentAlbumId, it means we have to return
+		// the rootAlbum
+		if (parentAlbumId == 0) {
+			rootAlbum.getPictures().addAll(
+					getPicturesFromAlbum( parentAlbumId));
 			return rootAlbum;
 		}
-		Album findAlbumFromAlbumName = AlbumUtils.findAlbumFromAlbumName(rootAlbum, parentAlbumId);
-		findAlbumFromAlbumName.getPictures().addAll(getPicturesFromAlbum(galleryUrl, parentAlbumId));
-		return  findAlbumFromAlbumName;
+		Album findAlbumFromAlbumName = AlbumUtils.findAlbumFromAlbumName(
+				rootAlbum, parentAlbumId);
+		findAlbumFromAlbumName.getPictures().addAll(
+				getPicturesFromAlbum( parentAlbumId));
+		return findAlbumFromAlbumName;
 	}
 
 	@Override
-	public HashMap<String, String> fetchAlbums(String galleryUrl)
-			throws GalleryConnectionException {
-		return client.fetchAlbums(galleryUrl);
-	}
-
-	@Override
-	public void loginToGallery(String galleryUrl, String user, String password)
+	public void loginToGallery()
 			throws ImpossibleToLoginException {
-		client.loginToGallery(galleryUrl, user, password);
-		
+		client.loginToGallery(galleryUrl, username, password);
+
 	}
 
 	@Override
 	public int createNewAlbum(String galleryUrl, int parentAlbumName,
 			String albumName, String albumTitle, String albumDescription)
 			throws GalleryConnectionException {
-		return client.createNewAlbum(galleryUrl, parentAlbumName, albumName, albumTitle, albumDescription);
+		return client.createNewAlbum(galleryUrl, parentAlbumName, albumName,
+				albumTitle, albumDescription);
 	}
 
 	@Override
-	public int sendImageToGallery(String galleryUrl, int albumName,
+	public int uploadPictureToGallery(String galleryUrl, int albumName,
 			File imageFile, String imageName, String summary, String description)
 			throws GalleryConnectionException {
-		return client.sendImageToGallery(galleryUrl, albumName, imageFile, imageName, summary, description);
+		return client.sendImageToGallery(galleryUrl, albumName, imageFile,
+				imageName, summary, description);
 	}
 
 	@Override
@@ -118,13 +123,10 @@ public class G2Connection implements RemoteGallery {
 		return client.getInputStreamFromUrl(imageUrl);
 	}
 
-
 	@Override
 	public Map<Integer, Album> getAllAlbums(String galleryUrl)
 			throws GalleryConnectionException {
 		return client.getAllAlbums(galleryUrl);
 	}
 
-	
-	
 }

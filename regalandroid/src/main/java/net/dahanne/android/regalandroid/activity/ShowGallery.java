@@ -360,12 +360,10 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 			Collection<Picture> pictures = null;
 			try {
 				if (mustLogIn) {
-					remoteGallery.loginToGallery(galleryUrl,
-							Settings.getUsername(ShowGallery.this),
-							Settings.getPassword(ShowGallery.this));
+					remoteGallery.loginToGallery();
 					mustLogIn = false;
 				}
-				pictures = remoteGallery.getPicturesFromAlbum(galleryUrl,
+				pictures = remoteGallery.getPicturesFromAlbum(
 						albumName);
 			} catch (GalleryConnectionException e) {
 				exceptionMessage = e.getMessage();

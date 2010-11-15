@@ -56,7 +56,7 @@ public class G2ClientTest extends Assert {
 		galleryUrl = "https://g2.dahanne.net/";
 		user = "g2android";
 		password = "g2android";
-		g2ConnectionUtils = new G2Client(galleryUrl,user,password);
+		g2ConnectionUtils = new G2Client();
 	}
 
 	@Test
