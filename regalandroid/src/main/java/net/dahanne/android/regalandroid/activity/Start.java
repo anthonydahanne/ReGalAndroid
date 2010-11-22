@@ -25,6 +25,8 @@ import net.dahanne.android.regalandroid.utils.FileUtils;
 import net.dahanne.android.regalandroid.utils.ShowUtils;
 
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -39,23 +41,25 @@ import android.widget.Button;
 import android.widget.TextView;
 
 public class Start extends Activity implements OnClickListener {
-	private static final String TAG = "StartActivity";
 	private Button enterGalleryButton;
 	private TextView galleryConfiguredTextView;
 	private TextView loggedInAsText;
 	private ProgressDialog progressDialog;
 	private DBHelper dbHelper;
 	private final FileUtils fileUtils = FileUtils.getInstance();
+	private final Logger logger = LoggerFactory.getLogger(Start.class);
 
 	@Override
 	protected void onPause() {
 		super.onPause();
+		logger.debug("onPausing");
 		dbHelper.cleanup();
 	}
 
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
+		logger.debug("onCreating");
 		super.onCreate(savedInstanceState);
 		dbHelper = new DBHelper(this);
 		dbHelper.deleteAll();
@@ -82,8 +86,8 @@ public class Start extends Activity implements OnClickListener {
 	 * if a gallery URL is already configured, we print it in this view,
 	 * otherwise we keep the default text and we disable the button
 	 */
-	@SuppressWarnings("unchecked")
 	private void checkGalleryUrlIsValid() {
+		logger.debug("checking GalleryUrl Is Valid");
 		// GalleryUrl is provided, but is it a valid Gallery2 URL ?
 		if (StringUtils.isNotBlank(Settings.getGalleryUrl(this))) {
 			progressDialog = ProgressDialog.show(this,
@@ -135,6 +139,7 @@ public class Start extends Activity implements OnClickListener {
 
 	}
 
+	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.enter_gallery_button:
@@ -145,6 +150,7 @@ public class Start extends Activity implements OnClickListener {
 
 	@Override
 	protected void onResume() {
+		logger.debug("onResuming");
 		super.onResume();
 		// we check if we already have a gallery configured
 		checkGalleryUrlIsValid();

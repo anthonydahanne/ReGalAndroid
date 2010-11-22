@@ -16,7 +16,7 @@
  *  along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.dahanne.android.regalandroid.utils;
+package net.dahanne.gallery.commons.model;
 
 import java.util.Comparator;
 

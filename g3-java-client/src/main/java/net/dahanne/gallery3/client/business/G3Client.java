@@ -60,6 +60,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class G3Client implements IG3Client {
 
@@ -78,6 +80,7 @@ public class G3Client implements IG3Client {
 
 	private String password;
 	private String username;
+	private final Logger logger = LoggerFactory.getLogger(G3Client.class);
 
 	public G3Client(String galleryUrl) {
 		if(!galleryUrl.endsWith("/")){
@@ -165,8 +168,8 @@ public class G3Client implements IG3Client {
 			List<NameValuePair> nameValuePairs, String requestMethod, File file)
 			throws G3GalleryException {
 
+		logger.debug("appendToGalleryUrl : {} -- nameValuePairs : {} -- requestMethod : {} -- file : {}",new Object[]{appendToGalleryUrl,nameValuePairs,requestMethod, file!=null?file.getAbsolutePath():null});
 		String result;
-		
 
 		// do we need to login ? do we have the apikey ?
 		if (username != null && existingApiKey == null) {
@@ -183,22 +186,16 @@ public class G3Client implements IG3Client {
 		}
 
 		try {
-			HttpEntity responseEntity = extracted(appendToGalleryUrl,
+			HttpEntity responseEntity = requestToResponseEntity(appendToGalleryUrl,
 					nameValuePairs, requestMethod, file);
-			
-			
-			
-			
-			
-			
-			
-			
 			responseEntity = new BufferedHttpEntity(responseEntity);
 
 			BufferedReader reader = new BufferedReader(new InputStreamReader(
 					responseEntity.getContent()));
 			String line;
 			StringBuilder sb = new StringBuilder();
+			logger.debug("Beginning reading the response");			
+
 			try {
 				while ((line = reader.readLine()) != null) {
 					sb.append(line);
@@ -207,18 +204,20 @@ public class G3Client implements IG3Client {
 			} finally {
 				reader.close();
 			}
-
 			result = sb.toString();
+			logger.debug("result : {}",result);
+			logger.debug("Ending reading the response");
 
 		} catch (ClientProtocolException e) {
 			throw new G3GalleryException(e.getMessage());
 		} catch (IOException e) {
 			throw new G3GalleryException(e.getMessage());
 		}
+		logger.debug("");
 		return result;
 	}
 
-	private HttpEntity extracted(String appendToGalleryUrl,
+	private HttpEntity requestToResponseEntity(String appendToGalleryUrl,
 			List<NameValuePair> nameValuePairs, String requestMethod,
 			File file)
 			throws UnsupportedEncodingException, IOException,
@@ -238,7 +237,6 @@ public class G3Client implements IG3Client {
 
 				StringBody contentBody = new StringBody(substring,
 						Charset.forName("UTF-8"));
-				// System.out.println(substring);
 				multipartEntity.addPart("entity", contentBody);
 				FileBody fileBody = new FileBody(file);
 				multipartEntity.addPart("file", fileBody);
@@ -316,22 +314,6 @@ public class G3Client implements IG3Client {
 		return key;
 	}
 
-	public void setPassword(String password) {
-		this.password = password;
-	}
-
-	public void setUsername(String username) {
-		this.username = username;
-	}
-
-	public void setExistingApiKey(String existingApiKey) {
-		this.existingApiKey = existingApiKey;
-	}
-
-	public String getExistingApiKey() {
-		return existingApiKey;
-	}
-
 	/**
 	 * get the entire item representing the AlbumId + all its album sub items
 	 */
@@ -407,7 +389,7 @@ public class G3Client implements IG3Client {
 		InputStream content = null;
 		String appendToGalleryUrl =  url.substring(url.indexOf(galleryItemUrl)+galleryItemUrl.length());
 		try {
-			content = extracted(appendToGalleryUrl, null, GET, null).getContent();
+			content = requestToResponseEntity(appendToGalleryUrl, null, GET, null).getContent();
 		} catch (IllegalStateException e) {
 			throw new G3GalleryException(e);
 		} catch (UnsupportedEncodingException e) {
@@ -419,5 +401,22 @@ public class G3Client implements IG3Client {
 		}
 		return content;
 	}
+	
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public void setExistingApiKey(String existingApiKey) {
+		this.existingApiKey = existingApiKey;
+	}
+
+	public String getExistingApiKey() {
+		return existingApiKey;
+	}
+
 
 }

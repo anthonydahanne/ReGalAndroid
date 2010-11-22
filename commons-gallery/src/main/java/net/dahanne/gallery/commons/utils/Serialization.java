@@ -34,25 +34,33 @@ import net.dahanne.gallery.commons.model.Album;
 public class Serialization {
 
 	/**
-	 * @param myAlbum
+	 * Serialize the album into bytes; useful for saving to android database
+	 * 
+	 * @return
+	 * @throws SerializationException 
 	 */
-	public static byte[] serialize(Album myAlbum) {
+	public static byte[] serializeAlbum(Album album) throws SerializationException {
 		ByteArrayOutputStream output = new ByteArrayOutputStream();
 		try {
 			ObjectOutputStream oos = new ObjectOutputStream(output);
-			oos.writeObject(myAlbum);
+			oos.writeObject(album);
 			oos.close();
 		} catch (IOException e) {
-			e.printStackTrace();
+			throw new SerializationException(e);
 		}
 		return output.toByteArray();
 
 	}
 
 	/**
+	 * Unserialize the album from byte[], useful for getting an album back from
+	 * the android database
+	 * 
+	 * @param serializedAlbum
 	 * @return
+	 * @throws SerializationException 
 	 */
-	public static Album unSerialize(byte[] serializedAlbum) {
+	public static Album unserializeAlbum(byte[] serializedAlbum) throws SerializationException {
 		Album album = null;
 		try {
 			ByteArrayInputStream bais = new ByteArrayInputStream(
@@ -61,11 +69,11 @@ public class Serialization {
 			album = (Album) ois.readObject();
 			ois.close();
 		} catch (StreamCorruptedException e) {
-			// Log.e("PLOUF", e.getLocalizedMessage());
+			throw new SerializationException(e);
 		} catch (IOException e) {
-			e.printStackTrace();
+			throw new SerializationException(e);
 		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
+			throw new SerializationException(e);
 		}
 		return album;
 

@@ -6,25 +6,17 @@
 	<version>1.0.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>ReGalAndroid parent project</name>
-	<!-- dependencyManagement>
+	<dependencyManagement>
 		<dependencies>
 			<dependency>
-				<groupId>com.google.android</groupId>
-				<artifactId>android</artifactId>
-				<version>1.5_r4</version>
-			</dependency>
-			<dependency>
-				<groupId>com.google.android</groupId>
-				<artifactId>android-test</artifactId>
-				<version>1.5_r4</version>
-			</dependency>
-			<dependency>
-				<groupId>junit</groupId>
-				<artifactId>junit</artifactId>
-				<version>4.4</version>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-api</artifactId>
+				<version>1.6.1</version>
+				<type>jar</type>
+				<scope>compile</scope>
 			</dependency>
 		</dependencies>
-	</dependencyManagement-->
+	</dependencyManagement>
 	<build>
 		<pluginManagement>
 			<plugins>

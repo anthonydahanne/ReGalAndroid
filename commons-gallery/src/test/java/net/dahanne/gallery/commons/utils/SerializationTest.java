@@ -25,17 +25,17 @@ import org.junit.Test;
 
 public class SerializationTest {
 	@Test
-	public void serializeAndUnSerializeAnAlbum() {
-		Album myAlbum = new Album(1, 43, "myAlbum",
-				"Inthis album, there's not much", 0, false, false, false,
-				false, "no extrafield");
-		myAlbum.getSubAlbums().add(
-				new Album(2, 4343, "a sub album", "nothing more here !", 43,
-						true, true, true, true, "Some fields!"));
-
-		byte[] serialize = Serialization.serialize(myAlbum);
-		Album unserializedAlbum = Serialization.unSerialize(serialize);
-		Assert.assertEquals(myAlbum, unserializedAlbum);
-
-	}
+		public void serializeAlbumAndUnSerializeAnAlbum() throws SerializationException {
+			Album myAlbum = new Album(1, 43, "myAlbum",
+					"Inthis album, there's not much", 0, false, false, false,
+					false, "no extrafield");
+			myAlbum.getSubAlbums().add(
+					new Album(2, 4343, "a sub album", "nothing more here !", 43,
+							true, true, true, true, "Some fields!"));
+	
+			byte[] serialize = Serialization.serializeAlbum(myAlbum);
+			Album unserializedAlbum = Serialization.unserializeAlbum(serialize);
+			Assert.assertEquals(myAlbum, unserializedAlbum);
+	
+		}
 }

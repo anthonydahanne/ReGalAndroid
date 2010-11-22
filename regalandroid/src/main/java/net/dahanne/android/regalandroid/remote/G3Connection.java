@@ -51,7 +51,7 @@ public class G3Connection implements RemoteGallery {
 	public int createNewAlbum(String arg0, int arg1, String arg2, String arg3,
 			String arg4) throws GalleryConnectionException {
 		throw new GalleryOperationNotYetSupportedException(
-				"Not available in G3 yet");
+				"Not available for G3 yet");
 	}
 
 	@Override
@@ -59,7 +59,7 @@ public class G3Connection implements RemoteGallery {
 			throws GalleryConnectionException {
 
 		throw new GalleryOperationNotYetSupportedException(
-				"Not available in G3 yet");
+				"Not available for G3 yet");
 	}
 
 	@Override
@@ -102,7 +102,7 @@ public class G3Connection implements RemoteGallery {
 			String arg3, String arg4, String arg5)
 			throws GalleryConnectionException {
 		throw new GalleryOperationNotYetSupportedException(
-				"Not available in G3 yet");
+				"Not available for G3 yet");
 	}
 
 	@Override

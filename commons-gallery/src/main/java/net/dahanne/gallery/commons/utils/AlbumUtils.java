@@ -20,21 +20,35 @@ package net.dahanne.gallery.commons.utils;
 
 import net.dahanne.gallery.commons.model.Album;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class AlbumUtils {
+	private final static Logger logger = LoggerFactory.getLogger(AlbumUtils.class);
+	
+	/**
+	 * This method returns the Album corresponding to albumName, among the rootAlbum hierarchy
+	 * @param rootAlbum
+	 * @param albumName
+	 * @return
+	 */
 	public static Album findAlbumFromAlbumName(Album rootAlbum, int albumName) {
+		logger.debug("rootAlbum is : {} -- albumName is : {}",rootAlbum,albumName);
+		Album albumFound=null;
 		if (rootAlbum.getName() == albumName) {
-			return rootAlbum;
+			albumFound= rootAlbum;
 		}
 		for (Album album : rootAlbum.getSubAlbums()) {
 			if (album.getName() == albumName) {
-				return album;
+				albumFound= album;
 			}
 			Album fromAlbumName = findAlbumFromAlbumName(album, albumName);
 			if (fromAlbumName != null) {
-				return fromAlbumName;
+				albumFound= fromAlbumName;
 			}
 
 		}
-		return null;
+		logger.debug("albumFound is : {}",albumFound);
+		return albumFound;
 	}
 }

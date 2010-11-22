@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
 
-     ReGalAndroid, a gallery client for Android, supporting G2, G3, etc...
+     ReGalAndroid, a gallery client for Android, supporting regal, G3, etc...
      URLs: https://github.com/anthonydahanne/ReGalAndroid , http://blog.dahanne.net
      Copyright (c) 2010 Anthony Dahanne
      This program is free software; you can redistribute it and/or modify
@@ -93,7 +93,7 @@
 			<TextView android:text="Please report it !"
 				android:layout_width="fill_parent" android:layout_height="wrap_content"
 				android:paddingLeft="15px" android:textColor="#ffffff" />
-			<TextView android:text="http://code.google.com/p/g2android/issues/list" android:textColorLink="#ffffff"
+			<TextView android:text="http://code.google.com/p/regalandroid/issues/list" android:textColorLink="#ffffff"
 				android:layout_width="fill_parent" android:layout_height="wrap_content"
 				android:paddingLeft="15px" android:textColor="#ffffff" android:autoLink="web" />
 			<TextView android:text="Do you love this app ?" android:layout_width="fill_parent"
@@ -103,12 +103,12 @@
 			<TextView android:text="You can flattr me to show your support !"
 				android:layout_width="fill_parent" android:layout_height="wrap_content"
 				android:paddingLeft="15px" android:textColor="#ffffff" />
-			<TextView android:text="https://flattr.com/thing/38389/G2Android" android:textColorLink="#ffffff"
+			<TextView android:text="https://flattr.com/thing/38389/regalAndroid" android:textColorLink="#ffffff"
 				android:layout_width="fill_parent" android:layout_height="wrap_content"
 				android:paddingLeft="15px" android:textColor="#ffffff" android:autoLink="web" />
 			<TextView android:paddingTop="15px"
 				android:layout_width="fill_parent" android:layout_height="wrap_content"
-				android:paddingLeft="15px" android:textColor="#ffffff" android:text="@string/what_is_g2android"
+				android:paddingLeft="15px" android:textColor="#ffffff" android:text="@string/what_is_regalandroid"
 				android:autoLink="web"  android:textColorLink="#ffffff" />
 				
 		</LinearLayout>

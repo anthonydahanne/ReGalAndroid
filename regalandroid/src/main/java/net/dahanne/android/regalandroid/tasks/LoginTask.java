@@ -114,7 +114,7 @@ public class LoginTask extends AsyncTask<Object, Object, String> {
 			// neither login or simple command worked, we're offline
 			if (loggedInAsText != null) {
 				galleryConfiguredTextView
-						.setText(R.string.g2android_no_gallery_configured);
+						.setText(R.string.regalandroid_no_gallery_configured);
 				enterGalleryButton.setEnabled(false);
 				loggedInAsText.setText(activity
 						.getString(R.string.not_logged_in));

@@ -63,7 +63,6 @@ public class FullImage extends Activity implements OnGestureListener {
 	private static final String IMAGE = "image/";
 	private static final String IMAGE_JPEG = "image/jpeg";
 	private static final String TEXT_PLAIN = "text/plain";
-	private static final String MAIN_PHP_G2_ITEM_ID = "/main.php?g2_itemId=";
 	private static final String TAG = "FullImage";
 	static final String CURRENT_POSITION = "currentPhoto";
 	private ImageView imageView;

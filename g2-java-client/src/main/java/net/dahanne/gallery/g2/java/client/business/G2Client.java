@@ -71,6 +71,8 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.params.HttpProtocolParams;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -120,6 +122,7 @@ public class G2Client {
 
 	private final DefaultHttpClient defaultHttpClient;
 	private G2Album rootAlbum;
+	private final Logger logger = LoggerFactory.getLogger(G2Client.class);
 
 
 
@@ -367,6 +370,8 @@ public class G2Client {
 	private HashMap<String, String> sendCommandToGallery(String galleryUrl,
 			List<NameValuePair> nameValuePairsForThisCommand,
 			HttpEntity multiPartEntity) throws GalleryConnectionException {
+		logger.debug("galleryUrl : {} -- nameValuePairsForThisCommand : {}",galleryUrl,nameValuePairsForThisCommand);
+		
 		HashMap<String, String> properties = new HashMap<String, String>();
 		try {
 
@@ -432,16 +437,23 @@ public class G2Client {
 						CookieSpecPNames.DATE_PATTERNS, patternsList);
 				response = defaultHttpClient.execute(httpPost);
 			}
+			int status = response.getStatusLine().getStatusCode();
+			if(status>=400 && status<500){
+				logger.debug("status is an error : {}",status);
+				throw new GalleryConnectionException("The server returned an error : "+status);
+			}
+			
+			
 			InputStream content = response.getEntity().getContent();
 			BufferedReader rd = new BufferedReader(new InputStreamReader(
 					content), 4096);
 			// do not forget the cookies
 			sessionCookies.addAll(cookies);
-
+			logger.debug("Beginning reading the response");
 			String line;
 			boolean gr2ProtoStringWasFound = false;
 			while ((line = rd.readLine()) != null) {
-//				System.out.println(line);
+				logger.debug(line);
 				if (line.contains(GR2PROTO)) {
 					gr2ProtoStringWasFound = true;
 				}
@@ -455,6 +467,7 @@ public class G2Client {
 					properties.put(key, value);
 				}
 			}
+			logger.debug("Ending reading the response");
 			rd.close();
 		} catch (IOException e) {
 			// something went wrong, let's throw the info to the UI

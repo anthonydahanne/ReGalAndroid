@@ -1,6 +1,6 @@
 <!--
 
-     ReGalAndroid, a gallery client for Android, supporting G2, G3, etc...
+     ReGalAndroid, a gallery client for Android, supporting regal, G3, etc...
      URLs: https://github.com/anthonydahanne/ReGalAndroid , http://blog.dahanne.net
      Copyright (c) 2010 Anthony Dahanne
      This program is free software; you can redistribute it and/or modify
@@ -19,12 +19,13 @@
 -->
 
 <resources>
-        <string name="welcome_to_g2android">Bienvenue dans G2Android !</string>
+		<!-- Activities -->
+        <string name="welcome_to_regalandroid">Bienvenue dans RegalAndroid !</string>
         <string name="enter_gallery_title">Entrer dans la galerie !</string>
         <string name="connect_to_gallery_title">Se connecter à la galerie</string>
         <string name="gallery_url_title">Url de la galerie</string>
-        <string name="g2android_no_gallery_configured">Aucune galerie configurée! Allez dans Menu->Réglages pour arranger cela !</string>
-        <string name="g2android_default_gallery_configured">Configurée avec la galerie par défaut, allez dans Menu->Réglages pour arranger cela !</string>
+        <string name="regalandroid_no_gallery_configured">Aucune galerie configurée! Allez dans Menu->Réglages pour arranger cela !</string>
+        <string name="regalandroid_default_gallery_configured">Configurée avec la galerie par défaut, allez dans Menu->Réglages pour arranger cela !</string>
         <string name="gallery_url_is_not_valid">L\'url de la galerie saisie n\'est pas valide, allez dans Menu->Réglages pour arranger cela !</string>
         <string name="gallery_credentials_are_not_valid">Les identifiants saisis ne sont pas valides! allez dans Menu->Réglages pour arranger cela !(Essayez déjé de vous connecter sans identifiants si possible pour tester)</string>
         <string name="gallery_url_summary">Entrez ici l\'Url de base de votre galerie, ex : http://myhost.com/gallery2</string>
@@ -35,7 +36,7 @@
         <string name="password_summary">Si votre galerie le nécessite, rentrez ici votre mot de passe</string>
 		<string name="port_title">Port</string>
         <string name="port_summary">Le port par défaut est 80, si votre galerie utilise un port différent, spécifiez le ici</string>
-		<string name="firsttime_title">Bienvenue dans G2Android !</string>
+		<string name="firsttime_title">Bienvenue dans RegalAndroid !</string>
         <string name="ok">OK</string>
         <string name="about_label">A propos</string>
         <string name="about_title">A propos</string>
@@ -54,16 +55,16 @@
 		<string name="exception_thrown">\n\nIl y a eu un problème durant la connexion, le détail est : \n</string>
 		<string name="fetching_gallery_albums">En cours de récupération des albums...</string>
 		<string name="creating_new_album">Création d\'un nouvel album...</string>
-        <string name="what_is_g2android">
-		G2Android est un logiciel qui vous permet de vous connecter é votre galerie de photos en ligne Gallery2.
-		La galerie configurée par défaut est un installation Gallery2 de test, qui vous permet d\'essayer g2Android sans avoir de galerie Gallery2 configurée.
+        <string name="what_is_regalandroid">
+		RegalAndroid est un logiciel qui vous permet de vous connecter é votre galerie de photos en ligne Gallery2.
+		La galerie configurée par défaut est un installation Gallery2 de test, qui vous permet d\'essayer RegalAndroid sans avoir de galerie Gallery2 configurée.
 		Vous pourrez changer l\'url par défaut dans Menu->Réglages
 		D\'autres url de galeries déjé installées existent sur cette page : http://gallery.menalto.com/gallery/demosites/
-		Mais n\'oubliez pas : G2Android prend tout son sens quand vous l\'utilisez avec VOTRE galerie, pas une de test !
+		Mais n\'oubliez pas : regalAndroid prend tout son sens quand vous l\'utilisez avec VOTRE galerie, pas une de test !
         </string>
         <string name="full_image_title">Image</string>
         <string name="settings_label">Réglages...</string>
-        <string name="settings_title">Réglages de G2Android</string>
+        <string name="settings_title">Réglages de RegalAndroid</string>
         <string name="settings_shortcut">s</string>
         <string name="show_albums_title">Albums de la galerie</string>
         <string name="show_gallery_title">Galerie</string>
@@ -75,11 +76,10 @@
 		<string name="adding_photo">Photo en cours d\'envoi vers l\'album</string>
 		<string name="loading_first_photos_from_album">En cours de chargement des premières photos de l\'album</string>
 
-		<!-- New strings since 1.2.1 -->
-		<string name="g2android_temp_path_title">Répertoire temporaire</string>
-		<string name="g2android_path_title">Répertoire racine de G2Android</string>
-		<string name="g2android_path_summary">où seront stockés les fichiers de G2Android sur votre carte SD</string>
-		<string name="g2android_temp_path_summary">le sous répertoire où sera stocké le cache</string>
+		<string name="regalandroid_temp_path_title">Répertoire temporaire</string>
+		<string name="regalandroid_path_title">Répertoire racine de RegalAndroid</string>
+		<string name="regalandroid_path_summary">où seront stockés les fichiers de RegalAndroid sur votre carte SD</string>
+		<string name="regalandroid_temp_path_summary">le sous répertoire où sera stocké le cache</string>
 		<string name="clear_cache_title">Effacer le cache</string>
 		<string name="clear_cache_summary">effacer le cache à chaque démarrage de l\'appli</string>
 		<string name="cache_cleared">Cache effacé avec succès !</string>
@@ -104,7 +104,6 @@
 		<string name="showing_picture">Image en cours : </string>
 		<string name="no_more_pictures">Pas d\'autres photos dans l\'album</string>
 
-		<!-- New strings since 1.3.0 -->
 		<string name="share_image_title">Partager l\'url de la photo</string>
 		<string name="send_image_title">Envoyer à</string>
 		<string name="choose_action">Choisis une action</string>
@@ -115,9 +114,8 @@
 		<string name="cancel">Annuler</string>
 		<string name="choose_subalbum_name">Choisis un nom pour l\'album</string>
 
-		<!--  new string since 1.5.0 -->
 		<string name="url_validation_problem">L\'url que vous avez saisie pour votre galerie n\'est pas valide ! Vérifiez là !</string>
-		<string name="upload_photo_title">Envoyer avec g2android</string>
+		<string name="upload_photo_title">Envoyer avec Regalandroid</string>
 		<string name="take_picture_label">Prendre 1 photo et l\'envoyer</string>
 		<string name="upload_photo_no_photo">Pas de photo à envoyer !</string>
 		<string name="upload_photo_send_to">Vous allez envoyer une photo vers :</string>
@@ -127,9 +125,8 @@
 		<string name="upload_photo_choose_destination">Choisissez l\'album de destination : </string>
 		<string name="upload_photo_send">Envoyer</string>
 		<string name="upload_photo_done">Fini</string>
-		<string name="upload_photo_settings">Configurer g2android</string>
+		<string name="upload_photo_settings">Configurer Regalandroid</string>
 		
-		<!--  new string since 1.6.0 -->
 		<string name="images_successfully_created">Images ajoutées avec succès</string>
 		<string name="upload_settings">Réglages d\'envoi</string>
 		<string name="default_summary_title">Sommaire par défaut</string>

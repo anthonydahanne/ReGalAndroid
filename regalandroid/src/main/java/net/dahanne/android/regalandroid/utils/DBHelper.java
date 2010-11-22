@@ -19,6 +19,12 @@
 package net.dahanne.android.regalandroid.utils;
 
 import net.dahanne.gallery.commons.model.Album;
+import net.dahanne.gallery.commons.utils.Serialization;
+import net.dahanne.gallery.commons.utils.SerializationException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -32,12 +38,12 @@ public class DBHelper {
 	public static final String DB_TABLE = "regalandroid_context_table";
 	public static final int DB_VERSION = 3;
 
-	private static final String CLASSNAME = DBHelper.class.getSimpleName();
 	private static final String[] COLS = new String[] { "_id",
 			"current_position", "current_album" };
 
 	private SQLiteDatabase db;
 	private final DBOpenHelper dbOpenHelper;
+	private final Logger logger = LoggerFactory.getLogger(DBHelper.class);
 
 	//
 	// inner classes
@@ -123,7 +129,11 @@ public class DBHelper {
 		ContentValues values = new ContentValues();
 		values.put("current_position", g2AndroidContext.currentPosition);
 		if(g2AndroidContext.currentAlbum!=null){
-			values.put("current_album", g2AndroidContext.currentAlbum.serialize());
+			try {
+				values.put("current_album", Serialization.serializeAlbum(g2AndroidContext.currentAlbum));
+			} catch (SerializationException e) {
+				logger.debug(e.getMessage());
+			}
 		}
 
 		db.insert(DBHelper.DB_TABLE, null, values);
@@ -133,8 +143,12 @@ public class DBHelper {
 
 	public void update(final G2AndroidContext g2AndroidContext) {
 		ContentValues values = new ContentValues();
+		try {
 		values.put("current_position", g2AndroidContext.currentPosition);
-		values.put("current_album", g2AndroidContext.currentAlbum.serialize());
+			values.put("current_album", Serialization.serializeAlbum(g2AndroidContext.currentAlbum));
+		} catch (SerializationException e) {
+			logger.debug(e.getMessage());
+		}
 		db.update(DBHelper.DB_TABLE, values, "_id=" + g2AndroidContext.id, null);
 		cleanup();
 	}
@@ -162,12 +176,14 @@ public class DBHelper {
 				byte[] blob = c
 						.getBlob(2);
 				if(blob!=null){
-					g2AndroidContext.currentAlbum = Album.unserializeAlbum(blob);
+					g2AndroidContext.currentAlbum = Serialization.unserializeAlbum(blob);
 				}
 
 			}
 		} catch (SQLException e) {
-			// TODO we should catch this exception instead of killing it !!!
+			logger.debug(e.getMessage());
+		} catch (SerializationException e) {
+			logger.debug(e.getMessage());
 		} finally {
 			c.close();
 			cleanup();

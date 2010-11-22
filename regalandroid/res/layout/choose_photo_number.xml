@@ -37,7 +37,7 @@
 			style="?android:attr/textAppearanceLargeInverse" />
 
 		<!-- Photo number -->
-		<net.dahanne.android.g2android.utils.modified_android_source.NumberPicker
+		<net.dahanne.android.regalandroid.utils.modified_android_source.NumberPicker
 			android:id="@+id/photo_number" android:layout_width="70dip"
 			android:layout_height="wrap_content" android:layout_marginLeft="5dip"
 			android:focusable="true" android:focusableInTouchMode="true" />

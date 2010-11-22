@@ -20,6 +20,10 @@ package net.dahanne.android.regalandroid.remote;
 
 import net.dahanne.android.regalandroid.activity.Settings;
 import net.dahanne.gallery.commons.remote.RemoteGallery;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import android.content.Context;
 
 /**
@@ -34,33 +38,40 @@ public class RemoteGalleryConnectionFactory {
 	private static final int PIWIGO = 2;
 	private static RemoteGallery remoteGallery;
 	private static Context context;
-
+	private final static Logger logger = LoggerFactory.getLogger(RemoteGalleryConnectionFactory.class);
+	
 	private RemoteGalleryConnectionFactory() {
 
 	}
 
 	public static RemoteGallery getInstance() {
 		if (remoteGallery == null) {
+			logger.debug("choosing galleryType");
 			String connectionType = Settings.getGalleryConnectionType(context);
 			//if we have "" then let's assume we can go to defaults
 			int galleryConnectionType = Settings
 					.getGalleryConnectionType(context) .equals("") ? 0 : Integer.valueOf(connectionType);
 			switch (galleryConnectionType) {
 			case GALLERY2:
+				logger.debug("G2 is choosen");
 				remoteGallery = new G2Connection(Settings
 						.getGalleryUrl(context),Settings
 						.getUsername(context),Settings
 						.getPassword(context));
 				break;
 			case GALLERY3:
+				logger.debug("G3 is choosen");
 				remoteGallery = new G3Connection(Settings
 					.getGalleryUrl(context),Settings
 					.getUsername(context),Settings
 					.getPassword(context));
 				break;
-//			case PIWIGO:
-//				remoteGallery = new G2ConnectionUtils();
-//				break;
+			case PIWIGO:
+				remoteGallery = new PiwigoConnection(Settings
+						.getGalleryUrl(context),Settings
+						.getUsername(context),Settings
+						.getPassword(context));
+				break;
 
 			}
 		}

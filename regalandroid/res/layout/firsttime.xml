@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
 
-     ReGalAndroid, a gallery client for Android, supporting G2, G3, etc...
+     ReGalAndroid, a gallery client for Android, supporting regal, G3, etc...
      URLs: https://github.com/anthonydahanne/ReGalAndroid , http://blog.dahanne.net
      Copyright (c) 2010 Anthony Dahanne
      This program is free software; you can redistribute it and/or modify
@@ -27,14 +27,14 @@
 		android:layout_height="fill_parent">
 		<LinearLayout android:orientation="vertical"
 			android:layout_width="fill_parent" android:layout_height="fill_parent">
-			<TextView android:text="@string/welcome_to_g2android" android:id="@+id/versionName"
+			<TextView android:text="@string/welcome_to_regalandroid" android:id="@+id/versionName"
 				android:layout_width="fill_parent" android:layout_height="wrap_content"
 				android:paddingLeft="15px" android:paddingTop="15px"
 				android:textStyle="bold" android:layout_gravity="center_vertical"
 				android:textColor="#ffffff" />
 			<TextView android:paddingTop="15px" android:paddingBottom="15px"
 				android:layout_width="fill_parent" android:layout_height="wrap_content"
-				android:paddingLeft="15px" android:textColor="#ffffff" android:text="@string/what_is_g2android"
+				android:paddingLeft="15px" android:textColor="#ffffff" android:text="@string/what_is_regalandroid"
 				android:autoLink="web"  android:textColorLink="#ffffff" />
 			<Button android:paddingTop="15px" android:layout_gravity="center" android:id="@+id/ok_id"  android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/ok"/>
 				

@@ -37,6 +37,10 @@ import net.dahanne.android.regalandroid.utils.modified_android_source.AsyncTask;
 import net.dahanne.gallery.commons.model.Picture;
 import net.dahanne.gallery.commons.remote.GalleryConnectionException;
 import net.dahanne.gallery.commons.remote.RemoteGallery;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -46,7 +50,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -69,19 +72,13 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 	private static final int REQUEST_CODE_ADD_PHOTO = 1;
 	private static final int REQUEST_CODE_ADD_ALBUM = 2;
 	private static final int REQUEST_CODE_FULL_IMAGE = 3;
-	private static final String G2ANDROID_ALBUM = "g2android.Album";
 	private final List<Picture> albumPictures = new ArrayList<Picture>();
-	private static final String TAG = "ShowGallery";
 	private ImageSwitcher mSwitcher;
 	private Gallery gallery;
 	private ProgressDialog progressDialog;
 	private boolean mustLogIn;
-	private final RemoteGallery remoteGallery;
 	private RegalAndroidApplication application;
-
-	public ShowGallery() {
-		remoteGallery = RemoteGalleryConnectionFactory.getInstance();
-	}
+	private final Logger logger = LoggerFactory.getLogger(ShowGallery.class);
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -91,35 +88,36 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 	@Override
 	protected void onResume() {
 		super.onResume();
-		Log.i(TAG, "resuming");
+		logger.debug("resuming");
 		application = (RegalAndroidApplication) getApplication();
-		
+
 		// we write the title
 		if (getTitle() == null || getTitle().equals("")
 				|| getTitle().equals(getString(R.string.show_gallery_title))) {
-//			Album album = remoteGallery
-//					.findAlbumFromAlbumName(
-//							application
-//									.getCurrentAlbum(),
-//									application
-//									.getAlbumName());
 			setTitle(application.getCurrentAlbum().getTitle());
 		}
 		albumPictures.clear();
-		//we already have the pictures
-		if(application.getCurrentAlbum() !=null &&application.getCurrentAlbum().getPictures().size()!=0){
-			albumPictures .addAll(application.getCurrentAlbum().getPictures());
+		// we already have the pictures
+		if (application.getCurrentAlbum() != null
+				&& application.getCurrentAlbum().getPictures().size() != 0) {
+			albumPictures.addAll(application.getCurrentAlbum().getPictures());
+			logger.debug("no need to fetch the pictures");
 			setUpView();
-		}else{
+		} else {
 			// we recover the context from the database
 			DBUtils.getInstance().recoverContextFromDatabase(this);
-			if(application.getCurrentAlbum() !=null &&application.getCurrentAlbum().getPictures().size()!=0){
-				albumPictures .addAll(application.getCurrentAlbum().getPictures());
+			if (application.getCurrentAlbum() != null
+					&& application.getCurrentAlbum().getPictures().size() != 0) {
+				albumPictures.addAll(application.getCurrentAlbum()
+						.getPictures());
+				logger.debug("pictures loaded from the DB");
 				setUpView();
-			}else{
+			} else {
+				logger.debug("pictures loaded from the gallery");
 				progressDialog = ProgressDialog.show(ShowGallery.this,
 						getString(R.string.please_wait),
-						getString(R.string.loading_first_photos_from_album), true);
+						getString(R.string.loading_first_photos_from_album),
+						true);
 				new FetchImagesTask().execute(Settings.getGalleryUrl(this),
 						application.getCurrentAlbum().getName());
 			}
@@ -128,8 +126,9 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 
 	@Override
 	protected void onPause() {
+		logger.debug("pausing");
 		super.onPause();
-		
+
 		DBUtils.getInstance().saveContextToDatabase(this);
 
 	}
@@ -173,7 +172,7 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 		public View getView(int position, View convertView, ViewGroup parent) {
 			ImageView i = new ImageView(mContext);
 			Bitmap downloadImage = findBitmapWithPosition(position);
-			
+
 			i.setImageBitmap(downloadImage);
 			return i;
 		}
@@ -183,8 +182,7 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 			int albumName = application.getCurrentAlbum().getName();
 			File potentiallyAlreadyDownloadedFile = new File(
 					Settings.getG2AndroidCachePath(ShowGallery.this)
-							+ albumName + "/", THUMB_PREFIX
-							+ picture.getName());
+							+ albumName + "/", THUMB_PREFIX + picture.getName());
 			// maybe present in the local cache
 			Bitmap downloadImage = bitmapsCache.get(position);
 			if (downloadImage == null) {
@@ -192,31 +190,32 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 				if (picture.getThumbImageCachePath() != null
 						|| potentiallyAlreadyDownloadedFile.exists()
 						&& potentiallyAlreadyDownloadedFile.length() != 0) {
+					logger.debug("getting picture from cache : {}",
+							potentiallyAlreadyDownloadedFile.getPath());
 					downloadImage = BitmapFactory
 							.decodeFile(potentiallyAlreadyDownloadedFile
 									.getPath());
-				} 
-				//not downloaded yet
+				}
+				// not downloaded yet
 				else {
 					String thumbUrl = picture.getThumbUrl();
 					try {
+						logger.debug("getting picture from gallery : {}",
+								thumbUrl);
 						File imageFileOnExternalDirectory = FileUtils
-								.getInstance()
-								.getFileFromGallery(
+								.getInstance().getFileFromGallery(
 										ShowGallery.this,
 										THUMB_PREFIX + picture.getName(),
-										picture.getForceExtension(),
-										thumbUrl,
-										true,
-										albumName);
+										picture.getForceExtension(), thumbUrl,
+										true, albumName);
 						downloadImage = BitmapFactory
 								.decodeFile(imageFileOnExternalDirectory
 										.getPath());
-						picture
-								.setThumbImageCachePath(imageFileOnExternalDirectory
-										.getPath());
+						picture.setThumbImageCachePath(imageFileOnExternalDirectory
+								.getPath());
 						bitmapsCache.put(position, downloadImage);
 					} catch (Exception e) {
+						logger.debug("exception  : {}", e.getStackTrace());
 						ShowUtils.getInstance().alertConnectionProblem(
 								e.getMessage(),
 								Settings.getGalleryUrl(ShowGallery.this),
@@ -238,20 +237,26 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 		File potentiallyAlreadyDownloadedFile = new File(
 				Settings.getG2AndroidCachePath(this) + albumName + "/",
 				picture.getName());
+		logger.debug(
+				"selecting an item, position : {} -- picture : {} -- albumName : {} -- potentiallyAlreadyDownloadedFile : {}",
+				new Object[] { position, picture, albumName,
+						potentiallyAlreadyDownloadedFile.getAbsolutePath() });
 		mSwitcher.setId(position);
 		// remember the position where we were
-		application
-				.setCurrentPosition(position);
+		application.setCurrentPosition(position);
 		// only download the picture IF it has not yet been downloaded
 		if (picture.getResizedImageCachePath() != null
 				&& potentiallyAlreadyDownloadedFile.exists()
 				&& potentiallyAlreadyDownloadedFile.length() != 0) {
+			logger.debug("picture present in the cache, not downloading");
 			Bitmap bitmap = BitmapFactory
 					.decodeFile(potentiallyAlreadyDownloadedFile.getPath());
 			BitmapDrawable bitmapDrawable = new BitmapDrawable(bitmap);
 			mSwitcher.setImageDrawable(bitmapDrawable);
 		} else {
-			String uriString = FileUtils.getInstance().chooseBetweenResizedAndOriginalUrl(picture);
+			String uriString = FileUtils.getInstance()
+					.chooseBetweenResizedAndOriginalUrl(picture);
+			logger.debug("fetching picture from gallery : {}",uriString);
 			Bitmap currentThumbBitmap = (Bitmap) gallery
 					.getItemAtPosition(position);
 			BitmapDrawable bitmapDrawable = new BitmapDrawable(
@@ -333,9 +338,9 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 						getString(R.string.please_wait),
 						getString(R.string.creating_new_album), true);
 
-				new CreateAlbumTask(this, progressDialog).execute(Settings
-						.getGalleryUrl(this),
-						albumName, subalbumName, mustLogIn);
+				new CreateAlbumTask(this, progressDialog).execute(
+						Settings.getGalleryUrl(this), albumName, subalbumName,
+						mustLogIn);
 				break;
 
 			}
@@ -343,7 +348,6 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 
 	}
 
-	@SuppressWarnings("unchecked")
 	private class FetchImagesTask extends
 			AsyncTask<Object, Void, Collection<Picture>> {
 
@@ -364,13 +368,11 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 					remoteGallery.loginToGallery();
 					mustLogIn = false;
 				}
-				pictures = remoteGallery.getPicturesFromAlbum(
-						albumName);
+				pictures = remoteGallery.getPicturesFromAlbum(albumName);
 			} catch (GalleryConnectionException e) {
-				exceptionMessage = e.getMessage();
-				Log.d(TAG, "exception mess" + exceptionMessage);
+				logger.debug("exception : {}", e.getStackTrace());
 			}
-
+			logger.debug("pictures returned : {}",pictures);
 			return pictures;
 
 		}
@@ -378,18 +380,14 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 		@Override
 		protected void onPostExecute(Collection<Picture> pictures) {
 			progressDialog.dismiss();
-			// }
 			if (pictures == null) {
 				ShowUtils.getInstance().alertConnectionProblem(
 						exceptionMessage,
 						Settings.getGalleryUrl(ShowGallery.this),
 						ShowGallery.this);
 			} else {
-				// first check to avoid reloading all the pictures
-				// if (albumPictures.isEmpty()) {
 				albumPictures.clear();
 				albumPictures.addAll(pictures);
-				// }
 				if (albumPictures.isEmpty()) {
 					setContentView(R.layout.album_is_empty);
 				} else {
@@ -407,40 +405,36 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 		gallery = (Gallery) findViewById(R.id.gallery);
 		mSwitcher = (ImageSwitcher) findViewById(R.id.switcher);
 		mSwitcher.setOnClickListener(ShowGallery.this);
-		
+
 		mSwitcher.setFactory(ShowGallery.this);
-		mSwitcher.setInAnimation(AnimationUtils.loadAnimation(
-				ShowGallery.this, android.R.anim.fade_in));
+		mSwitcher.setInAnimation(AnimationUtils.loadAnimation(ShowGallery.this,
+				android.R.anim.fade_in));
 		mSwitcher.setOutAnimation(AnimationUtils.loadAnimation(
 				ShowGallery.this, android.R.anim.fade_out));
-		
+
 		ImageAdapter adapter = new ImageAdapter(ShowGallery.this);
 		gallery.setAdapter(adapter);
 		gallery.setOnItemSelectedListener(ShowGallery.this);
-		
-//		if (albumPictures.size() == 0) {
-//			finish();
-//		}
+
 		// issue #45 : a photo has been erased, this position does
 		// not exist anymore
-		if (application
-				.getCurrentPosition() >= albumPictures.size()) {
-			application
-			.setCurrentPosition(0);
+		if (application.getCurrentPosition() >= albumPictures.size()) {
+			application.setCurrentPosition(0);
 		}
 		// recover current position in current album
 		int currentPosition = ((RegalAndroidApplication) getApplication())
-		.getCurrentPosition();
+				.getCurrentPosition();
+		logger.debug("setting up view currentPosition : {}",currentPosition);
 		if (currentPosition != 0) {
 			gallery.setSelection(currentPosition);
-			Picture picture = albumPictures
-			.get(currentPosition);
-			String uriString = FileUtils.getInstance().chooseBetweenResizedAndOriginalUrl(picture);
-			new ReplaceMainImageTask(ShowGallery.this,
-					progressDialog, gallery).execute(uriString,
-							mSwitcher, currentPosition, picture);
+			Picture picture = albumPictures.get(currentPosition);
+			String uriString = FileUtils.getInstance()
+					.chooseBetweenResizedAndOriginalUrl(picture);
+			new ReplaceMainImageTask(ShowGallery.this, progressDialog, gallery)
+					.execute(uriString, mSwitcher, currentPosition, picture);
 		}
 	}
+
 	@Override
 	public void onClick(View v) {
 		Intent intent = new Intent(this, FullImage.class);
@@ -464,10 +458,14 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		// the user tries to get back to the parent album
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
-			//we are leaving the gallery view, so we want to remember we want to see the parent album
-			//unless there are several albums; in this case we want to browse the album
-			if(application.getCurrentAlbum().getSubAlbums().size()==0){
-				application.setCurrentAlbum(application.getCurrentAlbum().getParent());
+			// we are leaving the gallery view, so we want to remember we want
+			// to see the parent album
+			// unless there are several albums; in this case we want to browse
+			// the album
+			if (application.getCurrentAlbum().getSubAlbums().size() == 0) {
+				application.setCurrentAlbum(application.getCurrentAlbum()
+						.getParent());
+				logger.debug("leaving activity, new currentAlbum : {}",application.getCurrentAlbum());
 			}
 			this.finish();
 			return true;

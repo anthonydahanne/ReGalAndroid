@@ -26,15 +26,18 @@ import net.dahanne.android.regalandroid.RegalAndroidApplication;
 import net.dahanne.android.regalandroid.adapters.AlbumAdapter;
 import net.dahanne.android.regalandroid.tasks.CreateAlbumTask;
 import net.dahanne.android.regalandroid.tasks.FetchAlbumAndSubAlbumsAndPicturesTask;
-import net.dahanne.android.regalandroid.utils.AlbumComparator;
 import net.dahanne.android.regalandroid.utils.DBUtils;
 import net.dahanne.gallery.commons.model.Album;
+import net.dahanne.gallery.commons.model.AlbumComparator;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -49,14 +52,13 @@ public class ShowAlbums extends ListActivity implements OnItemClickListener {
 	private static final int REQUEST_CREATE_ALBUM = 2;
 	private static final int REQUEST_ADD_PHOTO = 1;
 	private static final String IMAGE_TYPE = "image/*";
-	private static final String G2ANDROID_ALBUM = "g2android.Album";
-	private static final String TAG = "ShowAlbums";
 	private ProgressDialog progressDialog;
 	private RegalAndroidApplication application;
-
+	private final Logger logger = LoggerFactory.getLogger(ShowAlbums.class);
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-
+		logger.debug("onCreating");
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.show_albums);
@@ -70,9 +72,11 @@ public class ShowAlbums extends ListActivity implements OnItemClickListener {
 			long arg3) {
 
 		int albumName = ((Album) getListAdapter().getItem(albumPosition)).getName();
+		logger.debug("selecting album {}",albumName);
 		if(application.getCurrentAlbum()!=null && application.getCurrentAlbum().getName()==albumName){
 			//we want to get back to the same album
 			//probably because we want to see the pictures this time
+			logger.debug("going to ShowGallery");
 			this.startActivity(new Intent(this, ShowGallery.class));
 			return;
 		}
@@ -81,6 +85,7 @@ public class ShowAlbums extends ListActivity implements OnItemClickListener {
 				getString(R.string.please_wait),
 				getString(R.string.fetching_gallery_albums), true);
 		boolean refreshView = false;
+		logger.debug("getting the album contents");
 		new FetchAlbumAndSubAlbumsAndPicturesTask(this, progressDialog,refreshView ).execute(Settings
 				.getGalleryUrl(this),albumName);
 //		if(application.getCurrentAlbum()!=null && application.getCurrentAlbum().getSubAlbums().size()!=0 ){
@@ -185,7 +190,7 @@ public class ShowAlbums extends ListActivity implements OnItemClickListener {
 	protected void onResume() {
 		super.onResume();
 		application = (RegalAndroidApplication) getApplication();
-		Log.i(TAG, "resuming");
+		logger.debug("onResuming");
 		// we're back in this activity to select a sub album or to see the
 		// pictures
 		if (((RegalAndroidApplication) getApplication()).getCurrentAlbum() == null) {
@@ -225,7 +230,7 @@ public class ShowAlbums extends ListActivity implements OnItemClickListener {
 		if(application.getCurrentAlbum()!=null){
 //			new FetchAlbumTask(this, progressDialog).execute(Settings
 //					.getGalleryUrl(this),application.getCurrentAlbum().getName());
-			
+			logger.debug("currentAlbum not null : {} -- setting up view",application.getCurrentAlbum());
 			setUpView();
 			
 			
@@ -233,6 +238,7 @@ public class ShowAlbums extends ListActivity implements OnItemClickListener {
 		// it's the first time we get into this view, let's find the albums of
 		// the gallery
 		else{
+			logger.debug("firsttime in this view, getting album content");
 			progressDialog = ProgressDialog.show(this,
 					getString(R.string.please_wait),
 					getString(R.string.fetching_gallery_albums), true);
@@ -254,6 +260,7 @@ public class ShowAlbums extends ListActivity implements OnItemClickListener {
 		// if there are pictures in this album we create a fake album, it will be used to choose to view the
 		// pictures of the album
 		if((application.getCurrentAlbum()).getPictures().size()!=0){
+			logger.debug("creating fakeAlbum, as there are pictures");
 			Album fakeAlbum = new Album();
 			fakeAlbum.setId(0);
 			fakeAlbum.setTitle(this
@@ -273,7 +280,10 @@ public class ShowAlbums extends ListActivity implements OnItemClickListener {
 	@Override
 	protected void onPause() {
 		super.onPause();
-		Log.i(TAG, "pausing");
+		if(progressDialog!=null){
+			progressDialog.dismiss();
+		}
+		logger.debug("onPausing");
 		DBUtils.getInstance().saveContextToDatabase(this);
 	}
 
@@ -284,6 +294,7 @@ public class ShowAlbums extends ListActivity implements OnItemClickListener {
 			//we are leaving the gallery view, so we want to remember we want to see the parent album
 			if(application.getCurrentAlbum().getParent()!=null){
 				application.setCurrentAlbum(application.getCurrentAlbum().getParent());
+				logger.debug("leaving activity, new currentAlbum : {}",application.getCurrentAlbum());
 			}
 			this.finish();
 //			Album currentAlbum = remoteGallery

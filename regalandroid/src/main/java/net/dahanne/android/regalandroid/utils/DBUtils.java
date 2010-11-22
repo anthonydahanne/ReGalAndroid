@@ -20,11 +20,17 @@ package net.dahanne.android.regalandroid.utils;
 
 import net.dahanne.android.regalandroid.RegalAndroidApplication;
 import net.dahanne.android.regalandroid.utils.DBHelper.G2AndroidContext;
+import net.dahanne.gallery.commons.utils.AlbumUtils;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import android.app.Activity;
 
 public class DBUtils {
 	private static DBUtils dbUtils = new DBUtils();
-
+	private final  Logger logger = LoggerFactory.getLogger(AlbumUtils.class);
+	
 	public static DBUtils getInstance() {
 		return dbUtils;
 	}
@@ -38,6 +44,7 @@ public class DBUtils {
 	 * @param activity
 	 */
 	public void recoverContextFromDatabase(Activity activity) {
+		logger.debug("recovering context from database, called from  : {}",activity.getClass());
 		RegalAndroidApplication application = (RegalAndroidApplication) activity.getApplication();
 		DBHelper dbHelper = new DBHelper(activity);
 		G2AndroidContext g2c = dbHelper.getLast();
@@ -46,6 +53,7 @@ public class DBUtils {
 					.setCurrentPosition(g2c.currentPosition);
 			application
 					.setCurrentAlbum(g2c.currentAlbum);
+			logger.debug("ending recovering context from database, currentPosition : {} -- currentAlbum : {}",g2c.currentPosition,g2c.currentAlbum!=null?g2c.currentAlbum:null);
 		}
 	}
 	
@@ -55,12 +63,16 @@ public class DBUtils {
 	 */
 	public void saveContextToDatabase(Activity activity) {
 		RegalAndroidApplication application = (RegalAndroidApplication) activity.getApplication();
+		logger.debug("starting saving context to database, currentPosition : {} -- currentAlbum : {}",application
+				.getCurrentPosition(),application
+				.getCurrentAlbum()!=null?application.getCurrentAlbum():null);
 		DBHelper dbHelper = new DBHelper(activity);
 		dbHelper.insert(new G2AndroidContext(0,
 				application
 						.getCurrentPosition(),
 						application
 						.getCurrentAlbum()));
+		logger.debug("ending saving context to database, called from  : {}",activity.getClass());
 	}
 	
 	/**
@@ -68,6 +80,7 @@ public class DBUtils {
 	 * @param activity
 	 */
 	public void destroyContextFromDataBase(Activity activity) {
+		logger.debug("destroying all entries from database, called from : {}",activity.getClass());
 		DBHelper dbHelper = new DBHelper(activity);
 		dbHelper.deleteAll();
 	}
