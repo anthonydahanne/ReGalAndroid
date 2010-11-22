@@ -1,5 +1,5 @@
 /**
- *  ReGalAndroid, a gallery client for Android, supporting G2, G3, etc...
+ *  commons-gallery, a common API module for ReGalAndroid
  *  URLs: https://github.com/anthonydahanne/ReGalAndroid , http://blog.dahanne.net
  *  Copyright (c) 2010 Anthony Dahanne
  *  This program is free software; you can redistribute it and/or modify
