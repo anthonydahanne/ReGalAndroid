@@ -1,0 +1,40 @@
+THIS FILE IS NOT UP TO DATE, IT IS THE ORIGINAL ONE FOUND ON THE ORIGINAL SUBVERSION REPOSITORY
+http://piwigo.org/dev/browser/extensions/jiwigo/trunk
+
+
+#####################################################################################
+
+							Installation for eclipse
+
+#####################################################################################
+
+1 - You must first checkout the project from svn. Create a new Java project from the svn version.
+2 - Then install maven plugin for eclipse. It is available from that update site : http://m2eclipse.sonatype.org/sites/m2e
+3 - Then enable maven dependency management : right click on the project > maven > enable dependency management.
+4 - Now you must tell eclipse which folders are sources folders : right click on the project > properties > java build path
+> tab "Source" > Add folder. Select java and resources in main and test folders.
+5 - install maven on your computer. You can download it here : http://maven.apache.org/download.html. For debian/ubuntu, 
+maven is available via apt-get : sudo apt-get install maven2 (maybe for other distributions too, I did not search).
+6 - Some dependency are not available from maven repositories. You must install them manually in your local repository :
+Create a new "External tool configuration" type "Program". In "Location" put the location of maven's executable. If you've
+downloaded maven via the link above, the executable is in the bin directory of the extracted folder. It is called "mvn" for 
+Unix systems and mvn.bat for windows. If you've installed maven via a package manager (like apt-get), maven location will 
+probably be "/usr/bin/mvn". In the argument field, put one of the two commands of the file "mvn-commands.txt". Run the command.
+If you get an error that tells you that the project location cannot be found, click on the project and run the command again.
+Replace the content of the field "argument" by the other command of the "mvn-commands.txt" file.
+7 - create a new "External tool configuration" type "Program". In location put the maven executable again, in working directory,
+put "${project_loc}" and in argument put "clean eclipse:eclipse". Run the command.
+
+The project should not contain errors after that, and you should be able to launch jiwigo by launching the main class : 
+src/main/java fr.mael.jiwigo.Main
+
+If you want to build an executable jar from the sources, I recommend to use a maven command : create a new "External tool configuration" 
+type "Program" in location put the maven executable in working directory put "${project_loc}" and in argument put "assembly:assembly".
+Execute the command. The reason to use this command is that it launches the tests of the project and does not build a jar if the
+tests fail. It creates two jar in the "target" directory of the project : Jiwigo-version.jar and Jiwigo-version-jar-with-dependencies.jar.
+The first one is not usable because it contains only the class file of the project. The second one can be executed because
+it contains the dependencies of the project.
+
+Enjoy.
+
+I do not use other IDE, so I don't know how to install the project with other IDE. Feel free to complete this file if you know.
