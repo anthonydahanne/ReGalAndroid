@@ -6,6 +6,8 @@ import java.util.List;
 
 import org.jdom.Document;
 import org.jdom.Element;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fr.mael.jiwigo.om.Category;
 import fr.mael.jiwigo.transverse.enumeration.CategoryEnum;
@@ -47,8 +49,8 @@ public class CategoryDao extends DaoBase {
     /**
      * Logger
      */
-    public static final org.apache.commons.logging.Log LOG = org.apache.commons.logging.LogFactory
-	    .getLog(CategoryDao.class);
+    private  final Logger LOG = LoggerFactory
+	    .getLogger(CategoryDao.class);
     /**
      * Instance to use a singleton
      */
@@ -83,7 +85,7 @@ public class CategoryDao extends DaoBase {
 	Document doc = getSessionManager().executerReturnDocument(MethodsEnum.LISTER_CATEGORIES.getLabel(),
 		"recursive", String.valueOf(recursive));
 	Element element = doc.getRootElement().getChild("categories");
-	List<Element> listElement = (List<Element>) element.getChildren("category");
+	List<Element> listElement = element.getChildren("category");
 	ArrayList<Category> categories = new ArrayList<Category>();
 	for (Element cat : listElement) {
 	    Category myCat = new Category();

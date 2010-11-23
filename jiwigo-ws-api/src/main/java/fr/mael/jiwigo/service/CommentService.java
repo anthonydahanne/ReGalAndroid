@@ -41,8 +41,7 @@ public class CommentService extends ServiceBase {
     /**
      * Logger
      */
-    public static final org.apache.commons.logging.Log LOG = org.apache.commons.logging.LogFactory
-	    .getLog(CommentService.class);
+//	private  final Logger LOG = LoggerFactory.getLogger(CommentService.class);
 
     /**
      * singleton

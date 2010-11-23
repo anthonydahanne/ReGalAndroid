@@ -6,6 +6,8 @@ import java.util.List;
 
 import org.jdom.Document;
 import org.jdom.Element;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fr.mael.jiwigo.om.Image;
 import fr.mael.jiwigo.om.Tag;
@@ -48,8 +50,8 @@ public class TagDao extends DaoBase {
     /**
      * Logger
      */
-    public static final org.apache.commons.logging.Log LOG = org.apache.commons.logging.LogFactory.getLog(TagDao.class);
-    /**
+	 private  final Logger LOG = LoggerFactory.getLogger(TagDao.class);
+	/**
      * Instance, to use a singleton
      */
     private static TagDao instance;
@@ -91,7 +93,7 @@ public class TagDao extends DaoBase {
      */
     private List<Tag> getTagsFromDocument(Element element) {
 
-	List<Element> listElement = (List<Element>) element.getChildren("tag");
+	List<Element> listElement = element.getChildren("tag");
 	ArrayList<Tag> tags = new ArrayList<Tag>();
 	for (Element tagElement : listElement) {
 	    Tag tag = new Tag();

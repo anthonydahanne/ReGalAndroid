@@ -46,8 +46,8 @@ public class CommentDao extends DaoBase {
     /**
      * Logger
      */
-    public static final org.apache.commons.logging.Log LOG = org.apache.commons.logging.LogFactory
-	    .getLog(CommentDao.class);
+//	 private  final Logger LOG = LoggerFactory
+//	    .getLogger(CommentDao.class);
     /**
      *  Instance that allows to use a singleton
      */
@@ -81,7 +81,7 @@ public class CommentDao extends DaoBase {
 	Document doc = (getSessionManager().executerReturnDocument(MethodsEnum.GET_INFO.getLabel(), "image_id", String
 		.valueOf(idImage)));
 	Element element = doc.getRootElement().getChild("image").getChild("comments");
-	List<Element> listElement = (List<Element>) element.getChildren("comment");
+	List<Element> listElement = element.getChildren("comment");
 	ArrayList<Comment> comments = new ArrayList<Comment>();
 	for (Element com : listElement) {
 	    Comment myCom = new Comment();

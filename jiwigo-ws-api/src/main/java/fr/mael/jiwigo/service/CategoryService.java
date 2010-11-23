@@ -41,8 +41,7 @@ public class CategoryService extends ServiceBase {
     /**
      * Logger
      */
-    public static final org.apache.commons.logging.Log LOG = org.apache.commons.logging.LogFactory
-	    .getLog(CategoryService.class);
+//	 private  final Logger LOG = LoggerFactory.getLogger(CategoryService.class);
 
     /**
      * singleton

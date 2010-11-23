@@ -30,6 +30,8 @@ import org.jdom.Document;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
 import org.jdom.output.XMLOutputter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
    Copyright (c) 2010, Mael
@@ -65,7 +67,7 @@ public class Outil {
     /**
      * Logger
      */
-    public static final org.apache.commons.logging.Log LOG = org.apache.commons.logging.LogFactory.getLog(Outil.class);
+    private static final Logger LOG = LoggerFactory.getLogger(Outil.class);
 
     /**
      * Transformation of an inpustream into string.<br/>

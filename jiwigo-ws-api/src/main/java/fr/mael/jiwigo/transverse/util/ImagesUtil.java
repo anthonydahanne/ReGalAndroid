@@ -60,8 +60,7 @@ public class ImagesUtil {
     /**
      * Logger
      */
-    public static final org.apache.commons.logging.Log LOG = org.apache.commons.logging.LogFactory
-	    .getLog(ImagesUtil.class);
+//	private  final Logger LOG = LoggerFactory.getLogger(ImagesUtil.class);
 
     /**
      * rotates an image
@@ -114,7 +113,7 @@ public class ImagesUtil {
     public static boolean scale(String filePath, String tempName, int width, int height) throws Exception {
 	File file = new File(filePath);
 	InputStream imageStream = new BufferedInputStream(new FileInputStream(filePath));
-	Image image = (Image) ImageIO.read(imageStream);
+	Image image = ImageIO.read(imageStream);
 
 	double thumbRatio = (double) width / (double) height;
 	int imageWidth = image.getWidth(null);

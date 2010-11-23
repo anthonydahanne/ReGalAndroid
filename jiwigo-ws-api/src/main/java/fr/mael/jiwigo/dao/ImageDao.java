@@ -8,6 +8,8 @@ import java.util.List;
 
 import org.jdom.Document;
 import org.jdom.Element;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fr.mael.jiwigo.om.Image;
 import fr.mael.jiwigo.transverse.enumeration.MethodsEnum;
@@ -49,8 +51,8 @@ public class ImageDao extends DaoBase {
     /**
      * Logger
      */
-    public static final org.apache.commons.logging.Log LOG = org.apache.commons.logging.LogFactory
-	    .getLog(ImageDao.class);
+	 private  final Logger LOG = LoggerFactory
+	    .getLogger(ImageDao.class);
 
     /**
      * Singleton
@@ -60,7 +62,7 @@ public class ImageDao extends DaoBase {
     /**
      * cache to avoid downloading image for each access
      */
-    private HashMap<Integer, List<Image>> cache;
+    private final HashMap<Integer, List<Image>> cache;
 
     /**
      * 
@@ -207,7 +209,7 @@ public class ImageDao extends DaoBase {
      * @return the list of images
      */
     private List<Image> getImagesFromElement(Element element) {
-	List<Element> listElement = (List<Element>) element.getChildren("image");
+	List<Element> listElement = element.getChildren("image");
 	ArrayList<Image> images = new ArrayList<Image>();
 	for (Element im : listElement) {
 	    Image myImage = new Image();
@@ -236,7 +238,7 @@ public class ImageDao extends DaoBase {
      */
     public List<Image> search(String searchString) throws IOException {
 	Document doc = getSessionManager().executerReturnDocument(MethodsEnum.SEARCH.getLabel(), "query", searchString);
-	LOG.debug(doc);
+	LOG.debug(doc.toString());
 	Element element = doc.getRootElement().getChild("images");
 	return getImagesFromElement(element);
 

@@ -44,8 +44,7 @@ public class ImageService extends ServiceBase {
     /**
      * Logger
      */
-    public static final org.apache.commons.logging.Log LOG = org.apache.commons.logging.LogFactory
-	    .getLog(ImageService.class);
+//	private  final Logger LOG = LoggerFactory.getLogger(ImageService.class);
 
     /**
      * Singleton

@@ -17,6 +17,8 @@ import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.lang.StringUtils;
 import org.jdom.Document;
 import org.jdom.JDOMException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fr.mael.jiwigo.transverse.enumeration.MethodsEnum;
 import fr.mael.jiwigo.transverse.util.Messages;
@@ -55,8 +57,7 @@ public class SessionManager {
     /**
      * Logger
      */
-    public static final org.apache.commons.logging.Log LOG = org.apache.commons.logging.LogFactory
-	    .getLog(SessionManager.class);
+	private  final Logger LOG = LoggerFactory.getLogger(SessionManager.class);
     /**
      * the entered login
      */
@@ -72,7 +73,7 @@ public class SessionManager {
     /**
      * the http client
      */
-    private HttpClient client;
+    private final HttpClient client;
 
     /**
      * defines if the user uses a proxy

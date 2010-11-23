@@ -42,8 +42,7 @@ public class TagService extends ServiceBase {
     /**
      * Logger
      */
-    public static final org.apache.commons.logging.Log LOG = org.apache.commons.logging.LogFactory
-	    .getLog(TagService.class);
+//	private  final Logger LOG = LoggerFactory.getLogger(TagService.class);
 
     /**
      * The instance, to use a singleton
