@@ -471,12 +471,10 @@ public class G2Client {
 			rd.close();
 		} catch (IOException e) {
 			// something went wrong, let's throw the info to the UI
-			// Log.e(TAG, "IOException" + e.getMessage());
-			throw new GalleryConnectionException("IOException" + e.getMessage());
+			throw new GalleryConnectionException(e);
 		} catch (IllegalArgumentException e) {
 			// the url is not correct
-			throw new GalleryConnectionException("Url is not correct : "
-					+ e.getMessage());
+			throw new GalleryConnectionException(e);
 		}
 		return properties;
 	}
@@ -516,7 +514,6 @@ public class G2Client {
 				try {
 					if (entry.getKey().contains("image.title.")) {
 						picture.setTitle(entry.getValue());
-						picture.setName(entry.getValue());
 						
 					} else if (entry.getKey().contains("image.thumbName.")) {
 						picture.setThumbName(entry.getValue());

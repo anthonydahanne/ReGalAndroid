@@ -292,7 +292,7 @@ public class ShowAlbums extends ListActivity implements OnItemClickListener {
 		// the user tries to get back to the parent album
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
 			//we are leaving the gallery view, so we want to remember we want to see the parent album
-			if(application.getCurrentAlbum().getParent()!=null){
+			if(application.getCurrentAlbum()!=null && application.getCurrentAlbum().getParent()!=null){
 				application.setCurrentAlbum(application.getCurrentAlbum().getParent());
 				logger.debug("leaving activity, new currentAlbum : {}",application.getCurrentAlbum());
 			}
