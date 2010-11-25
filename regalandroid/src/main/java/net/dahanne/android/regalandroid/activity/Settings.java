@@ -39,11 +39,11 @@ public class Settings extends PreferenceActivity {
 	private static String OPT_GALLERY_URL_KEY = "galleryUrl";
 	private static String OPT_USERNAME_KEY = "username";
 	private static String OPT_PASSWORD_KEY = "password";
-	private static String OPT_G2ANDROID_PATH = "g2android_path";
-	private static String OPT_G2ANDROID_CACHE_PATH = "g2android_cache_path";
+	private static String OPT_G2ANDROID_PATH = "regalandroid_path";
+	private static String OPT_G2ANDROID_CACHE_PATH = "regalandroid_cache_path";
 	private static String OPT_CLEAR_CACHE_EVERY_SESSION = "clear_cache";
 	private static String OPT_GALLERY_URL_DEF = "http://g2.dahanne.net";
-	private static String OPT_G2ANDROID_PATH_DEF = "g2android";
+	private static String OPT_G2ANDROID_PATH_DEF = "regalandroid";
 	private static String OPT_G2ANDROID_CACHE_PATH_DEF = "tmp";
 	private static String OPT_DEFAULT_SUMMARY_KEY = "DefaultSummary";
 	private static String OPT_DEFAULT_DESCRIPTION_KEY = "DefaultDescription";

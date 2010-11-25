@@ -277,10 +277,10 @@ public class Picture implements Serializable {
 	
 	
 	
-	@Override
-	public String toString() {
-		return new StringBuilder().append(title).append(name).toString();
-	}
+//	@Override
+//	public String toString() {
+//		return new StringBuilder().append(title).append(name).toString();
+//	}
 
 	@Override
 	public int hashCode() {
@@ -361,6 +361,53 @@ public class Picture implements Serializable {
 		if (width != other.width)
 			return false;
 		return true;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder stringBuilder = new StringBuilder();
+		stringBuilder.append("Picture [id=");
+		stringBuilder.append(id);
+		stringBuilder.append(", title=");
+		stringBuilder.append(title);
+		stringBuilder.append(", name=");
+		stringBuilder.append(name);
+		stringBuilder.append(", thumbUrl=");
+		stringBuilder.append(thumbUrl);
+		stringBuilder.append(", thumbWidth=");
+		stringBuilder.append(thumbWidth);
+		stringBuilder.append(", thumbHeight=");
+		stringBuilder.append(thumbHeight);
+		stringBuilder.append(", thumbSize=");
+		stringBuilder.append(thumbSize);
+		stringBuilder.append(", thumbImageCachePath=");
+		stringBuilder.append(thumbImageCachePath);
+		stringBuilder.append(", resizedUrl=");
+		stringBuilder.append(resizedUrl);
+		stringBuilder.append(", resizedWidth=");
+		stringBuilder.append(resizedWidth);
+		stringBuilder.append(", resizedHeight=");
+		stringBuilder.append(resizedHeight);
+		stringBuilder.append(", resizedSize=");
+		stringBuilder.append(resizedSize);
+		stringBuilder.append(", resizedImageCachePath=");
+		stringBuilder.append(resizedImageCachePath);
+		stringBuilder.append(", fileUrl=");
+		stringBuilder.append(fileUrl);
+		stringBuilder.append(", width=");
+		stringBuilder.append(width);
+		stringBuilder.append(", height=");
+		stringBuilder.append(height);
+		stringBuilder.append(", fileSize=");
+		stringBuilder.append(fileSize);
+		stringBuilder.append(", caption=");
+		stringBuilder.append(caption);
+		stringBuilder.append(", forceExtension=");
+		stringBuilder.append(forceExtension);
+		stringBuilder.append(", hidden=");
+		stringBuilder.append(hidden);
+		stringBuilder.append("]");
+		return stringBuilder.toString();
 	}
 	
 

@@ -25,7 +25,6 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import net.dahanne.android.regalandroid.R;
-import net.dahanne.android.regalandroid.activity.FullImage;
 import net.dahanne.android.regalandroid.activity.Settings;
 import net.dahanne.android.regalandroid.remote.RemoteGalleryConnectionFactory;
 import net.dahanne.gallery.commons.model.Picture;
@@ -33,6 +32,8 @@ import net.dahanne.gallery.commons.remote.GalleryConnectionException;
 import net.dahanne.gallery.commons.remote.RemoteGallery;
 
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import android.content.Context;
 import android.os.Environment;
@@ -41,6 +42,7 @@ public class FileUtils {
 
 	private static final String NO_CACHE_PATH = "/.nomedia";
 	private static FileUtils fileUtils = new FileUtils();
+	private final Logger logger = LoggerFactory.getLogger(FileUtils.class);
 
 	public static FileUtils getInstance() {
 		return fileUtils;
@@ -50,7 +52,7 @@ public class FileUtils {
 
 	}
 
-	private final RemoteGallery g2ConnectionUtils = RemoteGalleryConnectionFactory
+	private final RemoteGallery remoteGallery = RemoteGalleryConnectionFactory
 			.getInstance();
 
 	/**
@@ -69,13 +71,16 @@ public class FileUtils {
 			String extension, String imageUrl, boolean isTemporary,
 			int albumName) throws GalleryConnectionException,
 			FileHandlingException {
-
+		logger.debug(
+				"gettingFileFromGallery, fileName : {} -- extension : {} -- imageUrl : {} -- isTemporary : {} -- albumName : {}",
+				new Object[] { fileName, extension, imageUrl, isTemporary,
+						albumName });
 		File imageFileOnExternalDirectory = null;
 		try {
 			InputStream inputStreamFromUrl = null;
 			String storageState = Environment.getExternalStorageState();
 			if (storageState.contains("mounted")) {
-
+				logger.debug("storage is mounted");
 				File savePath = new File(
 						Settings.getG2AndroidCachePath(context) + "/"
 								+ albumName);
@@ -116,9 +121,9 @@ public class FileUtils {
 						fileName = fileName + "." + extension;
 					}
 				}
-
+				logger.debug("savePath is : {}", savePath);
 				imageFileOnExternalDirectory = new File(savePath, fileName);
-				inputStreamFromUrl = g2ConnectionUtils
+				inputStreamFromUrl = remoteGallery
 						.getInputStreamFromUrl(imageUrl);
 			} else {
 				throw new FileHandlingException(
@@ -143,6 +148,7 @@ public class FileUtils {
 	}
 
 	public void clearCache(Context context) {
+		logger.debug("clearingCache");
 		File tempG2AndroidPath = new File(
 				Settings.getG2AndroidCachePath(context));
 		if (tempG2AndroidPath.exists()) {
@@ -153,20 +159,22 @@ public class FileUtils {
 		}
 
 	}
+
 	/**
 	 * 
-	 * issue #23 : when there is no resized picture, we fetch the
-	 * original picture
+	 * issue #23 : when there is no resized picture, we fetch the original
+	 * picture
 	 * 
 	 * @param picture
 	 * @return
 	 */
-	public String chooseBetweenResizedAndOriginalUrl(Picture picture){
+	public String chooseBetweenResizedAndOriginalUrl(Picture picture) {
+		logger.debug("picture : {}", picture);
 		String resizedName = picture.getResizedUrl();
 		if (resizedName == null) {
 			resizedName = picture.getFileUrl();
-		} 
+		}
 		return resizedName;
 	}
-	
+
 }

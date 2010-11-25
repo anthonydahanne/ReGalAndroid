@@ -29,6 +29,10 @@ import net.dahanne.android.regalandroid.utils.FileUtils;
 import net.dahanne.android.regalandroid.utils.modified_android_source.AsyncTask;
 import net.dahanne.gallery.commons.model.Picture;
 import net.dahanne.gallery.commons.remote.GalleryConnectionException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -63,7 +67,6 @@ public class FullImage extends Activity implements OnGestureListener {
 	private static final String IMAGE = "image/";
 	private static final String IMAGE_JPEG = "image/jpeg";
 	private static final String TEXT_PLAIN = "text/plain";
-	private static final String TAG = "FullImage";
 	static final String CURRENT_POSITION = "currentPhoto";
 	private ImageView imageView;
 	private Picture picture;
@@ -75,6 +78,7 @@ public class FullImage extends Activity implements OnGestureListener {
 	private Toast toast;
 	private final FileUtils fileUtils = FileUtils.getInstance();
 	private RegalAndroidApplication application;
+	private final Logger logger = LoggerFactory.getLogger(FullImage.class);
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -91,14 +95,17 @@ public class FullImage extends Activity implements OnGestureListener {
 	@Override
 	protected void onResume() {
 		super.onResume();
+		logger.debug("onResuming");
 		application = ((RegalAndroidApplication) getApplication());
 		albumPictures = application
 				.getPictures();
 		if (albumPictures == null || albumPictures.size() == 0) {
+			logger.debug("albumPictures is empty getting out");
 			finish();
 		} else {
 			currentPosition = ((RegalAndroidApplication) getApplication())
 					.getCurrentPosition();
+			logger.debug("currentPosition is : {}",currentPosition);
 			loadingPicture();
 		}
 
@@ -107,6 +114,7 @@ public class FullImage extends Activity implements OnGestureListener {
 	@Override
 	protected void onPause() {
 		super.onPause();
+		logger.debug("onPausing");
 		application
 				.setCurrentPosition(currentPosition);
 		albumPictures = application
@@ -121,8 +129,8 @@ public class FullImage extends Activity implements OnGestureListener {
 		return gestureScanner.onTouchEvent(me);
 	}
 
-	@SuppressWarnings("unchecked")
 	private void loadingPicture() {
+		logger.debug("loadingPicture");
 		picture = albumPictures.get(currentPosition);
 		int albumName =application.getCurrentAlbum().getName();
 		File potentialAlreadyDownloadedFile = new File(
@@ -130,12 +138,14 @@ public class FullImage extends Activity implements OnGestureListener {
 				picture.getTitle());
 		if (potentialAlreadyDownloadedFile.exists()
 				&& potentialAlreadyDownloadedFile.length() != 0) {
+			logger.debug("loadingPicture from cache : {}",potentialAlreadyDownloadedFile.getAbsolutePath());
 			imageView.setImageDrawable(Drawable
 					.createFromPath(potentialAlreadyDownloadedFile.getPath()));
 		}
 		// only download the picture IF it has not yet been downloaded
 		else {
 			String uriString = FileUtils.getInstance().chooseBetweenResizedAndOriginalUrl(picture);
+			logger.debug("loadingPicture from gallery : {}",uriString);
 			progressDialog = ProgressDialog.show(FullImage.this,
 					getString(R.string.please_wait),
 					getString(R.string.loading_photo), true);
@@ -143,8 +153,7 @@ public class FullImage extends Activity implements OnGestureListener {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
-	private class LoadImageTask extends AsyncTask {
+	private final class LoadImageTask extends AsyncTask<Object,Void,Bitmap> {
 		private String exceptionMessage = null;
 
 		@Override
@@ -173,15 +182,50 @@ public class FullImage extends Activity implements OnGestureListener {
 		}
 
 		@Override
-		protected void onPostExecute(Object result) {
+		protected void onPostExecute(Bitmap result) {
 			progressDialog.dismiss();
 			if (result == null) {
 				alertConnectionProblem(exceptionMessage, galleryUrl);
 			}
-			imageView.setImageDrawable(new BitmapDrawable((Bitmap) result));
+			imageView.setImageDrawable(new BitmapDrawable(result));
 		}
 	}
 
+	private final class DownloadImageTask extends AsyncTask<Object,Void,File> {
+		private String exceptionMessage = null;
+
+		@Override
+		protected File doInBackground(Object... urls) {
+			Picture picture = (Picture) urls[0];
+			File downloadImage = null;
+			try {
+				downloadImage = fileUtils.getFileFromGallery(
+						FullImage.this,
+						picture.getTitle(),
+						picture.getForceExtension(),
+						picture.getFileUrl(), false,
+						application.getCurrentAlbum().getName());
+			} catch (GalleryConnectionException e) {
+				exceptionMessage = e.getMessage();
+			} catch (FileHandlingException e) {
+				exceptionMessage = e.getMessage();
+			}
+
+			return downloadImage;
+		}
+
+		@Override
+		protected void onPostExecute(File result) {
+			if (result == null) {
+				alertConnectionProblem(exceptionMessage, galleryUrl);
+			} else {
+				Toast.makeText(FullImage.this,
+						getString(R.string.image_successfully_downloaded),
+						Toast.LENGTH_LONG).show();
+			}
+		}
+	}
+	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
@@ -190,7 +234,6 @@ public class FullImage extends Activity implements OnGestureListener {
 		return true;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		Intent intent = new Intent(Intent.ACTION_SEND);
@@ -253,41 +296,7 @@ public class FullImage extends Activity implements OnGestureListener {
 		return false;
 	}
 
-	@SuppressWarnings("unchecked")
-	class DownloadImageTask extends AsyncTask {
-		private String exceptionMessage = null;
-
-		@Override
-		protected File doInBackground(Object... urls) {
-			Picture picture = (Picture) urls[0];
-			File downloadImage = null;
-			try {
-				downloadImage = fileUtils.getFileFromGallery(
-						FullImage.this,
-						picture.getTitle(),
-						picture.getForceExtension(),
-						picture.getFileUrl(), false,
-						application.getCurrentAlbum().getName());
-			} catch (GalleryConnectionException e) {
-				exceptionMessage = e.getMessage();
-			} catch (FileHandlingException e) {
-				exceptionMessage = e.getMessage();
-			}
-
-			return downloadImage;
-		}
-
-		@Override
-		protected void onPostExecute(Object result) {
-			if (result == null) {
-				alertConnectionProblem(exceptionMessage, galleryUrl);
-			} else {
-				Toast.makeText(FullImage.this,
-						getString(R.string.image_successfully_downloaded),
-						Toast.LENGTH_LONG).show();
-			}
-		}
-	}
+	
 
 	private void alertConnectionProblem(String exceptionMessage,
 			String galleryUrl) {
