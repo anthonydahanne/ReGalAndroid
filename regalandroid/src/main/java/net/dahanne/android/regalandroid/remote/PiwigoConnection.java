@@ -19,8 +19,10 @@
 package net.dahanne.android.regalandroid.remote;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 import net.dahanne.gallery.commons.model.Album;
@@ -30,16 +32,35 @@ import net.dahanne.gallery.commons.remote.GalleryOperationNotYetSupportedExcepti
 import net.dahanne.gallery.commons.remote.ImpossibleToLoginException;
 import net.dahanne.gallery.commons.remote.RemoteGallery;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import fr.mael.jiwigo.om.Category;
+import fr.mael.jiwigo.service.CategoryService;
+import fr.mael.jiwigo.service.ImageService;
+import fr.mael.jiwigo.transverse.session.SessionManager;
+import fr.mael.jiwigo.util.JiwigoConvertUtils;
+
 public class PiwigoConnection implements RemoteGallery {
 
+	private final Logger logger = LoggerFactory
+			.getLogger(PiwigoConnection.class);
+	private final SessionManager sessionManager;
+	private final CategoryService categoryService;
+	private final ImageService imageService;
+	private Album rootAlbum;
 
 	public PiwigoConnection(String galleryUrl, String username, String password) {
+		sessionManager = new SessionManager(username, password, galleryUrl);
+		categoryService = CategoryService.getInstance(sessionManager);
+		imageService = ImageService.getInstance(sessionManager);
 
 	}
 
 	@Override
-	public int createNewAlbum(String arg0, int arg1, String arg2, String arPiwigo,
-			String arg4) throws GalleryConnectionException {
+	public int createNewAlbum(String arg0, int arg1, String arg2,
+			String arPiwigo, String arg4) throws GalleryConnectionException {
+		logger.debug("createNewAlbum");
 		throw new GalleryOperationNotYetSupportedException(
 				"Not available for Piwigo yet");
 	}
@@ -47,7 +68,7 @@ public class PiwigoConnection implements RemoteGallery {
 	@Override
 	public Map<Integer, Album> getAllAlbums(String arg0)
 			throws GalleryConnectionException {
-
+		logger.debug("getAllAlbums");
 		throw new GalleryOperationNotYetSupportedException(
 				"Not available for Piwigo yet");
 	}
@@ -55,20 +76,23 @@ public class PiwigoConnection implements RemoteGallery {
 	@Override
 	public InputStream getInputStreamFromUrl(String umageUrl)
 			throws GalleryConnectionException {
+		logger.debug("getInputStreamFromUrl");
 		throw new GalleryOperationNotYetSupportedException(
-		"Not available for Piwigo yet");
+				"Not available for Piwigo yet");
 	}
 
 	@Override
-	public Collection<Picture> getPicturesFromAlbum(int albumName) throws GalleryConnectionException {
+	public Collection<Picture> getPicturesFromAlbum(int albumName)
+			throws GalleryConnectionException {
+		logger.debug("getPicturesFromAlbum");
 		throw new GalleryOperationNotYetSupportedException(
-		"Not available for Piwigo yet");
+				"Not available for Piwigo yet");
 	}
 
 	@Override
 	public void loginToGallery() throws ImpossibleToLoginException {
-		throw new ImpossibleToLoginException(
-		"Not available for Piwigo yet");
+		logger.debug("loginToGallery");
+		sessionManager.processLogin();
 
 	}
 
@@ -76,16 +100,39 @@ public class PiwigoConnection implements RemoteGallery {
 	public int uploadPictureToGallery(String arg0, int arg1, File arg2,
 			String arPiwigo, String arg4, String arg5)
 			throws GalleryConnectionException {
+		logger.debug("uploadPictureToGallery");
 		throw new GalleryOperationNotYetSupportedException(
 				"Not available for Piwigo yet");
 	}
 
 	@Override
-	public Album getAlbumAndSubAlbumsAndPictures(
-			int parentAlbumId) throws GalleryConnectionException {
-
-		throw new GalleryOperationNotYetSupportedException(
-		"Not available for Piwigo yet");
+	public Album getAlbumAndSubAlbumsAndPictures(int parentAlbumId)
+			throws GalleryConnectionException {
+		logger.debug("getAlbumAndSubAlbumsAndPictures");
+		if(rootAlbum==null){
+			// in jiwigo, the root album can not contain pictures (not an album); it
+			// is not listed among the available albums
+			rootAlbum = new Album();
+			rootAlbum.setId(0);
+			rootAlbum.setName(0);
+			
+			try {
+				List<Category> categoriesList = categoryService.lister(true);
+				for (Category category : categoriesList) {
+					
+					Album album = JiwigoConvertUtils
+					.jiwigoCategoryToAlbum(category);
+					rootAlbum.getSubAlbums().add(album);
+				}
+			} catch (IOException e) {
+				logger.debug("listing categories failed : {}", e.getStackTrace());
+				throw new GalleryConnectionException(e);
+			}
+			
+		}
+		
+		return rootAlbum;
+		
 	}
 
 }

@@ -68,6 +68,13 @@
 			<type>jar</type>
 			<scope>compile</scope>
 		</dependency>
+		<dependency>
+			<groupId>Jiwigo</groupId>
+			<artifactId>jiwigo-ws-api</artifactId>
+			<version>0.14-SNAPSHOT</version>
+			<type>jar</type>
+			<scope>compile</scope>
+		</dependency>
 	</dependencies>
 	<build>
 		<!--<finalName>${project.artifactId}</finalName> -->

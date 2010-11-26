@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.ConnectException;
 
-import javax.swing.JOptionPane;
-
 import org.apache.commons.httpclient.Credentials;
 import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.HttpClient;
@@ -21,7 +19,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import fr.mael.jiwigo.transverse.enumeration.MethodsEnum;
-import fr.mael.jiwigo.transverse.util.Messages;
 import fr.mael.jiwigo.transverse.util.Outil;
 
 /**
@@ -184,8 +181,8 @@ public class SessionManager {
 	} catch (ConnectException e) {
 	    // TODO Auto-generated catch block
 	    LOG.error(Outil.getStackTrace(e));
-	    JOptionPane.showMessageDialog(null, Messages.getMessage("connectionRefusedError"), Messages
-		    .getMessage("error"), JOptionPane.ERROR_MESSAGE);
+//	    JOptionPane.showMessageDialog(null, Messages.getMessage("connectionRefusedError"), Messages
+//		    .getMessage("error"), JOptionPane.ERROR_MESSAGE);
 	    erreurProxy = true;
 	} catch (HttpException e) {
 	    // TODO Auto-generated catch block
@@ -195,8 +192,8 @@ public class SessionManager {
 	    LOG.error(Outil.getStackTrace(e));
 	} catch (IllegalArgumentException e) {
 	    LOG.error(Outil.getStackTrace(e));
-	    JOptionPane.showMessageDialog(null, Messages.getMessage("connexionDialog_connexionError"), Messages
-		    .getMessage("error"), JOptionPane.ERROR_MESSAGE);
+//	    JOptionPane.showMessageDialog(null, Messages.getMessage("connexionDialog_connexionError"), Messages
+//		    .getMessage("error"), JOptionPane.ERROR_MESSAGE);
 	} finally {
 	    method.releaseConnection();
 	}
