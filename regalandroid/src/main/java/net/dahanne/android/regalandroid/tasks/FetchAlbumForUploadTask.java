@@ -30,7 +30,6 @@ import net.dahanne.android.regalandroid.utils.ShowUtils;
 import net.dahanne.gallery.commons.model.Album;
 import net.dahanne.gallery.commons.model.AlbumComparator;
 import net.dahanne.gallery.commons.remote.GalleryConnectionException;
-import net.dahanne.gallery.commons.remote.RemoteGallery;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
@@ -49,12 +48,10 @@ public class FetchAlbumForUploadTask extends AsyncTask {
 	private final ProgressDialog progressDialog;
 	private final Spinner spinner;
 	private final Album currentAlbum;
-	private final RemoteGallery remoteGallery;
 
 	public FetchAlbumForUploadTask(Activity context,
 			ProgressDialog progressDialog, Spinner spinner, Album currentAlbum) {
 		super();
-		remoteGallery = RemoteGalleryConnectionFactory.getInstance();
 		activity = context;
 		this.spinner = spinner;
 		this.progressDialog = progressDialog;
@@ -66,7 +63,7 @@ public class FetchAlbumForUploadTask extends AsyncTask {
 		galleryUrl = (String) parameters[0];
 		Collection<Album> allAlbums;
 		try {
-			allAlbums = remoteGallery.getAllAlbums(galleryUrl).values();
+			allAlbums = RemoteGalleryConnectionFactory.getInstance().getAllAlbums(galleryUrl).values();
 		} catch (GalleryConnectionException e) {
 			allAlbums = null;
 			exceptionMessage = e.getMessage();

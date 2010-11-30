@@ -79,10 +79,6 @@ public class RemoteGalleryConnectionFactory {
 		return remoteGallery;
 	}
 
-	public RemoteGallery getRemoteGallery() {
-		return remoteGallery;
-	}
-
 	public static void setContext(Context context) {
 		RemoteGalleryConnectionFactory.context = context;
 	}

@@ -29,7 +29,6 @@ import net.dahanne.android.regalandroid.utils.ShowUtils;
 import net.dahanne.gallery.commons.model.Album;
 import net.dahanne.gallery.commons.model.AlbumComparator;
 import net.dahanne.gallery.commons.remote.GalleryConnectionException;
-import net.dahanne.gallery.commons.remote.RemoteGallery;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
@@ -44,11 +43,9 @@ public class FetchAlbumTask extends AsyncTask<Object, Void, Album> {
 	ListActivity activity;
 	private String galleryUrl;
 	private final ProgressDialog progressDialog;
-	private final RemoteGallery remoteGallery;
 
 	public FetchAlbumTask(ListActivity context, ProgressDialog progressDialog) {
 		super();
-		remoteGallery = RemoteGalleryConnectionFactory.getInstance();
 		activity = context;
 		this.progressDialog = progressDialog;
 	}
@@ -60,7 +57,7 @@ public class FetchAlbumTask extends AsyncTask<Object, Void, Album> {
 		
 		Album albumAndSubAlbums;
 		try {
-			albumAndSubAlbums = remoteGallery
+			albumAndSubAlbums = RemoteGalleryConnectionFactory.getInstance()
 					.getAlbumAndSubAlbumsAndPictures(albumId);
 		} catch (GalleryConnectionException e) {
 			albumAndSubAlbums = null;

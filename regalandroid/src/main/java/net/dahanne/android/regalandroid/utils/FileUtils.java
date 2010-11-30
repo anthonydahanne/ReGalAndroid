@@ -29,7 +29,6 @@ import net.dahanne.android.regalandroid.activity.Settings;
 import net.dahanne.android.regalandroid.remote.RemoteGalleryConnectionFactory;
 import net.dahanne.gallery.commons.model.Picture;
 import net.dahanne.gallery.commons.remote.GalleryConnectionException;
-import net.dahanne.gallery.commons.remote.RemoteGallery;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -51,9 +50,6 @@ public class FileUtils {
 	private FileUtils() {
 
 	}
-
-	private final RemoteGallery remoteGallery = RemoteGalleryConnectionFactory
-			.getInstance();
 
 	/**
 	 * download the requested file from the gallery, and save it to cache
@@ -123,7 +119,7 @@ public class FileUtils {
 				}
 				logger.debug("savePath is : {}", savePath);
 				imageFileOnExternalDirectory = new File(savePath, fileName);
-				inputStreamFromUrl = remoteGallery
+				inputStreamFromUrl = RemoteGalleryConnectionFactory.getInstance()
 						.getInputStreamFromUrl(imageUrl);
 			} else {
 				throw new FileHandlingException(

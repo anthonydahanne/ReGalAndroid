@@ -24,7 +24,6 @@ import net.dahanne.android.regalandroid.R;
 import net.dahanne.android.regalandroid.RegalAndroidApplication;
 import net.dahanne.android.regalandroid.remote.RemoteGalleryConnectionFactory;
 import net.dahanne.android.regalandroid.utils.DBUtils;
-import net.dahanne.gallery.commons.remote.RemoteGallery;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Environment;
@@ -53,8 +52,6 @@ public class Settings extends PreferenceActivity {
 	
 	private static final String TAG = "Settings";
 	private static String galleryUrl;
-	private static RemoteGallery remoteGallery = RemoteGalleryConnectionFactory
-			.getInstance();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

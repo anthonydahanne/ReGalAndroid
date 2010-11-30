@@ -25,7 +25,6 @@ import net.dahanne.android.regalandroid.remote.RemoteGalleryConnectionFactory;
 import net.dahanne.android.regalandroid.utils.AndroidUriUtils;
 import net.dahanne.android.regalandroid.utils.ShowUtils;
 import net.dahanne.gallery.commons.remote.GalleryConnectionException;
-import net.dahanne.gallery.commons.remote.RemoteGallery;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.net.Uri;
@@ -36,11 +35,9 @@ public class AddPhotoTask extends AsyncTask<Object, Void, String> {
 	Activity activity;
 	private String galleryUrl;
 	private final ProgressDialog progressDialog;
-	private final RemoteGallery remoteGallery;
 
 	public AddPhotoTask(Activity context, ProgressDialog progressDialog) {
 		super();
-		remoteGallery = RemoteGalleryConnectionFactory.getInstance();
 		activity = context;
 		this.progressDialog = progressDialog;
 	}
@@ -61,9 +58,9 @@ public class AddPhotoTask extends AsyncTask<Object, Void, String> {
 
 		try {
 			if (mustLogIn) {
-				remoteGallery.loginToGallery();
+				RemoteGalleryConnectionFactory.getInstance().loginToGallery();
 			}
-			remoteGallery.uploadPictureToGallery(galleryUrl, albumName, imageFile,
+			RemoteGalleryConnectionFactory.getInstance().uploadPictureToGallery(galleryUrl, albumName, imageFile,
 					imageName, Settings.getDefaultSummary(activity),
 					Settings.getDefaultDescription(activity));
 		} catch (GalleryConnectionException e) {

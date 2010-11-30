@@ -36,7 +36,6 @@ import net.dahanne.android.regalandroid.utils.ShowUtils;
 import net.dahanne.android.regalandroid.utils.modified_android_source.AsyncTask;
 import net.dahanne.gallery.commons.model.Picture;
 import net.dahanne.gallery.commons.remote.GalleryConnectionException;
-import net.dahanne.gallery.commons.remote.RemoteGallery;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -352,10 +351,8 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 			AsyncTask<Object, Void, Collection<Picture>> {
 
 		private String exceptionMessage;
-		private final RemoteGallery remoteGallery;
 
 		public FetchImagesTask() {
-			remoteGallery = RemoteGalleryConnectionFactory.getInstance();
 		}
 
 		@Override
@@ -365,10 +362,10 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 			Collection<Picture> pictures = null;
 			try {
 				if (mustLogIn) {
-					remoteGallery.loginToGallery();
+					RemoteGalleryConnectionFactory.getInstance().loginToGallery();
 					mustLogIn = false;
 				}
-				pictures = remoteGallery.getPicturesFromAlbum(albumName);
+				pictures = RemoteGalleryConnectionFactory.getInstance().getPicturesFromAlbum(albumName);
 			} catch (GalleryConnectionException e) {
 				logger.debug("exception : {}", e.getStackTrace());
 			}

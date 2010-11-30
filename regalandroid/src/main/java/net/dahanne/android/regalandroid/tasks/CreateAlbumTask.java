@@ -18,12 +18,10 @@
 
 package net.dahanne.android.regalandroid.tasks;
 
-import net.dahanne.android.regalandroid.RegalAndroidApplication;
 import net.dahanne.android.regalandroid.activity.Settings;
 import net.dahanne.android.regalandroid.remote.RemoteGalleryConnectionFactory;
 import net.dahanne.android.regalandroid.utils.ShowUtils;
 import net.dahanne.gallery.commons.remote.GalleryConnectionException;
-import net.dahanne.gallery.commons.remote.RemoteGallery;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
@@ -38,11 +36,9 @@ public class CreateAlbumTask extends AsyncTask {
 	Activity activity;
 	private String galleryUrl;
 	private final ProgressDialog progressDialog;
-	private final RemoteGallery remoteGallery;
 
 	public CreateAlbumTask(Activity context, ProgressDialog progressDialog) {
 		super();
-		remoteGallery = RemoteGalleryConnectionFactory.getInstance();
 		activity = context;
 		this.progressDialog = progressDialog;
 	}
@@ -59,7 +55,7 @@ public class CreateAlbumTask extends AsyncTask {
 //						Settings.getUsername(activity),
 //						Settings.getPassword(activity));
 //			}
-			int createdAlbumName = remoteGallery.createNewAlbum(galleryUrl,
+			int createdAlbumName = RemoteGalleryConnectionFactory.getInstance().createNewAlbum(galleryUrl,
 					albumName, subalbumName, subalbumName,
 					Settings.getDefaultSummary(activity));
 //			if (mustLogIn) {

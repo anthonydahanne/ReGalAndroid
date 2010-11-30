@@ -26,7 +26,6 @@ import java.util.ArrayList;
 
 import net.dahanne.android.regalandroid.R;
 import net.dahanne.android.regalandroid.RegalAndroidApplication;
-import net.dahanne.android.regalandroid.remote.RemoteGalleryConnectionFactory;
 import net.dahanne.android.regalandroid.tasks.AddPhotoTask;
 import net.dahanne.android.regalandroid.tasks.AddPhotosTask;
 import net.dahanne.android.regalandroid.tasks.FetchAlbumForUploadTask;
@@ -35,7 +34,6 @@ import net.dahanne.android.regalandroid.utils.AndroidUriUtils;
 import net.dahanne.android.regalandroid.utils.DBUtils;
 import net.dahanne.android.regalandroid.utils.ShowUtils;
 import net.dahanne.gallery.commons.model.Album;
-import net.dahanne.gallery.commons.remote.RemoteGallery;
 import net.dahanne.gallery.commons.utils.AlbumUtils;
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -69,11 +67,9 @@ public class UploadPhoto extends Activity implements OnClickListener {
 	private EditText filenameEditText;
 	private File imageFromCamera;
 	private ArrayList<Uri> mImageUris;
-	private final RemoteGallery remoteGallery;
 	private RegalAndroidApplication 		application;
 
 	public UploadPhoto() {
-		remoteGallery = RemoteGalleryConnectionFactory.getInstance();
 	}
 
 	@Override
