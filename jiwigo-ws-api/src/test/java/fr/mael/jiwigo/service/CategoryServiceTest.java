@@ -40,7 +40,8 @@ public class CategoryServiceTest  {
     @Test
     public void creerTest() {
 	Date date = new Date();
-	Assert.assertSame(true, CategoryService.getInstance(sessionManager).creer("Category" + date.getTime()));
+	CategoryService categoryService = new CategoryService(sessionManager);
+	Assert.assertSame(true, categoryService.creer("Category" + date.getTime()));
     }
 
 }

@@ -43,29 +43,12 @@ import fr.mael.jiwigo.transverse.util.Outil;
 public class ImageService extends ServiceBase {
     /**
      * Logger
+     * @param sessionManager 
      */
 //	private  final Logger LOG = LoggerFactory.getLogger(ImageService.class);
 
-    /**
-     * Singleton
-     */
-    private static ImageService instance;
-
-    /**
-     * @return the singleton
-     */
-    public static ImageService getInstance(SessionManager sessionManager) {
-	if (instance == null) {
-	    instance = new ImageService();
-	    setSessionManager(sessionManager);
-	}
-	return instance;
-    }
-
-    /**
-     * private constructor to use a singleton
-     */
-    private ImageService() {
+    public ImageService(SessionManager sessionManager) {
+    	setSessionManager(sessionManager);
 
     }
 

@@ -39,8 +39,9 @@ public class TagServiceTest  {
     @Test
     public void creerTest() {
 	Date date = new Date();
+	TagService tagService = new TagService(sessionManager);
 	try {
-	    Assert.assertSame(true, TagService.getInstance(sessionManager).creer("Tag" + date.getTime()));
+	    Assert.assertSame(true, tagService.creer("Tag" + date.getTime()));
 	} catch (IOException e) {
 	    // TODO Auto-generated catch block
 	    e.printStackTrace();

@@ -40,29 +40,12 @@ import fr.mael.jiwigo.transverse.session.SessionManager;
 public class CommentService extends ServiceBase {
     /**
      * Logger
+     * @param sessionManager 
      */
 //	private  final Logger LOG = LoggerFactory.getLogger(CommentService.class);
 
-    /**
-     * singleton
-     */
-    private static CommentService instance;
-
-    /**
-     * @return the singleton
-     */
-    public static CommentService getInstance(SessionManager sessionManager) {
-	if (instance == null) {
-	    instance = new CommentService();
-	    setSessionManager(sessionManager);
-	}
-	return instance;
-    }
-
-    /**
-     * private constructor, to use a singleton
-     */
-    private CommentService() {
+    public CommentService(SessionManager sessionManager) {
+    	setSessionManager(sessionManager);
 
     }
 

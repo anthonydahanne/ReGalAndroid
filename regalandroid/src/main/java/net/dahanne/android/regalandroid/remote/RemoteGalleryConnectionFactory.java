@@ -67,6 +67,7 @@ public class RemoteGalleryConnectionFactory {
 					.getPassword(context));
 				break;
 			case PIWIGO:
+				logger.debug("Piwigo is choosen");
 				remoteGallery = new PiwigoConnection(Settings
 						.getGalleryUrl(context),Settings
 						.getUsername(context),Settings

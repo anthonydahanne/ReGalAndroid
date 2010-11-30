@@ -43,27 +43,12 @@ public class CategoryService extends ServiceBase {
      */
 //	 private  final Logger LOG = LoggerFactory.getLogger(CategoryService.class);
 
-    /**
-     * singleton
-     */
-    private static CategoryService instance;
 
     /**
      * @return the singleton
      */
-    public static CategoryService getInstance(SessionManager sessionManager) {
-	if (instance == null) {
-	    instance = new CategoryService();
-	    setSessionManager(sessionManager);
-	}
-	return instance;
-    }
-
-    /**
-     * private constructor to use a singleton
-     */
-    private CategoryService() {
-
+    public   CategoryService(SessionManager sessionManager) {
+    	setSessionManager(sessionManager);
     }
 
     /**
@@ -83,7 +68,7 @@ public class CategoryService extends ServiceBase {
      * @throws IOException 
      */
     public List<Category> construireArbre() throws IOException {
-	List<Category> list = CategoryDao.getInstance(getSessionManager()).listing(true);
+	List<Category> list = lister(true);
 	for (Category category : list) {
 	    for (Category category2 : list) {
 		if (category2.getIdCategoriesMeres().size() != 1

@@ -3,16 +3,17 @@ package fr.mael.jiwigo.transverse.session;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.ConnectException;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.apache.commons.httpclient.Credentials;
-import org.apache.commons.httpclient.HostConfiguration;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpException;
-import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
-import org.apache.commons.httpclient.UsernamePasswordCredentials;
-import org.apache.commons.httpclient.auth.AuthScope;
-import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.commons.lang.StringUtils;
+import org.apache.http.Header;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicHeader;
+import org.apache.http.message.BasicNameValuePair;
 import org.jdom.Document;
 import org.jdom.JDOMException;
 import org.slf4j.Logger;
@@ -70,7 +71,7 @@ public class SessionManager {
     /**
      * the http client
      */
-    private final HttpClient client;
+    private final DefaultHttpClient client;
 
     /**
      * defines if the user uses a proxy
@@ -112,8 +113,8 @@ public class SessionManager {
 	this.login = login;
 	this.motDePasse = motDePasse;
 	this.url = url + "/ws.php";
-	MultiThreadedHttpConnectionManager connectionManager = new MultiThreadedHttpConnectionManager();
-	client = new HttpClient(connectionManager);
+//	MultiThreadedHttpConnectionManager connectionManager = new MultiThreadedHttpConnectionManager();
+	client = new DefaultHttpClient();
 	//Using of a Linux user agent. cause... it's better 8)
 	client.getParams().setParameter("http.useragent",
 		"Mozilla/5.0 (X11; U; Linux i686; fr; rv:1.9.1.1) Gecko/20090715 Firefox/3.5.1");
@@ -126,16 +127,16 @@ public class SessionManager {
      */
     public boolean processLogin() {
 	Document doc;
-	//configures the proxy
-	if (usesProxy) {
-	    HostConfiguration config = client.getHostConfiguration();
-	    config.setProxy(urlProxy, portProxy);
-	    if (!StringUtils.isEmpty(loginProxy) && !StringUtils.isEmpty(passProxy)) {
-		Credentials credentials = new UsernamePasswordCredentials(loginProxy, passProxy);
-		AuthScope authScope = new AuthScope(urlProxy, portProxy);
-		client.getState().setProxyCredentials(authScope, credentials);
-	    }
-	}
+	//configures the proxy, no proxy in android
+//	if (usesProxy) {
+//	    HostConfiguration config = client.getHostConfiguration();
+//	    config.setProxy(urlProxy, portProxy);
+//	    if (!StringUtils.isEmpty(loginProxy) && !StringUtils.isEmpty(passProxy)) {
+//		Credentials credentials = new UsernamePasswordCredentials(loginProxy, passProxy);
+//		AuthScope authScope = new AuthScope(urlProxy, portProxy);
+//		client.getState().setProxyCredentials(authScope, credentials);
+//	    }
+//	}
 	try {
 	    doc = executerReturnDocument(MethodsEnum.LOGIN.getLabel(), "username", login, "password", motDePasse);
 	    return Outil.checkOk(doc);
@@ -161,21 +162,32 @@ public class SessionManager {
 		return null;
 	    }
 	}
-	PostMethod method = new PostMethod(url);
-	method.addParameter("method", methode);
+	HttpPost method = new HttpPost(url);
+//	PostMethod method = new PostMethod(url);
+	List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+	nameValuePairs.add(new BasicNameValuePair("method",
+			methode));
+//	method.addParameter("method", methode);
 	for (int i = 0; i < parametres.length; i += 2) {
-	    method.addParameter(parametres[i], parametres[i + 1]);
+		nameValuePairs.add(new BasicNameValuePair(parametres[i],
+				 parametres[i + 1]));
+//	    method.addParameter(parametres[i], parametres[i + 1]);
 	}
-	//begin bug:0001833
-	method.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=utf-8");
+	
+//	method.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=utf-8");
 	//end
 
 	try {
-	    client.executeMethod(method);
-	    InputStream streamResponse = method.getResponseBodyAsStream();
+		method.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+		//begin bug:0001833
+		Header header   =new BasicHeader("Content-Type", "application/x-www-form-urlencoded; charset=utf-8");
+		method.setHeader(header);
+	    HttpResponse response = client.execute(method);
+//	    InputStream streamResponse = method.getResponseBodyAsStream();
+	    InputStream content = response.getEntity().getContent();
 	    //	    System.out.println(Outil.readInputStreamAsString(streamResponse));
 	    //	    String toReturn = method.getResponseBodyAsString();
-	    String toReturn = Outil.readInputStreamAsString(streamResponse);
+	    String toReturn = Outil.readInputStreamAsString(content);
 	    LOG.debug(toReturn);
 	    return toReturn;
 	} catch (ConnectException e) {
@@ -184,9 +196,9 @@ public class SessionManager {
 //	    JOptionPane.showMessageDialog(null, Messages.getMessage("connectionRefusedError"), Messages
 //		    .getMessage("error"), JOptionPane.ERROR_MESSAGE);
 	    erreurProxy = true;
-	} catch (HttpException e) {
-	    // TODO Auto-generated catch block
-	    LOG.error(Outil.getStackTrace(e));
+//	} catch (HttpException e) {
+//	    // TODO Auto-generated catch block
+//	    LOG.error(Outil.getStackTrace(e));
 	} catch (IOException e) {
 	    // TODO Auto-generated catch block
 	    LOG.error(Outil.getStackTrace(e));
@@ -195,7 +207,7 @@ public class SessionManager {
 //	    JOptionPane.showMessageDialog(null, Messages.getMessage("connexionDialog_connexionError"), Messages
 //		    .getMessage("error"), JOptionPane.ERROR_MESSAGE);
 	} finally {
-	    method.releaseConnection();
+//		response.releaseConnection();
 	}
 	return null;
 

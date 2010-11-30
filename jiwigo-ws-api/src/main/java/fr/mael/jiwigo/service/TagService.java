@@ -49,22 +49,8 @@ public class TagService extends ServiceBase {
      */
     private static TagService instance;
 
-    /**
-     * @return the singleton
-     */
-    public static TagService getInstance(SessionManager sessionManager) {
-	if (instance == null) {
-	    instance = new TagService();
-	    setSessionManager(sessionManager);
-	}
-	return instance;
-    }
-
-    /**
-     * private constructor
-     */
-    private TagService() {
-
+    public TagService(SessionManager sessionManager) {
+setSessionManager(sessionManager);
     }
 
     /**

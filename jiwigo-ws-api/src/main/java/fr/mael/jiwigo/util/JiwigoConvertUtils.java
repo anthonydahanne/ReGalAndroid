@@ -1,7 +1,10 @@
 package fr.mael.jiwigo.util;
 
+import java.util.List;
+
 import net.dahanne.gallery.commons.model.Album;
 import net.dahanne.gallery.commons.model.Picture;
+import net.dahanne.gallery.commons.utils.AlbumUtils;
 import fr.mael.jiwigo.om.Category;
 import fr.mael.jiwigo.om.Image;
 
@@ -62,6 +65,29 @@ public class JiwigoConvertUtils {
 		picture.setHeight(jiwigoImage.getHeight());
 		picture.setWidth(jiwigoImage.getWidth());
 		return picture;
+	}
+	
+	public static Album categoriesToAlbum(List<Category> categories){
+		// in jiwigo, the root album can not contain pictures (not an album); it
+		// is not listed among the available albums
+		Album resultAlbum = new Album();
+		resultAlbum.setName(0);
+		resultAlbum.setId(0);
+		
+		Album album;
+		for (Category category : categories) {
+			album = jiwigoCategoryToAlbum(category);
+			if(category.getCategoriesMeres().size()==0){
+					//no parents, so it is at the root
+					resultAlbum.getSubAlbums().add(album);
+			}
+			else{
+				Album parentAlbum = AlbumUtils.findAlbumFromAlbumName(resultAlbum,  category.getCategoriesMeres().get(0).getIdentifiant());
+				parentAlbum.getSubAlbums().add(album);
+				
+			}
+		}
+		return resultAlbum;
 	}
 	
 

@@ -130,4 +130,5 @@ public class G2Connection implements RemoteGallery {
 		return client.getAllAlbums(galleryUrl);
 	}
 
+
 }

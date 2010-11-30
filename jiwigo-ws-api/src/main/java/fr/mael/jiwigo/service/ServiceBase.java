@@ -31,20 +31,20 @@ import fr.mael.jiwigo.transverse.session.SessionManager;
  *
  */
 public class ServiceBase {
-    private static SessionManager sessionManager;
+    private  SessionManager sessionManager;
 
     /**
      * @return the sessionManager
      */
-    public static SessionManager getSessionManager() {
+    public  SessionManager getSessionManager() {
 	return sessionManager;
     }
 
     /**
      * @param sessionManager the sessionManager to set
      */
-    public static void setSessionManager(SessionManager sessionManager) {
-	ServiceBase.sessionManager = sessionManager;
+    public  void setSessionManager(SessionManager sessionManager) {
+	this.sessionManager = sessionManager;
     }
 
 }
