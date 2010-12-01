@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import net.dahanne.gallery3.client.business.G3Client;
 import net.dahanne.gallery3.client.model.Comments;
 import net.dahanne.gallery3.client.model.Entity;
 import net.dahanne.gallery3.client.model.Item;
@@ -33,11 +34,14 @@ import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ItemUtils {
-
+	private static final Logger logger = LoggerFactory.getLogger(G3Client.class);
 	public static Item parseJSONToItem(JSONObject jsonResult)
 			throws JSONException {
+		logger.debug("parseJSONToItem jsonResult: {}",jsonResult);
 		Item item = new Item();
 		item.setUrl(jsonResult.getString("url"));
 
@@ -49,7 +53,7 @@ public class ItemUtils {
 			JSONArray jsonArray = jsonResult.getJSONArray("members");
 			item.getMembers().addAll(convertJSONArrayToList(jsonArray));
 		}
-
+		logger.debug("item : {}",item);
 		return item;
 	}
 
@@ -149,7 +153,11 @@ public class ItemUtils {
 				// nothing to do, it's just that there is no album_cover
 			}
 			entity.setResizeUrl(entityJSON.getString("resize_url"));
-			entity.setResizeSize(entityJSON.getInt("resize_size"));
+			try {
+				entity.setResizeSize(entityJSON.getInt("resize_size"));
+			} catch (JSONException e) {
+				// nothing to do, it's just that there is no album_cover
+			}
 			try {
 				entity.setResizeUrlPublic(entityJSON
 						.getString("resize_url_public"));

@@ -92,6 +92,35 @@ public class G3ConvertUtilsTest {
 		
 		
 	}
+	
+	@Test
+	public void itemToPicture__bug3_resize_size_false() throws IOException, JSONException {
+		URL resource = Resources.getResource("get-photo-bug3_resize_size_false.json");
+		String string = Resources.toString(resource, Charsets.UTF_8);
+		JSONObject jsonResult = (JSONObject) new JSONTokener(string)
+				.nextValue();
+		Item pictureItem = ItemUtils.parseJSONToItem(jsonResult);
+		
+		Picture itemToPicture = G3ConvertUtils.itemToPicture(pictureItem );
+		Picture expectedPicture = new Picture();
+		expectedPicture.setId(502);
+		expectedPicture.setTitle("graduation pics 427");
+		expectedPicture.setName("graduation pics 427.jpg");
+		
+		
+		expectedPicture.setResizedUrl("http://www.iffam.org/gallery/index.php/rest/data/502?size=resize");
+		
+		expectedPicture.setFileUrl("http://www.iffam.org/gallery/index.php/rest/data/502?size=full");
+		expectedPicture.setWidth(2576);
+		expectedPicture.setHeight(1932);
+		expectedPicture.setFileSize(1144458);
+		
+		
+		Assert.assertEquals(expectedPicture, itemToPicture);
+		
+		
+	}
+	
 
 	
 

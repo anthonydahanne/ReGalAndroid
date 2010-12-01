@@ -44,9 +44,9 @@ public class G3Connection implements RemoteGallery {
 		client = new G3Client(galleryUrl);
 		client.setUsername(username);
 		client.setPassword(password);
-
 	}
 
+	
 	@Override
 	public int createNewAlbum(String arg0, int arg1, String arg2, String arg3,
 			String arg4) throws GalleryConnectionException {

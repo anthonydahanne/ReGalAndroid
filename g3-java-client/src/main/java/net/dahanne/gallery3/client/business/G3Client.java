@@ -224,6 +224,7 @@ public class G3Client implements IG3Client {
 			ClientProtocolException, G3GalleryException {
 		HttpClient defaultHttpClient = new DefaultHttpClient();
 		HttpRequestBase httpMethod;
+		logger.debug("requestToResponseEntity , url requested : {}",galleryItemUrl + appendToGalleryUrl);
 		if (POST.equals(requestMethod)) {
 			httpMethod = new HttpPost(galleryItemUrl + appendToGalleryUrl);
 			httpMethod.setHeader(X_GALLERY_REQUEST_METHOD, requestMethod);
@@ -354,6 +355,7 @@ public class G3Client implements IG3Client {
 
 	private Item getItems(int albumId, List<Item> items, String type)
 			throws G3GalleryException {
+		logger.debug("getting items in albumId : {}, type : {}",albumId,type);	
 		Item item = this.getItem(albumId);
 		Collection<String> members = item.getMembers();
 		JSONArray urls = new JSONArray(members);

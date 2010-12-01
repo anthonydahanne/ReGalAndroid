@@ -274,11 +274,10 @@ public class ItemUtilsTest {
 	
 	@Test
 	public void convertJsonStringToApiKey() {
-		
 		String expectedKey = "e3450cdda082e6a2bddf5114a2bcc14d";
-String jsonResult="\"e3450cdda082e6a2bddf5114a2bcc14d\n\"";
-String key = ItemUtils.convertJsonResultToApiKey(jsonResult);
-assertEquals(expectedKey, key);
+		String jsonResult="\"e3450cdda082e6a2bddf5114a2bcc14d\n\"";
+		String key = ItemUtils.convertJsonResultToApiKey(jsonResult);
+		assertEquals(expectedKey, key);
 	}
 	
 	
