@@ -6,10 +6,13 @@ import java.net.ConnectException;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.dahanne.gallery.commons.remote.GalleryConnectionException;
+
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicHeader;
@@ -333,5 +336,19 @@ public class SessionManager {
     public boolean isErreurProxy() {
 	return erreurProxy;
     }
+    
+    
+    public InputStream getInputStreamFromUrl(String url) throws GalleryConnectionException {
+		InputStream content = null;
+		try {
+			HttpGet httpGet = new HttpGet(url);
+			// Execute HTTP Get Request
+			HttpResponse response = client.execute(httpGet);
+			content = response.getEntity().getContent();
+		} catch (Exception e) {
+			throw new GalleryConnectionException(e.getMessage());
+		}
+		return content;
+	}
 
 }

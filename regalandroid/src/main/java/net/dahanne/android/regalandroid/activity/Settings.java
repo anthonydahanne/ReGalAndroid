@@ -80,7 +80,7 @@ public class Settings extends PreferenceActivity {
 				.getString(OPT_PASSWORD_KEY, "");
 	}
 
-	/** Get the current value of the g2Android path option */
+	/** Get the current value of the regalAndroid path option */
 	public static String getReGalAndroidPath(Context context) {
 		File externalStorageDirectory = Environment
 				.getExternalStorageDirectory();
@@ -92,7 +92,7 @@ public class Settings extends PreferenceActivity {
 				.toString();
 	}
 
-	/** Get the current value of the g2android cache option */
+	/** Get the current value of the regalandroid cache option */
 	public static String getReGalAndroidCachePath(Context context) {
 		String cachePath = PreferenceManager.getDefaultSharedPreferences(
 				context).getString(OPT_REGALANDROID_CACHE_PATH,

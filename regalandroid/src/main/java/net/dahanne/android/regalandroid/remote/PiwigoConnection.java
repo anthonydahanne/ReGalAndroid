@@ -77,11 +77,10 @@ public class PiwigoConnection implements RemoteGallery {
 	}
 
 	@Override
-	public InputStream getInputStreamFromUrl(String umageUrl)
+	public InputStream getInputStreamFromUrl(String imageUrl)
 			throws GalleryConnectionException {
 		logger.debug("getInputStreamFromUrl");
-		throw new GalleryOperationNotYetSupportedException(
-				"Not available for Piwigo yet");
+		return sessionManager.getInputStreamFromUrl(imageUrl);
 	}
 
 	@Override
@@ -134,8 +133,8 @@ public class PiwigoConnection implements RemoteGallery {
 		
 		Album findAlbumFromAlbumName = AlbumUtils.findAlbumFromAlbumName(
 				rootAlbum, parentAlbumId);
-//		findAlbumFromAlbumName.getPictures().addAll(
-//				getPicturesFromAlbum( parentAlbumId));
+		findAlbumFromAlbumName.getPictures().addAll(
+				getPicturesFromAlbum( parentAlbumId));
 		return findAlbumFromAlbumName;
 		
 	}
