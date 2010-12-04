@@ -19,7 +19,7 @@
 package net.dahanne.android.regalandroid.utils;
 
 import net.dahanne.android.regalandroid.RegalAndroidApplication;
-import net.dahanne.android.regalandroid.utils.DBHelper.G2AndroidContext;
+import net.dahanne.android.regalandroid.utils.DBHelper.ReGalAndroidContext;
 import net.dahanne.gallery.commons.utils.AlbumUtils;
 
 import org.slf4j.Logger;
@@ -47,7 +47,7 @@ public class DBUtils {
 		logger.debug("recovering context from database, called from  : {}",activity.getClass());
 		RegalAndroidApplication application = (RegalAndroidApplication) activity.getApplication();
 		DBHelper dbHelper = new DBHelper(activity);
-		G2AndroidContext g2c = dbHelper.getLast();
+		ReGalAndroidContext g2c = dbHelper.getLast();
 		if (g2c != null) {
 			application
 					.setCurrentPosition(g2c.currentPosition);
@@ -67,7 +67,7 @@ public class DBUtils {
 				.getCurrentPosition(),application
 				.getCurrentAlbum()!=null?application.getCurrentAlbum():null);
 		DBHelper dbHelper = new DBHelper(activity);
-		dbHelper.insert(new G2AndroidContext(0,
+		dbHelper.insert(new ReGalAndroidContext(0,
 				application
 						.getCurrentPosition(),
 						application

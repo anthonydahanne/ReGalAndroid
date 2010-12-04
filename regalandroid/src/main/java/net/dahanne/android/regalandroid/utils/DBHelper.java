@@ -49,16 +49,16 @@ public class DBHelper {
 	// inner classes
 	//
 
-	public static class G2AndroidContext {
+	public static class ReGalAndroidContext {
 
 		public long id;
 		public int currentPosition;
 		public Album currentAlbum;
 
-		public G2AndroidContext() {
+		public ReGalAndroidContext() {
 		}
 
-		public G2AndroidContext(final long id, final int currentPosition,
+		public ReGalAndroidContext(final long id, final int currentPosition,
 				final Album currentAlbum) {
 			this.id = id;
 			this.currentPosition = currentPosition;
@@ -125,12 +125,12 @@ public class DBHelper {
 		}
 	}
 
-	public void insert(final G2AndroidContext g2AndroidContext) {
+	public void insert(final ReGalAndroidContext regalAndroidContext) {
 		ContentValues values = new ContentValues();
-		values.put("current_position", g2AndroidContext.currentPosition);
-		if(g2AndroidContext.currentAlbum!=null){
+		values.put("current_position", regalAndroidContext.currentPosition);
+		if(regalAndroidContext.currentAlbum!=null){
 			try {
-				values.put("current_album", Serialization.serializeAlbum(g2AndroidContext.currentAlbum));
+				values.put("current_album", Serialization.serializeAlbum(regalAndroidContext.currentAlbum));
 			} catch (SerializationException e) {
 				logger.debug(e.getMessage());
 			}
@@ -141,15 +141,15 @@ public class DBHelper {
 		cleanup();
 	}
 
-	public void update(final G2AndroidContext g2AndroidContext) {
+	public void update(final ReGalAndroidContext regalAndroidContext) {
 		ContentValues values = new ContentValues();
 		try {
-		values.put("current_position", g2AndroidContext.currentPosition);
-			values.put("current_album", Serialization.serializeAlbum(g2AndroidContext.currentAlbum));
+		values.put("current_position", regalAndroidContext.currentPosition);
+			values.put("current_album", Serialization.serializeAlbum(regalAndroidContext.currentAlbum));
 		} catch (SerializationException e) {
 			logger.debug(e.getMessage());
 		}
-		db.update(DBHelper.DB_TABLE, values, "_id=" + g2AndroidContext.id, null);
+		db.update(DBHelper.DB_TABLE, values, "_id=" + regalAndroidContext.id, null);
 		cleanup();
 	}
 
@@ -162,21 +162,21 @@ public class DBHelper {
 	}
 
 
-	public G2AndroidContext getLast() {
+	public ReGalAndroidContext getLast() {
 		Cursor c = null;
-		G2AndroidContext g2AndroidContext = null;
+		ReGalAndroidContext regalAndroidContext = null;
 		try {
 			c = db.query(true, DBHelper.DB_TABLE, DBHelper.COLS, null, null,
 					null, null, "_id DESC", null);
 			if (c.getCount() > 0) {
 				c.moveToFirst();
-				g2AndroidContext = new G2AndroidContext();
-				g2AndroidContext.id = c.getLong(0);
-				g2AndroidContext.currentPosition = c.getInt(1);
+				regalAndroidContext = new ReGalAndroidContext();
+				regalAndroidContext.id = c.getLong(0);
+				regalAndroidContext.currentPosition = c.getInt(1);
 				byte[] blob = c
 						.getBlob(2);
 				if(blob!=null){
-					g2AndroidContext.currentAlbum = Serialization.unserializeAlbum(blob);
+					regalAndroidContext.currentAlbum = Serialization.unserializeAlbum(blob);
 				}
 
 			}
@@ -188,7 +188,7 @@ public class DBHelper {
 			c.close();
 			cleanup();
 		}
-		return g2AndroidContext;
+		return regalAndroidContext;
 	}
 
 }

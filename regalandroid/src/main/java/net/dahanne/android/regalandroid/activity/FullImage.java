@@ -134,7 +134,7 @@ public class FullImage extends Activity implements OnGestureListener {
 		picture = albumPictures.get(currentPosition);
 		int albumName =application.getCurrentAlbum().getName();
 		File potentialAlreadyDownloadedFile = new File(
-				Settings.getG2AndroidCachePath(this) + albumName + "/",
+				Settings.getReGalAndroidCachePath(this) + albumName + "/",
 				picture.getTitle());
 		if (potentialAlreadyDownloadedFile.exists()
 				&& potentialAlreadyDownloadedFile.length() != 0) {
@@ -253,7 +253,7 @@ public class FullImage extends Activity implements OnGestureListener {
 		case R.id.send_image:
 			// we first download the full res image
 			new DownloadImageTask().execute(picture);
-			String filePath = Settings.getG2AndroidPath(this) + SLASH
+			String filePath = Settings.getReGalAndroidPath(this) + SLASH
 					+ picture.getTitle();
 			String extension = picture.getForceExtension();
 			// if no extension is found, let's assume it's a jpeg...
@@ -279,11 +279,11 @@ public class FullImage extends Activity implements OnGestureListener {
 			intent.setAction(android.content.Intent.ACTION_VIEW);
 			// imageFilePath is a path to a file located on the sd card
 			// such "/sdcard/temp.jpg"
-			filePath = Settings.getG2AndroidPath(this) + SLASH
+			filePath = Settings.getReGalAndroidPath(this) + SLASH
 					+ picture.getTitle();
 			File file = new File(filePath);
 			if (!file.exists()) {
-				filePath = Settings.getG2AndroidCachePath(this) + SLASH
+				filePath = Settings.getReGalAndroidCachePath(this) + SLASH
 						+ picture.getTitle();
 				file = new File(filePath);
 			}

@@ -78,28 +78,28 @@ public class FileUtils {
 			if (storageState.contains("mounted")) {
 				logger.debug("storage is mounted");
 				File savePath = new File(
-						Settings.getG2AndroidCachePath(context) + "/"
+						Settings.getReGalAndroidCachePath(context) + "/"
 								+ albumName);
 				// if the cache has never been used before
 				if (!savePath.exists()) {
-					// we make sure g2android path exists (/g2android)
-					File g2AndroidDirectory = new File(
-							Settings.getG2AndroidPath(context));
-					g2AndroidDirectory.mkdir();
-					// we then create g2android cache path (tmp)
-					File g2AndroidCacheDirectory = new File(
-							Settings.getG2AndroidCachePath(context));
-					g2AndroidCacheDirectory.mkdir();
+					// we make sure regalandroid path exists (ex : /regalandroid)
+					File regalAndroidDirectory = new File(
+							Settings.getReGalAndroidPath(context));
+					regalAndroidDirectory.mkdir();
+					// we then create regalandroid cache path (tmp)
+					File regalAndroidCacheDirectory = new File(
+							Settings.getReGalAndroidCachePath(context));
+					regalAndroidCacheDirectory.mkdir();
 					// and also that the specific album folder exists, bug #65
 					File albumCacheDirectory = new File(
-							Settings.getG2AndroidCachePath(context) + "/"
+							Settings.getReGalAndroidCachePath(context) + "/"
 									+ albumName);
 					albumCacheDirectory.mkdir();
 
 					// issue #30 : insert the .nomedia file so that the dir
 					// won't be parsed by other photo apps
 					File noMediaFile = new File(
-							Settings.getG2AndroidCachePath(context) + "/"
+							Settings.getReGalAndroidCachePath(context) + "/"
 									+ albumName + NO_CACHE_PATH);
 					if (!noMediaFile.createNewFile()) {
 						throw new FileHandlingException(
@@ -109,7 +109,7 @@ public class FileUtils {
 				// if the file downloaded is not a cache file, but a file to
 				// keep
 				if (!isTemporary) {
-					savePath = new File(Settings.getG2AndroidPath(context));
+					savePath = new File(Settings.getReGalAndroidPath(context));
 					// if there is no file extension, we add the one that
 					// corresponds to the picture (if we have it)
 					if (fileName.lastIndexOf(".") == -1
@@ -145,13 +145,13 @@ public class FileUtils {
 
 	public void clearCache(Context context) {
 		logger.debug("clearingCache");
-		File tempG2AndroidPath = new File(
-				Settings.getG2AndroidCachePath(context));
-		if (tempG2AndroidPath.exists()) {
-			for (File file : tempG2AndroidPath.listFiles()) {
+		File tempReGalAndroidPath = new File(
+				Settings.getReGalAndroidCachePath(context));
+		if (tempReGalAndroidPath.exists()) {
+			for (File file : tempReGalAndroidPath.listFiles()) {
 				file.delete();
 			}
-			tempG2AndroidPath.delete();
+			tempReGalAndroidPath.delete();
 		}
 
 	}

@@ -254,7 +254,19 @@ public class G3Client implements IG3Client {
 		} else if (DELETE.equals(requestMethod)) {
 			httpMethod = new HttpGet(galleryItemUrl + appendToGalleryUrl);
 			httpMethod.setHeader(X_GALLERY_REQUEST_METHOD, requestMethod);
-		} else {
+		//this is to avoid the HTTP 414 (length too long) error
+		//it should only happen when getting items, index.php/rest/items?urls=
+//		} else if(appendToGalleryUrl.length()>2000) {
+//			String resource = appendToGalleryUrl.substring(0,appendToGalleryUrl.indexOf("?"));
+//			String variable = appendToGalleryUrl.substring(appendToGalleryUrl.indexOf("?")+1,appendToGalleryUrl.indexOf("="));
+//			String value = appendToGalleryUrl.substring(appendToGalleryUrl.indexOf("=")+1);
+//			httpMethod = new HttpPost(galleryItemUrl + resource);
+//			httpMethod.setHeader(X_GALLERY_REQUEST_METHOD, requestMethod);
+//			nameValuePairs.add(new BasicNameValuePair(variable, value));
+//			((HttpPost) httpMethod).setEntity(new UrlEncodedFormEntity(
+//					nameValuePairs));
+		}
+		else {
 			httpMethod = new HttpGet(galleryItemUrl + appendToGalleryUrl);
 		}
 		if (existingApiKey != null) {

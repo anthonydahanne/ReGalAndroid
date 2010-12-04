@@ -58,7 +58,7 @@
 			android:layout_width="wrap_content" android:layout_height="fill_parent"></Button>
 		<Button android:text="@string/upload_photo_done" android:id="@+id/cancel_button"
 			android:layout_width="wrap_content" android:layout_height="fill_parent"></Button>
-		<Button android:text="@string/upload_photo_settings" android:id="@+id/g2android_button"
+		<Button android:text="@string/upload_photo_settings" android:id="@+id/regalandroid_button"
 			android:layout_width="wrap_content" android:layout_height="fill_parent">
 		</Button>
 	</LinearLayout>

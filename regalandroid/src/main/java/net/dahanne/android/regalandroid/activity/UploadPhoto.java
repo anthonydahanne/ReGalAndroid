@@ -54,11 +54,11 @@ import android.widget.Toast;
 
 public class UploadPhoto extends Activity implements OnClickListener {
 
-	private static final String SENT_WITH_G2_ANDROID = "SentWithG2Android";
+	private static final String SENT_WITH_REGALANDROID = "SentWithRegalAndroid";
 	private ProgressDialog progressDialog;
 	private Button sendButton;
 	private Button cancelButton;
-	private Button goToG2AndroidButton;
+	private Button goToReGalAndroidButton;
 	private TextView galleryUrlText;
 	private TextView connectedAsUserText;
 	private Uri mImageUri;
@@ -87,7 +87,7 @@ public class UploadPhoto extends Activity implements OnClickListener {
 		Intent intent = getIntent();
 		Bundle extras = intent.getExtras();
 
-		String fileName = SENT_WITH_G2_ANDROID;
+		String fileName = SENT_WITH_REGALANDROID;
 
 		if (Intent.ACTION_SEND.equals(intent.getAction())) {
 			if ((extras != null) || (intent.getData() != null)) {
@@ -103,7 +103,7 @@ public class UploadPhoto extends Activity implements OnClickListener {
 							try {
 								StringBuilder stringBuilder = new StringBuilder();
 								stringBuilder.append(Settings
-										.getG2AndroidPath(this));
+										.getReGalAndroidPath(this));
 								stringBuilder.append("/");
 								StringBuilder stringBuilderFileName = new StringBuilder();
 								stringBuilderFileName.append(fileName);
@@ -137,7 +137,7 @@ public class UploadPhoto extends Activity implements OnClickListener {
 					mImageUri = intent.getData();
 				}
 			}
-			if (fileName.equals(SENT_WITH_G2_ANDROID)) {
+			if (fileName.equals(SENT_WITH_REGALANDROID)) {
 				fileName = AndroidUriUtils.extractFilenameFromUri(mImageUri, this);
 			}
 			filenameEditText.setText(fileName);
@@ -152,10 +152,10 @@ public class UploadPhoto extends Activity implements OnClickListener {
 
 		sendButton = (Button) findViewById(R.id.send_button);
 		cancelButton = (Button) findViewById(R.id.cancel_button);
-		goToG2AndroidButton = (Button) findViewById(R.id.g2android_button);
+		goToReGalAndroidButton = (Button) findViewById(R.id.regalandroid_button);
 		sendButton.setOnClickListener(this);
 		cancelButton.setOnClickListener(this);
-		goToG2AndroidButton.setOnClickListener(this);
+		goToReGalAndroidButton.setOnClickListener(this);
 
 		galleryUrlText = (TextView) findViewById(R.id.gallery_url);
 		connectedAsUserText = (TextView) findViewById(R.id.connected_as_user);
@@ -244,7 +244,7 @@ public class UploadPhoto extends Activity implements OnClickListener {
 		case R.id.cancel_button:
 			finish();
 			break;
-		case R.id.g2android_button:
+		case R.id.regalandroid_button:
 			startActivity(new Intent(this, Settings.class));
 			break;
 

@@ -38,12 +38,12 @@ public class Settings extends PreferenceActivity {
 	private static String OPT_GALLERY_URL_KEY = "galleryUrl";
 	private static String OPT_USERNAME_KEY = "username";
 	private static String OPT_PASSWORD_KEY = "password";
-	private static String OPT_G2ANDROID_PATH = "regalandroid_path";
-	private static String OPT_G2ANDROID_CACHE_PATH = "regalandroid_cache_path";
+	private static String OPT_REGALANDROID_PATH = "regalandroid_path";
+	private static String OPT_REGALANDROID_CACHE_PATH = "regalandroid_cache_path";
 	private static String OPT_CLEAR_CACHE_EVERY_SESSION = "clear_cache";
 	private static String OPT_GALLERY_URL_DEF = "http://g2.dahanne.net";
-	private static String OPT_G2ANDROID_PATH_DEF = "regalandroid";
-	private static String OPT_G2ANDROID_CACHE_PATH_DEF = "tmp";
+	private static String OPT_REGALANDROID_PATH_DEF = "regalandroid";
+	private static String OPT_REGALANDROID_CACHE_PATH_DEF = "tmp";
 	private static String OPT_DEFAULT_SUMMARY_KEY = "DefaultSummary";
 	private static String OPT_DEFAULT_DESCRIPTION_KEY = "DefaultDescription";
 	private static String OPT_GALLERY_CONNECTION_TYPE = "GalleryType";
@@ -81,23 +81,23 @@ public class Settings extends PreferenceActivity {
 	}
 
 	/** Get the current value of the g2Android path option */
-	public static String getG2AndroidPath(Context context) {
+	public static String getReGalAndroidPath(Context context) {
 		File externalStorageDirectory = Environment
 				.getExternalStorageDirectory();
 		return new StringBuilder()
 				.append(externalStorageDirectory.getAbsolutePath())
 				.append("/")
 				.append(PreferenceManager.getDefaultSharedPreferences(context)
-						.getString(OPT_G2ANDROID_PATH, OPT_G2ANDROID_PATH_DEF))
+						.getString(OPT_REGALANDROID_PATH, OPT_REGALANDROID_PATH_DEF))
 				.toString();
 	}
 
 	/** Get the current value of the g2android cache option */
-	public static String getG2AndroidCachePath(Context context) {
+	public static String getReGalAndroidCachePath(Context context) {
 		String cachePath = PreferenceManager.getDefaultSharedPreferences(
-				context).getString(OPT_G2ANDROID_CACHE_PATH,
-				OPT_G2ANDROID_CACHE_PATH_DEF);
-		return new StringBuilder().append(getG2AndroidPath(context))
+				context).getString(OPT_REGALANDROID_CACHE_PATH,
+				OPT_REGALANDROID_CACHE_PATH_DEF);
+		return new StringBuilder().append(getReGalAndroidPath(context))
 				.append("/").append(cachePath).append("/").toString();
 	}
 

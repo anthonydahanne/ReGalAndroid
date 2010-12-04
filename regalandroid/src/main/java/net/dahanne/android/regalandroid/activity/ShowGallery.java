@@ -180,7 +180,7 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 			Picture picture = albumPictures.get(position);
 			int albumName = application.getCurrentAlbum().getName();
 			File potentiallyAlreadyDownloadedFile = new File(
-					Settings.getG2AndroidCachePath(ShowGallery.this)
+					Settings.getReGalAndroidCachePath(ShowGallery.this)
 							+ albumName + "/", THUMB_PREFIX + picture.getName());
 			// maybe present in the local cache
 			Bitmap downloadImage = bitmapsCache.get(position);
@@ -234,7 +234,7 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 		Picture picture = albumPictures.get(position);
 		int albumName = application.getCurrentAlbum().getName();
 		File potentiallyAlreadyDownloadedFile = new File(
-				Settings.getG2AndroidCachePath(this) + albumName + "/",
+				Settings.getReGalAndroidCachePath(this) + albumName + "/",
 				picture.getName());
 		logger.debug(
 				"selecting an item, position : {} -- picture : {} -- albumName : {} -- potentiallyAlreadyDownloadedFile : {}",
