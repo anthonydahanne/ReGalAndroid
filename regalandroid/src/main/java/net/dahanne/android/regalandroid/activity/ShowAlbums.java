@@ -266,6 +266,8 @@ public class ShowAlbums extends ListActivity implements OnItemClickListener {
 			fakeAlbum.setTitle(this
 					.getString(R.string.view_album_pictures));
 			fakeAlbum.setName((application.getCurrentAlbum()).getName());
+			//add the pictures to have the right count
+			fakeAlbum.getPictures().addAll((application.getCurrentAlbum()).getPictures());
 			if (!albumChildren.contains(fakeAlbum)) {
 				albumChildren.add(0, fakeAlbum);
 			}

@@ -85,7 +85,7 @@ public class G2Connection implements RemoteGallery {
 		// the rootAlbum
 		if (parentAlbumId == 0) {
 			rootAlbum.getPictures().addAll(
-					getPicturesFromAlbum( parentAlbumId));
+					getPicturesFromAlbum( rootAlbum.getName()));
 			return rootAlbum;
 		}
 		Album findAlbumFromAlbumName = AlbumUtils.findAlbumFromAlbumName(

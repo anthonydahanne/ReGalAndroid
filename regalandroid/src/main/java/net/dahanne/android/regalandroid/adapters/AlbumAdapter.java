@@ -56,7 +56,14 @@ public class AlbumAdapter extends ArrayAdapter<Album> {
 			TextView tt = (TextView) v.findViewById(R.id.first_line);
 			TextView bt = (TextView) v.findViewById(R.id.second_line);
 			if (tt != null) {
-				tt.setText(album.getTitle());
+				StringBuilder stringBuilder = new StringBuilder();
+				stringBuilder.append(album.getTitle());
+				if(album.getPictures().size()>0){
+					stringBuilder.append(" (");
+					stringBuilder.append(album.getPictures().size());
+					stringBuilder.append(")");
+				}
+				tt.setText(stringBuilder.toString());
 			}
 			if (bt != null) {
 				String summary = album.getSummary();
