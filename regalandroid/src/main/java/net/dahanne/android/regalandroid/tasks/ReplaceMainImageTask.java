@@ -68,7 +68,7 @@ public class ReplaceMainImageTask extends AsyncTask {
 				File imageFileOnExternalDirectory = FileUtils.getInstance()
 						.getFileFromGallery(
 								activity,
-								g2Picture.getTitle(),
+								g2Picture.getName(),
 								g2Picture.getForceExtension(),
 								fileUrl,
 								true,

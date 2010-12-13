@@ -135,7 +135,7 @@ public class FullImage extends Activity implements OnGestureListener {
 		int albumName =application.getCurrentAlbum().getName();
 		File potentialAlreadyDownloadedFile = new File(
 				Settings.getReGalAndroidCachePath(this) + albumName + "/",
-				picture.getTitle());
+				picture.getName());
 		if (potentialAlreadyDownloadedFile.exists()
 				&& potentialAlreadyDownloadedFile.length() != 0) {
 			logger.debug("loadingPicture from cache : {}",potentialAlreadyDownloadedFile.getAbsolutePath());
@@ -164,7 +164,7 @@ public class FullImage extends Activity implements OnGestureListener {
 			try {
 				File imageFileOnExternalDirectory = fileUtils
 						.getFileFromGallery(FullImage.this, g2Picture
-								.getTitle(), g2Picture.getForceExtension(),
+								.getName(), g2Picture.getForceExtension(),
 								fileUrl, true,
 								application.getCurrentAlbum().getName());
 				downloadImage = BitmapFactory
@@ -201,7 +201,7 @@ public class FullImage extends Activity implements OnGestureListener {
 			try {
 				downloadImage = fileUtils.getFileFromGallery(
 						FullImage.this,
-						picture.getTitle(),
+						picture.getName(),
 						picture.getForceExtension(),
 						picture.getFileUrl(), false,
 						application.getCurrentAlbum().getName());
@@ -254,7 +254,7 @@ public class FullImage extends Activity implements OnGestureListener {
 			// we first download the full res image
 			new DownloadImageTask().execute(picture);
 			String filePath = Settings.getReGalAndroidPath(this) + SLASH
-					+ picture.getTitle();
+					+ picture.getName();
 			String extension = picture.getForceExtension();
 			// if no extension is found, let's assume it's a jpeg...
 			if (extension == null || extension.equals("jpg")) {
@@ -280,11 +280,11 @@ public class FullImage extends Activity implements OnGestureListener {
 			// imageFilePath is a path to a file located on the sd card
 			// such "/sdcard/temp.jpg"
 			filePath = Settings.getReGalAndroidPath(this) + SLASH
-					+ picture.getTitle();
+					+ picture.getName();
 			File file = new File(filePath);
 			if (!file.exists()) {
 				filePath = Settings.getReGalAndroidCachePath(this) + SLASH
-						+ picture.getTitle();
+						+ picture.getName();
 				file = new File(filePath);
 			}
 			intent.setDataAndType(Uri.fromFile(file), "image/*");

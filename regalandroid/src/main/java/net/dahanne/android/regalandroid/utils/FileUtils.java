@@ -118,6 +118,7 @@ public class FileUtils {
 					}
 				}
 				logger.debug("savePath is : {}", savePath);
+				//in case the filename has special characters
 				imageFileOnExternalDirectory = new File(savePath, fileName);
 				inputStreamFromUrl = RemoteGalleryConnectionFactory.getInstance()
 						.getInputStreamFromUrl(imageUrl);
@@ -143,16 +144,11 @@ public class FileUtils {
 		return imageFileOnExternalDirectory;
 	}
 
-	public void clearCache(Context context) {
+	public void clearCache(Context context) throws IOException {
 		logger.debug("clearingCache");
 		File tempReGalAndroidPath = new File(
 				Settings.getReGalAndroidCachePath(context));
-		if (tempReGalAndroidPath.exists()) {
-			for (File file : tempReGalAndroidPath.listFiles()) {
-				file.delete();
-			}
-			tempReGalAndroidPath.delete();
-		}
+		org.apache.commons.io.FileUtils.deleteDirectory(tempReGalAndroidPath);
 
 	}
 

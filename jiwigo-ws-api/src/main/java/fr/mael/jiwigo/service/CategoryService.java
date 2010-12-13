@@ -37,10 +37,9 @@ import fr.mael.jiwigo.transverse.session.SessionManager;
  * @author mael
  *
  */
-public class CategoryService extends ServiceBase {
-    /**
-     * Logger
-     */
+public class CategoryService extends ServiceBase{
+	private final CategoryDao categoryDao;
+
 //	 private  final Logger LOG = LoggerFactory.getLogger(CategoryService.class);
 
 
@@ -49,6 +48,7 @@ public class CategoryService extends ServiceBase {
      */
     public   CategoryService(SessionManager sessionManager) {
     	setSessionManager(sessionManager);
+    	this.categoryDao= new CategoryDao(sessionManager);
     }
 
     /**
@@ -59,7 +59,7 @@ public class CategoryService extends ServiceBase {
      * @throws IOException 
      */
     public List<Category> lister(boolean recursive) throws IOException {
-	return CategoryDao.getInstance(getSessionManager()).listing(recursive);
+	return categoryDao.listing(recursive);
     }
 
     /**
@@ -95,7 +95,7 @@ public class CategoryService extends ServiceBase {
 	Category category = new Category();
 	category.setParentDirect(parent);
 	category.setNom(nom);
-	return CategoryDao.getInstance(getSessionManager()).create(category);
+	return categoryDao.create(category);
     }
 
     /**
@@ -106,6 +106,6 @@ public class CategoryService extends ServiceBase {
     public boolean creer(String nom) {
 	Category category = new Category();
 	category.setNom(nom);
-	return CategoryDao.getInstance(getSessionManager()).create(category);
+	return categoryDao.create(category);
     }
 }

@@ -38,7 +38,9 @@ import fr.mael.jiwigo.transverse.session.SessionManager;
  *
  */
 public class CommentService extends ServiceBase {
-    /**
+    private final CommentDao commentDao;
+
+	/**
      * Logger
      * @param sessionManager 
      */
@@ -46,6 +48,7 @@ public class CommentService extends ServiceBase {
 
     public CommentService(SessionManager sessionManager) {
     	setSessionManager(sessionManager);
+    	this.commentDao=new CommentDao(sessionManager);
 
     }
 
@@ -56,7 +59,7 @@ public class CommentService extends ServiceBase {
      * @throws IOException 
      */
     public List<Comment> lister(Integer imageId) throws IOException {
-	return CommentDao.getInstance(getSessionManager()).lister(imageId);
+	return commentDao.lister(imageId);
     }
 
     /**
@@ -72,7 +75,7 @@ public class CommentService extends ServiceBase {
 	commentaire.setContent(content);
 	commentaire.setImageId(imageId);
 	commentaire.setAuthor(auteur);
-	return CommentDao.getInstance(getSessionManager()).creer(commentaire);
+	return commentDao.creer(commentaire);
     }
 
 }

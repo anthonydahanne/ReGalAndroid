@@ -27,7 +27,8 @@ public class TagServiceTest  {
     @Test
     public void ListerTest() {
 	try {
-	    TagDao.getInstance(sessionManager).lister();
+	    TagDao tagDao =  new TagDao(sessionManager);
+	    tagDao.lister();
 	} catch (IOException e) {
 	    e.printStackTrace();
 	}

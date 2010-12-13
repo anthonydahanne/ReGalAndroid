@@ -10,78 +10,83 @@ import fr.mael.jiwigo.transverse.session.SessionManager;
 
 /**
  * 
-   Copyright (c) 2010, Mael
-   All rights reserved.
-
-   Redistribution and use in source and binary forms, with or without
-   modification, are permitted provided that the following conditions are met:
-    * Redistributions of source code must retain the above copyright
-      notice, this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright
-      notice, this list of conditions and the following disclaimer in the
-      documentation and/or other materials provided with the distribution.
-    * Neither the name of jiwigo nor the
-      names of its contributors may be used to endorse or promote products
-      derived from this software without specific prior written permission.
-
-   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-   ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-   WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-   DISCLAIMED. IN NO EVENT SHALL Mael BE LIABLE FOR ANY
-   DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-   (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-   LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-   ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-   (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-   
+ Copyright (c) 2010, Mael All rights reserved.
+ * 
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ * Redistributions of source code must retain the above copyright notice, this
+ * list of conditions and the following disclaimer. Redistributions in binary
+ * form must reproduce the above copyright notice, this list of conditions and
+ * the following disclaimer in the documentation and/or other materials provided
+ * with the distribution. Neither the name of jiwigo nor the names of its
+ * contributors may be used to endorse or promote products derived from this
+ * software without specific prior written permission.
+ * 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL Mael BE LIABLE FOR ANY DIRECT, INDIRECT,
+ * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+ * OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+ * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * 
  * @author mael
- *
+ * 
  */
 public class TagService extends ServiceBase {
-    /**
-     * Logger
-     */
-//	private  final Logger LOG = LoggerFactory.getLogger(TagService.class);
+	/**
+	 * Logger
+	 */
+	// private final Logger LOG = LoggerFactory.getLogger(TagService.class);
 
-    /**
-     * The instance, to use a singleton
-     */
-    private static TagService instance;
+	/**
+	 * The instance, to use a singleton
+	 */
+	private static TagService instance;
+	private final TagDao tagDao;
 
-    public TagService(SessionManager sessionManager) {
-setSessionManager(sessionManager);
-    }
+	public TagService(SessionManager sessionManager) {
+		setSessionManager(sessionManager);
+		this.tagDao = new TagDao(sessionManager);
+	}
 
-    /**
-     * Lists all tags
-     * @return le list of tags
-     * @throws IOException
-     */
-    public List<Tag> lister() throws IOException {
-	return TagDao.getInstance(getSessionManager()).lister();
-    }
+	/**
+	 * Lists all tags
+	 * 
+	 * @return le list of tags
+	 * @throws IOException
+	 */
+	public List<Tag> lister() throws IOException {
+		return tagDao.lister();
+	}
 
-    /**
-     * Creates a tag
-     * @param nom name of the tag
-     * @return true if the tag is created
-     * @throws IOException
-     */
-    public boolean creer(String nom) throws IOException {
-	Tag tag = new Tag();
-	tag.setNom(nom);
-	return TagDao.getInstance(getSessionManager()).creer(tag);
-    }
+	/**
+	 * Creates a tag
+	 * 
+	 * @param nom
+	 *            name of the tag
+	 * @return true if the tag is created
+	 * @throws IOException
+	 */
+	public boolean creer(String nom) throws IOException {
+		Tag tag = new Tag();
+		tag.setNom(nom);
+		return tagDao.creer(tag);
+	}
 
-    /**
-     * Returns all the tag for an image
-     * @param image the image to check
-     * @return the list of tags
-     * @throws IOException
-     */
-    public List<Tag> tagsForImage(Image image) throws IOException {
-	return TagDao.getInstance(getSessionManager()).tagsForImage(image);
-    }
+	/**
+	 * Returns all the tag for an image
+	 * 
+	 * @param image
+	 *            the image to check
+	 * @return the list of tags
+	 * @throws IOException
+	 */
+	public List<Tag> tagsForImage(Image image) throws IOException {
+		return tagDao.tagsForImage(image);
+	}
 
 }

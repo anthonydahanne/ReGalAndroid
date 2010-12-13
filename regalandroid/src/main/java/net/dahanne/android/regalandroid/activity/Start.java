@@ -18,6 +18,8 @@
 
 package net.dahanne.android.regalandroid.activity;
 
+import java.io.IOException;
+
 import net.dahanne.android.regalandroid.R;
 import net.dahanne.android.regalandroid.tasks.LoginTask;
 import net.dahanne.android.regalandroid.utils.DBHelper;
@@ -46,7 +48,6 @@ public class Start extends Activity implements OnClickListener {
 	private TextView loggedInAsText;
 	private ProgressDialog progressDialog;
 	private DBHelper dbHelper;
-	private final FileUtils fileUtils = FileUtils.getInstance();
 	private final Logger logger = LoggerFactory.getLogger(Start.class);
 
 	@Override
@@ -66,7 +67,11 @@ public class Start extends Activity implements OnClickListener {
 
 		setContentView(R.layout.main);
 		if (Settings.isCacheClearedEverySession(this)) {
-			fileUtils.clearCache(this);
+			try {
+				FileUtils.getInstance().clearCache(this);
+			} catch (IOException e) {
+				ShowUtils.getInstance().alertFileProblem(e.getMessage(), this);
+			}
 		}
 
 		enterGalleryButton = (Button) findViewById(R.id.enter_gallery_button);
@@ -130,7 +135,12 @@ public class Start extends Activity implements OnClickListener {
 
 		case R.id.clear_cache:
 			intent = new Intent(this, Settings.class);
-			FileUtils.getInstance().clearCache(this);
+			try {
+				FileUtils.getInstance().clearCache(this);
+			} catch (IOException e) {
+				ShowUtils.getInstance().alertFileProblem(e.getMessage(), this);
+			}
+			
 			ShowUtils.getInstance().toastCacheSuccessfullyCleared(this);
 			break;
 

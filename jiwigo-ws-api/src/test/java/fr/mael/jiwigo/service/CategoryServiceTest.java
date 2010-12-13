@@ -27,8 +27,9 @@ public class CategoryServiceTest  {
     @Test
     public void ListerTest() {
 	try {
-	    CategoryDao.getInstance(sessionManager).listing(true);
-	    CategoryDao.getInstance(sessionManager).listing(false);
+	    CategoryDao categaryDao= new CategoryDao(sessionManager);
+	    categaryDao.listing(true);
+	    categaryDao.listing(false);
 	} catch (IOException e) {
 	    e.printStackTrace();
 	}

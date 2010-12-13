@@ -45,34 +45,21 @@ import fr.mael.jiwigo.transverse.util.Outil;
  * @author mael
  *
  */
-public class CategoryDao extends DaoBase {
+public class CategoryDao extends DaoBase{
     /**
      * Logger
      */
     private  final Logger LOG = LoggerFactory
 	    .getLogger(CategoryDao.class);
-    /**
-     * Instance to use a singleton
-     */
-    private static CategoryDao instance;
 
     /**
      * Private constructor to use a singleton
      */
-    private CategoryDao() {
+    public CategoryDao(SessionManager sessionManager) {
+    	setSessionManager(sessionManager);
 
     }
 
-    /**
-     * @return the instance
-     */
-    public static CategoryDao getInstance(SessionManager sessionManager) {
-	if (instance == null) {
-	    instance = new CategoryDao();
-	    setSessionManager(sessionManager);
-	}
-	return instance;
-    }
 
     /**
      * Lists the categories

@@ -41,7 +41,9 @@ import fr.mael.jiwigo.transverse.util.Outil;
  *
  */
 public class ImageService extends ServiceBase {
-    /**
+    private final ImageDao imageDao;
+
+	/**
      * Logger
      * @param sessionManager 
      */
@@ -49,6 +51,7 @@ public class ImageService extends ServiceBase {
 
     public ImageService(SessionManager sessionManager) {
     	setSessionManager(sessionManager);
+    	this.imageDao=new ImageDao(sessionManager);
 
     }
 
@@ -60,7 +63,7 @@ public class ImageService extends ServiceBase {
      * @throws IOException
      */
     public List<Image> listerParCategory(Integer categoryId, boolean rafraichir) throws IOException {
-	return ImageDao.getInstance(getSessionManager()).listerParCategory(categoryId, rafraichir);
+	return imageDao.listerParCategory(categoryId, rafraichir);
     }
 
     /**
@@ -115,7 +118,7 @@ public class ImageService extends ServiceBase {
 //	MainFrame.getInstance()
 //		.setMessage(Messages.getMessage("mainFrame_sendingFiles") + " " + fileToUpload.getName());
 	//now we call the dao to send the image to the webservice
-	return ImageDao.getInstance(getSessionManager()).creer(image, privacyLevel, chunkSize);
+	return imageDao.creer(image, privacyLevel, chunkSize);
     }
 
     /**
@@ -126,7 +129,7 @@ public class ImageService extends ServiceBase {
      * @throws IOException
      */
     public boolean addTags(Image image, String tagId) throws IOException {
-	return ImageDao.getInstance(getSessionManager()).addTags(image.getIdentifiant(), tagId);
+	return imageDao.addTags(image.getIdentifiant(), tagId);
     }
 
     /**
@@ -136,7 +139,7 @@ public class ImageService extends ServiceBase {
      * @throws IOException
      */
     public List<Image> search(String queryString) throws IOException {
-	return ImageDao.getInstance(getSessionManager()).search(queryString);
+	return imageDao.search(queryString);
     }
 
     /**

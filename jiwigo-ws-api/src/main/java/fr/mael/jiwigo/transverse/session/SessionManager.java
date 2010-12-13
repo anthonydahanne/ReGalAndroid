@@ -340,12 +340,14 @@ public class SessionManager {
     
     public InputStream getInputStreamFromUrl(String url) throws GalleryConnectionException {
 		InputStream content = null;
+		DefaultHttpClient client = new DefaultHttpClient();
+		HttpGet httpGet = new HttpGet(url);
 		try {
-			HttpGet httpGet = new HttpGet(url);
 			// Execute HTTP Get Request
 			HttpResponse response = client.execute(httpGet);
 			content = response.getEntity().getContent();
 		} catch (Exception e) {
+			httpGet.abort();
 			throw new GalleryConnectionException(e.getMessage());
 		}
 		return content;

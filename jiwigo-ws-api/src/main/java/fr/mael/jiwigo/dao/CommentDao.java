@@ -56,20 +56,10 @@ public class CommentDao extends DaoBase {
     /**
      * private constructor, to use a singleton
      */
-    private CommentDao() {
-
+    public CommentDao(SessionManager sessionManager) {
+    	setSessionManager(sessionManager);
     }
 
-    /**
-     * @return the singleton
-     */
-    public static CommentDao getInstance(SessionManager sessionManager) {
-	if (instance == null) {
-	    instance = new CommentDao();
-	    setSessionManager(sessionManager);
-	}
-	return instance;
-    }
 
     /**
      * Listing of the comments for the given image

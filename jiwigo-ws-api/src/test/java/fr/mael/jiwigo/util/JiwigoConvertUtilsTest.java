@@ -70,6 +70,7 @@ public class JiwigoConvertUtilsTest {
 		Image jiwigoImage = new Image();
 
 		jiwigoImage.setName("Title");
+		jiwigoImage.setFile("Title.jpg");
 		jiwigoImage.setIdentifiant(10214);
 		jiwigoImage
 				.setMiniature("http://piwigo.org/index.php?/path/to/picture/10214&miniature=true");
@@ -95,7 +96,7 @@ public class JiwigoConvertUtilsTest {
 		Picture expectedPicture = new Picture();
 		expectedPicture.setId(10214L);
 		expectedPicture.setTitle("Title");
-		expectedPicture.setName("Title");
+		expectedPicture.setName("Title.jpg");
 		expectedPicture
 				.setFileUrl("http://piwigo.org/index.php?/path/to/picture/10214");
 		expectedPicture.setWidth(768);
