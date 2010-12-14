@@ -47,6 +47,8 @@ public class Picture implements Serializable {
 	private String caption;
 	private String forceExtension;
 	private boolean hidden;
+	
+	private String publicUrl;
 
 //	private int imageClicks;
 
@@ -322,6 +324,11 @@ public class Picture implements Serializable {
 				return false;
 		} else if (!fileUrl.equals(other.fileUrl))
 			return false;
+		if (publicUrl == null) {
+			if (other.publicUrl != null)
+				return false;
+		} else if (!publicUrl.equals(other.publicUrl))
+			return false;
 		if (height != other.height)
 			return false;
 		if (id != other.id)
@@ -408,6 +415,14 @@ public class Picture implements Serializable {
 		stringBuilder.append(hidden);
 		stringBuilder.append("]");
 		return stringBuilder.toString();
+	}
+
+	public void setPublicUrl(String publicUrl) {
+		this.publicUrl = publicUrl;
+	}
+
+	public String getPublicUrl() {
+		return publicUrl;
 	}
 	
 

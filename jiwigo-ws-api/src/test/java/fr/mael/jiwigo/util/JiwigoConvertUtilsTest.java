@@ -98,7 +98,9 @@ public class JiwigoConvertUtilsTest {
 		expectedPicture.setTitle("Title");
 		expectedPicture.setName("Title.jpg");
 		expectedPicture
-				.setFileUrl("http://piwigo.org/index.php?/path/to/picture/10214");
+		.setFileUrl("http://piwigo.org/index.php?/path/to/picture/10214");
+		expectedPicture
+		.setPublicUrl("http://piwigo.org/index.php?/path/to/picture/10214");
 		expectedPicture.setWidth(768);
 		expectedPicture.setHeight(1024);
 		// expectedPicture.setFileSize(10241024);

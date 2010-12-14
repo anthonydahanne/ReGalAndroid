@@ -87,6 +87,8 @@ public class G3ConvertUtilsTest {
 		expectedPicture.setHeight(3072);
 		expectedPicture.setFileSize(675745);
 		
+		expectedPicture.setPublicUrl("http://g3.dahanne.net/index.php/marche-bonsecours");
+		
 		
 		Assert.assertEquals(expectedPicture, itemToPicture);
 		
@@ -114,6 +116,8 @@ public class G3ConvertUtilsTest {
 		expectedPicture.setWidth(2576);
 		expectedPicture.setHeight(1932);
 		expectedPicture.setFileSize(1144458);
+		expectedPicture.setPublicUrl("http://www.iffam.org/gallery/index.php/Twitpic/graduation-pics-427");
+		
 		
 		
 		Assert.assertEquals(expectedPicture, itemToPicture);

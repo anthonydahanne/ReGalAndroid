@@ -60,8 +60,9 @@ public class G2ConvertUtils {
 		picture.setResizedWidth(g2Picture.getResizedWidth());
 		picture.setResizedHeight(g2Picture.getResizedHeight());
 //		picture.setResizedSize(g2Picture.getResizeSize());
-		
+
 		picture.setFileUrl(baseUrl +g2Picture.getName());
+		picture.setPublicUrl(baseUrl +g2Picture.getName());
 		picture.setFileSize(g2Picture.getRawFilesize());
 		picture.setHeight(g2Picture.getRawHeight());
 		picture.setWidth(g2Picture.getRawWidth());

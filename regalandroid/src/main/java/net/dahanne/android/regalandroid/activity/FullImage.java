@@ -246,7 +246,7 @@ public class FullImage extends Activity implements OnGestureListener {
 			break;
 		case R.id.share_image:
 			intent.setType(TEXT_PLAIN);
-			intent.putExtra(Intent.EXTRA_TEXT, picture.getFileUrl());
+			intent.putExtra(Intent.EXTRA_TEXT, picture.getPublicUrl());
 			startActivity(Intent.createChooser(intent,
 					getString(R.string.choose_action)));
 			break;

@@ -100,6 +100,10 @@ public class G2ConvertUtilsTest {
 				+ G2ConvertUtils.BASE_URL_DEF + 3);
 		expectedPicture.setResizedWidth(480);
 		expectedPicture.setResizedHeight(640);
+		
+		expectedPicture.setPublicUrl(galleryUrl + "/"
+				+ G2ConvertUtils.BASE_URL_DEF + 1);
+		
 
 		Assert.assertEquals(expectedPicture, picture);
 

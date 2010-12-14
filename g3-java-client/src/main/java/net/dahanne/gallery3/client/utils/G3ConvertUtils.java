@@ -59,6 +59,9 @@ public class G3ConvertUtils {
 		picture.setFileSize(item.getEntity().getFileSize());
 		picture.setHeight(item.getEntity().getHeight());
 		picture.setWidth(item.getEntity().getWidth());
+		
+		picture.setPublicUrl(item.getEntity().getWebUrl());
+		
 		return picture;
 	}
 
