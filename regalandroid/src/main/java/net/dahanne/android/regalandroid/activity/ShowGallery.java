@@ -318,6 +318,9 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 			Intent intent) {
 		super.onActivityResult(requestCode, resultCode, intent);
 		DBUtils.getInstance().recoverContextFromDatabase(this);
+		if(application==null){
+			application = (RegalAndroidApplication) getApplication();
+		}
 		int albumName = application.getCurrentAlbum().getName();
 		if (resultCode == RESULT_OK) {
 			switch (requestCode) {

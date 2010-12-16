@@ -237,6 +237,7 @@ public class FullImage extends Activity implements OnGestureListener {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		Intent intent = new Intent(Intent.ACTION_SEND);
+		String filePath=null;
 		switch (item.getItemId()) {
 		case R.id.download_full_res_image:
 			new DownloadImageTask().execute(picture);
@@ -251,10 +252,8 @@ public class FullImage extends Activity implements OnGestureListener {
 					getString(R.string.choose_action)));
 			break;
 		case R.id.send_image:
+			logger.debug("about to send the image");
 			// we first download the full res image
-			new DownloadImageTask().execute(picture);
-			String filePath = Settings.getReGalAndroidPath(this) + SLASH
-					+ picture.getName();
 			String extension = picture.getForceExtension();
 			// if no extension is found, let's assume it's a jpeg...
 			if (extension == null || extension.equals("jpg")) {
@@ -262,8 +261,14 @@ public class FullImage extends Activity implements OnGestureListener {
 			} else {
 				intent.setType(IMAGE + extension);
 			}
-			intent.setType(IMAGE + extension);
-
+			filePath = picture.getResizedImageCachePath();
+			//if the resized picture does not exist, we can download the full size
+			if(filePath==null || filePath.equals("")){
+				new DownloadImageTask().execute(picture);
+				filePath = Settings.getReGalAndroidPath(this) + SLASH
+				+ picture.getFileUrl();
+			}
+			logger.debug("The image about to be sent is : {}",filePath);
 			intent.putExtra(Intent.EXTRA_STREAM, Uri.parse(FILE + filePath));
 			startActivity(Intent.createChooser(intent,
 					getString(R.string.choose_action)));
