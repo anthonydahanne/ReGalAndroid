@@ -56,11 +56,11 @@
 		<string name="fetching_gallery_albums">En cours de récupération des albums...</string>
 		<string name="creating_new_album">Création d\'un nouvel album...</string>
         <string name="what_is_regalandroid">
-		RegalAndroid est un logiciel qui vous permet de vous connecter é votre galerie de photos en ligne Gallery2.
-		La galerie configurée par défaut est un installation Gallery2 de test, qui vous permet d\'essayer RegalAndroid sans avoir de galerie Gallery2 configurée.
+		RegalAndroid est un logiciel qui vous permet de vous connecter à votre galerie de photos en ligne Gallery2 (G2) ou Gallery3 (G3) ou Piwigo.
+		C\'est un logiciel libre (GPL v3) et aucune garantie qu\'il fonctionne correctement ou corresponde à vos besoins n\' est fournie.
+		La galerie configurée par défaut est une installation Gallery2 de test, qui vous permet d\'essayer RegalAndroid sans avoir de galerie configurée.
 		Vous pourrez changer l\'url par défaut dans Menu->Réglages
-		D\'autres url de galeries déjé installées existent sur cette page : http://gallery.menalto.com/gallery/demosites/
-		Mais n\'oubliez pas : regalAndroid prend tout son sens quand vous l\'utilisez avec VOTRE galerie, pas une de test !
+		Mais n\'oubliez pas : RegalAndroid prend tout son sens quand vous l\'utilisez avec VOTRE galerie, pas une de test !
         </string>
         <string name="full_image_title">Image</string>
         <string name="settings_label">Réglages...</string>
@@ -136,5 +136,10 @@
 		<string name="multiple_files_upload">Envoi de fichiers multiples</string>
 		<string name="no_summary_available">Pas de sommaire disponible</string>
 		<string name="advanced_control_title">Contrôles avancés</string>
+		
+		
+		<!--  first time activity-->
+		<string name="accept">J\'accepte</string>
+		<string name="decline">Je décline</string>
 		
 </resources>

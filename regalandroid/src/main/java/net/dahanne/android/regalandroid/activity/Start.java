@@ -81,9 +81,7 @@ public class Start extends Activity implements OnClickListener {
 		enterGalleryButton.setOnClickListener(this);
 		// if this is the first launch, we print a screen to explain the user
 		// what it is all about !
-		if (!FirstTimePreference.getFirsTime(this)) {
-			startActivity(new Intent(this, FirstTime.class));
-		}
+		FirstTime.showEula(this);
 
 	}
 

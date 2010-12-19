@@ -89,12 +89,15 @@
 		<string name="fetching_gallery_albums">Fetching gallery albums...</string>
 		<string name="creating_new_album">Creating new album...</string>
 		<string name="what_is_regalandroid">
-                RegalAndroid is a client to access a remote Gallery2 installation.
-                The     gallery configured by default is a sample Gallery2 installation, for
+                RegalAndroid is a client to access a remote Gallery2 (G2) or Gallery3 (G3) or Piwigo installation.
+                It is an open source software (GPL v3).
+                This program is distributed in the hope that it will be useful,
+     			but WITHOUT ANY WARRANTY; without even the implied warranty of
+     			MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+     			GNU General Public License for more details.
+                The gallery configured by default is a sample Gallery2 installation, for
                 you to test if you don\'t have a gallery configured yet.
-                You can change the default gallery Url in Menu->Settings
-                You can find more sample gallery addresses at this web address :
-                http://gallery.menalto.com/gallery/demosites/
+                You can change the default gallery url and type in Menu->Settings
                 RegalAndroid\'s intent is to display the content of YOUR gallery
                 installation not the sample gallery !
         </string>
@@ -177,6 +180,10 @@
 
 		<string name="gallery_connection_type_title">Gallery type</string>
 		<string name="gallery_connection_type_summary">You can specify the type of your remote gallery : G2, G3, Piwigo, etc...</string>
+		
+		<!--  first time activity-->
+		<string name="accept">I accept</string>
+		<string name="decline">I Decline</string>
 		
 		
 		
