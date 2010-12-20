@@ -44,6 +44,13 @@
 				 android:textColorLink="#ffffff"
 				android:paddingLeft="15px" android:textSize="12sp"
 				android:textColor="#ffffff" />
+			<TextView android:text="Source code : " android:layout_width="fill_parent"
+				android:layout_height="wrap_content" android:paddingTop="15px"
+				android:paddingLeft="15px" android:textStyle="bold"
+				android:textColor="#ffffff" />
+			<TextView android:text="https://github.com/anthonydahanne/ReGalAndroid" android:textColorLink="#ffffff"
+				android:layout_width="fill_parent" android:layout_height="wrap_content"
+				android:paddingLeft="15px" android:textColor="#ffffff" android:autoLink="web" />
 			<TextView android:text="License: " android:layout_width="fill_parent"
 				android:layout_height="wrap_content" android:paddingTop="15px"
 				android:paddingLeft="15px" android:textStyle="bold"
@@ -64,16 +71,6 @@
 				android:layout_width="fill_parent" android:layout_height="wrap_content"
 				android:paddingLeft="15px" android:textColor="#ffffff" />
 			<TextView android:text="http://blog.dahanne.net/about" android:textColorLink="#ffffff"
-				android:layout_width="fill_parent" android:layout_height="wrap_content"
-				android:paddingLeft="15px" android:textColor="#ffffff" android:autoLink="web" />
-			<TextView android:text="Graphics, art: " android:layout_width="fill_parent"
-				android:layout_height="wrap_content" android:paddingTop="15px"
-				android:paddingLeft="15px" android:textStyle="bold"
-				android:textColor="#ffffff" />
-			<TextView android:text="Dan"
-				android:layout_width="fill_parent" android:layout_height="wrap_content"
-				android:paddingLeft="15px" android:textColor="#ffffff" />
-			<TextView android:text="http://www.gdl3d.com/" android:textColorLink="#ffffff"
 				android:layout_width="fill_parent" android:layout_height="wrap_content"
 				android:paddingLeft="15px" android:textColor="#ffffff" android:autoLink="web" />
 			<TextView android:text="Chinese translation: " android:layout_width="fill_parent"
@@ -104,6 +101,12 @@
 				android:layout_width="fill_parent" android:layout_height="wrap_content"
 				android:paddingLeft="15px" android:textColor="#ffffff" />
 			<TextView android:text="https://flattr.com/thing/38389/regalAndroid" android:textColorLink="#ffffff"
+				android:layout_width="fill_parent" android:layout_height="wrap_content"
+				android:paddingLeft="15px" android:textColor="#ffffff" android:autoLink="web" />
+			<TextView android:text="Or send me an Android Device for me to test ReGalAndroid, contact me at :"
+				android:layout_width="fill_parent" android:layout_height="wrap_content"
+				android:paddingLeft="15px" android:textColor="#ffffff" />
+			<TextView android:text="anthony.dahanne@gmail.com" android:textColorLink="#ffffff"
 				android:layout_width="fill_parent" android:layout_height="wrap_content"
 				android:paddingLeft="15px" android:textColor="#ffffff" android:autoLink="web" />
 			<TextView android:paddingTop="15px"

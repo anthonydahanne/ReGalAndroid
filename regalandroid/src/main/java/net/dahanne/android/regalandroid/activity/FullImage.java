@@ -135,7 +135,7 @@ public class FullImage extends Activity implements OnGestureListener {
 		int albumName =application.getCurrentAlbum().getName();
 		File potentialAlreadyDownloadedFile = new File(
 				Settings.getReGalAndroidCachePath(this) + albumName + "/",
-				picture.getName());
+				picture.getFileName());
 		if (potentialAlreadyDownloadedFile.exists()
 				&& potentialAlreadyDownloadedFile.length() != 0) {
 			logger.debug("loadingPicture from cache : {}",potentialAlreadyDownloadedFile.getAbsolutePath());
@@ -159,17 +159,17 @@ public class FullImage extends Activity implements OnGestureListener {
 		@Override
 		protected Bitmap doInBackground(Object... urls) {
 			String fileUrl = (String) urls[0];
-			Picture g2Picture = (Picture) urls[1];
+			Picture picture = (Picture) urls[1];
 			Bitmap downloadImage = null;
 			try {
 				File imageFileOnExternalDirectory = fileUtils
-						.getFileFromGallery(FullImage.this, g2Picture
-								.getName(), g2Picture.getForceExtension(),
+						.getFileFromGallery(FullImage.this, picture
+								.getFileName(), picture.getForceExtension(),
 								fileUrl, true,
 								application.getCurrentAlbum().getName());
 				downloadImage = BitmapFactory
 						.decodeFile(imageFileOnExternalDirectory.getPath());
-				g2Picture.setResizedImageCachePath(imageFileOnExternalDirectory
+				picture.setResizedImageCachePath(imageFileOnExternalDirectory
 						.getPath());
 
 			} catch (GalleryConnectionException e) {
@@ -201,7 +201,7 @@ public class FullImage extends Activity implements OnGestureListener {
 			try {
 				downloadImage = fileUtils.getFileFromGallery(
 						FullImage.this,
-						picture.getName(),
+						picture.getFileName(),
 						picture.getForceExtension(),
 						picture.getFileUrl(), false,
 						application.getCurrentAlbum().getName());
@@ -285,11 +285,11 @@ public class FullImage extends Activity implements OnGestureListener {
 			// imageFilePath is a path to a file located on the sd card
 			// such "/sdcard/temp.jpg"
 			filePath = Settings.getReGalAndroidPath(this) + SLASH
-					+ picture.getName();
+					+ picture.getFileName();
 			File file = new File(filePath);
 			if (!file.exists()) {
 				filePath = Settings.getReGalAndroidCachePath(this) + SLASH
-						+ picture.getName();
+						+ picture.getFileName();
 				file = new File(filePath);
 			}
 			intent.setDataAndType(Uri.fromFile(file), "image/*");
@@ -327,13 +327,9 @@ public class FullImage extends Activity implements OnGestureListener {
 		AlertDialog.Builder builder = new AlertDialog.Builder(FullImage.this);
 		StringBuilder message = new StringBuilder()
 				.append(getString(R.string.name)).append(" : ")
-				.append(picture.getName()).append("\n")
+				.append(picture.getFileName()).append("\n")
 				.append(getString(R.string.title)).append(" : ")
 				.append(picture.getTitle()).append("\n")
-				.append(getString(R.string.caption)).append(" : ")
-				.append(picture.getCaption()).append("\n")
-				.append(getString(R.string.hidden)).append(" : ")
-				.append(Boolean.toString(picture.isHidden())).append("\n")
 				.append(getString(R.string.full_res_filesize)).append(" : ")
 				.append(picture.getFileSize()).append("\n")
 				.append(getString(R.string.full_res_width)).append(" : ")

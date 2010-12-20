@@ -43,7 +43,7 @@ public class G3ConvertUtils {
 		Picture picture = new Picture();
 		picture.setId(item.getEntity().getId());
 		picture.setTitle(item.getEntity().getTitle());
-		picture.setName(item.getEntity().getName());
+		picture.setFileName(item.getEntity().getName());
 
 		picture.setThumbUrl(item.getEntity().getThumbUrl());
 		picture.setThumbWidth(item.getEntity().getThumbWidth());

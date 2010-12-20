@@ -60,7 +60,7 @@ public class ReplaceMainImageTask extends AsyncTask {
 		String fileUrl = (String) urls[0];
 		imageSwitcher = (ImageSwitcher) urls[1];
 		originalPosition = (Integer) urls[2];
-		Picture g2Picture = (Picture) urls[3];
+		Picture picture = (Picture) urls[3];
 		Bitmap downloadImage = null;
 		// make sure the user is watching the picture
 		if (originalPosition == gallery.getSelectedItemPosition()) {
@@ -68,15 +68,15 @@ public class ReplaceMainImageTask extends AsyncTask {
 				File imageFileOnExternalDirectory = FileUtils.getInstance()
 						.getFileFromGallery(
 								activity,
-								g2Picture.getName(),
-								g2Picture.getForceExtension(),
+								picture.getFileName(),
+								picture.getForceExtension(),
 								fileUrl,
 								true,
 								((RegalAndroidApplication) activity
 										.getApplication()).getCurrentAlbum().getName());
 				downloadImage = BitmapFactory
 						.decodeFile(imageFileOnExternalDirectory.getPath());
-				g2Picture.setResizedImageCachePath(imageFileOnExternalDirectory
+				picture.setResizedImageCachePath(imageFileOnExternalDirectory
 						.getPath());
 
 			} catch (GalleryConnectionException e) {

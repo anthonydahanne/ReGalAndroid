@@ -25,7 +25,7 @@ public class Picture implements Serializable {
 	private static final long serialVersionUID = 4719347243965813169L;
 	private long id;
 	private String title;
-	private String name;
+	private String fileName;
 
 	private String thumbUrl;
 	private int thumbWidth;
@@ -116,12 +116,12 @@ public class Picture implements Serializable {
 	// this.captureDateSecond = captureDateSecond;
 	// }
 
-	public String getName() {
-		return name;
+	public String getFileName() {
+		return fileName;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setFileName(String name) {
+		this.fileName = name;
 	}
 
 	public String getThumbUrl() {
@@ -292,7 +292,7 @@ public class Picture implements Serializable {
 		result = prime * result + ((fileUrl == null) ? 0 : fileUrl.hashCode());
 		result = prime * result + height;
 		result = prime * result + (int) (id ^ (id >>> 32));
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result + ((fileName == null) ? 0 : fileName.hashCode());
 		result = prime * result + resizedHeight;
 		result = prime * result + resizedSize;
 		result = prime * result
@@ -333,10 +333,10 @@ public class Picture implements Serializable {
 			return false;
 		if (id != other.id)
 			return false;
-		if (name == null) {
-			if (other.name != null)
+		if (fileName == null) {
+			if (other.fileName != null)
 				return false;
-		} else if (!name.equals(other.name))
+		} else if (!fileName.equals(other.fileName))
 			return false;
 		if (resizedHeight != other.resizedHeight)
 			return false;
@@ -378,7 +378,7 @@ public class Picture implements Serializable {
 		stringBuilder.append(", title=");
 		stringBuilder.append(title);
 		stringBuilder.append(", name=");
-		stringBuilder.append(name);
+		stringBuilder.append(fileName);
 		stringBuilder.append(", thumbUrl=");
 		stringBuilder.append(thumbUrl);
 		stringBuilder.append(", thumbWidth=");

@@ -45,7 +45,16 @@ public class AlbumUtilsTest extends Assert {
 		album3.getSubAlbums().add(album31);
 		Album album311 = new Album();
 		album311.setName(311);
+		album311.setId(12);
 		album31.getSubAlbums().add(album311);
+		
+		
+		//simulation of a fake album not to be taken into account! 
+		Album album311_fake = new Album();
+		album311_fake.setName(311);
+		album311_fake.setFakeAlbum(true);
+		album311.getSubAlbums().add(album311_fake);
+
 		Album albumFound = AlbumUtils.findAlbumFromAlbumName(rootAlbum, 311);
 		assertEquals(album311, albumFound);
 

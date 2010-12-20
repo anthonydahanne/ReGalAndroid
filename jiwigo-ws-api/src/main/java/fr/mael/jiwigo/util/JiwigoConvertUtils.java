@@ -48,7 +48,7 @@ public class JiwigoConvertUtils {
 		Picture picture = new Picture();
 		picture.setId(jiwigoImage.getIdentifiant());
 		picture.setTitle(jiwigoImage.getName());
-		picture.setName(jiwigoImage.getFile());
+		picture.setFileName(jiwigoImage.getFile());
 
 		picture.setThumbUrl(jiwigoImage.getMiniature());
 //		picture.setThumbWidth(jiwigoImage.getThumbWidth());

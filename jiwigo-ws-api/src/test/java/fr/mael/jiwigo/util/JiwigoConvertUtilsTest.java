@@ -96,7 +96,7 @@ public class JiwigoConvertUtilsTest {
 		Picture expectedPicture = new Picture();
 		expectedPicture.setId(10214L);
 		expectedPicture.setTitle("Title");
-		expectedPicture.setName("Title.jpg");
+		expectedPicture.setFileName("Title.jpg");
 		expectedPicture
 		.setFileUrl("http://piwigo.org/index.php?/path/to/picture/10214");
 		expectedPicture

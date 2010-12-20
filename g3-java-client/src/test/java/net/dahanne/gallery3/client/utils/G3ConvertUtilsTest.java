@@ -70,7 +70,7 @@ public class G3ConvertUtilsTest {
 		Picture expectedPicture = new Picture();
 		expectedPicture.setId(2);
 		expectedPicture.setTitle("March\u00e9 Bon secours");
-		expectedPicture.setName("marche-bonsecours.JPG");
+		expectedPicture.setFileName("marche-bonsecours.JPG");
 		
 		expectedPicture.setThumbUrl("http://g3.dahanne.net/index.php/rest/data/2?size=thumb");
 		expectedPicture.setThumbWidth(150);
@@ -107,7 +107,7 @@ public class G3ConvertUtilsTest {
 		Picture expectedPicture = new Picture();
 		expectedPicture.setId(502);
 		expectedPicture.setTitle("graduation pics 427");
-		expectedPicture.setName("graduation pics 427.jpg");
+		expectedPicture.setFileName("graduation pics 427.jpg");
 		
 		
 		expectedPicture.setResizedUrl("http://www.iffam.org/gallery/index.php/rest/data/502?size=resize");

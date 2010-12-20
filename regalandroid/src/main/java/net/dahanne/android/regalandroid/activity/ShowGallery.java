@@ -89,7 +89,12 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 		super.onResume();
 		logger.debug("resuming");
 		application = (RegalAndroidApplication) getApplication();
-
+		
+		if (((RegalAndroidApplication) getApplication()).getCurrentAlbum() == null) {
+			// we recover the context from the database
+			DBUtils.getInstance()
+					.recoverContextFromDatabase(this);
+		}
 		// we write the title
 		if (getTitle() == null || getTitle().equals("")
 				|| getTitle().equals(getString(R.string.show_gallery_title))) {
@@ -181,7 +186,7 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 			int albumName = application.getCurrentAlbum().getName();
 			File potentiallyAlreadyDownloadedFile = new File(
 					Settings.getReGalAndroidCachePath(ShowGallery.this)
-							+ albumName + "/", THUMB_PREFIX + picture.getName());
+							+ albumName + "/", THUMB_PREFIX + picture.getFileName());
 			// maybe present in the local cache
 			Bitmap downloadImage = bitmapsCache.get(position);
 			if (downloadImage == null) {
@@ -204,7 +209,7 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 						File imageFileOnExternalDirectory = FileUtils
 								.getInstance().getFileFromGallery(
 										ShowGallery.this,
-										THUMB_PREFIX + picture.getName(),
+										THUMB_PREFIX + picture.getFileName(),
 										picture.getForceExtension(), thumbUrl,
 										true, albumName);
 						downloadImage = BitmapFactory
@@ -235,7 +240,7 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 		int albumName = application.getCurrentAlbum().getName();
 		File potentiallyAlreadyDownloadedFile = new File(
 				Settings.getReGalAndroidCachePath(this) + albumName + "/",
-				picture.getName());
+				picture.getFileName());
 		logger.debug(
 				"selecting an item, position : {} -- picture : {} -- albumName : {} -- potentiallyAlreadyDownloadedFile : {}",
 				new Object[] { position, picture, albumName,

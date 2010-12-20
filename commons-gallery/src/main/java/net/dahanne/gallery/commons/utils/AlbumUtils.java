@@ -35,15 +35,16 @@ public class AlbumUtils {
 	public static Album findAlbumFromAlbumName(Album rootAlbum, int albumName) {
 		logger.debug("rootAlbum is : {} -- albumName is : {}",rootAlbum,albumName);
 		Album albumFound=null;
-		if (rootAlbum.getName() == albumName) {
+		if (rootAlbum.getName() == albumName&& !rootAlbum.isFakeAlbum()) {
 			albumFound= rootAlbum;
 		}
 		for (Album album : rootAlbum.getSubAlbums()) {
-			if (album.getName() == albumName) {
+			if (album.getName() == albumName && !album.isFakeAlbum()) {
 				albumFound= album;
+				break;
 			}
 			Album fromAlbumName = findAlbumFromAlbumName(album, albumName);
-			if (fromAlbumName != null) {
+			if (fromAlbumName != null && !fromAlbumName.isFakeAlbum()) {
 				albumFound= fromAlbumName;
 			}
 

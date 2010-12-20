@@ -48,15 +48,18 @@ public class G2ConvertUtils {
 		String baseUrl = getBaseUrl(galleryUrl);
 		Picture picture = new Picture();
 		picture.setId(g2Picture.getId());
-		picture.setTitle(g2Picture.getTitle());
-		picture.setName(g2Picture.getName());
+		picture.setTitle(g2Picture.getCaption());
+		picture.setFileName(g2Picture.getTitle());
 
 		picture.setThumbUrl( baseUrl +  g2Picture.getThumbName());
 		picture.setThumbWidth(g2Picture.getThumbWidth());
 		picture.setThumbHeight(g2Picture.getThumbHeight());
 //		picture.setThumbSize(g2Picture.getThumbSize());
 		
-		picture.setResizedUrl(baseUrl +g2Picture.getResizedName());
+		if(g2Picture.getResizedName()!=null){
+			picture.setResizedUrl(baseUrl +g2Picture.getResizedName());
+		}
+		
 		picture.setResizedWidth(g2Picture.getResizedWidth());
 		picture.setResizedHeight(g2Picture.getResizedHeight());
 //		picture.setResizedSize(g2Picture.getResizeSize());

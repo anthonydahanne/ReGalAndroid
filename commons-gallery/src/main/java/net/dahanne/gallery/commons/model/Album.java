@@ -20,7 +20,7 @@ package net.dahanne.gallery.commons.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -35,10 +35,11 @@ public class Album implements Serializable {
 	private boolean write;
 	private boolean deleteAlbum;
 	private boolean createSubAlbum;
+	private boolean fakeAlbum;
 	private String extrafields;
 	private String albumUrl;
 	private Album parent;
-	private final Set<Picture> pictures = new HashSet<Picture>();
+	private final Set<Picture> pictures = new LinkedHashSet<Picture>();
 	private final List<Album> subAlbums = new ArrayList<Album>();
 
 	public Album() {
@@ -183,6 +184,7 @@ public class Album implements Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		result = prime * result + (fakeAlbum ? 1231 : 1237);
 		result = prime * result + id;
 		result = prime * result + name;
 		result = prime * result + parentName;
@@ -192,33 +194,35 @@ public class Album implements Serializable {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj) {
+		if (this == obj)
 			return true;
-		}
-		if (obj == null) {
+		if (obj == null)
 			return false;
-		}
-		if (getClass() != obj.getClass()) {
+		if (getClass() != obj.getClass())
 			return false;
-		}
 		Album other = (Album) obj;
-		if (id != other.id) {
+		if (fakeAlbum != other.fakeAlbum)
 			return false;
-		}
-		if (name != other.name) {
+		if (id != other.id)
 			return false;
-		}
-		if (parentName != other.parentName) {
+		if (name != other.name)
 			return false;
-		}
+		if (parentName != other.parentName)
+			return false;
 		if (title == null) {
-			if (other.title != null) {
+			if (other.title != null)
 				return false;
-			}
-		} else if (!title.equals(other.title)) {
+		} else if (!title.equals(other.title))
 			return false;
-		}
 		return true;
+	}
+
+	public void setFakeAlbum(boolean fakeAlbum) {
+		this.fakeAlbum = fakeAlbum;
+	}
+
+	public boolean isFakeAlbum() {
+		return fakeAlbum;
 	}
 
 	
