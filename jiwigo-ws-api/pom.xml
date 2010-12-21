@@ -3,11 +3,11 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>Jiwigo</groupId>
 	<artifactId>jiwigo-ws-api</artifactId>
-	<version>0.14-SNAPSHOT</version>
+	<version>0.14</version>
 	<parent>
 		<artifactId>regalandroid-parent</artifactId>
 		<groupId>net.dahanne.android</groupId>
-		<version>1.0.0-SNAPSHOT</version>
+		<version>1.0.0</version>
 	</parent>
 
 
@@ -59,7 +59,7 @@
 		<dependency>
 			<groupId>net.dahanne.gallery</groupId>
 			<artifactId>commons-gallery</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>1.0.0</version>
 			<type>jar</type>
 			<scope>compile</scope>
 		</dependency>

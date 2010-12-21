@@ -4,14 +4,14 @@
 	<parent>
 		<artifactId>regalandroid-parent</artifactId>
 		<groupId>net.dahanne.android</groupId>
-		<version>1.0.0-SNAPSHOT</version>
+		<version>1.0.0</version>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.dahanne.android</groupId>
 	<artifactId>regalandroid</artifactId>
 	<packaging>apk</packaging>
 	<name>ReGalAndroid</name>
-	<version>1.0.0-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<dependencies>
 		<dependency>
 			<groupId>com.google.android</groupId>
@@ -43,21 +43,21 @@
 		<dependency>
 			<groupId>net.dahanne.gallery</groupId>
 			<artifactId>commons-gallery</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>1.0.0</version>
 			<type>jar</type>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>net.dahanne.gallery2</groupId>
 			<artifactId>g2-java-client</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>1.0.0</version>
 			<type>jar</type>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>net.dahanne.gallery3</groupId>
 			<artifactId>g3-java-client</artifactId>
-			<version>0.3.0-SNAPSHOT</version>
+			<version>1.0.0</version>
 			<type>jar</type>
 			<scope>compile</scope>
 		</dependency>
@@ -71,7 +71,7 @@
 		<dependency>
 			<groupId>Jiwigo</groupId>
 			<artifactId>jiwigo-ws-api</artifactId>
-			<version>0.14-SNAPSHOT</version>
+			<version>0.14</version>
 			<type>jar</type>
 			<scope>compile</scope>
 		</dependency>
@@ -186,6 +186,15 @@
 								<debug>false</debug>
 							</sign>
 						</configuration>
+						<executions>
+						  <execution>
+						    <id>alignApk</id>
+						    <phase>install</phase>
+						    <goals>
+						      <goal>zipalign</goal>
+						    </goals>
+						  </execution>
+						</executions>
 					</plugin>
 				</plugins>
 			</build>

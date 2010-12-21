@@ -137,6 +137,9 @@
 		<string name="no_summary_available">Pas de sommaire disponible</string>
 		<string name="advanced_control_title">Contrôles avancés</string>
 		
+		<string name="gallery_connection_type_title">Type de galerie</string>
+		<string name="gallery_connection_type_summary">Spécifiez ici quel type de galerie (G2, G3, Piwigo) vous souhaitez connecter</string>
+		
 		
 		<!--  first time activity-->
 		<string name="accept">J\'accepte</string>
