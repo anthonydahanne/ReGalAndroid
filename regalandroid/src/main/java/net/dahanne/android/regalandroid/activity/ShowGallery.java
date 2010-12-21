@@ -104,6 +104,7 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 		// we already have the pictures
 		if (application.getCurrentAlbum() != null
 				&& application.getCurrentAlbum().getPictures().size() != 0) {
+			albumPictures.clear();
 			albumPictures.addAll(application.getCurrentAlbum().getPictures());
 			logger.debug("no need to fetch the pictures");
 			setUpView();
@@ -112,6 +113,7 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 			DBUtils.getInstance().recoverContextFromDatabase(this);
 			if (application.getCurrentAlbum() != null
 					&& application.getCurrentAlbum().getPictures().size() != 0) {
+				albumPictures.clear();
 				albumPictures.addAll(application.getCurrentAlbum()
 						.getPictures());
 				logger.debug("pictures loaded from the DB");

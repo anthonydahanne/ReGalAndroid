@@ -75,7 +75,7 @@ public class FileUtils {
 		try {
 			InputStream inputStreamFromUrl = null;
 			String storageState = Environment.getExternalStorageState();
-			if (storageState.contains("mounted")) {
+			if (Environment.MEDIA_MOUNTED.equals(storageState)) {
 				logger.debug("storage is mounted");
 				File savePath = new File(
 						Settings.getReGalAndroidCachePath(context) + "/"

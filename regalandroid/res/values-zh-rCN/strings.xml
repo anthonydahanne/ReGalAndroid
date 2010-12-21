@@ -21,7 +21,7 @@
 <resources>
 
 	<!-- Activities -->
-	<string name="welcome_to_regalandroid">欢迎使用RegalAndroid</string>
+	<string name="welcome_to_regalandroid">欢迎使用ReGalAndroid</string>
 	<string name="enter_gallery_title">进入图库！</string>
 	<string name="connect_to_gallery_title">连接到图库！</string>
 	<string name="gallery_url_title">图库地址</string>

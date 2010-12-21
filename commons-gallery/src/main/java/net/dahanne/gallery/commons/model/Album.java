@@ -20,9 +20,7 @@ package net.dahanne.gallery.commons.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 
 public class Album implements Serializable {
 
@@ -39,7 +37,7 @@ public class Album implements Serializable {
 	private String extrafields;
 	private String albumUrl;
 	private Album parent;
-	private final Set<Picture> pictures = new LinkedHashSet<Picture>();
+	private final List<Picture> pictures = new ArrayList<Picture>();
 	private final List<Album> subAlbums = new ArrayList<Album>();
 
 	public Album() {
@@ -168,7 +166,7 @@ public class Album implements Serializable {
 		return subAlbums;
 	}
 
-	public Set<Picture> getPictures() {
+	public List<Picture> getPictures() {
 		return pictures;
 	}
 
