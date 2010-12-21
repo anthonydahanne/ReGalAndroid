@@ -28,7 +28,7 @@ import org.apache.commons.lang.StringUtils;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.widget.Button;
@@ -41,13 +41,13 @@ public class LoginTask extends AsyncTask<Object, Object, String> {
 	private String user;
 	private boolean galleryUrlIsValid = false;;
 	private final Activity activity;
-	private final ProgressDialog progressDialog;
+	private final Dialog progressDialog;
 	private String galleryUrl;
 	private final TextView loggedInAsText;
 	private final TextView galleryConfiguredTextView;
 	private final Button enterGalleryButton;
 
-	public LoginTask(Activity context, ProgressDialog progressDialog,
+	public LoginTask(Activity context, Dialog progressDialog,
 			TextView loggedInAsText, TextView galleryConfiguredTextView,
 			Button enterGalleryButton) {
 		super();

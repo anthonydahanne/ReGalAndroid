@@ -26,12 +26,11 @@
 	<TextView android:layout_width="fill_parent"
 		android:layout_height="wrap_content" android:text="@string/welcome_to_regalandroid"
 		android:textColor="@color/title_color" android:gravity="center"
-		android:textSize="28.5sp" android:layout_marginBottom="15dip" />
+		android:textSize="25sp" android:layout_marginBottom="15dip" />
 	<ImageView android:layout_width="fill_parent"
 		android:layout_height="wrap_content" android:src="@drawable/regalandroid"
-		android:scaleType="fitXY" android:adjustViewBounds="true"
-		android:maxHeight="220dip" android:cropToPadding="true"
-		android:layout_marginBottom="2dip" />
+		android:scaleType="fitCenter" android:adjustViewBounds="true"
+		android:maxHeight="110dip"		android:layout_marginBottom="2dip" />
 
 	<!-- Button android:layout_width="fill_parent"
 		android:layout_height="wrap_content" android:gravity="center"
