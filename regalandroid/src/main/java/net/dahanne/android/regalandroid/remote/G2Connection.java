@@ -45,8 +45,8 @@ public class G2Connection implements RemoteGallery {
 	private final String username;
 	private final String password;
 
-	public G2Connection(String galleryUrl, String username, String password) {
-		client = new G2Client();
+	public G2Connection(String galleryUrl, String username, String password, String userAgent) {
+		client = new G2Client(userAgent);
 		this.galleryUrl = galleryUrl;
 		this.username = username;
 		this.password = password;

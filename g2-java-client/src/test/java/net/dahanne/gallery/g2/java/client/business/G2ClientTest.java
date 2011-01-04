@@ -54,10 +54,10 @@ public class G2ClientTest extends Assert {
 
 	@Before
 	public void init() {
-		galleryUrl = "https://g2.dahanne.net/";
+		galleryUrl = "http://g2.dahanne.net/";
 		user = "g2android";
 		password = "g2android";
-		g2ConnectionUtils = new G2Client();
+		g2ConnectionUtils = new G2Client( "Unit Test");
 	}
 
 	@Test

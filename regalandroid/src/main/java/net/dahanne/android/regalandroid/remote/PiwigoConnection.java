@@ -53,8 +53,8 @@ public class PiwigoConnection implements RemoteGallery {
 	private final ImageService imageService;
 	private Album rootAlbum;
 
-	public PiwigoConnection(String galleryUrl, String username, String password) {
-		sessionManager = new SessionManager(username, password, galleryUrl);
+	public PiwigoConnection(String galleryUrl, String username, String password, String userAgent) {
+		sessionManager = new SessionManager(username, password, galleryUrl, userAgent);
 		categoryService = new CategoryService(sessionManager);
 		imageService =  new ImageService(sessionManager);
 

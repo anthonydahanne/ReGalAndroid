@@ -112,15 +112,16 @@ public class SessionManager {
      * @param motDePasse the password
      * @param url the url of the site
      */
-    public SessionManager(String login, String motDePasse, String url) {
+    public SessionManager(String login, String motDePasse, String url, String userAgent) {
 	this.login = login;
 	this.motDePasse = motDePasse;
 	this.url = url + "/ws.php";
 //	MultiThreadedHttpConnectionManager connectionManager = new MultiThreadedHttpConnectionManager();
 	client = new DefaultHttpClient();
 	//Using of a Linux user agent. cause... it's better 8)
+	//but it is better to use a more realistic one ;-)
 	client.getParams().setParameter("http.useragent",
-		"Mozilla/5.0 (X11; U; Linux i686; fr; rv:1.9.1.1) Gecko/20090715 Firefox/3.5.1");
+		userAgent);
 
     }
 

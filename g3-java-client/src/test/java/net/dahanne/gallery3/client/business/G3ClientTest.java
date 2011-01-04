@@ -64,7 +64,7 @@ public class G3ClientTest {
 
 	@Before
 	public void setUp() {
-		itemClient = new G3Client(galleryUrl);
+		itemClient = new G3Client(galleryUrl, "Unit Test");
 		itemClient.setUsername(username);
 		itemClient.setPassword(password);
 
@@ -292,7 +292,7 @@ public class G3ClientTest {
 
 	@AfterClass
 	public static void tearDown() throws G3GalleryException {
-		G3Client itemClient = new G3Client(galleryUrl);
+		G3Client itemClient = new G3Client(galleryUrl, "Unit Test");
 		itemClient.setUsername(username);
 		itemClient.setPassword(password);
 		// first we list all the items in the secret album

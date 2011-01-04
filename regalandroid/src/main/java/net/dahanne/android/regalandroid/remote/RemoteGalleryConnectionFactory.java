@@ -18,6 +18,7 @@
 
 package net.dahanne.android.regalandroid.remote;
 
+import net.dahanne.android.regalandroid.R;
 import net.dahanne.android.regalandroid.activity.Settings;
 import net.dahanne.gallery.commons.remote.RemoteGallery;
 
@@ -51,27 +52,33 @@ public class RemoteGalleryConnectionFactory {
 			//if we have "" then let's assume we can go to defaults
 			int galleryConnectionType = Settings
 					.getGalleryConnectionType(context) .equals("") ? 0 : Integer.valueOf(connectionType);
+			StringBuilder userAgent =  new StringBuilder();
+			userAgent.append(context.getString(R.string.app_name));
+			userAgent.append(" ");
+			userAgent.append(context.getString(R.string.current_version));
+			
+			
 			switch (galleryConnectionType) {
 			case GALLERY2:
 				logger.debug("G2 is choosen");
 				remoteGallery = new G2Connection(Settings
 						.getGalleryUrl(context),Settings
 						.getUsername(context),Settings
-						.getPassword(context));
+						.getPassword(context),userAgent.toString());
 				break;
 			case GALLERY3:
 				logger.debug("G3 is choosen");
 				remoteGallery = new G3Connection(Settings
 					.getGalleryUrl(context),Settings
 					.getUsername(context),Settings
-					.getPassword(context));
+					.getPassword(context),userAgent.toString());
 				break;
 			case PIWIGO:
 				logger.debug("Piwigo is choosen");
 				remoteGallery = new PiwigoConnection(Settings
 						.getGalleryUrl(context),Settings
 						.getUsername(context),Settings
-						.getPassword(context));
+						.getPassword(context),userAgent.toString());
 				break;
 
 			}

@@ -67,6 +67,7 @@ public class G3Client implements IG3Client {
 
 	private static final String X_GALLERY_REQUEST_KEY = "X-Gallery-Request-Key";
 	private static final String X_GALLERY_REQUEST_METHOD = "X-Gallery-Request-Method";
+	private static final String USER_AGENT = "User-Agent";
 	private static final String GET = "get";
 	private static final String DELETE = "delete";
 	private static final String POST = "post";
@@ -81,8 +82,10 @@ public class G3Client implements IG3Client {
 	private String password;
 	private String username;
 	private final Logger logger = LoggerFactory.getLogger(G3Client.class);
+	private final String userAgent;
 
-	public G3Client(String galleryUrl) {
+	public G3Client(String galleryUrl, String userAgent) {
+		this.userAgent = userAgent;
 		if(!galleryUrl.endsWith("/")){
 			this.galleryItemUrl = galleryUrl + "/";
 		}else{
@@ -272,6 +275,8 @@ public class G3Client implements IG3Client {
 		if (existingApiKey != null) {
 			httpMethod.setHeader(X_GALLERY_REQUEST_KEY, existingApiKey);
 		}
+		//adding the userAgent to the request
+		httpMethod.setHeader(USER_AGENT, userAgent);
 		HttpResponse response = null;
 
 		String[] patternsArray = new String[3];

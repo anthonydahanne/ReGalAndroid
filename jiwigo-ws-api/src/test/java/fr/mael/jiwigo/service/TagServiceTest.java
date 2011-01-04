@@ -17,7 +17,7 @@ public class TagServiceTest  {
 
 	@Before
 	public void setUp(){
-	    	sessionManager = new SessionManager("mael", "motdepasse", "http://mael.piwigo.com");
+	    	sessionManager = new SessionManager("mael", "motdepasse", "http://mael.piwigo.com", "Unit Test");
 	    	sessionManager.processLogin();
 	}
 

@@ -107,10 +107,7 @@ public class G2Client {
 	private static final BasicNameValuePair PROTOCOL_VERSION_NAME_VALUE_PAIR = new BasicNameValuePair(
 			"g2_form[protocol_version]", "2.0");
 	private static final String MAIN_PHP = "main.php";
-	private static final String USER_AGENT_VALUE = "G2Android Version 1.6.2";
 	private static final String USER_AGENT = "User-Agent";
-	private static final BasicHeader BASIC_HEADER = new BasicHeader(USER_AGENT,
-			USER_AGENT_VALUE);
 	static final String GR_STAT_SUCCESS = "0";
 
 	/**
@@ -123,12 +120,11 @@ public class G2Client {
 	private final DefaultHttpClient defaultHttpClient;
 	private G2Album rootAlbum;
 	private final Logger logger = LoggerFactory.getLogger(G2Client.class);
+	private final BasicHeader basicHeader;
 
 
-
-	public G2Client() {
-
-		
+	public G2Client(String userAgent) {
+		this.basicHeader = new BasicHeader(USER_AGENT,userAgent);
 		sessionCookies.add(new BasicClientCookie("", ""));
 		// the httpclient initialization is heavy, we create one for
 		// G2ConnectionUtils
@@ -206,7 +202,7 @@ public class G2Client {
 		InputStream content = null;
 		try {
 			HttpGet httpGet = new HttpGet(url);
-			httpGet.setHeader(BASIC_HEADER);
+			httpGet.setHeader(basicHeader);
 			// Setting a cookie header
 			httpGet.setHeader(getCookieHeader(cookieSpecBase));
 			// Execute HTTP Get Request
@@ -400,7 +396,7 @@ public class G2Client {
 
 			// if we send an image to the gallery, we pass it to the gallery
 			// through multipartEntity
-			httpPost.setHeader(BASIC_HEADER);
+			httpPost.setHeader(basicHeader);
 			// Setting the cookie
 			httpPost.setHeader(getCookieHeader(cookieSpecBase));
 			if (multiPartEntity != null) {

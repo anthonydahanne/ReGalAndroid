@@ -40,8 +40,8 @@ public class G3Connection implements RemoteGallery {
 
 	private final G3Client client;
 
-	public G3Connection(String galleryUrl, String username, String password) {
-		client = new G3Client(galleryUrl);
+	public G3Connection(String galleryUrl, String username, String password, String userAgent) {
+		client = new G3Client(galleryUrl, userAgent);
 		client.setUsername(username);
 		client.setPassword(password);
 	}
