@@ -84,7 +84,8 @@ public class ItemUtils {
 				: entityJSON.getString("mime_type"));
 		entity.setName(entityJSON.getString("name").equals("null") ? null
 				: entityJSON.getString("name"));
-		entity.setOwnerId(entityJSON.getInt("owner_id"));
+		entity.setOwnerId(entityJSON.getString("owner_id").equals("null") ? 0
+				: Integer.parseInt(entityJSON.getString("owner_id")));
 		entity.setRandKey(entityJSON.getString("rand_key").equals("null") ? 0f
 				: Float.parseFloat(entityJSON.getString("rand_key")));
 		entity.setResizeHeight(entityJSON.getString("resize_height").equals(
