@@ -81,6 +81,12 @@ public class G2Connection implements RemoteGallery {
 					.extractAlbumFromProperties(fetchAlbums);
 			rootAlbum = client.organizeAlbumsHierarchy(albumsFromProperties);
 		}
+		//no root album, the gallery did not answer correctly issue #24 
+		if(rootAlbum==null){
+			throw new GalleryConnectionException("The Gallery did not return properties; check your gallery installation and/or your settings" );
+		}
+		
+		
 		// if 0 is specified as the parentAlbumId, it means we have to return
 		// the rootAlbum
 		if (parentAlbumId == 0) {

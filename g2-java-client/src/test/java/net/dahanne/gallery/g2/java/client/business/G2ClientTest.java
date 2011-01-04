@@ -104,6 +104,12 @@ public class G2ClientTest extends Assert {
 				"hacker", "hackerPassword");
 	}
 	
+	@Test(expected=ImpossibleToLoginException.class)
+	public void loginToGalleryTest__galleryDoesNotAnswerWithProperties__issue24() throws GalleryConnectionException {
+		g2ConnectionUtils.loginToGallery("http://regalandroid.pixi.me",
+				"g2android", "g2android");
+	}
+	
 	@Test(expected = ImpossibleToLoginException.class)
 	public void loginToGalleryTestFailBecauseUrlIsWrong()
 			throws GalleryConnectionException {

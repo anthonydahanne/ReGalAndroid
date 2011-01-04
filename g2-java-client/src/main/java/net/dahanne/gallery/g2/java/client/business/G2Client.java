@@ -194,6 +194,10 @@ public class G2Client {
 						properties.get("status_text"));
 			}
 		}
+		//the login request did not return properties; issue #24 
+		if(properties.isEmpty()){
+			throw new ImpossibleToLoginException("The Gallery did not return login properties; check your gallery installation and/or your settings" );
+		}
 
 	}
 
