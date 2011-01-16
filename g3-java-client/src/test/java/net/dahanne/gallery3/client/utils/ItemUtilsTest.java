@@ -290,9 +290,24 @@ public class ItemUtilsTest {
 	}
 	
 	@Test
-	public void parseJSONTest_isssue32() throws IOException, JSONException{
+	public void parseJSONTest_issue32() throws IOException, JSONException{
 		//this test just tests an exception is not thrown; a smoke test in other words
 		URL resource = Resources.getResource("get-album-bug32_owner-id-null.json");
+		String string = Resources.toString(resource, Charsets.UTF_8);
+		JSONObject jsonResult = (JSONObject) new JSONTokener(string)
+				.nextValue();
+		Item item = ItemUtils.parseJSONToItem(jsonResult);
+		
+		Entity entity = item.getEntity();
+		
+		RelationShips relationShips =  item.getRelationships();
+		
+	}
+	
+	@Test
+	public void parseJSONTest_issue38() throws IOException, JSONException{
+		//this test just tests an exception is not thrown; a smoke test in other words
+		URL resource = Resources.getResource("get-albums-no-relationships-38.json");
 		String string = Resources.toString(resource, Charsets.UTF_8);
 		JSONObject jsonResult = (JSONObject) new JSONTokener(string)
 				.nextValue();

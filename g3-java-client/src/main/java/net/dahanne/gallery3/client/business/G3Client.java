@@ -91,7 +91,6 @@ public class G3Client implements IG3Client {
 		}else{
 			this.galleryItemUrl = galleryUrl;
 		}
-		
 	}
 
 	public Item getItem(int itemId) throws G3GalleryException {
@@ -104,6 +103,8 @@ public class G3Client implements IG3Client {
 			item = ItemUtils.parseJSONToItem(jsonResult);
 		} catch (JSONException e) {
 			throw new G3GalleryException(e.getMessage());
+		}catch (ClassCastException e) {
+			throw new G3GalleryException("The Gallery returned an unexpected result when trying to load albums/photos; please check for info on the ReGalAndroid project page"+e.getMessage());
 		}
 		return item;
 	}
@@ -328,7 +329,11 @@ public class G3Client implements IG3Client {
 				POST, null);
 
 		String key = ItemUtils.convertJsonResultToApiKey(jsonResult);
-
+		//the key should be an hexadecimal character
+		if(!key.matches("[a-fA-F0-9]+")){
+			throw new G3GalleryException("The Gallery returned an unexpected result when trying to login; please check for info on the ReGalAndroid project page");
+		}
+		
 		return key;
 	}
 

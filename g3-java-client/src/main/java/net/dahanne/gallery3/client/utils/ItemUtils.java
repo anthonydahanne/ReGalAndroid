@@ -172,8 +172,16 @@ public class ItemUtils {
 
 	private static RelationShips parseJSONToRelationShips(JSONObject jsonResult)
 			throws JSONException {
-		JSONObject relationShipsJSON = jsonResult
+		
+		JSONObject relationShipsJSON;
+		try{
+			relationShipsJSON = jsonResult
 				.getJSONObject("relationships");
+		}
+		catch (JSONException e){
+			logger.debug("there are no relationships for this album, this is not grave");
+			return null;
+		}
 
 		JSONObject commentsJSON = relationShipsJSON.getJSONObject("comments");
 		Comments comments = new Comments();
