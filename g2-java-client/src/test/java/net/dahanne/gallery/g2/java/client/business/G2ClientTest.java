@@ -64,13 +64,13 @@ public class G2ClientTest extends Assert {
 	public void fetchImagesTest() throws GalleryConnectionException {
 		HashMap<String, String> fetchImages = g2ConnectionUtils.fetchImages(
 				galleryUrl, 11);
-		assertTrue(fetchImages.size() != 0);
-		assertTrue(fetchImages.containsKey("image_count"));
-		assertFalse(fetchImages.get("image_count").equals("0"));
+		assertTrue("no pictures found",fetchImages.size() != 0);
+		assertTrue("the string image_count could not be found",fetchImages.containsKey("image_count"));
+		assertFalse("the value of image_count was 0",fetchImages.get("image_count").equals("0"));
 
 		fetchImages = g2ConnectionUtils.fetchImages(galleryUrl, 9999);
 		// just debug messages
-		assertTrue(fetchImages.size() == 3);
+		assertTrue("there were not 3 pictures",fetchImages.size() == 3);
 
 	}
 

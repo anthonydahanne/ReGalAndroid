@@ -3,7 +3,7 @@
 	<parent>
 		<artifactId>regalandroid-parent</artifactId>
 		<groupId>net.dahanne.android</groupId>
-		<version>1.0.0</version>
+		<version>1.0.1</version>
 	</parent>
 	
 	<modelVersion>4.0.0</modelVersion>
@@ -11,7 +11,7 @@
 	<artifactId>g3-java-client</artifactId>
 	<packaging>jar</packaging>
 	<name>Gallery3 Java Client</name>
-	<version>1.0.0</version>
+	<version>1.0.1</version>
 	<description>This project is aimed to provide a Gallery 3 remote api client implementation written in Java
 	</description>
 	<url>http://github.com/anthonydahanne/g3-java-client</url>

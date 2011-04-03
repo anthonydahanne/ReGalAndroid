@@ -22,25 +22,20 @@ public class ServicesTest{
 
     @Test
     public void testCreer() throws Exception {
-	Category cat = null;
-	CategoryService categoryService = new CategoryService(sessionManager);
-	ImageService imageService = new ImageService(sessionManager);
-	CommentService commentService = new CommentService(sessionManager);
+		Category cat = null;
+		CategoryService categoryService = new CategoryService(sessionManager);
+		ImageService imageService = new ImageService(sessionManager);
+		CommentService commentService = new CommentService(sessionManager);
+		
+		for (Category category : categoryService.lister(true)) {
+		    if (category.getIdentifiant().equals(3)) {
+			cat = category;
+			break;
+		    }
+		}
+		Image image = imageService.listerParCategory(cat.getIdentifiant(), true).get(0);
+		Assert.assertEquals("test de test do not delete",cat.getNom());
+		Assert.assertEquals("20110329194915-0c0b3f36.jpg",image.getFile());
 	
-	for (Category category : categoryService.lister(true)) {
-	    if (category.getIdentifiant().equals(3)) {
-		cat = category;
-		break;
-	    }
-	}
-	Image image = imageService.listerParCategory(cat.getIdentifiant(), true).get(0);
-	Assert.assertEquals("test de test do not delete",cat.getNom());
-	Assert.assertEquals("20101016132232-c0e82eb6.jpg",image.getFile());
-	
-	
-	
-//	int firstCount = commentService.lister(image.getIdentifiant()).size();
-//	commentService.creer("comment test", image.getIdentifiant(), "none");
-//	Assert.assertSame(firstCount + 1,commentService.lister(image.getIdentifiant()).size());
     }
 }

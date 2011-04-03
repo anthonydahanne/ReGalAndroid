@@ -438,7 +438,7 @@ public class G2Client {
 				response = defaultHttpClient.execute(httpPost);
 			}
 			int status = response.getStatusLine().getStatusCode();
-			if(status>=400 && status<500){
+			if(status>=400 && status<=500){
 				logger.debug("status is an error : {}",status);
 				throw new GalleryConnectionException("The server returned an error : "+status);
 			}
