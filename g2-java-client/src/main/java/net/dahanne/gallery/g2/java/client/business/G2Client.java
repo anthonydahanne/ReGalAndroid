@@ -243,8 +243,10 @@ public class G2Client {
 					UTF_8));
 			multiPartEntity.addPart("g2_form[set_albumName]", new StringBody(""
 					+ albumName, UTF_8));
-			multiPartEntity.addPart("g2_authToken", new StringBody(authToken,
-					UTF_8));
+			if(authToken!=null){
+				multiPartEntity.addPart("g2_authToken", new StringBody(authToken,
+						UTF_8));
+			}
 			multiPartEntity.addPart("g2_form[caption]", new StringBody(
 					imageName, UTF_8));
 			multiPartEntity.addPart("g2_form[extrafield.Summary]",
