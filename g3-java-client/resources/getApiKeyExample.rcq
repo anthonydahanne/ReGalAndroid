@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rest-client version="2.3.3"><request><http-version>1.1</http-version><URL>http://url/index.php/rest</URL><method>POST</method><headers><header key="Content-Type" value="application/x-www-form-urlencoded; charset=ISO-8859-1"/><header key="X-Gallery-Request-Method" value="post"/></headers><body content-type="text/plain" charset="UTF-8">user=anthony&amp;password=reGalF00</body></request></rest-client>
