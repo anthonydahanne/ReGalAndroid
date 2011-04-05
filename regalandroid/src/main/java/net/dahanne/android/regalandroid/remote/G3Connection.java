@@ -22,17 +22,18 @@ import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import net.dahanne.gallery.commons.model.Album;
 import net.dahanne.gallery.commons.model.Picture;
 import net.dahanne.gallery.commons.remote.GalleryConnectionException;
-import net.dahanne.gallery.commons.remote.GalleryOperationNotYetSupportedException;
 import net.dahanne.gallery.commons.remote.ImpossibleToLoginException;
 import net.dahanne.gallery.commons.remote.RemoteGallery;
 import net.dahanne.gallery3.client.business.G3Client;
 import net.dahanne.gallery3.client.business.exceptions.G3GalleryException;
+import net.dahanne.gallery3.client.model.Entity;
 import net.dahanne.gallery3.client.model.Item;
 import net.dahanne.gallery3.client.utils.G3ConvertUtils;
 
@@ -40,26 +41,43 @@ public class G3Connection implements RemoteGallery {
 
 	private final G3Client client;
 
-	public G3Connection(String galleryUrl, String username, String password, String userAgent) {
+	public G3Connection(String galleryUrl, String username, String password,
+			String userAgent) {
 		client = new G3Client(galleryUrl, userAgent);
 		client.setUsername(username);
 		client.setPassword(password);
 	}
 
-	
 	@Override
-	public int createNewAlbum(String arg0, int arg1, String arg2, String arg3,
-			String arg4) throws GalleryConnectionException {
-		throw new GalleryOperationNotYetSupportedException(
-				"Not available for G3 yet");
+	public int createNewAlbum(String galleryUrl, int parentAlbumName,
+			String albumName, String albumTitle, String albumDescription)
+			throws GalleryConnectionException {
+		try {
+			Entity albumToCreate = new Entity();
+			albumToCreate.setName(albumName);
+			albumToCreate.setTitle(albumTitle);
+			albumToCreate.setParent(parentAlbumName);
+			return client.createItem(albumToCreate, null);
+		} catch (G3GalleryException e) {
+			throw new GalleryConnectionException(e);
+		}
 	}
 
 	@Override
-	public Map<Integer, Album> getAllAlbums(String arg0)
+	public Map<Integer, Album> getAllAlbums(String galleryUrl)
 			throws GalleryConnectionException {
+		Map<Integer, Album> map = new HashMap<Integer, Album>();
+		try {
+			List<Item> albumAndSubAlbums = client.getAlbumAndSubAlbums(1);
+			for (Item item : albumAndSubAlbums) {
+				Album itemToAlbum = G3ConvertUtils.itemToAlbum(item);
+				map.put(itemToAlbum.getId(), itemToAlbum);
+			}
+		} catch (G3GalleryException e) {
+			throw new GalleryConnectionException(e);
+		}
+		return map;
 
-		throw new GalleryOperationNotYetSupportedException(
-				"Not available for G3 yet");
 	}
 
 	@Override
@@ -73,7 +91,8 @@ public class G3Connection implements RemoteGallery {
 	}
 
 	@Override
-	public Collection<Picture> getPicturesFromAlbum(int albumName) throws GalleryConnectionException {
+	public Collection<Picture> getPicturesFromAlbum(int albumName)
+			throws GalleryConnectionException {
 		Collection<Picture> pictures = new ArrayList<Picture>();
 		try {
 			List<Item> picturesAsItems = client.getPictures(albumName);
@@ -98,16 +117,25 @@ public class G3Connection implements RemoteGallery {
 	}
 
 	@Override
-	public int uploadPictureToGallery(String arg0, int arg1, File arg2,
-			String arg3, String arg4, String arg5)
+	public int uploadPictureToGallery(String galleryUrl, int albumName,
+			File imageFile, String imageName, String summary, String description)
 			throws GalleryConnectionException {
-		throw new GalleryOperationNotYetSupportedException(
-				"Not available for G3 yet");
+		int createItem = 0;
+		try {
+			Entity photoToCreate = new Entity();
+			photoToCreate.setName(imageFile.getName());
+			photoToCreate.setTitle(imageName);
+			photoToCreate.setParent(albumName);
+			createItem = client.createItem(photoToCreate, imageFile);
+		} catch (G3GalleryException e) {
+			throw new GalleryConnectionException(e);
+		}
+		return createItem;
 	}
 
 	@Override
-	public Album getAlbumAndSubAlbumsAndPictures(
-			int parentAlbumId) throws GalleryConnectionException {
+	public Album getAlbumAndSubAlbumsAndPictures(int parentAlbumId)
+			throws GalleryConnectionException {
 
 		// dirty hack to load the root album, id 1 in G3
 		if (parentAlbumId == 0) {
