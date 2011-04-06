@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuite failures="0" time="0.353" errors="0" skipped="0" tests="3" name="net.dahanne.gallery.jiwigo.converter.JiwigoConvertUtilsTest">
+  <properties>
+    <property name="java.runtime.name" value="Java(TM) SE Runtime Environment"/>
+    <property name="sun.boot.library.path" value="/usr/lib/jvm/java-6-sun-1.6.0.24/jre/lib/amd64"/>
+    <property name="java.vm.version" value="19.1-b02"/>
+    <property name="java.vm.vendor" value="Sun Microsystems Inc."/>
+    <property name="java.vendor.url" value="http://java.sun.com/"/>
+    <property name="path.separator" value=":"/>
+    <property name="java.vm.name" value="Java HotSpot(TM) 64-Bit Server VM"/>
+    <property name="file.encoding.pkg" value="sun.io"/>
+    <property name="user.country" value="CA"/>
+    <property name="sun.java.launcher" value="SUN_STANDARD"/>
+    <property name="sun.os.patch.level" value="unknown"/>
+    <property name="java.vm.specification.name" value="Java Virtual Machine Specification"/>
+    <property name="user.dir" value="/home/anthony/workspaces/workspace-regalandroid2/jiwigo-ws-api-converter"/>
+    <property name="java.runtime.version" value="1.6.0_24-b07"/>
+    <property name="java.awt.graphicsenv" value="sun.awt.X11GraphicsEnvironment"/>
+    <property name="basedir" value="/home/anthony/workspaces/workspace-regalandroid2/jiwigo-ws-api-converter"/>
+    <property name="java.endorsed.dirs" value="/usr/lib/jvm/java-6-sun-1.6.0.24/jre/lib/endorsed"/>
+    <property name="os.arch" value="amd64"/>
+    <property name="surefire.real.class.path" value="/tmp/surefirebooter4252352541298682454.jar"/>
+    <property name="java.io.tmpdir" value="/tmp"/>
+    <property name="line.separator" value="
+"/>
+    <property name="java.vm.specification.vendor" value="Sun Microsystems Inc."/>
+    <property name="os.name" value="Linux"/>
+    <property name="sun.jnu.encoding" value="UTF-8"/>
+    <property name="java.library.path" value="/usr/lib/jvm/java-6-sun-1.6.0.24/jre/lib/amd64/server:/usr/lib/jvm/java-6-sun-1.6.0.24/jre/lib/amd64:/usr/lib/jvm/java-6-sun-1.6.0.24/jre/../lib/amd64:/usr/java/packages/lib/amd64:/usr/lib64:/lib64:/lib:/usr/lib"/>
+    <property name="surefire.test.class.path" value="/home/anthony/workspaces/workspace-regalandroid2/jiwigo-ws-api-converter/target/test-classes:/home/anthony/workspaces/workspace-regalandroid2/jiwigo-ws-api-converter/target/classes:/home/anthony/.m2/repository/fr/mael/jiwigo/jiwigo-ws-api/0.2b/jiwigo-ws-api-0.2b.jar:/home/anthony/.m2/repository/commons-lang/commons-lang/2.5/commons-lang-2.5.jar:/home/anthony/.m2/repository/org/apache/httpcomponents/httpclient/4.1/httpclient-4.1.jar:/home/anthony/.m2/repository/org/apache/httpcomponents/httpcore/4.1/httpcore-4.1.jar:/home/anthony/.m2/repository/commons-logging/commons-logging/1.1.1/commons-logging-1.1.1.jar:/home/anthony/.m2/repository/commons-codec/commons-codec/1.4/commons-codec-1.4.jar:/home/anthony/.m2/repository/org/slf4j/slf4j-api/1.6.1/slf4j-api-1.6.1.jar:/home/anthony/.m2/repository/org/apache/sanselan/sanselan/0.97-incubator/sanselan-0.97-incubator.jar:/home/anthony/.m2/repository/net/dahanne/gallery/commons-gallery/1.0.0/commons-gallery-1.0.0.jar:/home/anthony/.m2/repository/junit/junit/4.8.1/junit-4.8.1.jar:"/>
+    <property name="java.specification.name" value="Java Platform API Specification"/>
+    <property name="java.class.version" value="50.0"/>
+    <property name="sun.management.compiler" value="HotSpot 64-Bit Server Compiler"/>
+    <property name="os.version" value="2.6.35-28-generic"/>
+    <property name="user.home" value="/home/anthony"/>
+    <property name="user.timezone" value=""/>
+    <property name="java.awt.printerjob" value="sun.print.PSPrinterJob"/>
+    <property name="file.encoding" value="UTF-8"/>
+    <property name="java.specification.version" value="1.6"/>
+    <property name="user.name" value="anthony"/>
+    <property name="java.class.path" value="/home/anthony/workspaces/workspace-regalandroid2/jiwigo-ws-api-converter/target/test-classes:/home/anthony/workspaces/workspace-regalandroid2/jiwigo-ws-api-converter/target/classes:/home/anthony/.m2/repository/fr/mael/jiwigo/jiwigo-ws-api/0.2b/jiwigo-ws-api-0.2b.jar:/home/anthony/.m2/repository/commons-lang/commons-lang/2.5/commons-lang-2.5.jar:/home/anthony/.m2/repository/org/apache/httpcomponents/httpclient/4.1/httpclient-4.1.jar:/home/anthony/.m2/repository/org/apache/httpcomponents/httpcore/4.1/httpcore-4.1.jar:/home/anthony/.m2/repository/commons-logging/commons-logging/1.1.1/commons-logging-1.1.1.jar:/home/anthony/.m2/repository/commons-codec/commons-codec/1.4/commons-codec-1.4.jar:/home/anthony/.m2/repository/org/slf4j/slf4j-api/1.6.1/slf4j-api-1.6.1.jar:/home/anthony/.m2/repository/org/apache/sanselan/sanselan/0.97-incubator/sanselan-0.97-incubator.jar:/home/anthony/.m2/repository/net/dahanne/gallery/commons-gallery/1.0.0/commons-gallery-1.0.0.jar:/home/anthony/.m2/repository/junit/junit/4.8.1/junit-4.8.1.jar:"/>
+    <property name="java.vm.specification.version" value="1.0"/>
+    <property name="sun.arch.data.model" value="64"/>
+    <property name="java.home" value="/usr/lib/jvm/java-6-sun-1.6.0.24/jre"/>
+    <property name="java.specification.vendor" value="Sun Microsystems Inc."/>
+    <property name="user.language" value="fr"/>
+    <property name="java.vm.info" value="mixed mode"/>
+    <property name="java.version" value="1.6.0_24"/>
+    <property name="java.ext.dirs" value="/usr/lib/jvm/java-6-sun-1.6.0.24/jre/lib/ext:/usr/java/packages/lib/ext"/>
+    <property name="sun.boot.class.path" value="/usr/lib/jvm/java-6-sun-1.6.0.24/jre/lib/resources.jar:/usr/lib/jvm/java-6-sun-1.6.0.24/jre/lib/rt.jar:/usr/lib/jvm/java-6-sun-1.6.0.24/jre/lib/sunrsasign.jar:/usr/lib/jvm/java-6-sun-1.6.0.24/jre/lib/jsse.jar:/usr/lib/jvm/java-6-sun-1.6.0.24/jre/lib/jce.jar:/usr/lib/jvm/java-6-sun-1.6.0.24/jre/lib/charsets.jar:/usr/lib/jvm/java-6-sun-1.6.0.24/jre/lib/modules/jdk.boot.jar:/usr/lib/jvm/java-6-sun-1.6.0.24/jre/classes"/>
+    <property name="java.vendor" value="Sun Microsystems Inc."/>
+    <property name="localRepository" value="/home/anthony/.m2/repository"/>
+    <property name="file.separator" value="/"/>
+    <property name="java.vendor.url.bug" value="http://java.sun.com/cgi-bin/bugreport.cgi"/>
+    <property name="sun.cpu.endian" value="little"/>
+    <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
+    <property name="sun.desktop" value="gnome"/>
+    <property name="sun.cpu.isalist" value=""/>
+  </properties>
+  <testcase time="0.02" classname="net.dahanne.gallery.jiwigo.converter.JiwigoConvertUtilsTest" name="jiwigoCategoryToAlbum"/>
+  <testcase time="0.003" classname="net.dahanne.gallery.jiwigo.converter.JiwigoConvertUtilsTest" name="jiwigoImageToPicture"/>
+  <testcase time="0.027" classname="net.dahanne.gallery.jiwigo.converter.JiwigoConvertUtilsTest" name="categoriesToAlbum"/>
+</testsuite>

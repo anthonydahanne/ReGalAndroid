@@ -69,16 +69,23 @@
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
-			<groupId>Jiwigo</groupId>
-			<artifactId>jiwigo-ws-api</artifactId>
-			<version>0.15</version>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>20030203.000550</version>
 			<type>jar</type>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
-			<groupId>commons-io</groupId>
-			<artifactId>commons-io</artifactId>
-			<version>20030203.000550</version>
+			<groupId>fr.mael.jiwigo</groupId>
+			<artifactId>jiwigo-ws-api</artifactId>
+			<version>0.2b</version>
+			<type>jar</type>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>net.dahanne.gallery</groupId>
+			<artifactId>jiwigo-ws-api-converter</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
 			<type>jar</type>
 			<scope>compile</scope>
 		</dependency>

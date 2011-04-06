@@ -46,7 +46,7 @@
 		<module>../commons-gallery</module>
 		<module>../g2-java-client</module>
 		<module>../g3-java-client</module>
-		<module>../jiwigo-ws-api</module>
+		<module>../jiwigo-ws-api-converter</module>
 	</modules>
 
 </project>

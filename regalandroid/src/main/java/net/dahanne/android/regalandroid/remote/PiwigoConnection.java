@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -33,54 +34,81 @@ import net.dahanne.gallery.commons.remote.GalleryOperationNotYetSupportedExcepti
 import net.dahanne.gallery.commons.remote.ImpossibleToLoginException;
 import net.dahanne.gallery.commons.remote.RemoteGallery;
 import net.dahanne.gallery.commons.utils.AlbumUtils;
+import net.dahanne.gallery.jiwigo.converter.JiwigoConvertUtils;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import fr.mael.jiwigo.dao.impl.CategoryDaoImpl;
+import fr.mael.jiwigo.dao.impl.ImageDaoImpl;
 import fr.mael.jiwigo.om.Category;
 import fr.mael.jiwigo.om.Image;
-import fr.mael.jiwigo.service.CategoryService;
-import fr.mael.jiwigo.service.ImageService;
-import fr.mael.jiwigo.transverse.session.SessionManager;
-import fr.mael.jiwigo.util.JiwigoConvertUtils;
+import fr.mael.jiwigo.service.impl.CategoryServiceImpl;
+import fr.mael.jiwigo.service.impl.ImageServiceImpl;
+import fr.mael.jiwigo.transverse.exception.ProxyAuthenticationException;
+import fr.mael.jiwigo.transverse.session.impl.SessionManagerImpl;
 
 public class PiwigoConnection implements RemoteGallery {
 
 	private final Logger logger = LoggerFactory
 			.getLogger(PiwigoConnection.class);
-	private final SessionManager sessionManager;
-	private final CategoryService categoryService;
-	private final ImageService imageService;
+	private final SessionManagerImpl sessionManager;
+	private final CategoryServiceImpl categoryService;
+	private final ImageServiceImpl imageService;
 	private Album rootAlbum;
 
-	public PiwigoConnection(String galleryUrl, String username, String password, String userAgent) {
-		sessionManager = new SessionManager(username, password, galleryUrl, userAgent);
-		categoryService = new CategoryService(sessionManager);
-		imageService =  new ImageService(sessionManager);
+	public PiwigoConnection(String galleryUrl, String username,
+			String password, String userAgent) {
+		sessionManager = new SessionManagerImpl(username, password, galleryUrl,
+				userAgent);
+		categoryService = new CategoryServiceImpl();
+		CategoryDaoImpl categoryDao = new CategoryDaoImpl();
+		categoryDao.setSessionManager(sessionManager);
+		categoryService.setDao(categoryDao);
+		imageService = new ImageServiceImpl();
+		ImageDaoImpl imageDao = new ImageDaoImpl();
+		imageDao.setSessionManager(sessionManager);
+		imageService.setDao(imageDao);
 
 	}
 
 	@Override
-	public int createNewAlbum(String arg0, int arg1, String arg2,
-			String arPiwigo, String arg4) throws GalleryConnectionException {
+	public int createNewAlbum(String galleryUrl, int parentAlbumName,
+			String albumName, String albumTitle, String albumDescription)
+			throws GalleryConnectionException {
 		logger.debug("createNewAlbum");
-		throw new GalleryOperationNotYetSupportedException(
-				"Not available for Piwigo yet");
+		try {
+			categoryService.create(albumName, parentAlbumName);
+		} catch (ProxyAuthenticationException e) {
+			throw new GalleryConnectionException(e);
+		}
+		return parentAlbumName;
 	}
 
 	@Override
 	public Map<Integer, Album> getAllAlbums(String arg0)
 			throws GalleryConnectionException {
 		logger.debug("getAllAlbums");
-		throw new GalleryOperationNotYetSupportedException(
-				"Not available for Piwigo yet");
-	}
-
-	@Override
-	public InputStream getInputStreamFromUrl(String imageUrl)
-			throws GalleryConnectionException {
-		logger.debug("getInputStreamFromUrl");
-		return sessionManager.getInputStreamFromUrl(imageUrl);
+		Map<Integer, Album> map = new HashMap<Integer, Album>();
+		List<Category> categoriesList;
+		try {
+			categoriesList = categoryService.makeTree();
+			for (Category category : categoriesList) {
+				Album jiwigoCategoryToAlbum = JiwigoConvertUtils
+						.jiwigoCategoryToAlbum(category);
+				map.put(jiwigoCategoryToAlbum.getId(), jiwigoCategoryToAlbum);
+			}
+			return map;
+		} catch (IOException e) {
+			logger.debug("getAllAlbums : {}", e.getStackTrace());
+			throw new GalleryConnectionException(e);
+		} catch (ProxyAuthenticationException e) {
+			logger.debug("getAllAlbums : {}", e.getStackTrace());
+			throw new GalleryConnectionException(e);
+		}
 	}
 
 	@Override
@@ -89,12 +117,16 @@ public class PiwigoConnection implements RemoteGallery {
 		logger.debug("getPicturesFromAlbum");
 		List<Picture> pictures = new ArrayList<Picture>();
 		try {
-			List<Image> pictureInAlbum = imageService.listerParCategory(albumName, true);
+			List<Image> pictureInAlbum = imageService.listByCategory(albumName,
+					true);
 			for (Image image : pictureInAlbum) {
-				pictures.add( JiwigoConvertUtils.jiwigoImageToPicture(image));
+				pictures.add(JiwigoConvertUtils.jiwigoImageToPicture(image));
 			}
 			return pictures;
 		} catch (IOException e) {
+			logger.debug("getPicturesFromAlbum : {}", e.getStackTrace());
+			throw new GalleryConnectionException(e);
+		} catch (ProxyAuthenticationException e) {
 			logger.debug("getPicturesFromAlbum : {}", e.getStackTrace());
 			throw new GalleryConnectionException(e);
 		}
@@ -108,34 +140,68 @@ public class PiwigoConnection implements RemoteGallery {
 	}
 
 	@Override
-	public int uploadPictureToGallery(String arg0, int arg1, File arg2,
-			String arPiwigo, String arg4, String arg5)
+	public int uploadPictureToGallery(String galleryUrl, int albumName,
+			File imageFile, String imageName, String summary, String description)
 			throws GalleryConnectionException {
 		logger.debug("uploadPictureToGallery");
-		throw new GalleryOperationNotYetSupportedException(
-				"Not available for Piwigo yet");
+		throw new GalleryOperationNotYetSupportedException("Not available for Piwigo yet");
+
+		// try {
+		// //TODO it sucks not to have exception handlings...
+		// boolean creer = imageService.create(imageFile.getPath(), albumName,
+		// 0, (double) (2*1000*1024));
+		// } catch (Exception e) {
+		// logger.debug("uploadPictureToGallery : {}", e.getStackTrace());
+		// throw new GalleryConnectionException(e);
+		// }
+		// return albumName;
+
 	}
 
 	@Override
 	public Album getAlbumAndSubAlbumsAndPictures(int parentAlbumId)
 			throws GalleryConnectionException {
 		logger.debug("getAlbumAndSubAlbumsAndPictures");
-		if(rootAlbum==null){
+		if (rootAlbum == null) {
 			try {
-				List<Category> categoriesList = categoryService.construireArbre();
-				rootAlbum =  JiwigoConvertUtils.categoriesToAlbum(categoriesList);
+				List<Category> categoriesList = categoryService
+						.makeTree();
+				rootAlbum = JiwigoConvertUtils
+						.categoriesToAlbum(categoriesList);
 			} catch (IOException e) {
-				logger.debug("listing categories failed : {}", e.getStackTrace());
+				logger.debug("listing categories failed : {}",
+						e.getStackTrace());
+				throw new GalleryConnectionException(e);
+			} catch (ProxyAuthenticationException e) {
+				logger.debug("listing categories failed : {}",
+						e.getStackTrace());
 				throw new GalleryConnectionException(e);
 			}
-			
+
 		}
-		
+
 		Album findAlbumFromAlbumName = AlbumUtils.findAlbumFromAlbumName(
 				rootAlbum, parentAlbumId);
 		findAlbumFromAlbumName.getPictures().addAll(
-				getPicturesFromAlbum( parentAlbumId));
+				getPicturesFromAlbum(parentAlbumId));
 		return findAlbumFromAlbumName;
-		
+
+	}
+	
+	@Override
+	public InputStream getInputStreamFromUrl(String url) throws GalleryConnectionException {
+		logger.debug("getInputStreamFromUrl");
+		InputStream content = null;
+		DefaultHttpClient client = new DefaultHttpClient();
+		HttpGet httpGet = new HttpGet(url);
+		try {
+			// Execute HTTP Get Request
+			HttpResponse response = client.execute(httpGet);
+			content = response.getEntity().getContent();
+		} catch (Exception e) {
+			httpGet.abort();
+			throw new GalleryConnectionException(e.getMessage());
+		}
+		return content;
 	}
 }
