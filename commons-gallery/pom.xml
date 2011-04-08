@@ -3,7 +3,7 @@
 	<parent>
 		<artifactId>regalandroid-parent</artifactId>
 		<groupId>net.dahanne.android</groupId>
-		<version>1.0.0</version>
+		<version>1.0.1</version>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.dahanne.gallery</groupId>
