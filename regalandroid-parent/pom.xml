@@ -5,7 +5,7 @@
 	<artifactId>regalandroid-parent</artifactId>
 	<version>1.0.1</version>
 	<packaging>pom</packaging>
-	<name>ReGalAndroid parent project</name>
+	<name>ReGalAndroid parent module</name>
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
@@ -41,12 +41,5 @@
 			</plugins>
 		</pluginManagement>
 	</build>
-	<modules>
-		<module>../regalandroid</module>
-		<module>../commons-gallery</module>
-		<module>../g2-java-client</module>
-		<module>../g3-java-client</module>
-		<module>../jiwigo-ws-api-converter</module>
-	</modules>
 
 </project>
