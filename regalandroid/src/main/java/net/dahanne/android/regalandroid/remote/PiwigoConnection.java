@@ -46,7 +46,7 @@ import fr.mael.jiwigo.om.Category;
 import fr.mael.jiwigo.om.Image;
 import fr.mael.jiwigo.service.impl.CategoryServiceImpl;
 import fr.mael.jiwigo.service.impl.ImageServiceImpl;
-import fr.mael.jiwigo.transverse.exception.PiwigoConnectionException;
+import fr.mael.jiwigo.transverse.exception.JiwigoException;
 import fr.mael.jiwigo.transverse.session.impl.SessionManagerImpl;
 
 public class PiwigoConnection implements RemoteGallery {
@@ -80,7 +80,7 @@ public class PiwigoConnection implements RemoteGallery {
 		logger.debug("createNewAlbum");
 		try {
 			categoryService.create(albumName, parentAlbumName);
-		} catch (PiwigoConnectionException e) {
+		} catch (JiwigoException e) {
 			throw new GalleryConnectionException(e);
 		}
 		return parentAlbumName;
@@ -100,7 +100,7 @@ public class PiwigoConnection implements RemoteGallery {
 				map.put(jiwigoCategoryToAlbum.getId(), jiwigoCategoryToAlbum);
 			}
 			return map;
-		} catch (PiwigoConnectionException e) {
+		} catch (JiwigoException e) {
 			logger.debug("getAllAlbums : {}", e.getStackTrace());
 			throw new GalleryConnectionException(e);
 		} 
@@ -118,7 +118,7 @@ public class PiwigoConnection implements RemoteGallery {
 				pictures.add(JiwigoConvertUtils.jiwigoImageToPicture(image));
 			}
 			return pictures;
-		} catch (PiwigoConnectionException e) {
+		} catch (JiwigoException e) {
 			logger.debug("getPicturesFromAlbum : {}", e.getStackTrace());
 			throw new GalleryConnectionException(e);
 		}
@@ -129,7 +129,7 @@ public class PiwigoConnection implements RemoteGallery {
 		logger.debug("loginToGallery");
 		try {
 			sessionManager.processLogin();
-		} catch (PiwigoConnectionException e) {
+		} catch (JiwigoException e) {
 			logger.debug("loginToGallery : {}", e.getStackTrace());
 			throw new ImpossibleToLoginException(e);
 		}
@@ -144,7 +144,7 @@ public class PiwigoConnection implements RemoteGallery {
 
 		 try {
 			 imageService.addSimple(imageFile, albumName, imageName);
-		 } catch (PiwigoConnectionException e) {
+		 } catch (JiwigoException e) {
 			 logger.debug("uploadPictureToGallery : {}", e.getStackTrace());
 			 throw new GalleryConnectionException(e);
 		 }
@@ -162,7 +162,7 @@ public class PiwigoConnection implements RemoteGallery {
 						.makeTree();
 				rootAlbum = JiwigoConvertUtils
 						.categoriesToAlbum(categoriesList);
-			} catch (PiwigoConnectionException e) {
+			} catch (JiwigoException e) {
 				logger.debug("listing categories failed : {}",
 						e.getStackTrace());
 				throw new GalleryConnectionException(e);
