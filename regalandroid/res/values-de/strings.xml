@@ -19,30 +19,7 @@
 -->
 
 <resources>
-		<!--Keys, NOT TO TRANSLATE !-->
-		<string name="gallery_url_key">galleryUrl</string>
-		<string name="username_key">username</string>
-		<string name="password_key">password</string>
-		<string name="port_key">port</string>
-		<string name="firsttime_key">firsttime</string>
-		<string name="clear_cache_key">clear_cache</string>
-		<string name="regalandroid_path_key">regalandroid_path</string>
-		<string name="regalandroid_temp_path_key">regalandroid_cache_path</string>
-		<string name="default_summary_key">DefaultSummary</string>
-		<string name="default_description_key">DefaultDescription</string>
-		<string name="gallery_connection_type_key">GalleryType</string>
-		<!-- end of Keys -->
-		
-		<!--Default values , NOT TO TRANSLATE !-->
-		<string name="project_home_url">http://code.google.com/p/regalandroid</string>
-		<string name="licence">GNU General Public License v3</string>
-		<string name="port_default">80</string>
-		<string name="gallery_url_default">http://g2.dahanne.net</string>
-		<string name="app_name">ReGalAndroid</string>
-		<string name="regalandroid_path_default">regalandroid</string>
-		<string name="regalandroid_cache_path_default">tmp</string>
-		<!-- end of Default Values -->
-		
+	
 		
         <!-- Activities -->
         <string name="welcome_to_regalandroid">Willkommen zu ReGalAndroid</string>
