@@ -55,7 +55,7 @@
 				android:layout_height="wrap_content" android:paddingTop="15px"
 				android:paddingLeft="15px" android:textStyle="bold"
 				android:textColor="#ffffff" />
-			<TextView android:text="@string/licence"
+			<TextView android:text="@string/license"
 				android:layout_width="fill_parent" android:layout_height="wrap_content"
 				android:paddingLeft="15px" android:textColor="#ffffff" />
 			<TextView android:text="http://www.gnu.org/licenses/gpl.html"
@@ -78,6 +78,13 @@
 				android:paddingLeft="15px" android:textStyle="bold"
 				android:textColor="#ffffff" />
 			<TextView android:text="GoApk.com"
+				android:layout_width="fill_parent" android:layout_height="wrap_content"
+				android:paddingLeft="15px" android:textColor="#ffffff" />
+			<TextView android:text="German translation: " android:layout_width="fill_parent"
+				android:layout_height="wrap_content" android:paddingTop="15px"
+				android:paddingLeft="15px" android:textStyle="bold"
+				android:textColor="#ffffff" />
+			<TextView android:text="Ralph Kapsammer"
 				android:layout_width="fill_parent" android:layout_height="wrap_content"
 				android:paddingLeft="15px" android:textColor="#ffffff" />
 			<TextView android:text="http://goapk.com" android:textColorLink="#ffffff"

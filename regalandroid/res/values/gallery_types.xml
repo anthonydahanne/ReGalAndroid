@@ -24,8 +24,8 @@
 
 	<string-array name="gallery_types">
 		<item>Gallery2</item>
-		<item>Gallery3 (browsing only)</item>
-		<item>Piwigo (browsing only)</item>
+		<item>Gallery3 (beta)</item>
+		<item>Piwigo (beta)</item>
 	</string-array>
 
 	<!-- could be integer-array; yeah but there is a bug in android, #2096 that 

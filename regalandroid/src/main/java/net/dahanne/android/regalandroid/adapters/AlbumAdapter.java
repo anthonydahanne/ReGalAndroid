@@ -68,7 +68,7 @@ public class AlbumAdapter extends ArrayAdapter<Album> {
 			if (bt != null) {
 				String summary = album.getSummary();
 				if (summary == null || summary.equals("")) {
-					summary = context.getString(R.string.no_summary_available);
+					summary = "";
 				}
 				bt.setText(summary);
 			}

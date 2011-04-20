@@ -134,7 +134,6 @@
 		<string name="default_description_title">Description par défaut</string>
 		<string name="default_description_summary">Les photos envoyées auront cette description par défaut</string>
 		<string name="multiple_files_upload">Envoi de fichiers multiples</string>
-		<string name="no_summary_available">Pas de sommaire disponible</string>
 		<string name="advanced_control_title">Contrôles avancés</string>
 		
 		<string name="gallery_connection_type_title">Type de galerie</string>

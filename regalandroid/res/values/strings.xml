@@ -35,7 +35,7 @@
 		
 		<!--Default values , NOT TO TRANSLATE !-->
 		<string name="project_home_url">http://code.google.com/p/regalandroid</string>
-		<string name="licence">GNU General Public License v3</string>
+		<string name="license">GNU General Public License v3</string>
 		<string name="port_default">80</string>
 		<string name="gallery_url_default">http://g2.dahanne.net</string>
 		<string name="app_name">ReGalAndroid</string>
@@ -108,7 +108,7 @@
         <string name="show_albums_title">RegalAndroid Albums</string>
         <string name="show_gallery_title">RegalAndroid Gallery</string>
 		<string name="view_album_pictures">View this album pictures !</string>
-		<string name="current_version">Version : 1.0.1</string>
+		<string name="current_version">Version : 1.1.0</string>
 		<string name="project_home">Project Home : </string>
 		<string name="album_is_empty">This album does not contain any pictures !</string>
 		<string name="type_new_subalbum_name">Type in your new subalbum name : </string>
@@ -175,7 +175,6 @@
 		<string name="default_description_title">Default Description</string>
 		<string name="default_description_summary">Photos sent with RegalAndroid will have this description set</string>
 		<string name="multiple_files_upload">Multiple files upload</string>
-		<string name="no_summary_available">No summary available</string>
 		<string name="advanced_control_title">Advanced controls</string>
 
 		<string name="gallery_connection_type_title">Gallery type</string>
