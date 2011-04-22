@@ -80,6 +80,9 @@
 			<TextView android:text="GoApk.com"
 				android:layout_width="fill_parent" android:layout_height="wrap_content"
 				android:paddingLeft="15px" android:textColor="#ffffff" />
+			<TextView android:text="http://goapk.com" android:textColorLink="#ffffff"
+				android:layout_width="fill_parent" android:layout_height="wrap_content"
+				android:paddingLeft="15px" android:textColor="#ffffff" android:autoLink="web" />
 			<TextView android:text="German translation: " android:layout_width="fill_parent"
 				android:layout_height="wrap_content" android:paddingTop="15px"
 				android:paddingLeft="15px" android:textStyle="bold"
@@ -87,9 +90,6 @@
 			<TextView android:text="Ralph Kapsammer"
 				android:layout_width="fill_parent" android:layout_height="wrap_content"
 				android:paddingLeft="15px" android:textColor="#ffffff" />
-			<TextView android:text="http://goapk.com" android:textColorLink="#ffffff"
-				android:layout_width="fill_parent" android:layout_height="wrap_content"
-				android:paddingLeft="15px" android:textColor="#ffffff" android:autoLink="web" />
 			<TextView android:text="Did you find a bug ?" android:layout_width="fill_parent"
 				android:layout_height="wrap_content" android:paddingTop="15px"
 				android:paddingLeft="15px" android:textStyle="bold"
