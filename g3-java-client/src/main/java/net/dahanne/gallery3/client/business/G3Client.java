@@ -40,6 +40,7 @@ import net.dahanne.gallery3.client.model.Entity;
 import net.dahanne.gallery3.client.model.Item;
 import net.dahanne.gallery3.client.utils.ItemUtils;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -73,8 +74,9 @@ public class G3Client implements IG3Client {
 	private static final String POST = "post";
 	private static final String PUT = "put";
 
-	private static final String INDEX_PHP_REST_ITEM = "index.php/rest/item/";
-	private static final String INDEX_PHP_REST_ITEMS = "index.php/rest/items";
+	private static final String INDEX_PHP_REST = "index.php/rest";
+	private static final String INDEX_PHP_REST_ITEM = INDEX_PHP_REST +"/item/";
+	private static final String INDEX_PHP_REST_ITEMS = INDEX_PHP_REST +"/items";
 
 	private final String galleryItemUrl;
 	private String existingApiKey;
@@ -83,6 +85,7 @@ public class G3Client implements IG3Client {
 	private String username;
 	private final Logger logger = LoggerFactory.getLogger(G3Client.class);
 	private final String userAgent;
+	private boolean isUsingRewrittenUrls;
 
 	public G3Client(String galleryUrl, String userAgent) {
 		this.userAgent = userAgent;
@@ -228,6 +231,12 @@ public class G3Client implements IG3Client {
 			ClientProtocolException, G3GalleryException {
 		HttpClient defaultHttpClient = new DefaultHttpClient();
 		HttpRequestBase httpMethod;
+		//are we using rewritten urls ?
+		if(this.isUsingRewrittenUrls  && appendToGalleryUrl.contains(INDEX_PHP_REST)){
+			appendToGalleryUrl = StringUtils.remove(appendToGalleryUrl,"index.php");
+		}
+		
+		
 		logger.debug("requestToResponseEntity , url requested : {}",galleryItemUrl + appendToGalleryUrl);
 		if (POST.equals(requestMethod)) {
 			httpMethod = new HttpPost(galleryItemUrl + appendToGalleryUrl);
@@ -299,11 +308,20 @@ public class G3Client implements IG3Client {
 		}
 
 		int responseStatusCode = response.getStatusLine().getStatusCode();
-
+		HttpEntity responseEntity = null;
+		if(response.getEntity()!=null){
+			responseEntity = response.getEntity();
+		}
+		
 		switch (responseStatusCode) {
 		case HttpURLConnection.HTTP_CREATED:
 			break;
 		case HttpURLConnection.HTTP_OK:
+			break;
+		case HttpURLConnection.HTTP_MOVED_TEMP:
+			//the gallery is using rewritten urls, let's remember it and re hit the server
+			this.isUsingRewrittenUrls = true;
+			responseEntity = requestToResponseEntity(appendToGalleryUrl,nameValuePairs,requestMethod,file);
 			break;
 		case HttpURLConnection.HTTP_BAD_REQUEST:
 			throw new G3BadRequestException();
@@ -315,7 +333,7 @@ public class G3Client implements IG3Client {
 			throw new G3GalleryException("HTTP code " + responseStatusCode);
 		}
 
-		HttpEntity responseEntity = response.getEntity();
+		
 		return responseEntity;
 	}
 
@@ -325,7 +343,7 @@ public class G3Client implements IG3Client {
 		nameValuePairs.add(new BasicNameValuePair("user", username));
 		nameValuePairs.add(new BasicNameValuePair("password", password));
 
-		String jsonResult = sendHttpRequest("index.php/rest", nameValuePairs,
+		String jsonResult = sendHttpRequest(INDEX_PHP_REST, nameValuePairs,
 				POST, null);
 
 		String key = ItemUtils.convertJsonResultToApiKey(jsonResult);
@@ -440,6 +458,14 @@ public class G3Client implements IG3Client {
 
 	public String getExistingApiKey() {
 		return existingApiKey;
+	}
+
+	public boolean isUsingRewrittenUrls() {
+		return isUsingRewrittenUrls;
+	}
+
+	public void setUsingRewrittenUrls(boolean isUsingRewrittenUrls) {
+		this.isUsingRewrittenUrls = isUsingRewrittenUrls;
 	}
 
 
