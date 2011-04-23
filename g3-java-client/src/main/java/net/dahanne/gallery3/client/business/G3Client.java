@@ -326,6 +326,12 @@ public class G3Client implements IG3Client {
 		case HttpURLConnection.HTTP_BAD_REQUEST:
 			throw new G3BadRequestException();
 		case HttpURLConnection.HTTP_FORBIDDEN:
+			//for some reasons, the gallery may respond with 403 when trying to log in with the wrong url
+			if(appendToGalleryUrl.contains(INDEX_PHP_REST)){
+				this.isUsingRewrittenUrls = true;
+				responseEntity = requestToResponseEntity(appendToGalleryUrl,nameValuePairs,requestMethod,file);
+				break;
+			}
 			throw new G3ForbiddenException();
 		case HttpURLConnection.HTTP_NOT_FOUND:
 			throw new G3ItemNotFoundException();

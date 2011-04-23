@@ -1,5 +1,5 @@
 ====
-     commons-gallery, a common API module for ReGalAndroid
+     g3-java-client, a Menalto Gallery3 Java Client API
      URLs: https://github.com/anthonydahanne/ReGalAndroid , http://blog.dahanne.net
      Copyright (c) 2010 Anthony Dahanne
      This program is free software; you can redistribute it and/or modify
