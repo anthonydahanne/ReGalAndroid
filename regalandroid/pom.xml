@@ -114,7 +114,7 @@
 				<version>2.9.0-beta-2</version>
 				<configuration>
 					<sdk>
-						<platform>8</platform>
+						<platform>10</platform>
 					</sdk>
 					<emulator>
 						<avd>android2.2</avd>

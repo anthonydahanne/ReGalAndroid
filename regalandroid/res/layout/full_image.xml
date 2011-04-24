@@ -19,11 +19,9 @@
 
 -->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_width="fill_parent" android:layout_height="wrap_content"
-	android:layout_gravity="center_vertical|center_horizontal"
-	android:orientation="vertical">
-	<ImageView android:layout_width="fill_parent"
-		android:layout_height="fill_parent" android:layout_gravity="center_horizontal"
-		android:id="@+id/image_full" />
-</LinearLayout>
+<ImageView
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="fill_parent"
+  android:id="@+id/image_full"
+  android:layout_height="fill_parent">
+</ImageView>

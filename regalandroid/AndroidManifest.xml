@@ -49,5 +49,6 @@
 	<uses-permission android:name="android.permission.INTERNET" />
 	<uses-permission android:name="android.permission.CAMERA" />
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-	<supports-screens/>
+	<supports-screens android:anyDensity="true" android:largeScreens="true" android:normalScreens="true" android:smallScreens="true" android:resizeable="true" android:xlargeScreens="true" />
+	<uses-sdk android:minSdkVersion="4" android:targetSdkVersion="10"></uses-sdk>
 </manifest> 
