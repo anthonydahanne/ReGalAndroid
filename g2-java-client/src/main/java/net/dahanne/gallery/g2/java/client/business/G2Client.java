@@ -84,7 +84,7 @@ public class G2Client {
 
 	private static final String UPLOAD_FAILED = "Upload Failed";
 	private static final String FAILED = "failed";
-	private static final Charset UTF_8 = Charset.forName("US-ASCII");
+	private static final Charset UTF_8 = Charset.forName("UTF-8");
 	private static final String EQUALS = "=";
 	/**
 	 * Final static constants
