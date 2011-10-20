@@ -105,7 +105,7 @@
 			<plugin>
 				<groupId>com.jayway.maven.plugins.android.generation2</groupId>
 				<artifactId>android-maven-plugin</artifactId>
-				<version>3.0.0-alpha-12</version>
+				<version>3.0.0-alpha-13</version>
 				<configuration>
 					<sdk>
 						<platform>10</platform>
@@ -127,10 +127,6 @@
 					</execution>
 				</executions>
 			</plugin>
-			<!--plugin>
-				<artifactId>maven-compiler-plugin</artifactId>
-			</plugin-->
-
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
 				<version>2.3.2</version>
