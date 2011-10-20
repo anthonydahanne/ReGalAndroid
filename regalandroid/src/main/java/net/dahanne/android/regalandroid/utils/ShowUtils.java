@@ -19,6 +19,7 @@
 package net.dahanne.android.regalandroid.utils;
 
 import net.dahanne.android.regalandroid.R;
+import net.dahanne.android.regalandroid.activity.FullImage;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -101,6 +102,13 @@ public class ShowUtils {
 				Toast.LENGTH_LONG).show();
 	}
 
+	public void toastImagesSuccessfullyDownloaded(Context context) {
+		Toast.makeText(context,R.string.image_successfully_downloaded,
+				Toast.LENGTH_LONG).show();	
+		
+	}
+	
+	
 	public void toastCacheSuccessfullyCleared(Context context) {
 		Toast.makeText(context, context.getString(R.string.cache_cleared),
 				Toast.LENGTH_LONG).show();

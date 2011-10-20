@@ -29,11 +29,11 @@ import net.dahanne.android.regalandroid.R;
 import net.dahanne.android.regalandroid.RegalAndroidApplication;
 import net.dahanne.android.regalandroid.remote.RemoteGalleryConnectionFactory;
 import net.dahanne.android.regalandroid.tasks.CreateAlbumTask;
+import net.dahanne.android.regalandroid.tasks.DownloadImageTask;
 import net.dahanne.android.regalandroid.tasks.ReplaceMainImageTask;
 import net.dahanne.android.regalandroid.utils.DBUtils;
 import net.dahanne.android.regalandroid.utils.FileUtils;
 import net.dahanne.android.regalandroid.utils.ShowUtils;
-import net.dahanne.android.regalandroid.utils.modified_android_source.AsyncTask;
 import net.dahanne.gallery.commons.model.Picture;
 import net.dahanne.gallery.commons.remote.GalleryConnectionException;
 
@@ -47,6 +47,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.KeyEvent;
@@ -177,13 +178,14 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 			ImageView i = new ImageView(mContext);
-			Bitmap downloadImage = findBitmapWithPosition(position);
-
+			Bitmap downloadImage = findBitmapWithPosition(position,i);
+//			BitmapDrawable bitmapDrawable = new BitmapDrawable(downloadImage);
+//			i.setImageDrawable(bitmapDrawable);
 			i.setImageBitmap(downloadImage);
 			return i;
 		}
 
-		private Bitmap findBitmapWithPosition(int position) {
+		private Bitmap findBitmapWithPosition(int position,View view) {
 			Picture picture = albumPictures.get(position);
 			int albumName = application.getCurrentAlbum().getName();
 			File potentiallyAlreadyDownloadedFile = new File(
@@ -206,29 +208,23 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 				else {
 					String thumbUrl = picture.getThumbUrl();
 					try {
-						logger.debug("getting picture from gallery : {}",
-								thumbUrl);
-						File imageFileOnExternalDirectory = FileUtils
-								.getInstance().getFileFromGallery(
-										ShowGallery.this,
-										THUMB_PREFIX + picture.getFileName(),
-										picture.getForceExtension(), thumbUrl,
-										true, albumName);
-						downloadImage = BitmapFactory
-								.decodeFile(imageFileOnExternalDirectory
-										.getPath());
-						picture.setThumbImageCachePath(imageFileOnExternalDirectory
-								.getPath());
-						bitmapsCache.put(position, downloadImage);
+						logger.debug("getting picture from gallery : {}",thumbUrl);
+						DownloadImageTask downloadTask = new DownloadImageTask(ShowGallery.this);
+						downloadTask.execute(THUMB_PREFIX + picture.getFileName(),picture.getForceExtension(), thumbUrl,albumName,bitmapsCache,downloadImage,position,picture,view);
+
 					} catch (Exception e) {
 						logger.debug("exception  : {}", e.getStackTrace());
-						ShowUtils.getInstance().alertConnectionProblem(
-								e.getMessage(),
+						ShowUtils.getInstance().alertConnectionProblem(e.getMessage(),
 								Settings.getGalleryUrl(ShowGallery.this),
 								ShowGallery.this);
 					}
 				}
 
+			}
+			if(downloadImage== null){
+			    //ok, the thumb is not downloaded yet, let's put the waiting image
+			    downloadImage = BitmapFactory.decodeResource(getResources(), R.drawable.loading);
+			    bitmapsCache.put(position, downloadImage);
 			}
 			return downloadImage;
 		}
@@ -268,7 +264,7 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 			BitmapDrawable bitmapDrawable = new BitmapDrawable(
 					currentThumbBitmap);
 			mSwitcher.setImageDrawable(bitmapDrawable);
-			new ReplaceMainImageTask(this, progressDialog, gallery).execute(
+			new ReplaceMainImageTask(this, gallery).execute(
 					uriString, mSwitcher, position, picture);
 		}
 	}
@@ -437,7 +433,7 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 			Picture picture = albumPictures.get(currentPosition);
 			String uriString = FileUtils.getInstance()
 					.chooseBetweenResizedAndOriginalUrl(picture);
-			new ReplaceMainImageTask(ShowGallery.this, progressDialog, gallery)
+			new ReplaceMainImageTask(ShowGallery.this, gallery)
 					.execute(uriString, mSwitcher, currentPosition, picture);
 		}
 	}

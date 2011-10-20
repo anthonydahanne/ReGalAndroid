@@ -73,59 +73,11 @@ public class FileUtils {
 						albumName });
 		File imageFileOnExternalDirectory = null;
 		try {
+			imageFileOnExternalDirectory = prepareFileSystemForImage(context, fileName, extension,
+				isTemporary, albumName, imageFileOnExternalDirectory);
 			InputStream inputStreamFromUrl = null;
-			String storageState = Environment.getExternalStorageState();
-			if (Environment.MEDIA_MOUNTED.equals(storageState)) {
-				logger.debug("storage is mounted");
-				File savePath = new File(
-						Settings.getReGalAndroidCachePath(context) + "/"
-								+ albumName);
-				// if the cache has never been used before
-				if (!savePath.exists()) {
-					// we make sure regalandroid path exists (ex : /regalandroid)
-					File regalAndroidDirectory = new File(
-							Settings.getReGalAndroidPath(context));
-					regalAndroidDirectory.mkdir();
-					// we then create regalandroid cache path (tmp)
-					File regalAndroidCacheDirectory = new File(
-							Settings.getReGalAndroidCachePath(context));
-					regalAndroidCacheDirectory.mkdir();
-					// and also that the specific album folder exists, bug #65
-					File albumCacheDirectory = new File(
-							Settings.getReGalAndroidCachePath(context) + "/"
-									+ albumName);
-					albumCacheDirectory.mkdir();
-
-					// issue #30 : insert the .nomedia file so that the dir
-					// won't be parsed by other photo apps
-					File noMediaFile = new File(
-							Settings.getReGalAndroidCachePath(context) + "/"
-									+ albumName + NO_CACHE_PATH);
-					if (!noMediaFile.createNewFile()) {
-						throw new FileHandlingException(
-								context.getString(R.string.external_storage_problem));
-					}
-				}
-				// if the file downloaded is not a cache file, but a file to
-				// keep
-				if (!isTemporary) {
-					savePath = new File(Settings.getReGalAndroidPath(context));
-					// if there is no file extension, we add the one that
-					// corresponds to the picture (if we have it)
-					if (fileName.lastIndexOf(".") == -1
-							&& !StringUtils.isEmpty(extension)) {
-						fileName = fileName + "." + extension;
-					}
-				}
-				logger.debug("savePath is : {}", savePath);
-				//in case the filename has special characters
-				imageFileOnExternalDirectory = new File(savePath, fileName);
-				inputStreamFromUrl = RemoteGalleryConnectionFactory.getInstance()
-						.getInputStreamFromUrl(imageUrl);
-			} else {
-				throw new FileHandlingException(
-						context.getString(R.string.external_storage_problem));
-			}
+			inputStreamFromUrl = RemoteGalleryConnectionFactory.getInstance()
+				.getInputStreamFromUrl(imageUrl);
 			FileOutputStream fos;
 			fos = new FileOutputStream(imageFileOnExternalDirectory);
 			byte[] buf = new byte[1024];
@@ -142,6 +94,61 @@ public class FileUtils {
 			throw new FileHandlingException(e.getMessage());
 		}
 		return imageFileOnExternalDirectory;
+	}
+
+	private synchronized File prepareFileSystemForImage(Context context, String fileName, String extension, boolean isTemporary,
+		int albumName, File imageFileOnExternalDirectory) throws IOException, FileHandlingException {
+	    String storageState = Environment.getExternalStorageState();
+	    if (Environment.MEDIA_MOUNTED.equals(storageState)) {
+	    	logger.debug("storage is mounted");
+	    	File savePath = new File(
+	    			Settings.getReGalAndroidCachePath(context) + "/"
+	    					+ albumName);
+	    	// if the cache has never been used before
+	    	if (!savePath.exists()) {
+	    		// we make sure regalandroid path exists (ex : /regalandroid)
+	    		File regalAndroidDirectory = new File(
+	    				Settings.getReGalAndroidPath(context));
+	    		regalAndroidDirectory.mkdir();
+	    		// we then create regalandroid cache path (tmp)
+	    		File regalAndroidCacheDirectory = new File(
+	    				Settings.getReGalAndroidCachePath(context));
+	    		regalAndroidCacheDirectory.mkdir();
+	    		// and also that the specific album folder exists, bug #65
+	    		File albumCacheDirectory = new File(
+	    				Settings.getReGalAndroidCachePath(context) + "/"
+	    						+ albumName);
+	    		albumCacheDirectory.mkdir();
+
+	    		// issue #30 : insert the .nomedia file so that the dir
+	    		// won't be parsed by other photo apps
+	    		File noMediaFile = new File(
+	    				Settings.getReGalAndroidCachePath(context) + "/"
+	    						+ albumName + NO_CACHE_PATH);
+	    		if (!noMediaFile.createNewFile()) {
+	    			throw new FileHandlingException(
+	    					context.getString(R.string.external_storage_problem));
+	    		}
+	    	}
+	    	// if the file downloaded is not a cache file, but a file to
+	    	// keep
+	    	if (!isTemporary) {
+	    		savePath = new File(Settings.getReGalAndroidPath(context));
+	    		// if there is no file extension, we add the one that
+	    		// corresponds to the picture (if we have it)
+	    		if (fileName.lastIndexOf(".") == -1
+	    				&& !StringUtils.isEmpty(extension)) {
+	    			fileName = fileName + "." + extension;
+	    		}
+	    	}
+	    	logger.debug("savePath is : {}", savePath);
+	    	//in case the filename has special characters
+	    	imageFileOnExternalDirectory = new File(savePath, fileName);
+	    } else {
+	    	throw new FileHandlingException(
+	    			context.getString(R.string.external_storage_problem));
+	    }
+	    return imageFileOnExternalDirectory;
 	}
 
 	public void clearCache(Context context) throws IOException {
