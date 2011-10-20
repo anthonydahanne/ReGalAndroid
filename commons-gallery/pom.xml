@@ -1,0 +1,121 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<parent>
+		<artifactId>regalandroid-parent</artifactId>
+		<groupId>net.dahanne.android</groupId>
+		<version>1.1.1-SNAPSHOT</version>
+		<relativePath>../regalandroid-parent/pom.xml</relativePath>
+	</parent>
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>net.dahanne.gallery</groupId>
+	<artifactId>commons-gallery</artifactId>
+	<version>1.0.0</version>
+	<name>Gallery Commons</name>
+	<description>This project provides interfaces and models commons to all remote gallery layers (G2, G3, Piwigo, etc..)
+It is a submodule of the ReGalAndroid project</description>
+	<url>http://github.com/anthonydahanne/ReGalAndroid</url>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+	<licenses>
+		<license>
+			<name>GPL v3</name>
+			<url>http://www.gnu.org/licenses/gpl.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+	<scm>
+		<connection>git@github.com:anthonydahanne/ReGalAndroid.git</connection>
+		<url>git@github.com:anthonydahanne/ReGalAndroid.git</url>
+		<developerConnection>git@github.com:anthonydahanne/ReGalAndroid.git</developerConnection>
+	</scm>
+	<developers>
+		<developer>
+			<id>anthonydahanne</id>
+			<name>Anthony Dahanne</name>
+			<email>anthony.dahanne@gmail.com</email>
+			<url>http://blog.dahanne.net</url>
+		</developer>
+	</developers>
+
+	<distributionManagement>
+		<repository>
+			<id>repo</id>
+			<url>http://github.com/anthonydahanne/m2repo</url>
+		</repository>
+		<snapshotRepository>
+			<id>snapshot-repo</id>
+			<url>http://github.com/anthonydahanne/m2repo</url>
+		</snapshotRepository>
+	</distributionManagement>
+
+
+	<dependencies>
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<version>4.0.1</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<type>jar</type>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>0.9.30</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<type>jar</type>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>jar-no-fork</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.5</source>
+					<target>1.5</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>com.mycila.maven-license-plugin</groupId>
+				<artifactId>maven-license-plugin</artifactId>
+				<configuration>
+					<header>${basedir}/resources/license-header.txt</header>
+					<failIfMissing>true</failIfMissing>
+					<executions>
+						<execution>
+							<goals>
+								<goal>check</goal>
+							</goals>
+						</execution>
+					</executions>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>
