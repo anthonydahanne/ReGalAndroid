@@ -182,16 +182,36 @@ public class ItemUtils {
 			logger.debug("there are no relationships for this album, this is not grave");
 			return null;
 		}
-
-		JSONObject commentsJSON = relationShipsJSON.getJSONObject("comments");
+		
+		JSONObject commentsJSON;
+		String commentsUrl = null;
+		try{
+			commentsJSON = relationShipsJSON.getJSONObject("comments");
+			commentsUrl = commentsJSON.getString("url");
+		}
+		catch (JSONException e){
+			logger.debug("there are no comments for this gallery, this is not grave");
+		}
 		Comments comments = new Comments();
-		comments.setUrl(commentsJSON.getString("url"));
+		comments.setUrl(commentsUrl);
 
-		JSONObject tagsJSON = relationShipsJSON.getJSONObject("tags");
+
+		JSONObject tagsJSON = null;
+		String tagsUrl =  null;
+		try{
+			tagsJSON = relationShipsJSON.getJSONObject("tags");
+			tagsUrl = tagsJSON.getString("url");
+		}
+		catch (JSONException e){
+			logger.debug("there are no tags for this gallery, this is not grave");
+		}
 		Tags tags = new Tags();
-		tags.setUrl(tagsJSON.getString("url"));
-		JSONArray jsonArray = tagsJSON.getJSONArray("members");
-		tags.getMembers().addAll(convertJSONArrayToList(jsonArray));
+		tags.setUrl(tagsUrl );
+		
+		if(tagsJSON!=null){
+			JSONArray jsonArray = tagsJSON.getJSONArray("members");
+			tags.getMembers().addAll(convertJSONArrayToList(jsonArray));
+		}
 
 		RelationShips relationShips = new RelationShips();
 		relationShips.setComments(comments);
