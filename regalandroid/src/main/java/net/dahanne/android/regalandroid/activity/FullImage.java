@@ -26,7 +26,6 @@ import net.dahanne.android.regalandroid.RegalAndroidApplication;
 import net.dahanne.android.regalandroid.utils.DBUtils;
 import net.dahanne.android.regalandroid.utils.FileHandlingException;
 import net.dahanne.android.regalandroid.utils.FileUtils;
-import net.dahanne.android.regalandroid.utils.modified_android_source.AsyncTask;
 import net.dahanne.gallery.commons.model.Picture;
 import net.dahanne.gallery.commons.remote.GalleryConnectionException;
 
@@ -43,6 +42,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.GestureDetector;
 import android.view.GestureDetector.OnGestureListener;
