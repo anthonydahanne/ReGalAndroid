@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.dahanne.android</groupId>
 	<artifactId>regalandroid-parent</artifactId>
-	<version>1.1.1-SNAPSHOT</version>
+	<version>1.1.1</version>
 	<packaging>pom</packaging>
 	<name>ReGalAndroid parent module</name>
 	<dependencyManagement>
@@ -61,4 +61,19 @@
       <url>http://nexus.dahanne.net/nexus/content/repositories/releases/</url>
     </repository>
   </repositories>
+  <distributionManagement>
+        <!-- use the following if you're not using a snapshot version. -->
+        <repository>
+                <id>nexus.dahanne.net</id>
+                <name>RepositoryProxy</name>
+                <url>http://nexus.dahanne.net/nexus/content/repositories/releases</url>
+        </repository>
+        <!-- use the following if you ARE using a snapshot version. -->
+        <snapshotRepository>
+                <id>nexus.dahanne.net</id>
+                <name>RepositoryProxy</name>
+                <url>http://nexus.dahanne.net/nexus/content/repositories/snapshots</url>
+        </snapshotRepository>
+</distributionManagement>
+  
 </project>

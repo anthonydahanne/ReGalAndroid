@@ -3,7 +3,7 @@
 	<parent>
 		<artifactId>regalandroid-parent</artifactId>
 		<groupId>net.dahanne.android</groupId>
-		<version>1.1.1-SNAPSHOT</version>
+		<version>1.1.1</version>
 		<relativePath>../regalandroid-parent/pom.xml</relativePath>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
@@ -37,18 +37,6 @@ It is a submodule of the ReGalAndroid project</description>
 			<url>http://blog.dahanne.net</url>
 		</developer>
 	</developers>
-
-	<distributionManagement>
-		<repository>
-			<id>repo</id>
-			<url>http://github.com/anthonydahanne/m2repo</url>
-		</repository>
-		<snapshotRepository>
-			<id>snapshot-repo</id>
-			<url>http://github.com/anthonydahanne/m2repo</url>
-		</snapshotRepository>
-	</distributionManagement>
-
 
 	<dependencies>
 		<dependency>

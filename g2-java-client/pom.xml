@@ -4,13 +4,13 @@
 	<parent>
 		<artifactId>regalandroid-parent</artifactId>
 		<groupId>net.dahanne.android</groupId>
-		<version>1.1.1-SNAPSHOT</version>
+		<version>1.1.1</version>
 		<relativePath>../regalandroid-parent/pom.xml</relativePath>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.dahanne.gallery2</groupId>
 	<artifactId>g2-java-client</artifactId>
-	<version>1.1.1-SNAPSHOT</version>
+	<version>1.1.1</version>
 	<name>Gallery2 Java Client</name>
 	<description>This project is aimed to provide a Gallery 3 remote api client implementation written in Java</description>
 
@@ -38,22 +38,6 @@
 			<url>http://blog.dahanne.net</url>
 		</developer>
 	</developers>
-
-	<dependencyManagement>
-		<dependencies>
-		</dependencies>
-	</dependencyManagement>
-	<distributionManagement>
-		<repository>
-			<id>repo</id>
-			<url>http://github.com/anthonydahanne/m2repo</url>
-		</repository>
-		<snapshotRepository>
-			<id>snapshot-repo</id>
-			<url>http://github.com/anthonydahanne/m2repo</url>
-		</snapshotRepository>
-	</distributionManagement>
-
 
 
 	<dependencies>
