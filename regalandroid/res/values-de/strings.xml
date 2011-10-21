@@ -19,140 +19,154 @@
 -->
 
 <resources>
-	
-		
+
+
         <!-- Activities -->
         <string name="welcome_to_regalandroid">Willkommen zu ReGalAndroid</string>
-        <string name="enter_gallery_title">Gallerie eingeben !</string>
-        <string name="connect_to_gallery_title">Verbinde zu Gallerie !</string>
+        <string name="enter_gallery_title">Gallerie betreten !</string>
+        <string name="connect_to_gallery_title">Verbinde zur Gallerie !</string>
         <string name="gallery_url_title">Gallerie-Url</string>
+
         <string name="regalandroid_no_gallery_configured">Keine Gallerie konfiguriert! Gehe zu Menü->Einstellungen um dies zu ändern !</string>
         <string name="regalandroid_default_gallery_configured">Konfiguriert mit der Standard-Gallerie, um dies zu ändern, gehe zu Menü->Einstellungen</string>
         <string name="gallery_url_is_not_valid">Die Gallerie-Url ist nicht korrekt! Um dies zu ändern, gehe zu Menü->Einstellungen !</string>
         <string name="gallery_credentials_are_not_valid">Die Gallerie-Zugangsdaten sind nicht korrekt! Gehe zu Menü->Einstellungen um diese zu ändern! (Tipp : Versuche die Logindaten zu löschen, um zu testen ob die Gallerie-Url korrekt ist.)</string>
         <string name="gallery_url_summary">Gib den Standard-Gallerienamen ein, z.B.: http://myhost.com/gallery2</string>
         <string name="gallery_url_dialog_message">Gib den Standard-Gallerienamen ein, z.B.: http://myhost.com/gallery2 oder http://myhost.com:8080 oder http://myhost.com:8080/pfad</string>
+
         <string name="username_title">Benutzername</string>
-        <string name="username_summary">Wenn es deine Gallerie benötigt, gib hier den Benutzernamen an</string>
+        <string name="username_summary">Wenn für deine Gallerie nötig, gib hier den Benutzernamen an</string>
         <string name="password_title">Passwort</string>
-        <string name="password_summary">Wenn es deine Gallerie benötigt, gib hier das Passwort an</string>
+        <string name="password_summary">Wenn für deine Gallerie nötig, gib hier das Passwort an</string>
         <string name="port_title">Port</string>
-        <string name="port_summary">Der Standard Port ist 80, aber wenn deine Gallerie einen Anderen benutzt, ändere Ihn hier</string>        
+        <string name="port_summary">Der Standard Port ist 80, aber wenn deine Gallerie einen anderen benutzt, ändere Ihn hier</string>
+
         <string name="firsttime_title">Willkommen zu ReGalAndroid !</string>
         <string name="ok">OK</string>
         <string name="about_label">Über</string>
         <string name="about_title">Über</string>
         <string name="about_shortcut">a</string>
-        <string name="add_photo_label">Füge ein Foto diesem Album hinzu</string>
+        <string name="add_photo_label">Füge diesem Album ein Foto hinzu</string>
+
         <string name="add_photo_shortcut">a</string>
         <string name="create_album_label">Erstelle ein neues Subalbum</string>
         <string name="create_album_shortcut">c</string>
 		<string name="connecting_to_the_gallery">Verbinde zur Gallerie...</string>
-		<string name="loggedin_as">Eingeloggt als </string>
-		<string name="not_logged_in">Nicht eingeloggt</string>
+		<string name="loggedin_as">Angemeldet als </string>
+		<string name="not_logged_in">Nicht angemeldet</string>
+
 		<string name="please_wait">Bitte warten...</string>
 		<string name="problem">Problem</string>
 		<string name="not_connected">Es konnte keine Verbindung zur konfigurierten Gallerie hergestellt werden : \n</string>
 		<string name="verify_your_settings">\n\nBitte überprüfe deine Einstellungen und prüfe ob dein Gerät über eine Internetverbindung verfügt</string>
 		<string name="exception_thrown">\n\nEin Problem während der Verbindungsherstellung ist aufgetreten, Details : \n</string>
 		<string name="fetching_gallery_albums">Hole Gallerie-Alben...</string>
+
 		<string name="creating_new_album">Erstelle neues Album...</string>
 		<string name="what_is_regalandroid">
-		ReGalAndroid ist ein Client zum Remote-Verbinden zu einer Gallery2 (G2) od. Gallery3 (G3) od. Piwigo Installation.
-                ReGalAndroid ist eine Open Source Software (GPL v3).
-		Dieses Pogramm ist veröffentlicht worden, in der Hoffnung das es nützlich ist,
-			aber mit AUSSCHLIESSUNG JEGLICHER GARANTIE; 
+		ReGalAndroid ist ein Client zum anzeigen einer Gallery2 (G2) od. Gallery3 (G3) od. Piwigo Seite.
+                ReGalAndroid ist Open Source Software (GPL v3).
+		Dieses Pogramm ist veröffentlicht worden in der Hoffnung dass es nützlich ist,
+			jedoch unter AUSSCHLUSS JEGLICHER GARANTIE;
 			für nähere Details siehe: GNU General Public License.
-		Die standardmäßig konfigurierte Gallerie ist eine Beispiel-Gallery2 (G2) Installation,
-		für das Testen, falls du noch keine Gallerie konfiguiert hast.
-                Du kannst die Standard-Url in Menü->Einstellungen ändern.
-                ReGalAndroid\'s Nutzen soll im Anzeigen DEINER Gallerie liegen und 
-		nicht der der Beispiel-Gallerie!
+		Die standardmäßig konfigurierte Gallerie ist eine Beispiel-Gallery2 (G2) Installation zum testen, 
+		falls du noch keine eigene Gallerie konfiguiert hast.
+                Du kannst die Standard-URL in Menü->Einstellungen ändern.
+                ReGalAndroid soll später DEINE Gallerie anzeigen, nicht die Beispiel-Gallerie!
         </string>
         <string name="full_image_title">Bild</string>
         <string name="settings_label">Einstellungen...</string>
         <string name="settings_title">ReGalAndroid Einstellungen</string>
+
         <string name="settings_shortcut">s</string>
-        <string name="show_albums_title">ReGalAndroid Albums</string>
+        <string name="show_albums_title">ReGalAndroid Alben</string>
         <string name="show_gallery_title">ReGalAndroid Gallerie</string>
-		<string name="view_album_pictures">Zeige diese Album-Bilder !</string>
+		<string name="view_album_pictures">Zeige die Bilder in diesem Album !</string>
 		<string name="current_version">Version : 1.0.0</string>
 		<string name="project_home">Projekt Home : </string>
-		<string name="album_is_empty">Diese Album beinhaltet keine Bilder !</string>
-		<string name="type_new_subalbum_name">Gib den neuen Subalbumnamen ein : </string>
+
+		<string name="album_is_empty">Dieses Album beinhaltet keine Bilder !</string>
+		<string name="type_new_subalbum_name">Gib den Namen für das neue Subalbum ein : </string>
 		<string name="create_subalbum">Erstelle Subalbum !</string>
-		<string name="adding_photo">Uploade ein Foto zum Album</string>
-		<string name="loading_first_photos_from_album">Lade erstes Foto vom Album</string>
-		
+		<string name="adding_photo">Lade ein Foto zum Album hoch</string>
+		<string name="loading_first_photos_from_album">Lade erstes Foto aus dem Album</string>
+
 		<string name="regalandroid_temp_path_title">ReGalAndroidTempPfad</string>
+
 		<string name="regalandroid_path_title">ReGalAndroidPfad</string>
-		<string name="regalandroid_path_summary">Der Pfad auf der SD-Karte, wo ReGalAndroid die Daten speichern soll</string>
-		<string name="regalandroid_temp_path_summary">Der Unterordner, wo ReGalAndroid die temp. Dateien ablegen soll</string>
+		<string name="regalandroid_path_summary">Der Pfad auf der SD-Karte in dem ReGalAndroid die Daten speichern soll</string>
+		<string name="regalandroid_temp_path_summary">Der Unterordner in dem ReGalAndroid die temporären Dateien ablegen soll</string>
 		<string name="clear_cache_title">Cache leeren</string>
-		<string name="clear_cache_summary">Cache leeren, wenn eine neue Session gestartet wird</string>
+		<string name="clear_cache_summary">Cache leeren wenn eine neue Sitzung gestartet wird</string>
 		<string name="cache_cleared">Cache erfolgreich geleert !</string>
-		
+
 		<string name="external_storage_problem">Kein Medium zum Einbinden verfügbar, bitte überprüfe ob die SD-Karte eingsteckt ist</string>
 		<string name="gallery_connection_settings">Gallerie Verbindungseinstellungen</string>
 		<string name="cache_settings">Cache Einstellungen</string>
-	    <string name="download_full_res_image_title">Download Originalbild</string>
+		<string name="download_full_res_image_title">Download Originalbild</string>
 		<string name="image_successfully_downloaded">Bild erfolgreich auf die SD-Karte heruntergeladen</string>
 		<string name="album_successfully_created">Album wurde erfolgreich erstellt !</string>
+
 		<string name="image_successfully_created">Bild wurde erfolgreich hinzugefügt !</string>
-		
+
 		<string name="image_properties">Bildinformationen</string>
 		<string name="name">Name</string>
 		<string name="title">Titel</string>
 		<string name="caption">Beschriftung</string>
 		<string name="hidden">Versteckt</string>
+
 		<string name="full_res_filesize">Größe des Originalbilds</string>
 		<string name="full_res_width">Breite des Originalbilds</string>
 		<string name="full_res_height">Höhe des Originalbilds</string>
 
 		<string name="loading_photo">Lade Bild ...</string>
-		<string name="showing_picture">Zeige Bild :  </string>
+		<string name="showing_picture">Zeige Bild : </string>
 		<string name="no_more_pictures">Keine weiteren Bilder im Album </string>
-		
+
 		<string name="share_image_title">Foto-Url weitergeben</string>
 		<string name="send_image_title">Sende das Foto zu</string>
 		<string name="choose_action">Wähle eine Aktion</string>
 		<string name="first_photo">Erstes</string>
 		<string name="last_photo">Letztes</string>
-		<string name="choose_photo_number">Spring zu Foto Nr.</string>
+		<string name="choose_photo_number">Springe zu Foto Nr.</string>
+
 		<string name="choose_photo_number_title">Gehe zu Foto-Nr ...</string>
 		<string name="cancel">Abbrechen</string>
 		<string name="choose_subalbum_name">Wähle neuen Albumnamen</string>
-		
-		<string name="url_validation_problem">Die Url ist nicht korrekt, bitte überprüfe sie nochmals und schau nach, ob keine Leerzeichen od. Sonderzeichen vorkommen !</string>
+
+		<string name="url_validation_problem">Die URL ist nicht korrekt, bitte überprüfe sie nochmals und schau nach, ob keine Leerzeichen oder Sonderzeichen vorkommen !</string>
 		<string name="upload_photo_title">Fotoupload mit ReGalAndroid</string>
 		<string name="take_picture_label">Sende das Bild zur Gallerie</string>
+
 		<string name="upload_photo_no_photo">Kein Foto zum Senden, bitte wähle ein Foto aus !</string>
 		<string name="upload_photo_send_to">Sende das Foto zu :</string>
 		<string name="upload_photo_gallery_url">- Gallerie-Url</string>
 		<string name="upload_photo_connected_as">- Verbunden als Benutzer</string>
 		<string name="upload_photo_choose_a_name">Wähle einen Namen für das Foto: </string>
 		<string name="upload_photo_choose_destination">Wähle ein Album für das Foto : </string>
+
 		<string name="upload_photo_send">Senden</string>
 		<string name="upload_photo_done">Fertig</string>
 		<string name="upload_photo_settings">Gehe zu den Einstellungen</string>
-		
+
 		<string name="images_successfully_created">Bilder wurden erfolgreich hinzugefügt !</string>
 		<string name="upload_settings">Upload Einstellungen</string>
 		<string name="default_summary_title">Standardzusammenfassung</string>
-		<string name="default_summary_summary">Fotos die mit ReGalAndroid gesendet wurden, haben diese Zusammenfassung</string>
+
+		<string name="default_summary_summary">Fotos die mit ReGalAndroid gesendet wurden haben diese Zusammenfassung</string>
 		<string name="default_description_title">Standardbeschreibung</string>
-		<string name="default_description_summary">Fotos die mit ReGalAndroid gesendet wurden, haben diese Beschreibung</string>
-		<string name="multiple_files_upload">Mehrere Dateien uploaden</string>
-		<string name="advanced_control_title">Erweiterte Controls</string>
+		<string name="default_description_summary">Fotos die mit ReGalAndroid gesendet wurden haben diese Beschreibung</string>
+		<string name="multiple_files_upload">Mehrere Dateien hochladen</string>
+		<string name="advanced_control_title">Erweiterte Kontrollen</string>
 
 		<string name="gallery_connection_type_title">Gallerie Typ</string>
+
 		<string name="gallery_connection_type_summary">Du kannst den Gallerie-Typ deiner Gallerie einstellen : G2, G3, Piwigo, etc...</string>
-		
-		<!--  first time activity-->
+
+		<!-- first time activity-->
 		<string name="accept">Akzeptieren</string>
 		<string name="decline">Ablehnen</string>
-		
-		
-		
-</resources>
 
+
+
+</resources>
