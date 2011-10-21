@@ -122,6 +122,34 @@
 	<string name="cancel">取消</string>
 	<string name="choose_subalbum_name">选择一个新的相册名</string>
 
+	<string name="url_validation_problem">The url you provided is not valid, please double check it does not contain spaces or other special characters !</string>
+	<string name="upload_photo_title">Upload photo(s) with RegalAndroid</string>
+	<string name="take_picture_label">Take picture and send it to gallery</string>
+	<string name="upload_photo_no_photo">No photo to send, please try again to select a photo !</string>
+	<string name="upload_photo_send_to">You are about to send a photo to :</string>
+	<string name="upload_photo_gallery_url">- gallery url</string>
+	<string name="upload_photo_connected_as">- connected as user</string>
+	<string name="upload_photo_choose_a_name">Choose a name for this photo: </string>
+	<string name="upload_photo_choose_destination">Choose your destination album : </string>
+	<string name="upload_photo_send">傳送</string>
+	<string name="upload_photo_done">完成</string>
+	<string name="upload_photo_settings">Go to settings</string>
+	
+	<string name="images_successfully_created">成功加入相片!</string>
+	<string name="upload_settings">上載設定</string>
+	<string name="default_summary_title">預設扼要</string>
+	<string name="default_summary_summary">Photos sent with RegalAndroid will have this summary set</string>
+	<string name="default_description_title">預設簡介</string>
+	<string name="default_description_summary">Photos sent with RegalAndroid will have this description set</string>
+	<string name="multiple_files_upload">Multiple files upload</string>
+	<string name="advanced_control_title">Advanced controls</string>
+	
+	<string name="gallery_connection_type_title">畫廊類別</string>
+	<string name="gallery_connection_type_summary">You can specify the type of your remote gallery : G2, G3, Piwigo, etc...</string>
+	
+	<!-- first time activity-->
+	<string name="accept">同意</string>
+	<string name="decline">反對</string>
 
 
 
