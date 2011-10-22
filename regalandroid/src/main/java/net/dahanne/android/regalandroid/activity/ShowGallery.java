@@ -125,8 +125,10 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 						getString(R.string.please_wait),
 						getString(R.string.loading_first_photos_from_album),
 						true);
-				new FetchImagesTask().execute(Settings.getGalleryUrl(this),
-						application.getCurrentAlbum().getName());
+				if(application.getCurrentAlbum()==null){
+					startActivity(new Intent(this, Start.class));
+				}
+				new FetchImagesTask().execute(application.getCurrentAlbum().getName());
 			}
 		}
 	}
@@ -363,8 +365,7 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 
 		@Override
 		protected Collection<Picture> doInBackground(Object... parameters) {
-			String galleryUrl = (String) parameters[0];
-			int albumName = (Integer) parameters[1];
+			int albumName = (Integer) parameters[0];
 			Collection<Picture> pictures = null;
 			try {
 				if (mustLogIn) {
