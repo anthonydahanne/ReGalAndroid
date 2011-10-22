@@ -111,9 +111,9 @@
 					</emulator>
 					<deleteConflictingFiles>true</deleteConflictingFiles>
 					<undeployBeforeDeploy>true</undeployBeforeDeploy>
-					<sign>
+					<!--sign>
   						<debug>false</debug>
-					</sign>
+					</sign-->
 				</configuration>
 				<extensions>true</extensions>
 				<executions>

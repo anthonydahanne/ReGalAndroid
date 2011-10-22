@@ -111,7 +111,7 @@ public class G3ClientTest {
 
 	}
 
-	@Test(expected = G3ForbiddenException.class)
+	@Test(expected = G3ItemNotFoundException.class)
 	public void createAlbum__bad_api_key() throws G3GalleryException {
 		itemClient.setExistingApiKey("plouf");
 		Entity albumToCreate = new Entity();
@@ -136,6 +136,7 @@ public class G3ClientTest {
 
 	@Test
 	public void getAlbumAndSubAlbumsTest() throws G3GalleryException {
+		
 		List<Item> subAlbums = itemClient.getAlbumAndSubAlbums(11);
 		boolean foundRecentlyAddedAlbum = false;
 		for (Item album : subAlbums) {
@@ -145,7 +146,7 @@ public class G3ClientTest {
 			}
 		}
 		assertTrue(foundRecentlyAddedAlbum);
-
+		
 		subAlbums = itemClient.getAlbumAndSubAlbums(172);
 		for (Item album : subAlbums) {
 			// we test if there are only albums returned by the request
@@ -155,8 +156,6 @@ public class G3ClientTest {
 		}
 	}
 	
-	
-
 	@Test
 	public void getAlbumAndSubAlbumsAndPicturesTest() throws G3GalleryException {
 		List<Item> albumAndSubAlbumsAndPictures = itemClient.getAlbumAndSubAlbumsAndPictures(172);
@@ -173,8 +172,6 @@ public class G3ClientTest {
 		expected.put(180, "Canal Rideau");
 		
 		assertEquals(expected, actual);
-		
-		
 	}
 
 	

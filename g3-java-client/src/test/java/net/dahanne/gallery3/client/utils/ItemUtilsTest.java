@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 
 import net.dahanne.gallery3.client.model.Entity;
 import net.dahanne.gallery3.client.model.Item;
@@ -39,6 +40,23 @@ import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 
 public class ItemUtilsTest {
+	
+	
+	@Test
+	public void parseJSONToMultipleItems() throws IOException, JSONException {
+		URL resource = Resources.getResource("tree-album-1.json");
+		String string = Resources.toString(resource, Charsets.UTF_8);
+		JSONObject jsonResult = (JSONObject) new JSONTokener(string)
+		.nextValue();
+		List<Item> items = ItemUtils.parseJSONToMultipleItems(jsonResult);
+		assertEquals("http://192.168.1.60:8081/gallery3/index.php/rest/item/1264",items.get(0).getUrl() );
+		assertEquals(1311332015,items.get(0).getEntity().getUpdated() );
+		assertEquals("http://192.168.1.60:8081/gallery3/index.php/rest/item/1265",items.get(1).getUrl() );
+		assertEquals(1311332144,items.get(1).getEntity().getUpdated() );
+		assertEquals("http://192.168.1.60:8081/gallery3/index.php/rest/item/1661",items.get(2).getUrl() );
+		assertEquals(1319238331,items.get(2).getEntity().getUpdated() );
+	}
+	
 	
 	
 	@Test

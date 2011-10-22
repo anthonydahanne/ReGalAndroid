@@ -76,6 +76,7 @@ public class G3Client implements IG3Client {
 
 	private static final String INDEX_PHP_REST = "index.php/rest";
 	private static final String INDEX_PHP_REST_ITEM = INDEX_PHP_REST +"/item/";
+	private static final String INDEX_PHP_REST_TREE = INDEX_PHP_REST +"/tree/";
 	private static final String INDEX_PHP_REST_ITEMS = INDEX_PHP_REST +"/items";
 
 	private final String galleryItemUrl;
@@ -366,10 +367,10 @@ public class G3Client implements IG3Client {
 	 */
 	public List<Item> getAlbumAndSubAlbumsAndPictures(int albumId)
 			throws G3GalleryException {
-		List<Item> items = new ArrayList<Item>();
-		Item item = getItems(albumId, items, "photo,album");
-		// we add to the list the parent album
-		items.add(0, item);
+		List<Item> items = getTree(albumId, "photo,album");
+//		Item item = getItems(albumId, items, "photo,album");
+//		// we add to the list the parent album
+//		items.add(0, item);
 		return items;
 	}
 	
@@ -385,6 +386,8 @@ public class G3Client implements IG3Client {
 		items.add(0, item);
 		return items;
 	}
+	
+	
 
 	/**
 	 * Get the photos of the album albumId
@@ -430,6 +433,26 @@ public class G3Client implements IG3Client {
 			throw new G3GalleryException(e);
 		}
 		return item;
+	}
+	
+	
+	private List<Item> getTree(int albumId, String type)
+			throws G3GalleryException {
+		logger.debug("getting tree for albumId : {}, type : {}",albumId,type);	
+		List<Item> items = new ArrayList<Item>();
+		String stringResult = sendHttpRequest(INDEX_PHP_REST_TREE + albumId + "?depth=1",
+				new ArrayList<NameValuePair>(), GET, null);
+		try {
+			JSONObject jsonResult = (JSONObject) new JSONTokener(stringResult)
+					.nextValue();
+			items = ItemUtils.parseJSONToMultipleItems(jsonResult);
+		} catch (JSONException e) {
+			throw new G3GalleryException(e.getMessage());
+		}catch (ClassCastException e) {
+			throw new G3GalleryException("The Gallery returned an unexpected result when trying to load albums/photos; please check for info on the ReGalAndroid project page"+e.getMessage());
+		}
+		return items;
+		
 	}
 
 	public InputStream getPhotoInputStream(String url)

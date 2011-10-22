@@ -65,6 +65,19 @@ public class ItemUtils {
 		}
 		return list;
 	}
+	
+	public static List<Item> parseJSONToMultipleItems(JSONObject jsonResult) throws JSONException{
+		JSONArray entityArrayJSON = jsonResult.getJSONArray("entity");
+		List<Item> list = new ArrayList<Item>();
+		for (int i = 0; i < entityArrayJSON.length(); i++) {
+			Item item = new Item();
+			item.setUrl(((JSONObject) entityArrayJSON.get(i)).getString("url"));
+			item.setEntity(parseJSONToEntity((JSONObject) entityArrayJSON.get(i)));
+			list.add(item);
+		}
+		return list;
+	}
+	
 
 	private static Entity parseJSONToEntity(JSONObject jsonResult)
 			throws JSONException {
@@ -263,5 +276,7 @@ public class ItemUtils {
 		return Integer.valueOf(createdAlbumUrl.substring(createdAlbumUrl
 				.lastIndexOf("/") + 1));
 	}
+
+	
 
 }
