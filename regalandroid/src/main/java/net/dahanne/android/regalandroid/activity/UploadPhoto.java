@@ -138,7 +138,13 @@ public class UploadPhoto extends Activity implements OnClickListener {
 				}
 			}
 			if (fileName.equals(SENT_WITH_REGALANDROID)) {
-				fileName = AndroidUriUtils.extractFilenameFromUri(mImageUri, this);
+				try{
+					fileName = AndroidUriUtils.extractFilenameFromUri(mImageUri, this);
+				}catch (IllegalArgumentException e) {
+					ShowUtils.getInstance().alertFileProblem(
+							"Problem determining the filename, try to edit it, and please explain what happened in the bug tracker (how to reproduce this issue) in regalandroid bug tracker, http://code.google.com/p/regalandroid/issues/list bug 69, thanks",  this);
+				}
+				
 			}
 			filenameEditText.setText(fileName);
 		}

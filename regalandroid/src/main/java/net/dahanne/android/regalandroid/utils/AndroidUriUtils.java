@@ -62,6 +62,9 @@ public class AndroidUriUtils {
 	public static String extractFilenameFromUri(Uri uri, Activity activity) {
 
 		String fileName = null;
+		if(uri==null){
+			throw new IllegalArgumentException();
+		}
 		String scheme = uri.getScheme();
 		String path = uri.getPath();
 		if (path != null && scheme != null && scheme.equals("file")) {
