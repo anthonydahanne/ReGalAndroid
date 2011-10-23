@@ -75,6 +75,10 @@ public class FileUtils {
 		try {
 			imageFileOnExternalDirectory = prepareFileSystemForImage(context, fileName, extension,
 				isTemporary, albumName, imageFileOnExternalDirectory);
+			if(imageFileOnExternalDirectory.exists()){
+				//if the file exists, we assume it is valid
+				return imageFileOnExternalDirectory;
+			}
 			InputStream inputStreamFromUrl = null;
 			inputStreamFromUrl = RemoteGalleryConnectionFactory.getInstance()
 				.getInputStreamFromUrl(imageUrl);

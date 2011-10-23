@@ -34,6 +34,7 @@ public class G3ConvertUtils {
 		album.setTitle(item.getEntity().getTitle());
 		album.setSummary(item.getEntity().getDescription());
 		album.setAlbumUrl(item.getEntity().getWebUrl());
+		album.setAlbumCoverUrl(item.getEntity().getThumbUrl());
 		return album;
 	}
 	public static Picture itemToPicture(Item item) {

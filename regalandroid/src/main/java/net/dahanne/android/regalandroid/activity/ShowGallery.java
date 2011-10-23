@@ -187,7 +187,7 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 			return i;
 		}
 
-		private Bitmap findBitmapWithPosition(int position,View view) {
+		private Bitmap findBitmapWithPosition(int position,ImageView view) {
 			Picture picture = albumPictures.get(position);
 			int albumName = application.getCurrentAlbum().getName();
 			File potentiallyAlreadyDownloadedFile = new File(
@@ -211,8 +211,8 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 					String thumbUrl = picture.getThumbUrl();
 					try {
 						logger.debug("getting picture from gallery : {}",thumbUrl);
-						DownloadImageTask downloadTask = new DownloadImageTask(ShowGallery.this);
-						downloadTask.execute(THUMB_PREFIX + picture.getFileName(),picture.getForceExtension(), thumbUrl,albumName,bitmapsCache,downloadImage,position,picture,view);
+						DownloadImageTask downloadTask = new DownloadImageTask(ShowGallery.this,view);
+						downloadTask.execute(THUMB_PREFIX + picture.getFileName(),picture.getForceExtension(), thumbUrl,albumName,bitmapsCache,position,picture,null);
 
 					} catch (Exception e) {
 						logger.debug("exception  : {}", e.getStackTrace());

@@ -79,7 +79,6 @@
         <string name="show_albums_title">Albumes RegalAndroid</string>
         <string name="show_gallery_title">Galería RegalAndroid</string>
 <string name="view_album_pictures">Ver fotos en este álbum !</string>
-<string name="current_version">Versión : 1.1.0</string>
 <string name="project_home">Project Home : </string>
 <string name="album_is_empty">Este álbum no contiene ninguna foto !</string>
 <string name="type_new_subalbum_name">Indica el nombre del nuevo álbum : </string>

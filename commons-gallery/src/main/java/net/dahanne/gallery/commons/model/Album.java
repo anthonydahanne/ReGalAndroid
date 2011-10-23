@@ -35,6 +35,8 @@ public class Album implements Serializable {
 	private boolean createSubAlbum;
 	private boolean fakeAlbum;
 	private String extrafields;
+	private String albumCoverUrl;
+	private String albumCoverCachePath;
 	private String albumUrl;
 	private Album parent;
 	private final List<Picture> pictures = new ArrayList<Picture>();
@@ -221,6 +223,22 @@ public class Album implements Serializable {
 
 	public boolean isFakeAlbum() {
 		return fakeAlbum;
+	}
+
+	public String getAlbumCoverUrl() {
+		return albumCoverUrl;
+	}
+
+	public void setAlbumCoverUrl(String albumCoverUrl) {
+		this.albumCoverUrl = albumCoverUrl;
+	}
+
+	public String getAlbumCoverCachePath() {
+		return albumCoverCachePath;
+	}
+
+	public void setAlbumCoverCachePath(String albumCoverCachePath) {
+		this.albumCoverCachePath = albumCoverCachePath;
 	}
 
 	

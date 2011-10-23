@@ -21,14 +21,15 @@ package net.dahanne.android.regalandroid.tasks;
 import java.io.File;
 import java.util.Map;
 
+import net.dahanne.android.regalandroid.utils.FileHandlingException;
+import net.dahanne.android.regalandroid.utils.FileUtils;
+import net.dahanne.gallery.commons.model.Album;
+import net.dahanne.gallery.commons.model.Picture;
+import net.dahanne.gallery.commons.remote.GalleryConnectionException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.dahanne.android.regalandroid.utils.FileHandlingException;
-import net.dahanne.android.regalandroid.utils.FileUtils;
-import net.dahanne.gallery.commons.model.Picture;
-import net.dahanne.gallery.commons.remote.GalleryConnectionException;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -40,48 +41,56 @@ import android.widget.ImageView;
  * 
  */
 public class DownloadImageTask extends AsyncTask<Object, Void, Bitmap> {
-    Context activity;
-    private ImageView view;
-    private final Logger logger = LoggerFactory.getLogger(ReplaceMainImageTask.class);
+	Context activity;
+	private ImageView view;
+	private final Logger logger = LoggerFactory.getLogger(ReplaceMainImageTask.class);
 
-    public DownloadImageTask(Context context) {
-	super();
-	activity = context;
-    }
-
-    @Override
-    protected Bitmap doInBackground(Object... parameters) {
-	String fileName = (String) parameters[0];
-	String extension = (String) parameters[1];
-	String thumbUrl = (String) parameters[2];
-	Integer currentAlbumName = (Integer) parameters[3];
-	Map<Integer, Bitmap> bitmapsCache = (Map<Integer, Bitmap>) parameters[4];
-	Bitmap downloadImage = (Bitmap) parameters[5];
-	Integer position = (Integer) parameters[6];
-	Picture picture = (Picture) parameters[7];
-	view = (ImageView) parameters[8];
-	File imageFileOnExternalDirectory = null;
-	try {
-	    imageFileOnExternalDirectory = FileUtils.getInstance().getFileFromGallery(activity, fileName,
-			extension, thumbUrl,true, currentAlbumName);
-	    downloadImage = BitmapFactory.decodeFile(imageFileOnExternalDirectory.getPath());
-	    picture.setThumbImageCachePath(imageFileOnExternalDirectory.getPath());
-	    bitmapsCache.put(position, downloadImage);
-	} catch (GalleryConnectionException e) {
-	    logger.debug(e.getMessage());
-	} catch (FileHandlingException e) {
-	    logger.debug(e.getMessage());
+	public DownloadImageTask(Context context, ImageView imageView) {
+		super();
+		activity = context;
+		view = imageView;
 	}
 
-	return downloadImage;
-    }
+	@Override
+	protected Bitmap doInBackground(Object... parameters) {
+		String fileName = (String) parameters[0];
+		String extension = (String) parameters[1];
+		String thumbUrl = (String) parameters[2];
+		Integer currentAlbumName = (Integer) parameters[3];
+		Map<Integer, Bitmap> bitmapsCache = (Map<Integer, Bitmap>) parameters[4];
+		Integer position = (Integer) parameters[5];
+		Picture picture = (Picture) parameters[6];
+		Album album = (Album) parameters[7];
+		
+		Bitmap downloadImage = null;
+		File imageFileOnExternalDirectory = null;
+		try {
+			imageFileOnExternalDirectory = FileUtils.getInstance().getFileFromGallery(activity, fileName, extension,
+					thumbUrl, true, currentAlbumName);
+			downloadImage = BitmapFactory.decodeFile(imageFileOnExternalDirectory.getPath());
+			if(picture!=null){
+				//only for showgallery activity
+				picture.setThumbImageCachePath(imageFileOnExternalDirectory.getPath());
+				bitmapsCache.put(position, downloadImage);
+			} else if(album!=null){
+				//only for albumadapter
+				album.setAlbumCoverCachePath(imageFileOnExternalDirectory.getPath());
+			}
+		} catch (GalleryConnectionException e) {
+			logger.debug(e.getMessage());
+		} catch (FileHandlingException e) {
+			logger.debug(e.getMessage());
+		}
 
-    @Override
-    protected void onPostExecute(Bitmap downloadImage) {
-
-	if(downloadImage!=null){
-	    view.setImageBitmap(downloadImage);
+		return downloadImage;
 	}
-    }
+
+	@Override
+	protected void onPostExecute(Bitmap downloadImage) {
+
+		if (downloadImage != null) {
+			view.setImageBitmap(downloadImage);
+		}
+	}
 
 }

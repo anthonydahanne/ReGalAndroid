@@ -18,6 +18,8 @@
 
 package net.dahanne.gallery3.client.utils;
 
+import static org.junit.Assert.*;
+
 import java.io.IOException;
 import java.net.URL;
 
@@ -51,9 +53,9 @@ public class G3ConvertUtilsTest {
 		expectedAlbum.setTitle("Gallery");
 		expectedAlbum.setSummary("");
 		expectedAlbum.setAlbumUrl("http://g3.dahanne.net/index.php/");
-		
-		Assert.assertEquals(expectedAlbum, itemToAlbum);
-		
+		assertEquals(expectedAlbum, itemToAlbum);
+		//not part of the equals
+		assertEquals("http://g3.dahanne.net/index.php/rest/data/1?size=thumb",itemToAlbum.getAlbumCoverUrl());
 		
 	}
 	
@@ -90,7 +92,7 @@ public class G3ConvertUtilsTest {
 		expectedPicture.setPublicUrl("http://g3.dahanne.net/index.php/marche-bonsecours");
 		
 		
-		Assert.assertEquals(expectedPicture, itemToPicture);
+		assertEquals(expectedPicture, itemToPicture);
 		
 		
 	}
@@ -120,7 +122,7 @@ public class G3ConvertUtilsTest {
 		
 		
 		
-		Assert.assertEquals(expectedPicture, itemToPicture);
+		assertEquals(expectedPicture, itemToPicture);
 		
 		
 	}
