@@ -180,8 +180,7 @@ public class UploadPhoto extends Activity implements OnClickListener {
 				getString(R.string.connecting_to_the_gallery), true);
 		new LoginTask(this, progressDialog, connectedAsUserText,
 				galleryUrlText, sendButton).execute(
-				Settings.getGalleryUrl(this), Settings.getUsername(this),
-				Settings.getPassword(this));
+				Settings.getGalleryUrl(this), Settings.getUsername(this));
 
 	}
 

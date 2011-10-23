@@ -36,10 +36,9 @@ import android.widget.TextView;
 
 public class LoginTask extends AsyncTask<Object, Object, String> {
 
-	private static final String NOTLOGGEDIN = "NOTLOGGEDIN";
 	private static final String GUEST = "guest";
 	private String user;
-	private boolean galleryUrlIsValid = false;;
+	private boolean galleryUrlIsValid = false;
 	private final Activity activity;
 	private final Dialog progressDialog;
 	private String galleryUrl;
@@ -64,8 +63,8 @@ public class LoginTask extends AsyncTask<Object, Object, String> {
 		try {
 			galleryUrl = (String) parameters[0];
 			user = (String) parameters[1];
-			String password = (String) parameters[2];
-			galleryUrlIsValid = UriUtils.checkUrlIsValid(galleryUrl);
+			UriUtils.checkUrlIsValid(galleryUrl);
+			galleryUrlIsValid = true;
 			if (StringUtils.isNotBlank(user)) {
 				// the first thing is to login, if an username and password
 				// are supplied !
@@ -75,6 +74,10 @@ public class LoginTask extends AsyncTask<Object, Object, String> {
 			}
 		} catch (ImpossibleToLoginException e) {
 			// the connection went wrong, the authToken is then null
+			galleryUrlIsValid = false;
+			exceptionMessage = e.getMessage();
+		} catch (IllegalArgumentException e) {
+			// the url is not valid
 			galleryUrlIsValid = false;
 			exceptionMessage = e.getMessage();
 		}

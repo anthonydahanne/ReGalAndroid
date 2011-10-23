@@ -54,8 +54,9 @@ public class EditUrlPreference extends EditTextPreference {
 	@Override
 	public void setText(String text) {
 		super.setText(text);
-		boolean valid = UriUtils.checkUrlIsValid(text);
-		if(!valid){
+		try{
+			UriUtils.checkUrlIsValid(text);
+		}catch (IllegalArgumentException e){
 			alertValidationProblem();
 		}
 	}

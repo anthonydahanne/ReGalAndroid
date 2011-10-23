@@ -18,6 +18,7 @@
 
 package net.dahanne.gallery.commons.utils;
 
+import java.net.URI;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -31,7 +32,7 @@ public class UriUtils {
 	private final static Logger logger = LoggerFactory.getLogger(UriUtils.class);
 
 
-	public static boolean checkUrlIsValid(String url) {
+	public static void checkUrlIsValid(String url) throws IllegalArgumentException {
 		logger.debug("Url is : {}",url);
 		boolean urlIsValid;
 		Pattern p = Pattern.compile(URL_PATTERN);
@@ -44,8 +45,12 @@ public class UriUtils {
 		}else{
 			urlIsValid =  true;
 		}
+		if(!urlIsValid){
+			throw new IllegalArgumentException("Url is not valid");
+		}
+		//nothing is better than testing for real
+		URI.create(url);
 		logger.debug("urlIsValid : {}",urlIsValid);
-		return urlIsValid;
 	}
 
 

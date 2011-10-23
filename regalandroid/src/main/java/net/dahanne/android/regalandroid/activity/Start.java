@@ -102,7 +102,7 @@ public class Start extends Activity implements OnClickListener {
 			String galleryUrl = Settings.getGalleryUrl(this);
 			new LoginTask(this, progressDialog, loggedInAsText,
 					galleryConfiguredTextView, enterGalleryButton).execute(
-					galleryUrl, username, password);
+					galleryUrl, username);
 		} else {
 			enterGalleryButton.setEnabled(false);
 		}
