@@ -51,7 +51,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 /**
@@ -59,7 +58,7 @@ import android.widget.Toast;
  * @author Anthony Dahanne
  * 
  */
-public class FullImage extends Activity implements OnGestureListener {
+public class FullImage extends Activity {
 
 	private static final int REQUEST_CODE_CHOOSE_PHOTO_NUMBER = 1;
 	private static final String SLASH = "/";
@@ -68,7 +67,7 @@ public class FullImage extends Activity implements OnGestureListener {
 	private static final String IMAGE_JPEG = "image/jpeg";
 	private static final String TEXT_PLAIN = "text/plain";
 	static final String CURRENT_POSITION = "currentPhoto";
-	private ImageView imageView;
+	private TouchImageView imageView;
 	private Picture picture;
 	private String galleryUrl;
 	private List<Picture> albumPictures;
@@ -84,11 +83,14 @@ public class FullImage extends Activity implements OnGestureListener {
 	protected void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
-		gestureScanner = new GestureDetector(this);
 
 		galleryUrl = Settings.getGalleryUrl(this);
-		setContentView(R.layout.full_image);
-		imageView = (ImageView) findViewById(R.id.image_full);
+//		setContentView(R.layout.full_image);
+		imageView =  new TouchImageView(this);
+//		imageView = (TouchImageView) this.findViewById(R.id.full_image_view);
+		imageView.setMaxZoom(4f);
+		imageView.setFullImage(this);
+		setContentView(imageView);
 
 	}
 
@@ -97,15 +99,13 @@ public class FullImage extends Activity implements OnGestureListener {
 		super.onResume();
 		logger.debug("onResuming");
 		application = ((RegalAndroidApplication) getApplication());
-		albumPictures = application
-				.getPictures();
+		albumPictures = application.getPictures();
 		if (albumPictures == null || albumPictures.size() == 0) {
 			logger.debug("albumPictures is empty getting out");
 			finish();
 		} else {
-			currentPosition = ((RegalAndroidApplication) getApplication())
-					.getCurrentPosition();
-			logger.debug("currentPosition is : {}",currentPosition);
+			currentPosition = ((RegalAndroidApplication) getApplication()).getCurrentPosition();
+			logger.debug("currentPosition is : {}", currentPosition);
 			loadingPicture();
 		}
 
@@ -115,45 +115,37 @@ public class FullImage extends Activity implements OnGestureListener {
 	protected void onPause() {
 		super.onPause();
 		logger.debug("onPausing");
-		application
-				.setCurrentPosition(currentPosition);
-		albumPictures = application
-				.getPictures();
+		application.setCurrentPosition(currentPosition);
+		albumPictures = application.getPictures();
 		if (albumPictures != null && albumPictures.size() != 0) {
 			DBUtils.getInstance().saveContextToDatabase(this);
 		}
 	}
 
-	@Override
-	public boolean onTouchEvent(MotionEvent me) {
-		return gestureScanner.onTouchEvent(me);
-	}
 
 	private void loadingPicture() {
 		logger.debug("loadingPicture");
 		picture = albumPictures.get(currentPosition);
-		int albumName =application.getCurrentAlbum().getName();
-		File potentialAlreadyDownloadedFile = new File(
-				Settings.getReGalAndroidCachePath(this) + albumName + "/",
+		int albumName = application.getCurrentAlbum().getName();
+		File potentialAlreadyDownloadedFile = new File(Settings.getReGalAndroidCachePath(this) + albumName + "/",
 				picture.getFileName());
-		if (potentialAlreadyDownloadedFile.exists()
-				&& potentialAlreadyDownloadedFile.length() != 0) {
-			logger.debug("loadingPicture from cache : {}",potentialAlreadyDownloadedFile.getAbsolutePath());
-			imageView.setImageDrawable(Drawable
-					.createFromPath(potentialAlreadyDownloadedFile.getPath()));
+		if (potentialAlreadyDownloadedFile.exists() && potentialAlreadyDownloadedFile.length() != 0) {
+			logger.debug("loadingPicture from cache : {}", potentialAlreadyDownloadedFile.getAbsolutePath());
+			Bitmap decodeFile = BitmapFactory.decodeFile(potentialAlreadyDownloadedFile.getPath());
+			imageView.setImageBitmap(decodeFile);
+//			imageView.setImageDrawable(Drawable.createFromPath(potentialAlreadyDownloadedFile.getPath()));
 		}
 		// only download the picture IF it has not yet been downloaded
 		else {
 			String uriString = FileUtils.getInstance().chooseBetweenResizedAndOriginalUrl(picture);
-			logger.debug("loadingPicture from gallery : {}",uriString);
-			progressDialog = ProgressDialog.show(FullImage.this,
-					getString(R.string.please_wait),
+			logger.debug("loadingPicture from gallery : {}", uriString);
+			progressDialog = ProgressDialog.show(FullImage.this, getString(R.string.please_wait),
 					getString(R.string.loading_photo), true);
 			new LoadImageTask().execute(uriString, picture);
 		}
 	}
 
-	private final class LoadImageTask extends AsyncTask<Object,Void,Bitmap> {
+	private final class LoadImageTask extends AsyncTask<Object, Void, Bitmap> {
 		private String exceptionMessage = null;
 
 		@Override
@@ -162,15 +154,10 @@ public class FullImage extends Activity implements OnGestureListener {
 			Picture picture = (Picture) urls[1];
 			Bitmap downloadImage = null;
 			try {
-				File imageFileOnExternalDirectory = fileUtils
-						.getFileFromGallery(FullImage.this, picture
-								.getFileName(), picture.getForceExtension(),
-								fileUrl, true,
-								application.getCurrentAlbum().getName());
-				downloadImage = BitmapFactory
-						.decodeFile(imageFileOnExternalDirectory.getPath());
-				picture.setResizedImageCachePath(imageFileOnExternalDirectory
-						.getPath());
+				File imageFileOnExternalDirectory = fileUtils.getFileFromGallery(FullImage.this, picture.getFileName(),
+						picture.getForceExtension(), fileUrl, true, application.getCurrentAlbum().getName());
+				downloadImage = BitmapFactory.decodeFile(imageFileOnExternalDirectory.getPath());
+				picture.setResizedImageCachePath(imageFileOnExternalDirectory.getPath());
 
 			} catch (GalleryConnectionException e) {
 				exceptionMessage = e.getMessage();
@@ -187,11 +174,12 @@ public class FullImage extends Activity implements OnGestureListener {
 			if (result == null) {
 				alertConnectionProblem(exceptionMessage, galleryUrl);
 			}
-			imageView.setImageDrawable(new BitmapDrawable(result));
+			imageView.setImageBitmap(result);
+//			imageView.setImageDrawable(new BitmapDrawable(result));
 		}
 	}
 
-	private final class DownloadImageTask extends AsyncTask<Object,Void,File> {
+	private final class DownloadImageTask extends AsyncTask<Object, Void, File> {
 		private String exceptionMessage = null;
 
 		@Override
@@ -199,12 +187,8 @@ public class FullImage extends Activity implements OnGestureListener {
 			Picture picture = (Picture) urls[0];
 			File downloadImage = null;
 			try {
-				downloadImage = fileUtils.getFileFromGallery(
-						FullImage.this,
-						picture.getFileName(),
-						picture.getForceExtension(),
-						picture.getFileUrl(), false,
-						application.getCurrentAlbum().getName());
+				downloadImage = fileUtils.getFileFromGallery(FullImage.this, picture.getFileName(), picture
+						.getForceExtension(), picture.getFileUrl(), false, application.getCurrentAlbum().getName());
 			} catch (GalleryConnectionException e) {
 				exceptionMessage = e.getMessage();
 			} catch (FileHandlingException e) {
@@ -219,13 +203,12 @@ public class FullImage extends Activity implements OnGestureListener {
 			if (result == null) {
 				alertConnectionProblem(exceptionMessage, galleryUrl);
 			} else {
-				Toast.makeText(FullImage.this,
-						getString(R.string.image_successfully_downloaded),
-						Toast.LENGTH_LONG).show();
+				Toast.makeText(FullImage.this, getString(R.string.image_successfully_downloaded), Toast.LENGTH_LONG)
+						.show();
 			}
 		}
 	}
-	
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
@@ -237,7 +220,7 @@ public class FullImage extends Activity implements OnGestureListener {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		Intent intent = new Intent(Intent.ACTION_SEND);
-		String filePath=null;
+		String filePath = null;
 		switch (item.getItemId()) {
 		case R.id.download_full_res_image:
 			new DownloadImageTask().execute(picture);
@@ -248,8 +231,7 @@ public class FullImage extends Activity implements OnGestureListener {
 		case R.id.share_image:
 			intent.setType(TEXT_PLAIN);
 			intent.putExtra(Intent.EXTRA_TEXT, picture.getPublicUrl());
-			startActivity(Intent.createChooser(intent,
-					getString(R.string.choose_action)));
+			startActivity(Intent.createChooser(intent, getString(R.string.choose_action)));
 			break;
 		case R.id.send_image:
 			logger.debug("about to send the image");
@@ -262,16 +244,15 @@ public class FullImage extends Activity implements OnGestureListener {
 				intent.setType(IMAGE + extension);
 			}
 			filePath = picture.getResizedImageCachePath();
-			//if the resized picture does not exist, we can download the full size
-			if(filePath==null || filePath.equals("")){
+			// if the resized picture does not exist, we can download the full
+			// size
+			if (filePath == null || filePath.equals("")) {
 				new DownloadImageTask().execute(picture);
-				filePath = Settings.getReGalAndroidPath(this) + SLASH
-				+ picture.getFileUrl();
+				filePath = Settings.getReGalAndroidPath(this) + SLASH + picture.getFileUrl();
 			}
-			logger.debug("The image about to be sent is : {}",filePath);
+			logger.debug("The image about to be sent is : {}", filePath);
 			intent.putExtra(Intent.EXTRA_STREAM, Uri.parse(FILE + filePath));
-			startActivity(Intent.createChooser(intent,
-					getString(R.string.choose_action)));
+			startActivity(Intent.createChooser(intent, getString(R.string.choose_action)));
 			break;
 		case R.id.choose_photo_number:
 			intent = new Intent(this, ChoosePhotoNumber.class);
@@ -284,12 +265,10 @@ public class FullImage extends Activity implements OnGestureListener {
 			intent.setAction(android.content.Intent.ACTION_VIEW);
 			// imageFilePath is a path to a file located on the sd card
 			// such "/sdcard/temp.jpg"
-			filePath = Settings.getReGalAndroidPath(this) + SLASH
-					+ picture.getFileName();
+			filePath = Settings.getReGalAndroidPath(this) + SLASH + picture.getFileName();
 			File file = new File(filePath);
 			if (!file.exists()) {
-				filePath = Settings.getReGalAndroidCachePath(this) + SLASH
-						+ picture.getFileName();
+				filePath = Settings.getReGalAndroidCachePath(this) + SLASH + picture.getFileName();
 				file = new File(filePath);
 			}
 			intent.setDataAndType(Uri.fromFile(file), "image/*");
@@ -301,78 +280,71 @@ public class FullImage extends Activity implements OnGestureListener {
 		return false;
 	}
 
-	
-
-	private void alertConnectionProblem(String exceptionMessage,
-			String galleryUrl) {
+	private void alertConnectionProblem(String exceptionMessage, String galleryUrl) {
 		AlertDialog.Builder builder = new AlertDialog.Builder(FullImage.this);
 		// if there was an exception thrown, show it, or say to verify
 		// settings
-		String message = getString(R.string.not_connected) + galleryUrl
-				+ getString(R.string.exception_thrown) + exceptionMessage;
-		builder.setTitle(R.string.problem)
-				.setMessage(message)
-				.setPositiveButton(R.string.ok,
-						new DialogInterface.OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog, int id) {
-								dialog.cancel();
-							}
-						});
+		String message = getString(R.string.not_connected) + galleryUrl + getString(R.string.exception_thrown)
+				+ exceptionMessage;
+		builder.setTitle(R.string.problem).setMessage(message)
+				.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int id) {
+						dialog.cancel();
+					}
+				});
 		AlertDialog alert = builder.create();
 		alert.show();
 	}
 
 	private void showImageProperties(Picture picture) {
 		AlertDialog.Builder builder = new AlertDialog.Builder(FullImage.this);
-		StringBuilder message = new StringBuilder()
-				.append(getString(R.string.name)).append(" : ")
-				.append(picture.getFileName()).append("\n")
-				.append(getString(R.string.title)).append(" : ")
-				.append(picture.getTitle()).append("\n")
-				.append(getString(R.string.full_res_filesize)).append(" : ")
-				.append(picture.getFileSize()).append("\n")
-				.append(getString(R.string.full_res_width)).append(" : ")
-				.append(picture.getWidth()).append("px.\n")
-				.append(getString(R.string.full_res_height)).append(" : ")
+		StringBuilder message = new StringBuilder().append(getString(R.string.name)).append(" : ")
+				.append(picture.getFileName()).append("\n").append(getString(R.string.title)).append(" : ")
+				.append(picture.getTitle()).append("\n").append(getString(R.string.full_res_filesize)).append(" : ")
+				.append(picture.getFileSize()).append("\n").append(getString(R.string.full_res_width)).append(" : ")
+				.append(picture.getWidth()).append("px.\n").append(getString(R.string.full_res_height)).append(" : ")
 				.append(picture.getHeight()).append("px.\n");
 
-		// NOT USED IN G2...
-		// append(
-		// "Date of capture (dd/mm/yyyy) : ").append(
-		// picture.getCaptureDateDay()).append("/").append(
-		// picture.getCaptureDateMonth()).append("/").append(
-		// picture.getCaptureDateYear()).append("/").append(
-		// "Time of capture : ").append(picture.getCaptureDateHour())
-		// .append(":").append(picture.getCaptureDateMinute()).append(":")
-		// .append(picture.getCaptureDateSecond()).append(":");
 
-		builder.setTitle(R.string.image_properties)
-				.setMessage(message.toString())
-				.setPositiveButton(R.string.ok,
-						new DialogInterface.OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog, int id) {
-								dialog.cancel();
-							}
-						});
+		builder.setTitle(R.string.image_properties).setMessage(message.toString())
+				.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int id) {
+						dialog.cancel();
+					}
+				});
 		AlertDialog alert = builder.create();
 		alert.show();
 	}
 
-	@Override
-	public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
-			float velocityY) {
+	
 
-		int newPosition = currentPosition;
-		// right scroll we show the next picture
-		if (velocityX < 0) {
-			newPosition += 1;
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+			setResult(RESULT_OK);
+			((RegalAndroidApplication) getApplication()).setCurrentPosition(currentPosition);
+			this.finish();
+			return true;
 		}
-		// left scroll we show the previous picture
-		else {
-			newPosition -= 1;
-		}
+		return false;
+	}
+
+	
+	void moveRight(){
+		int newPosition = currentPosition+1;
+		changingPhoto(newPosition);
+		
+	}
+	
+	void moveLeft(){
+		int newPosition = currentPosition-1;
+		changingPhoto(newPosition);
+		
+	}
+
+	private void changingPhoto(int newPosition) {
 		String message;
 		// we're above the limit
 		if (newPosition < 0 || newPosition >= albumPictures.size()) {
@@ -395,43 +367,11 @@ public class FullImage extends Activity implements OnGestureListener {
 			toast.setText(message);
 		}
 		toast.show();
-		return true;
+		
 	}
-
-	@Override
-	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		if (keyCode == KeyEvent.KEYCODE_BACK) {
-			setResult(RESULT_OK);
-			((RegalAndroidApplication) getApplication())
-					.setCurrentPosition(currentPosition);
-			this.finish();
-			return true;
-		}
-		return false;
-	}
-
-	@Override
-	public void onLongPress(MotionEvent e) {
-	}
-
-	@Override
-	public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX,
-			float distanceY) {
-		return true;
-	}
-
-	@Override
-	public boolean onDown(MotionEvent e) {
-		return false;
-	}
-
-	@Override
-	public void onShowPress(MotionEvent e) {
-	}
-
-	@Override
-	public boolean onSingleTapUp(MotionEvent e) {
-		return false;
-	}
-
+	
+	
+	
+	
+	
 }
