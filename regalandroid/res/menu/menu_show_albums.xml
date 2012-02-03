@@ -25,6 +25,4 @@
 	<item android:id="@+id/create_album" android:title="@string/create_album_label"
 		android:icon="@android:drawable/ic_menu_add"
 		android:alphabeticShortcut="@string/create_album_shortcut" />
-	<item android:id="@+id/take_picture" android:title="@string/take_picture_label"
-		android:icon="@android:drawable/ic_menu_camera"></item>
 </menu>

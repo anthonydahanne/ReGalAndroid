@@ -297,11 +297,6 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 			startActivityForResult(intent, REQUEST_CODE_ADD_ALBUM);
 			break;
 
-		case R.id.take_picture:
-			intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-			startActivityForResult(intent, REQUEST_CODE_ADD_PHOTO);
-
-			break;
 		}
 		return false;
 	}

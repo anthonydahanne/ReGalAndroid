@@ -121,11 +121,6 @@ public class ShowAlbums extends ListActivity implements OnItemClickListener {
 			startActivityForResult(intent, REQUEST_CREATE_ALBUM);
 			break;
 
-		case R.id.take_picture:
-			intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-			startActivityForResult(intent, REQUEST_ADD_PHOTO);
-
-			break;
 
 		}
 		return false;
