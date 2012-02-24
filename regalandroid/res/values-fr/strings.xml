@@ -20,7 +20,7 @@
 
 <resources>
 		<!-- Activities -->
-        <string name="welcome_to_regalandroid">Bienvenue dans ReGalAndroid !</string>
+        <string name="welcome_to_regalandroid">Bienvenue dans ReGalBerry !</string>
         <string name="enter_gallery_title">Entrer dans la galerie !</string>
         <string name="connect_to_gallery_title">Se connecter à la galerie</string>
         <string name="gallery_url_title">Url de la galerie</string>

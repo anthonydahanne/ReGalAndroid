@@ -22,7 +22,7 @@
 
 
         <!-- Activities -->
-        <string name="welcome_to_regalandroid">Willkommen zu ReGalAndroid</string>
+        <string name="welcome_to_regalandroid">Willkommen zu ReGalBerry</string>
         <string name="enter_gallery_title">Gallerie betreten !</string>
         <string name="connect_to_gallery_title">Verbinde zur Gallerie !</string>
         <string name="gallery_url_title">Gallerie-Url</string>
@@ -41,7 +41,7 @@
         <string name="port_title">Port</string>
         <string name="port_summary">Der Standard Port ist 80, aber wenn deine Gallerie einen anderen benutzt, ändere Ihn hier</string>
 
-        <string name="firsttime_title">Willkommen zu ReGalAndroid !</string>
+        <string name="firsttime_title">Willkommen zu ReGalBerry !</string>
         <string name="ok">OK</string>
         <string name="about_label">Über</string>
         <string name="about_title">Über</string>
@@ -64,23 +64,23 @@
 
 		<string name="creating_new_album">Erstelle neues Album...</string>
 		<string name="what_is_regalandroid">
-		ReGalAndroid ist ein Client zum anzeigen einer Gallery2 (G2) od. Gallery3 (G3) od. Piwigo Seite.
-                ReGalAndroid ist Open Source Software (GPL v3).
+		ReGalBerry ist ein Client zum anzeigen einer Gallery2 (G2) od. Gallery3 (G3) od. Piwigo Seite.
+                ReGalBerry ist Open Source Software (GPL v3).
 		Dieses Pogramm ist veröffentlicht worden in der Hoffnung dass es nützlich ist,
 			jedoch unter AUSSCHLUSS JEGLICHER GARANTIE;
 			für nähere Details siehe: GNU General Public License.
 		Die standardmäßig konfigurierte Gallerie ist eine Beispiel-Gallery2 (G2) Installation zum testen, 
 		falls du noch keine eigene Gallerie konfiguiert hast.
                 Du kannst die Standard-URL in Menü->Einstellungen ändern.
-                ReGalAndroid soll später DEINE Gallerie anzeigen, nicht die Beispiel-Gallerie!
+                ReGalBerry soll später DEINE Gallerie anzeigen, nicht die Beispiel-Gallerie!
         </string>
         <string name="full_image_title">Bild</string>
         <string name="settings_label">Einstellungen...</string>
-        <string name="settings_title">ReGalAndroid Einstellungen</string>
+        <string name="settings_title">ReGalBerry Einstellungen</string>
 
         <string name="settings_shortcut">s</string>
-        <string name="show_albums_title">ReGalAndroid Alben</string>
-        <string name="show_gallery_title">ReGalAndroid Gallerie</string>
+        <string name="show_albums_title">ReGalBerry Alben</string>
+        <string name="show_gallery_title">ReGalBerry Gallerie</string>
 		<string name="view_album_pictures">Zeige die Bilder in diesem Album !</string>
 		<string name="current_version">Version : 1.0.0</string>
 		<string name="project_home">Projekt Home : </string>
@@ -91,11 +91,11 @@
 		<string name="adding_photo">Lade ein Foto zum Album hoch</string>
 		<string name="loading_first_photos_from_album">Lade erstes Foto aus dem Album</string>
 
-		<string name="regalandroid_temp_path_title">ReGalAndroidTempPfad</string>
+		<string name="regalandroid_temp_path_title">ReGalBerryTempPfad</string>
 
-		<string name="regalandroid_path_title">ReGalAndroidPfad</string>
-		<string name="regalandroid_path_summary">Der Pfad auf der SD-Karte in dem ReGalAndroid die Daten speichern soll</string>
-		<string name="regalandroid_temp_path_summary">Der Unterordner in dem ReGalAndroid die temporären Dateien ablegen soll</string>
+		<string name="regalandroid_path_title">ReGalBerryPfad</string>
+		<string name="regalandroid_path_summary">Der Pfad auf der SD-Karte in dem ReGalBerry die Daten speichern soll</string>
+		<string name="regalandroid_temp_path_summary">Der Unterordner in dem ReGalBerry die temporären Dateien ablegen soll</string>
 		<string name="clear_cache_title">Cache leeren</string>
 		<string name="clear_cache_summary">Cache leeren wenn eine neue Sitzung gestartet wird</string>
 		<string name="cache_cleared">Cache erfolgreich geleert !</string>
@@ -135,7 +135,7 @@
 		<string name="choose_subalbum_name">Wähle neuen Albumnamen</string>
 
 		<string name="url_validation_problem">Die URL ist nicht korrekt, bitte überprüfe sie nochmals und schau nach, ob keine Leerzeichen oder Sonderzeichen vorkommen !</string>
-		<string name="upload_photo_title">Fotoupload mit ReGalAndroid</string>
+		<string name="upload_photo_title">Fotoupload mit ReGalBerry</string>
 		<string name="take_picture_label">Sende das Bild zur Gallerie</string>
 
 		<string name="upload_photo_no_photo">Kein Foto zum Senden, bitte wähle ein Foto aus !</string>
@@ -153,9 +153,9 @@
 		<string name="upload_settings">Upload Einstellungen</string>
 		<string name="default_summary_title">Standardzusammenfassung</string>
 
-		<string name="default_summary_summary">Fotos die mit ReGalAndroid gesendet wurden haben diese Zusammenfassung</string>
+		<string name="default_summary_summary">Fotos die mit ReGalBerry gesendet wurden haben diese Zusammenfassung</string>
 		<string name="default_description_title">Standardbeschreibung</string>
-		<string name="default_description_summary">Fotos die mit ReGalAndroid gesendet wurden haben diese Beschreibung</string>
+		<string name="default_description_summary">Fotos die mit ReGalBerry gesendet wurden haben diese Beschreibung</string>
 		<string name="multiple_files_upload">Mehrere Dateien hochladen</string>
 		<string name="advanced_control_title">Erweiterte Kontrollen</string>
 

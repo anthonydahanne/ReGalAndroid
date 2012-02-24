@@ -38,14 +38,14 @@
 		<string name="license">GNU General Public License v3</string>
 		<string name="port_default">80</string>
 		<string name="gallery_url_default">http://g2.dahanne.net</string>
-		<string name="app_name">ReGalAndroid</string>
+		<string name="app_name">ReGalBerry</string>
 		<string name="regalandroid_path_default">regalandroid</string>
 		<string name="regalandroid_cache_path_default">tmp</string>
 		<!-- end of Default Values -->
 		
 		
         <!-- Activities -->
-        <string name="welcome_to_regalandroid">Welcome to ReGalAndroid</string>
+        <string name="welcome_to_regalandroid">Welcome to ReGalBerry</string>
         <string name="enter_gallery_title">Enter gallery !</string>
         <string name="connect_to_gallery_title">Connect to gallery !</string>
         <string name="gallery_url_title">Gallery Url</string>
@@ -108,7 +108,7 @@
         <string name="show_albums_title">RegalAndroid Albums</string>
         <string name="show_gallery_title">RegalAndroid Gallery</string>
 		<string name="view_album_pictures">View this album pictures !</string>
-		<string name="current_version">Version : 1.1.3</string>
+		<string name="current_version">Version : 1.1.4</string>
 		<string name="project_home">Project Home : </string>
 		<string name="album_is_empty">This album does not contain any pictures !</string>
 		<string name="type_new_subalbum_name">Type in your new subalbum name : </string>
