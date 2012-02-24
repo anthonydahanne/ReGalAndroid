@@ -9,6 +9,7 @@
         <name>ReGalAndroid Build aggregator</name>
         <modules>
                 <module>regalandroid-parent</module>
+                <!--module>regalandroid-test</module-->
                 <!--module>regalandroid-integration-tests</module-->
                 <module>regalandroid</module>
                 <module>commons-gallery</module>

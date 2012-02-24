@@ -7,5 +7,6 @@ tar xvzf android-sdk_r16-linux.tgz
 #ls android-sdk-linux
 echo "getting some Android platforms"
 android-sdk-linux/tools/android update sdk --no-ui -t platform
+android-sdk-linux/tools/android update sdk --no-ui -t platform-tools
 echo "here is the list of the downloaded platforms : "
 ls android-sdk-linux/platforms
