@@ -1,5 +1,6 @@
-before_install:
-  - chmod +x ./bin/ci/get-android-sdk.sh
-  - ./bin/ci/get-android-sdk.sh
 env: ANDROID_HOME=android-sdk-linux/
 language: java
+before_install: /bin/sh ./bin/ci/get-android-sdk.sh
+install: mvn install
+#since mvn install already run the tests, we don<t need travis to do it again
+test: /bin/sh ./bin/ci/do-nothing.sh 
