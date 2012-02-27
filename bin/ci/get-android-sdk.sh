@@ -11,6 +11,6 @@ android-sdk-linux/tools/android update sdk --no-ui -t platform-tools
 echo "here is the list of the downloaded platforms : "
 ls android-sdk-linux/platforms
 echo "creating an emulator"
-android-sdk-linux/tools/android create avd -n android2.3 -t 9 -c 16M
+android-sdk-linux/tools/android create avd -n android2.3 -t 9 -c 16M -b armeabi
 echo "starting the emulator in background with no window"
 android-sdk-linux/tools/emulator-arm -avd android2.3 -no-window
