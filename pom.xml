@@ -7,6 +7,12 @@
         <packaging>pom</packaging>
         <description>This pom can be used to build all the submodules at once</description>
         <name>ReGalAndroid Build aggregator</name>
+		<parent>
+			<artifactId>regalandroid-parent</artifactId>
+			<groupId>net.dahanne.android</groupId>
+			<version>1.2.0-SNAPSHOT</version>
+			<relativePath>regalandroid-parent</relativePath>
+		</parent>
         <modules>
                 <module>regalandroid-parent</module>
                 <module>regalandroid-test</module>
