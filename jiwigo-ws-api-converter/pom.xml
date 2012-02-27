@@ -9,7 +9,7 @@
 	</parent>
 	<groupId>net.dahanne.gallery</groupId>
 	<artifactId>jiwigo-ws-api-converter</artifactId>
-	<version>0.1.0</version>
+	<version>0.1.1-SNAPSHOT</version>
 	<name>Jiwigo WS API Converter</name>
 	<description>This project contains utilities to transform Jiwgo WS API objects to Albums and Pictures used by RegalAndroid</description>
 	<url>http://github.com/anthonydahanne/ReGalAndroid</url>
@@ -41,8 +41,7 @@
 		<dependency>
 			<groupId>fr.mael.jiwigo</groupId>
 			<artifactId>jiwigo-ws-api</artifactId>
-			<version>0.4.0-SNAPSHOT</version>
-			<scope>compile</scope>
+			<version>0.4.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>net.dahanne.gallery</groupId>

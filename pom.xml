@@ -3,13 +3,13 @@
         <modelVersion>4.0.0</modelVersion>
         <groupId>net.dahanne.android</groupId>
         <artifactId>regalandroid-aggregator</artifactId>
-        <version>1.0.1</version>
+        <version>1.2.0-SNAPSHOT</version>
         <packaging>pom</packaging>
         <description>This pom can be used to build all the submodules at once</description>
         <name>ReGalAndroid Build aggregator</name>
         <modules>
                 <module>regalandroid-parent</module>
-                <!--module>regalandroid-test</module-->
+                <module>regalandroid-test</module>
                 <!--module>regalandroid-integration-tests</module-->
                 <module>regalandroid</module>
                 <module>commons-gallery</module>
