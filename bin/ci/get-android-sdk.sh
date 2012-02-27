@@ -15,4 +15,4 @@ echo "creating an emulator"
 #see http://stackoverflow.com/questions/7931997/setting-android-avd-command-line-hardware-profile
 echo no | android-sdk-linux/tools/android create avd -n android2.3.3 -t android-10 -c 16M -b armeabi
 echo "starting the emulator in background with no window"
-android-sdk-linux/tools/emulator-arm -avd android2.3 -no-window
+android-sdk-linux/tools/emulator-arm -avd android2.3.3 -no-window
