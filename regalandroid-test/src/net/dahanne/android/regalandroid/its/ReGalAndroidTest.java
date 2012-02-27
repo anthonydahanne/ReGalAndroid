@@ -65,6 +65,8 @@ public class ReGalAndroidTest extends ActivityInstrumentationTestCase2<Start>{
 		solo.clickOnButton(this.getActivity().getString(R.string.ok));
 		Log.d(REGALANDROIDTEST, "set username as user");
 		
+		solo.wait(3000);
+		
 		//set password as password
 		solo.clickOnText(this.getActivity().getString(R.string.password_title));
 		solo.clearEditText(0);
