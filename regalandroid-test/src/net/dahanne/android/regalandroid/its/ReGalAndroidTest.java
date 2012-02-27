@@ -20,10 +20,12 @@ import net.dahanne.android.regalandroid.activity.Start;
 import com.jayway.android.robotium.solo.Solo;
 import android.test.ActivityInstrumentationTestCase2;
 import android.test.suitebuilder.annotation.Smoke;
+import android.util.Log;
 
 
 public class ReGalAndroidTest extends ActivityInstrumentationTestCase2<Start>{
 
+	private static final String REGALANDROIDTEST = "RegalAndroidTest";
 	private Solo solo;
 
 	public ReGalAndroidTest() {
@@ -40,29 +42,35 @@ public class ReGalAndroidTest extends ActivityInstrumentationTestCase2<Start>{
 	public void testEnterSettingsAndConfigurePiwigoGallery() throws Exception {
 		try{
 			solo.clickOnButton(this.getActivity().getString(R.string.accept));
+			Log.d(REGALANDROIDTEST, "accepted the eula");
 		}catch (AssertionFailedError e){
 			//OK, this is not the first time this activity is run
 		}
 		solo.clickOnMenuItem(this.getActivity().getString(R.string.settings_label));
+		Log.d(REGALANDROIDTEST, "clicked on the settings menu entry");
 		
 		//Assert that Settings activity is opened
 		solo.assertCurrentActivity("Expected ReGalAndroid activity", "Settings");
+		Log.d(REGALANDROIDTEST, "entering the settings activity");
 		
 		//Choose Piwigo Gallery as gallerytype
 		solo.clickOnText(this.getActivity().getString(R.string.gallery_connection_type_title));
 		solo.clickOnText(this.getActivity().getString(R.string.gallery_connection_type_piwigo));
+		Log.d(REGALANDROIDTEST, "chose Piwigo as gallery type");
 		
 		//set user as username
 		solo.clickOnText(this.getActivity().getString(R.string.username_title));
 		solo.clearEditText(0);
 		solo.enterText(0,"user");
 		solo.clickOnButton(this.getActivity().getString(R.string.ok));
+		Log.d(REGALANDROIDTEST, "set username as user");
 		
 		//set password as password
 		solo.clickOnText(this.getActivity().getString(R.string.password_title));
 		solo.clearEditText(0);
 		solo.enterText(0,"password");
 		solo.clickOnButton(this.getActivity().getString(R.string.ok));
+		Log.d(REGALANDROIDTEST, "set password as password");
 		
 
 	}
