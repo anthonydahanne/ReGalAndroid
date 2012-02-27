@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.dahanne.android</groupId>
 	<artifactId>regalandroid-parent</artifactId>
-	<version>1.2.0-SNAPSHOT</version>
+	<version>1.1.1</version>
 	<packaging>pom</packaging>
 	<name>ReGalAndroid parent module</name>
 	<dependencyManagement>
