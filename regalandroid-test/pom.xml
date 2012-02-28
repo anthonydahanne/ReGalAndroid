@@ -52,7 +52,7 @@
 	
 	<properties>
 		<sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
-	    <sonar.emma.reportPath>target/emma</sonar.emma.reportPath>
+	    <sonar.emma.reportPath>${tested.project.dir}/target/emma/</sonar.emma.reportPath>
 	    <sonar.core.codeCoverage>emma</sonar.core.codeCoverage>
   	</properties>
 	
