@@ -100,7 +100,6 @@
 			<plugin>
 				<groupId>com.jayway.maven.plugins.android.generation2</groupId>
 				<artifactId>android-maven-plugin</artifactId>
-				<version>3.0.0</version>
 				<configuration>
 					<sdk>
 						<platform>10</platform>
@@ -256,6 +255,31 @@
 				</plugins>
 			</build>
 		</profile>
+	<profile>
+		<id>emma</id>
+		<build>
+			<plugins>
+				<plugin>
+					<groupId>com.jayway.maven.plugins.android.generation2</groupId>
+					<artifactId>android-maven-plugin</artifactId>
+					<configuration>
+						<!-- emma start -->
+						<emma>
+							<enable>true</enable>
+							<classFolders>${project.basedir}/target/classes/</classFolders>
+							<outputMetaFile>${project.basedir}/target/emma/coverage.em</outputMetaFile>
+						</emma>
+						<!-- emma stop -->
+						<dex>
+							<noLocals>true</noLocals> <!-- must be set for emma -->
+						</dex>
+					</configuration>
+					<extensions>true</extensions>
+				</plugin>
+			</plugins>
+		</build>
+	</profile>
+
 	</profiles>
 
 

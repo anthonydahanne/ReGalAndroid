@@ -48,6 +48,11 @@
 					<artifactId>maven-license-plugin</artifactId>
 					<version>1.8.0</version>
 				</plugin>
+				<plugin>
+					<groupId>com.jayway.maven.plugins.android.generation2</groupId>
+					<artifactId>android-maven-plugin</artifactId>
+					<version>3.1.2-SNAPSHOT</version>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 	</build>
