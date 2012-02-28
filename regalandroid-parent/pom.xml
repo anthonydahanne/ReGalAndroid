@@ -66,6 +66,16 @@
       <url>http://nexus.dahanne.net/nexus/content/repositories/releases/</url>
     </repository>
   </repositories>
+    <pluginRepositories>
+    <pluginRepository>
+      <id>nexus.dahanne.net-snapshots</id>
+      <url>http://nexus.dahanne.net/nexus/content/repositories/snapshots/</url>
+    </pluginRepository>
+    <pluginRepository>
+      <id>nexus.dahanne.net-releases</id>
+      <url>http://nexus.dahanne.net/nexus/content/repositories/releases/</url>
+    </pluginRepository>
+  </pluginRepositories>
   <distributionManagement>
         <!-- use the following if you're not using a snapshot version. -->
         <repository>
