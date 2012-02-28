@@ -48,6 +48,11 @@
 					<artifactId>maven-license-plugin</artifactId>
 					<version>1.8.0</version>
 				</plugin>
+				<plugin>
+					<groupId>com.jayway.maven.plugins.android.generation2</groupId>
+					<artifactId>android-maven-plugin</artifactId>
+					<version>3.1.2-SNAPSHOT</version>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 	</build>
@@ -61,6 +66,16 @@
       <url>http://nexus.dahanne.net/nexus/content/repositories/releases/</url>
     </repository>
   </repositories>
+    <pluginRepositories>
+    <pluginRepository>
+      <id>nexus.dahanne.net-snapshots</id>
+      <url>http://nexus.dahanne.net/nexus/content/repositories/snapshots/</url>
+    </pluginRepository>
+    <pluginRepository>
+      <id>nexus.dahanne.net-releases</id>
+      <url>http://nexus.dahanne.net/nexus/content/repositories/releases/</url>
+    </pluginRepository>
+  </pluginRepositories>
   <distributionManagement>
         <!-- use the following if you're not using a snapshot version. -->
         <repository>
