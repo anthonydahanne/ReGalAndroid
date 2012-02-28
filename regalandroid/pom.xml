@@ -62,7 +62,11 @@
 	</dependencies>
 	
 	<properties>
-		<sonar.dynamicAnalysis>false</sonar.dynamicAnalysis>
+		<!--sonar.dynamicAnalysis>false</sonar.dynamicAnalysis-->
+		<sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
+	    <sonar.emma.reportPath>target/emma/</sonar.emma.reportPath>
+	    <sonar.surefire.reportsPath >../regalandroid-test/target/surefire-reports/</sonar.surefire.reportsPath >
+	    <sonar.core.codeCoveragePlugin>emma</sonar.core.codeCoveragePlugin>
   	</properties>
 	
 	
