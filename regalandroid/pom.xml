@@ -81,6 +81,12 @@
 			<version>0.1.1-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
+	
+	<properties>
+		<sonar.dynamicAnalysis>false</sonar.dynamicAnalysis>
+  	</properties>
+	
+	
 	<build>
 		<!--<finalName>${project.artifactId}</finalName> -->
 		<plugins>
