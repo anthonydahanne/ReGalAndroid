@@ -46,6 +46,11 @@ public class ReGalAndroidTest extends ActivityInstrumentationTestCase2<Start>{
 		}catch (AssertionFailedError e){
 			//OK, this is not the first time this activity is run
 		}
+		
+		solo.clickOnMenuItem(this.getActivity().getString(R.string.clear_cache_title));
+		Log.d(REGALANDROIDTEST, "clicked on the clear cache menu entry");
+		
+		
 		solo.clickOnMenuItem(this.getActivity().getString(R.string.settings_label));
 		Log.d(REGALANDROIDTEST, "clicked on the settings menu entry");
 		
