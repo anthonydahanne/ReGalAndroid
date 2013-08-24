@@ -15,13 +15,14 @@
 		</parent>
         <modules>
                 <module>regalandroid-parent</module>
-                <module>regalandroid-test</module>
+                <!-- module>regalandroid-test</module-->
                 <!--module>regalandroid-integration-tests</module-->
                 <module>regalandroid</module>
                 <module>commons-gallery</module>
                 <module>g2-java-client</module>
                 <module>g3-java-client</module>
                 <module>jiwigo-ws-api-converter</module>
+                <module>jiwigo-ws-api</module>
         </modules>
 
 </project>

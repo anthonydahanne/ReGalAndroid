@@ -37,6 +37,7 @@ import net.dahanne.gallery.g2.java.client.model.G2Album;
 import net.dahanne.gallery.g2.java.client.model.G2Picture;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -144,6 +145,7 @@ public class G2ClientTest extends Assert {
 	}
 
 	@Test
+    @Ignore
 	public void sendImageToGalleryTest() throws GalleryConnectionException {
 		g2ConnectionUtils.loginToGallery(galleryUrl, user, password);
 		File imageFile = new File("image.png");
@@ -224,7 +226,7 @@ public class G2ClientTest extends Assert {
 		albumsProperties.put("album.name.1", "10726");
 		albumsProperties.put("album.title.1", "Brunch");
 		albumsProperties.put("album.summary.1",
-				"Le Dimanche de 11h à 15h avait lieu le brunch");
+ "Le Dimanche de 11h à 15h avait lieu le brunch");
 		albumsProperties.put("album.parent.1", "7");
 		albumsProperties.put("album.perms.add.1", "false");
 		albumsProperties.put("album.perms.write.1", "false");
@@ -242,7 +244,7 @@ public class G2ClientTest extends Assert {
 		assertEquals(1, album.getId());
 		assertEquals("Brunch", album.getTitle());
 		assertEquals(10726, album.getName());
-		assertEquals("Le Dimanche de 11h à 15h avait lieu le brunch", album
+        assertEquals("Le Dimanche de 11h à 15h avait lieu le brunch", album
 				.getSummary());
 		assertEquals(7, album.getParentName());
 		assertEquals("Summary,Description", album.getExtrafields());

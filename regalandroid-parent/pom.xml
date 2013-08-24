@@ -51,44 +51,9 @@
 				<plugin>
 					<groupId>com.jayway.maven.plugins.android.generation2</groupId>
 					<artifactId>android-maven-plugin</artifactId>
-					<version>3.1.2-SNAPSHOT</version>
+					<version>3.6.1</version>
 				</plugin>
 			</plugins>
 		</pluginManagement>
 	</build>
-  <repositories>
-    <repository>
-      <id>nexus.dahanne.net-snapshots</id>
-      <url>http://nexus.dahanne.net/nexus/content/repositories/snapshots/</url>
-    </repository>
-    <repository>
-      <id>nexus.dahanne.net-releases</id>
-      <url>http://nexus.dahanne.net/nexus/content/repositories/releases/</url>
-    </repository>
-  </repositories>
-    <pluginRepositories>
-    <pluginRepository>
-      <id>nexus.dahanne.net-snapshots</id>
-      <url>http://nexus.dahanne.net/nexus/content/repositories/snapshots/</url>
-    </pluginRepository>
-    <pluginRepository>
-      <id>nexus.dahanne.net-releases</id>
-      <url>http://nexus.dahanne.net/nexus/content/repositories/releases/</url>
-    </pluginRepository>
-  </pluginRepositories>
-  <distributionManagement>
-        <!-- use the following if you're not using a snapshot version. -->
-        <repository>
-                <id>nexus.dahanne.net</id>
-                <name>RepositoryProxy</name>
-                <url>http://nexus.dahanne.net/nexus/content/repositories/releases</url>
-        </repository>
-        <!-- use the following if you ARE using a snapshot version. -->
-        <snapshotRepository>
-                <id>nexus.dahanne.net</id>
-                <name>RepositoryProxy</name>
-                <url>http://nexus.dahanne.net/nexus/content/repositories/snapshots</url>
-        </snapshotRepository>
-</distributionManagement>
-  
 </project>

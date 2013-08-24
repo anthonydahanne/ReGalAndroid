@@ -1,0 +1,40 @@
+<rsp stat="ok">
+	<image id="20" file="20100919131731-692df26f.jpg" date_available="2010-09-19 13:17:31"
+		tn_ext="jpg" author="mael" hit="0" filesize="48" width="450" height="475"
+		date_metadata_update="2010-09-19" level="0"
+		md5sum="692df26f3800cc1aab00421d7c29ff4c"
+		tn_url="http://mael.piwigo.com/uploads/y/c/a/ycajh4petv/2010/09/19/thumbnail/TN-20100919131731-692df26f.jpg"
+		element_url="http://mael.piwigo.com/uploads/y/c/a/ycajh4petv/2010/09/19/20100919131731-692df26f.jpg">
+		<name>10</name>
+		<rates count="0" average="" />
+		<categories>
+			<category id="3"
+				url="http://mael.piwigo.com/index?/category/3-test_de_test_do_not_delete"
+				page_url="http://mael.piwigo.com/picture?/20/category/3-test_de_test_do_not_delete">
+				<name>test de test do not delete</name>
+				<uppercats>1,3</uppercats>
+				<global_rank>1.1</global_rank>
+			</category>
+		</categories>
+		<tags>
+			<tag id="1" name="Tag1" url_name="tag1"
+				url="http://mael.piwigo.com/index?/tags/1-tag1" page_url="http://mael.piwigo.com/picture?/20/tags/1-tag1" />
+		</tags>
+		<comment_post author="mael"
+			key="1284919810:82b32b18c9b16d34295f586cd88855f3" />
+		<comments page="0" per_page="10" count="3" nb_comments="3">
+			<comment id="1" date="2010-09-19 15:12:22">
+				<author>mael</author>
+				<content>comment test</content>
+			</comment>
+			<comment id="2" date="2010-09-19 15:13:26">
+				<author>mael</author>
+				<content>comment test</content>
+			</comment>
+			<comment id="3" date="2010-09-19 15:14:33">
+				<author>mael</author>
+				<content>comment test</content>
+			</comment>
+		</comments>
+	</image>
+</rsp>
