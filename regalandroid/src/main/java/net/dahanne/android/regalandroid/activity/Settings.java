@@ -32,7 +32,7 @@ import android.preference.PreferenceManager;
 
 public class Settings extends PreferenceActivity {
 
-	// Option keys and default values
+    // Option keys and default values
 	// TODO : it is too bad I can't load getString from the context : there must
 	// be a way not to repeat the key values already in strings.xml
 	private static String OPT_GALLERY_URL_KEY = "galleryUrl";
@@ -49,11 +49,13 @@ public class Settings extends PreferenceActivity {
 	private static String OPT_GALLERY_CONNECTION_TYPE = "GalleryType";
 	private static String OPT_GALLERY_CONNECTION_TYPE_DEF = "0";
 
-	
+    private static final String OPT_GALLERY_SLIDESHOW_INTERVAL = "SlideshowInterval";
+    private static final String OPT_GALLERY_SLIDESHOW_INTERVAL_DEF = "7";
+
 	private static final String TAG = "Settings";
 	private static String galleryUrl;
 
-	@Override
+    @Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		addPreferencesFromResource(R.xml.settings);
@@ -128,6 +130,11 @@ public class Settings extends PreferenceActivity {
 		return PreferenceManager.getDefaultSharedPreferences(context).getString(
 				OPT_GALLERY_CONNECTION_TYPE, OPT_GALLERY_CONNECTION_TYPE_DEF);
 	}
+
+    public static String getSlideshowInterval(Context context){
+        return PreferenceManager.getDefaultSharedPreferences(context).getString(
+                OPT_GALLERY_SLIDESHOW_INTERVAL, OPT_GALLERY_SLIDESHOW_INTERVAL_DEF);
+    }
 	
 	@Override
 	protected void onPause() {

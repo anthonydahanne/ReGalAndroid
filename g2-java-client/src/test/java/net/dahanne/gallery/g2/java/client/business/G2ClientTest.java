@@ -290,15 +290,13 @@ public class G2ClientTest extends Assert {
 		album.setParentName(10);
 		albums.put(album.getId(), album);
 
-		Album finalALbum = g2ConnectionUtils.organizeAlbumsHierarchy(albums);
-		assertEquals(10, finalALbum.getName());
-		assertEquals(20, finalALbum.getSubAlbums().get(0).getName());
-		assertEquals(4, finalALbum.getSubAlbums().get(1).getName());
-		assertEquals(3, finalALbum.getSubAlbums().get(2).getName());
-		assertEquals(5, finalALbum.getSubAlbums().get(0).getSubAlbums().get(0)
-				.getName());
-		assertEquals(6, finalALbum.getSubAlbums().get(0).getSubAlbums().get(1)
-				.getName());
+		Album finalAlbum = g2ConnectionUtils.organizeAlbumsHierarchy(albums);
+		assertEquals(10, finalAlbum.getName());
+		assertEquals(20, finalAlbum.getSubAlbums().get(0).getName());
+		assertEquals(4, finalAlbum.getSubAlbums().get(1).getName());
+		assertEquals(3, finalAlbum.getSubAlbums().get(2).getName());
+		assertEquals(5, finalAlbum.getSubAlbums().get(0).getSubAlbums().get(0).getName());
+		assertEquals(6, finalAlbum.getSubAlbums().get(0).getSubAlbums().get(1).getName());
 
 	}
 

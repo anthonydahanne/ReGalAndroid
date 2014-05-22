@@ -167,6 +167,8 @@
 		<string name="accept">Akzeptieren</string>
 		<string name="decline">Ablehnen</string>
 
+        <string name="slideshow_interval_summary">Dauer für die ein Bild angezeigt wird (in Sekunden).</string>
+        <string name="slideshow_interval_title">Diaschau interval</string>
 
 
 </resources>

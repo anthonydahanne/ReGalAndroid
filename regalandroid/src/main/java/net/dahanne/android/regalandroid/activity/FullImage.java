@@ -20,6 +20,8 @@ package net.dahanne.android.regalandroid.activity;
 
 import java.io.File;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import net.dahanne.android.regalandroid.R;
 import net.dahanne.android.regalandroid.RegalAndroidApplication;
@@ -39,24 +41,20 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.GestureDetector;
-import android.view.GestureDetector.OnGestureListener;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.widget.Toast;
 
 /**
- * 
+ *
  * @author Anthony Dahanne
- * 
+ *
  */
 public class FullImage extends Activity {
 
@@ -78,8 +76,9 @@ public class FullImage extends Activity {
 	private final FileUtils fileUtils = FileUtils.getInstance();
 	private RegalAndroidApplication application;
 	private final Logger logger = LoggerFactory.getLogger(FullImage.class);
+    private Timer slideshowTimer;
 
-	@Override
+    @Override
 	protected void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
@@ -94,7 +93,7 @@ public class FullImage extends Activity {
 
 	}
 
-	@Override
+    @Override
 	protected void onResume() {
 		super.onResume();
 		logger.debug("onResuming");
@@ -120,7 +119,8 @@ public class FullImage extends Activity {
 		if (albumPictures != null && albumPictures.size() != 0) {
 			DBUtils.getInstance().saveContextToDatabase(this);
 		}
-	}
+        stopSlideshow();
+    }
 
 
 	private void loadingPicture() {
@@ -184,16 +184,17 @@ public class FullImage extends Activity {
 
 		@Override
 		protected File doInBackground(Object... urls) {
-			Picture picture = (Picture) urls[0];
-			File downloadImage = null;
-			try {
-				downloadImage = fileUtils.getFileFromGallery(FullImage.this, picture.getFileName(), picture
-						.getForceExtension(), picture.getFileUrl(), false, application.getCurrentAlbum().getName());
-			} catch (GalleryConnectionException e) {
-				exceptionMessage = e.getMessage();
-			} catch (FileHandlingException e) {
-				exceptionMessage = e.getMessage();
-			}
+            Picture picture = (Picture) urls[0];
+            File downloadImage = null;
+            try {
+                downloadImage = fileUtils.getFileFromGallery(FullImage.this, picture.getFileName(),
+                        picture.getForceExtension(), picture.getFileUrl(), false,
+                        application.getCurrentAlbum().getName());
+            } catch (GalleryConnectionException e) {
+                exceptionMessage = e.getMessage();
+            } catch (FileHandlingException e) {
+                exceptionMessage = e.getMessage();
+            }
 
 			return downloadImage;
 		}
@@ -217,75 +218,94 @@ public class FullImage extends Activity {
 		return true;
 	}
 
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		Intent intent = new Intent(Intent.ACTION_SEND);
-		String filePath = null;
-		switch (item.getItemId()) {
-		case R.id.download_full_res_image:
-			new DownloadImageTask().execute(picture);
-			break;
-		case R.id.show_image_properties:
-			showImageProperties(picture);
-			break;
-		case R.id.share_image:
-			intent.setType(TEXT_PLAIN);
-			intent.putExtra(Intent.EXTRA_TEXT, picture.getPublicUrl());
-			startActivity(Intent.createChooser(intent, getString(R.string.choose_action)));
-			break;
-		case R.id.send_image:
-			logger.debug("about to send the image");
-			// we first download the full res image
-			String extension = picture.getForceExtension();
-			// if no extension is found, let's assume it's a jpeg...
-			if (extension == null || extension.equals("jpg")) {
-				intent.setType(IMAGE_JPEG);
-			} else {
-				intent.setType(IMAGE + extension);
-			}
-			filePath = picture.getResizedImageCachePath();
-			// if the resized picture does not exist, we can download the full
-			// size
-			if (filePath == null || filePath.equals("")) {
-				new DownloadImageTask().execute(picture);
-				filePath = Settings.getReGalAndroidPath(this) + SLASH + picture.getFileUrl();
-			}
-			logger.debug("The image about to be sent is : {}", filePath);
-			intent.putExtra(Intent.EXTRA_STREAM, Uri.parse(FILE + filePath));
-			startActivity(Intent.createChooser(intent, getString(R.string.choose_action)));
-			break;
-		case R.id.choose_photo_number:
-			intent = new Intent(this, ChoosePhotoNumber.class);
-			intent.putExtra(CURRENT_POSITION, currentPosition);
-			startActivityForResult(intent, REQUEST_CODE_CHOOSE_PHOTO_NUMBER);
-			break;
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        String filePath = null;
+        switch (item.getItemId()) {
+            case R.id.start_slideshow:
+                slideshowTimer = new Timer();
+                slideshowTimer.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        FullImage.this.runOnUiThread(new TimerTask() {
+                            @Override
+                            public void run() {
+                                if(currentPosition+1 < albumPictures.size() ) {
+                                    moveRight();
+                                } else {
+                                    slideshowTimer.cancel();
+                                    slideshowTimer = null;
+                                }
+                            }
+                        });
+                    }
+                }, 1000, Integer.parseInt(Settings.getSlideshowInterval(getApplicationContext())) * 1000);
+                break;
+            case R.id.download_full_res_image:
+                new DownloadImageTask().execute(picture);
+                break;
+            case R.id.show_image_properties:
+                showImageProperties(picture);
+                break;
+            case R.id.share_image:
+                intent.setType(TEXT_PLAIN);
+                intent.putExtra(Intent.EXTRA_TEXT, picture.getPublicUrl());
+                startActivity(Intent.createChooser(intent, getString(R.string.choose_action)));
+                break;
+            case R.id.send_image:
+                logger.debug("about to send the image");
+                // we first download the full res image
+                String extension = picture.getForceExtension();
+                // if no extension is found, let's assume it's a jpeg...
+                if (extension == null || extension.equals("jpg")) {
+                    intent.setType(IMAGE_JPEG);
+                } else {
+                    intent.setType(IMAGE + extension);
+                }
+                filePath = picture.getResizedImageCachePath();
+                // if the resized picture does not exist, we can download the full
+                // size
+                if (filePath == null || filePath.equals("")) {
+                    new DownloadImageTask().execute(picture);
+                    filePath = Settings.getReGalAndroidPath(this) + SLASH + picture.getFileUrl();
+                }
+                logger.debug("The image about to be sent is : {}", filePath);
+                intent.putExtra(Intent.EXTRA_STREAM, Uri.parse(FILE + filePath));
+                startActivity(Intent.createChooser(intent, getString(R.string.choose_action)));
+                break;
+            case R.id.choose_photo_number:
+                intent = new Intent(this, ChoosePhotoNumber.class);
+                intent.putExtra(CURRENT_POSITION, currentPosition);
+                startActivityForResult(intent, REQUEST_CODE_CHOOSE_PHOTO_NUMBER);
+                break;
 
-		case R.id.advanced_control:
-			intent = new Intent();
-			intent.setAction(android.content.Intent.ACTION_VIEW);
-			// imageFilePath is a path to a file located on the sd card
-			// such "/sdcard/temp.jpg"
-			filePath = Settings.getReGalAndroidPath(this) + SLASH + picture.getFileName();
-			File file = new File(filePath);
-			if (!file.exists()) {
-				filePath = Settings.getReGalAndroidCachePath(this) + SLASH + picture.getFileName();
-				file = new File(filePath);
-			}
-			intent.setDataAndType(Uri.fromFile(file), "image/*");
-			startActivity(intent);
+            case R.id.advanced_control:
+                intent = new Intent();
+                intent.setAction(android.content.Intent.ACTION_VIEW);
+                // imageFilePath is a path to a file located on the sd card
+                // such "/sdcard/temp.jpg"
+                filePath = Settings.getReGalAndroidPath(this) + SLASH + picture.getFileName();
+                File file = new File(filePath);
+                if (!file.exists()) {
+                    filePath = Settings.getReGalAndroidCachePath(this) + SLASH + picture.getFileName();
+                    file = new File(filePath);
+                }
+                intent.setDataAndType(Uri.fromFile(file), "image/*");
+                startActivity(intent);
 
-			break;
-		}
+                break;
+        }
 
-		return false;
-	}
+        return false;
+    }
 
 	private void alertConnectionProblem(String exceptionMessage, String galleryUrl) {
 		AlertDialog.Builder builder = new AlertDialog.Builder(FullImage.this);
 		// if there was an exception thrown, show it, or say to verify
 		// settings
-		String message = getString(R.string.not_connected) + galleryUrl + getString(R.string.exception_thrown)
-				+ exceptionMessage;
+		String message = getString(R.string.not_connected) + galleryUrl
+                + getString(R.string.exception_thrown) + exceptionMessage;
 		builder.setTitle(R.string.problem).setMessage(message)
 				.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
 					@Override
@@ -318,7 +338,7 @@ public class FullImage extends Activity {
 		alert.show();
 	}
 
-	
+
 
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -331,20 +351,26 @@ public class FullImage extends Activity {
 		return false;
 	}
 
-	
+
 	void moveRight(){
 		int newPosition = currentPosition+1;
 		changingPhoto(newPosition);
-		
-	}
-	
-	void moveLeft(){
-		int newPosition = currentPosition-1;
-		changingPhoto(newPosition);
-		
 	}
 
-	private void changingPhoto(int newPosition) {
+	void moveLeft(){
+        stopSlideshow();
+        int newPosition = currentPosition-1;
+		changingPhoto(newPosition);
+	}
+
+    private void stopSlideshow() {
+        if(slideshowTimer != null){
+            slideshowTimer.cancel();
+            slideshowTimer = null;
+        }
+    }
+
+    private void changingPhoto(int newPosition) {
 		String message;
 		// we're above the limit
 		if (newPosition < 0 || newPosition >= albumPictures.size()) {
@@ -367,11 +393,5 @@ public class FullImage extends Activity {
 			toast.setText(message);
 		}
 		toast.show();
-		
 	}
-	
-	
-	
-	
-	
 }
