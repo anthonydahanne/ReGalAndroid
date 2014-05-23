@@ -250,7 +250,8 @@ public class G3ClientTest {
 	}
 
 	@Test
-	public void updateItemPhoto() throws G3GalleryException {
+	public void updateItemPhoto() throws G3GalleryException, IOException {
+        addPhoto();  //make sure, the photo to add exists
 		Entity photoToUpdate = new Entity();
 		photoToUpdate.setId(createdPhotoId);
 		photoToUpdate.setTitle("New Photo renamed !");
