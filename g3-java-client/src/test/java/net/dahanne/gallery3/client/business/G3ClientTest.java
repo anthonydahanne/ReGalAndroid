@@ -222,7 +222,14 @@ public class G3ClientTest {
 
 	@Test
 	public void getPhotoInputStream() throws IOException, G3GalleryException, MagicParseException, MagicMatchNotFoundException, MagicException {
-		Item item1 = itemClient.getItem(createdPhotoId);
+        try {
+            itemClient.getItem(createdPhotoId);
+        }catch(G3ItemNotFoundException ex){
+            //item does not exist yet, so we need to add it first
+            addPhoto();
+        }
+
+        Item item1 = itemClient.getItem(createdPhotoId);
 		String url = item1.getEntity().getFileUrl();
 		InputStream inputStream = itemClient.getPhotoInputStream(url);
 		//conversion stuff..
