@@ -67,12 +67,10 @@ public class G3ClientTest {
 		itemClient = new G3Client(galleryUrl, "Unit Test");
 		itemClient.setUsername(username);
 		itemClient.setPassword(password);
-
 	}
 
-	@Test
+    @Test
 	public void getItemTest__album() throws G3GalleryException {
-
 		Item item1 = itemClient.getItem(1);
 		assertEquals("Gallery", item1.getEntity().getTitle());
 	}
@@ -91,7 +89,6 @@ public class G3ClientTest {
 		albumToCreate.setParent(G2ANDROID_SECRET_ALBUM);
 		createdAlbumId = itemClient.createItem(albumToCreate, null);
 		assertNotNull(createdAlbumId);
-
 	}
 
 	@Ignore
@@ -124,14 +121,15 @@ public class G3ClientTest {
 
 	@Test
 	public void updateItemAlbum() throws G3GalleryException {
+        createAlbum(); //first create album renamed below
+
 		Entity albumToUpdate = new Entity();
 		albumToUpdate.setId(createdAlbumId);
 		albumToUpdate.setTitle("New Album renamed !");
 		// the album is updated
 		itemClient.updateItem(albumToUpdate);
 		// we check it has be updated fetching it
-		assertEquals("New Album renamed !", itemClient.getItem(createdAlbumId)
-				.getEntity().getTitle());
+		assertEquals("New Album renamed !", itemClient.getItem(createdAlbumId).getEntity().getTitle());
 	}
 
 	@Test
