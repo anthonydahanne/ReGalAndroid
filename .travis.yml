@@ -1,6 +1,13 @@
-env: ANDROID_HOME=android-sdk-linux/
-language: java
-before_install: /bin/sh ./bin/ci/get-android-sdk.sh
+language: android
+android:
+   components:
+     - build-tools-19.0.3
+     - android-19
+     - sysimg-19
+     - extra-android-support
+   licenses:
+     - android-sdk-license-bcbbd656
+     - '.*intel.+'
 install: mvn install
-#since mvn install already run the tests, we don<t need travis to do it again
+#since mvn install already run the tests, we don't need travis to do it again
 test: /bin/sh ./bin/ci/do-nothing.sh 

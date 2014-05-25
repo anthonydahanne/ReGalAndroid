@@ -31,6 +31,7 @@
 		<string name="default_summary_key">DefaultSummary</string>
 		<string name="default_description_key">DefaultDescription</string>
 		<string name="gallery_connection_type_key">GalleryType</string>
+        <string name="slideshow_interval_key">SlideshowInterval</string>
 		<!-- end of Keys -->
 		
 		<!--Default values , NOT TO TRANSLATE !-->
@@ -187,5 +188,7 @@
 		<string name="gallery_connection_type_gallery2">Gallery2</string>
 		<string name="gallery_connection_type_gallery3">Gallery3</string>
 		<string name="gallery_connection_type_piwigo">Piwigo</string>
-		
+
+    <string name="slideshow_interval_summary">Time between switching pictures (in seconds)</string>
+    <string name="slideshow_interval_title">Slideshow interval</string>
 </resources>

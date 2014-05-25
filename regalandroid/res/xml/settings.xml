@@ -59,5 +59,12 @@
 
 	</PreferenceCategory>
 
+    <PreferenceCategory android:title="Slideshow settings">
+		<EditTextPreference android:name="Slideshow interval"
+			android:summary="@string/slideshow_interval_summary" android:title="@string/slideshow_interval_title"
+			android:key="@string/slideshow_interval_key"
+            android:inputType="number" />
+	</PreferenceCategory>
+
 
 </PreferenceScreen>

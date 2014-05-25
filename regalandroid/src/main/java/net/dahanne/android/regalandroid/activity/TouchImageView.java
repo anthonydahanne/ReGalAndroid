@@ -250,7 +250,6 @@ public class TouchImageView extends ImageView {
         @Override
         public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
             if(e1.getX() - e2.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
-
 //                Toast.makeText(context, "Right to left "+Math.abs(velocityX), Toast.LENGTH_SHORT).show();
 //                Log.d(TAG, "Velocity "+Math.abs(velocityX));
 //                Log.d(TAG, "Distance "+(e1.getX() - e2.getX()));
@@ -258,7 +257,6 @@ public class TouchImageView extends ImageView {
             	
                 return false; // Right to left
             }  else if (e2.getX() - e1.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
-//
 //                Toast.makeText(context, "Left to right "+Math.abs(velocityX), Toast.LENGTH_SHORT).show();
 //                Log.d(TAG, "Velocity "+Math.abs(velocityX));
 //                Log.d(TAG, "Distance "+(e2.getX() - e1.getX()));
@@ -276,7 +274,6 @@ public class TouchImageView extends ImageView {
 
 	public void setFullImage(FullImage fullImage) {
 		this.fullImage=fullImage;
-		
 	}
 }
 

@@ -60,19 +60,17 @@ public class G3ClientTest {
 	private static final String password = "g2android";
 	private G3Client itemClient;
 	private static int createdAlbumId;
-	private static int createdPhotoId;
+	private static int createdPhotoId = 0; //initialize with 0 to be able to detect if photo has not been created yet
 
 	@Before
 	public void setUp() {
 		itemClient = new G3Client(galleryUrl, "Unit Test");
 		itemClient.setUsername(username);
 		itemClient.setPassword(password);
-
 	}
 
-	@Test
+    @Test
 	public void getItemTest__album() throws G3GalleryException {
-
 		Item item1 = itemClient.getItem(1);
 		assertEquals("Gallery", item1.getEntity().getTitle());
 	}
@@ -91,7 +89,6 @@ public class G3ClientTest {
 		albumToCreate.setParent(G2ANDROID_SECRET_ALBUM);
 		createdAlbumId = itemClient.createItem(albumToCreate, null);
 		assertNotNull(createdAlbumId);
-
 	}
 
 	@Ignore
@@ -124,14 +121,15 @@ public class G3ClientTest {
 
 	@Test
 	public void updateItemAlbum() throws G3GalleryException {
+        createAlbum(); //first create album renamed below
+
 		Entity albumToUpdate = new Entity();
 		albumToUpdate.setId(createdAlbumId);
 		albumToUpdate.setTitle("New Album renamed !");
 		// the album is updated
 		itemClient.updateItem(albumToUpdate);
 		// we check it has be updated fetching it
-		assertEquals("New Album renamed !", itemClient.getItem(createdAlbumId)
-				.getEntity().getTitle());
+		assertEquals("New Album renamed !", itemClient.getItem(createdAlbumId).getEntity().getTitle());
 	}
 
 	@Test
@@ -212,8 +210,7 @@ public class G3ClientTest {
 //		URL resource = Resources.getResource("logo.png");
 //		System.out.println(resource.getPath());
 		
-		File photoFile = new File(this.getClass().getClassLoader()
-				.getResource("logo.png").getPath());
+		File photoFile = new File(this.getClass().getClassLoader().getResource("logo.png").getPath());
 		createdPhotoId = itemClient.createItem(photoToCreate, photoFile);
 		Item item = itemClient.getItem(createdPhotoId);
 		assertEquals("New Photo", item.getEntity().getTitle());
@@ -225,7 +222,14 @@ public class G3ClientTest {
 
 	@Test
 	public void getPhotoInputStream() throws IOException, G3GalleryException, MagicParseException, MagicMatchNotFoundException, MagicException {
-		Item item1 = itemClient.getItem(createdPhotoId);
+        try {
+            itemClient.getItem(createdPhotoId);
+        }catch(G3ItemNotFoundException ex){
+            //item does not exist yet, so we need to add it first
+            addPhoto();
+        }
+
+        Item item1 = itemClient.getItem(createdPhotoId);
 		String url = item1.getEntity().getFileUrl();
 		InputStream inputStream = itemClient.getPhotoInputStream(url);
 		//conversion stuff..
@@ -252,15 +256,20 @@ public class G3ClientTest {
 	}
 
 	@Test
-	public void updateItemPhoto() throws G3GalleryException {
+	public void updateItemPhoto() throws G3GalleryException, IOException {
+        try {
+            itemClient.getItem(createdPhotoId);
+        }catch(G3ItemNotFoundException ex){
+            //item does not exist yet, so we need to add it first
+            addPhoto();
+        }
 		Entity photoToUpdate = new Entity();
 		photoToUpdate.setId(createdPhotoId);
 		photoToUpdate.setTitle("New Photo renamed !");
 		// the photo entity is updated
 		itemClient.updateItem(photoToUpdate);
 		// we check it has be updated fetching it
-		assertEquals("New Photo renamed !", itemClient.getItem(createdPhotoId)
-				.getEntity().getTitle());
+		assertEquals("New Photo renamed !", itemClient.getItem(createdPhotoId).getEntity().getTitle());
 	}
 
 	@Test(expected = G3ItemNotFoundException.class)

@@ -20,6 +20,7 @@
 -->
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:title="Slideshow" android:id="@+id/start_slideshow" android:icon="@android:drawable/ic_menu_slideshow" />
 	<item android:title="@string/download_full_res_image_title"
 		android:icon="@android:drawable/ic_menu_save" android:id="@+id/download_full_res_image" />
 	<item android:title="@string/image_properties" android:icon="@android:drawable/ic_menu_info_details"
