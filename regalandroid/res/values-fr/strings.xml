@@ -144,4 +144,7 @@
 		<string name="accept">J\'accepte</string>
 		<string name="decline">Je décline</string>
 		
+        <string name="slideshow_interval_summary">Durée de l\'intervalle entre 2 images</string>
+        <string name="slideshow_interval_title">Interval du diaporama</string>
+		
 </resources>
