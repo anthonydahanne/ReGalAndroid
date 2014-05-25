@@ -1,4 +1,4 @@
-ReGalAndroid
+ReGalAndroid  [![Build Status](https://travis-ci.org/anthonydahanne/ReGalAndroid.svg?branch=master)](https://travis-ci.org/anthonydahanne/ReGalAndroid)
 =============
 
 Formerly named [g2android](http://code.google.com/p/g2android/), ReGalAndroid is a [Menalto Gallery 2](http://gallery.menalto.com/) client; but aimed to be also compatible with [G3](https://github.com/gallery/gallery3), [Piwigo](http://piwigo.org/) , etc...
