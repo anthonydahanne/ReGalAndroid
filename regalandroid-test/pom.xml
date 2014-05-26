@@ -9,7 +9,7 @@
 	<parent>
 		<artifactId>regalandroid-parent</artifactId>
 		<groupId>net.dahanne.android</groupId>
-		<version>1.2.0</version>
+		<version>1.2.1-SNAPSHOT</version>
 		<relativePath>../regalandroid-parent</relativePath>
 	</parent>
 	<dependencies>
@@ -28,14 +28,14 @@
 			<artifactId>regalandroid</artifactId>
 			<scope>provided</scope>
 			<type>apk</type>
-			<version>1.2.0</version>
+			<version>1.2.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>net.dahanne.android</groupId>
 			<artifactId>regalandroid</artifactId>
 			<scope>provided</scope>
 			<type>jar</type>
-			<version>1.2.0</version>
+			<version>1.2.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
             <groupId>com.jayway.android.robotium</groupId>
