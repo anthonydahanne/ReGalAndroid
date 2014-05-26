@@ -11,7 +11,6 @@
 	<artifactId>regalandroid</artifactId>
 	<packaging>apk</packaging>
 	<name>ReGalAndroid</name>
-	<version>1.2.0-SNAPSHOT</version>
 	<dependencies>
 		<dependency>
 			<groupId>com.google.android</groupId>
@@ -19,34 +18,15 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>net.dahanne.gallery</groupId>
-			<artifactId>commons-gallery</artifactId>
-			<version>2.1.0-SNAPSHOT</version>
-		</dependency>
-		<dependency>
 			<groupId>net.dahanne.gallery2</groupId>
 			<artifactId>g2-java-client</artifactId>
-			<version>1.2.0-SNAPSHOT</version>
+			<version>${project.parent.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>net.dahanne.gallery3</groupId>
 			<artifactId>g3-java-client</artifactId>
-			<version>2.1.0-SNAPSHOT</version>
+			<version>${project.parent.version}</version>
 		</dependency>
-<!-- 		<dependency> -->
-<!-- 			<groupId>org.slf4j</groupId> -->
-<!-- 			<artifactId>slf4j-android</artifactId> -->
-<!-- 			<version>1.6.1-RC1</version> -->
-<!-- 			<type>jar</type> -->
-<!-- 			<scope>compile</scope> -->
-<!-- 		</dependency> -->
-<!-- 		<dependency> -->
-<!-- 			<groupId>org.slf4j</groupId> -->
-<!-- 			<artifactId>slf4j-api</artifactId> -->
-<!-- 			<version>1.6.2</version> -->
-<!-- 			<type>jar</type> -->
-<!-- 			<scope>provided</scope> -->
-<!-- 		</dependency> -->
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
@@ -57,7 +37,7 @@
 		<dependency>
 			<groupId>net.dahanne.gallery</groupId>
 			<artifactId>jiwigo-ws-api-converter</artifactId>
-			<version>0.1.1-SNAPSHOT</version>
+			<version>${project.parent.version}</version>
 		</dependency>
 	</dependencies>
 	
@@ -139,7 +119,7 @@
                 </configuration>
             </plugin>
 			<plugin>
-				<groupId>com.mycila.maven-license-plugin</groupId>
+				<groupId>com.mycila</groupId>
 				<artifactId>maven-license-plugin</artifactId>
 				<configuration>
 					<header>${basedir}/resources/license-header.txt</header>
