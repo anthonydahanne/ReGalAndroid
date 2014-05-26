@@ -1,6 +1,6 @@
  ReGalAndroid, a gallery client for Android, supporting G2, G3, etc...
  URLs: https://github.com/anthonydahanne/ReGalAndroid , http://blog.dahanne.net
- Copyright (c) 2010 Anthony Dahanne
+ Copyright (c) 2010-2014 Anthony Dahanne
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
  the Free Software Foundation; either version 3 of the License, or
