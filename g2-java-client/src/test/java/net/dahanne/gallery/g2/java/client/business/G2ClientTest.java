@@ -18,27 +18,19 @@
 
 package net.dahanne.gallery.g2.java.client.business;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Random;
-
 import junit.framework.Assert;
 import net.dahanne.gallery.commons.model.Album;
 import net.dahanne.gallery.commons.remote.GalleryConnectionException;
 import net.dahanne.gallery.commons.remote.ImpossibleToLoginException;
 import net.dahanne.gallery.g2.java.client.model.G2Album;
 import net.dahanne.gallery.g2.java.client.model.G2Picture;
-
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+
+import java.io.*;
+import java.util.*;
+import java.util.Map.Entry;
 
 /**
  * These tests should run, provided that the gallery at http://g2.dahanne.net is
@@ -291,12 +283,21 @@ public class G2ClientTest extends Assert {
 		albums.put(album.getId(), album);
 
 		Album finalAlbum = g2ConnectionUtils.organizeAlbumsHierarchy(albums);
+
+        // Depending on the Java version the ArrayList behaves different (ex. the sort order).
+        // Sorting the list makes asserting a lot easier!
+        Collections.sort(finalAlbum.getSubAlbums(), new Comparator<Album>() {
+            public int compare(final Album albumA, final Album albumB) {
+                return Integer.valueOf(albumA.getName()).compareTo(Integer.valueOf(albumB.getName()));
+            }
+        });
+
 		assertEquals(10, finalAlbum.getName());
-		assertEquals(20, finalAlbum.getSubAlbums().get(0).getName());
+		assertEquals(3, finalAlbum.getSubAlbums().get(0).getName());
 		assertEquals(4, finalAlbum.getSubAlbums().get(1).getName());
-		assertEquals(3, finalAlbum.getSubAlbums().get(2).getName());
-		assertEquals(5, finalAlbum.getSubAlbums().get(0).getSubAlbums().get(0).getName());
-		assertEquals(6, finalAlbum.getSubAlbums().get(0).getSubAlbums().get(1).getName());
+		assertEquals(20, finalAlbum.getSubAlbums().get(2).getName());
+		assertEquals(5, finalAlbum.getSubAlbums().get(2).getSubAlbums().get(0).getName());
+		assertEquals(6, finalAlbum.getSubAlbums().get(2).getSubAlbums().get(1).getName());
 
 	}
 
