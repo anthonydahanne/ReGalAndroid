@@ -18,7 +18,16 @@
 
 package net.dahanne.gallery3.client.utils;
 
-import static org.junit.Assert.assertEquals;
+import com.google.common.base.Charsets;
+import com.google.common.io.Resources;
+import net.dahanne.gallery3.client.model.Entity;
+import net.dahanne.gallery3.client.model.Item;
+import net.dahanne.gallery3.client.model.RelationShips;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONTokener;
+import org.junit.Test;
 
 import java.io.IOException;
 import java.net.URL;
@@ -26,18 +35,8 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 
-import net.dahanne.gallery3.client.model.Entity;
-import net.dahanne.gallery3.client.model.Item;
-import net.dahanne.gallery3.client.model.RelationShips;
-
-import org.apache.http.message.BasicNameValuePair;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.json.JSONTokener;
-import org.junit.Test;
-
-import com.google.common.base.Charsets;
-import com.google.common.io.Resources;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class ItemUtilsTest {
 	
@@ -259,12 +258,11 @@ public class ItemUtilsTest {
 		albumEntity.setName("Sample Album");
 		
 		String convertEntityToJSON = ItemUtils.convertAlbumEntityToJSON(albumEntity);
-		
-		
-		
-		
-		
-		assertEquals("{\"title\":\"This is my Sample Album\",\"name\":\"Sample Album\",\"type\":\"album\"}", convertEntityToJSON);
+
+        assertTrue("invalid JSON", new JSONObject(convertEntityToJSON) != null);
+        assertTrue("missing title attribute", convertEntityToJSON.contains("\"title\":\"This is my Sample Album\""));
+        assertTrue("missing name attribute", convertEntityToJSON.contains("\"name\":\"Sample Album\""));
+        assertTrue("missing type attribute", convertEntityToJSON.contains("\"type\":\"album\""));
 	}
 	
 	@Test
