@@ -1,0 +1,6 @@
+include ':regalandroid'
+include ':commons-gallery'
+include ':g2-java-client'
+include ':g3-java-client'
+include ':jiwigo-ws-api-converter'
+include ':jiwigo-ws-api'

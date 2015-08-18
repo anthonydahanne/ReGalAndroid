@@ -1,0 +1,17 @@
+apply plugin: 'java'
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+group = 'fr.mael.jiwigo'
+description = ''
+dependencies {
+    compile group: 'commons-lang', name: 'commons-lang', version:'2.5'
+    compile(group: 'org.apache.httpcomponents', name: 'httpclient', version:'4.1') {
+exclude(module: 'commons-logging')
+    }
+    compile group: 'org.slf4j', name: 'slf4j-api', version:'1.6.2'
+    compile(group: 'org.apache.httpcomponents', name: 'httpmime', version:'4.1.1') {
+exclude(module: 'commons-logging')
+    }
+    testCompile group: 'junit', name: 'junit', version:'4.10'
+    testCompile group: 'commons-logging', name: 'commons-logging', version:'1.1.3'
+}

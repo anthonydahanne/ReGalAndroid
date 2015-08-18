@@ -1,0 +1,14 @@
+# mac stuff
+.DS_Store
+
+# intellij stuff
+.idea
+
+# Android stuff
+local.properties
+bin
+gen
+
+#Gradle stuff
+build/
+.gradle

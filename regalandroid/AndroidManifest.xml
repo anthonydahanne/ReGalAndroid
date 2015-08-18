@@ -33,7 +33,7 @@
 		<activity android:name=".activity.ShowAlbums" android:label="@string/show_albums_title" android:configChanges="keyboardHidden|orientation"/>
 		<activity android:name=".activity.ShowGallery" android:label="@string/show_gallery_title"  android:configChanges="keyboardHidden|orientation" />
 		<activity android:name=".activity.FullImage" android:label="@string/full_image_title" android:theme="@android:style/Theme.NoTitleBar.Fullscreen" android:configChanges="keyboardHidden|orientation" />
-		<activity android:name=".activity.FirstTime" android:label="@string/firsttime_title" android:configChanges="keyboardHidden|orientation" />
+		<!--<activity android:name=".activity.FirstTime" android:label="@string/firsttime_title" android:configChanges="keyboardHidden|orientation" />-->
 		<activity android:name=".activity.ChooseSubAlbumName" android:label="@string/choose_subalbum_name" android:theme="@android:style/Theme.Dialog" android:configChanges="keyboardHidden|orientation"/>
 		<activity android:name=".activity.ChoosePhotoNumber" android:label="@string/choose_photo_number_title" android:theme="@android:style/Theme.Dialog" android:configChanges="keyboardHidden|orientation" />
 		<activity android:name=".activity.UploadPhoto" android:label="@string/upload_photo_title" android:configChanges="keyboardHidden|orientation">
