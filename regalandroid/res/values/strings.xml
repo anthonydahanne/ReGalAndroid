@@ -18,7 +18,8 @@
 
 -->
 
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools"
+	tools:ignore="MissingTranslation" >
 		<!--Keys, NOT TO TRANSLATE !-->
 		<string name="gallery_url_key">galleryUrl</string>
 		<string name="username_key">username</string>
