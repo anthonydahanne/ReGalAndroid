@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.TreeMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -490,7 +491,7 @@ public class G2Client {
 	 */
 	public Collection<G2Picture> extractG2PicturesFromProperties(
 			HashMap<String, String> fetchImages) throws GalleryConnectionException {
-		Map<Integer, G2Picture> picturesMap = new HashMap<Integer, G2Picture>();
+		Map<Integer, G2Picture> picturesMap = new TreeMap<Integer, G2Picture>();
 		List<Integer> tmpImageNumbers = new ArrayList<Integer>();
 		int imageNumber = 0;
 		for (Entry<String, String> entry : fetchImages.entrySet()) {
