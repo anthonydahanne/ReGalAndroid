@@ -290,7 +290,7 @@ public class ShowAlbums extends ListActivity implements OnItemClickListener {
 	}
 
 	@Override
-	public boolean onKeyDown(int keyCode, KeyEvent event) {
+	public boolean onKeyUp(int keyCode, KeyEvent event) {
 		// the user tries to get back to the parent album
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
 			//we are leaving the gallery view, so we want to remember we want to see the parent album
