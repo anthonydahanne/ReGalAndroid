@@ -36,5 +36,6 @@
     <orderEntry type="library" exported="" scope="TEST" name="junit-4.10" level="project" />
     <orderEntry type="library" exported="" scope="TEST" name="logback-core-0.9.30" level="project" />
     <orderEntry type="library" exported="" scope="TEST" name="hamcrest-core-1.1" level="project" />
+    <orderEntry type="library" exported="" name="commons-gallery.commons-gallery" level="project" />
   </component>
 </module>
