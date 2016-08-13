@@ -253,14 +253,14 @@ public class TouchImageView extends ImageView {
 //                Toast.makeText(context, "Right to left "+Math.abs(velocityX), Toast.LENGTH_SHORT).show();
 //                Log.d(TAG, "Velocity "+Math.abs(velocityX));
 //                Log.d(TAG, "Distance "+(e1.getX() - e2.getX()));
-            	fullImage.moveRight();
+            	if (saveScale <= 1f) { fullImage.moveRight(); }
             	
                 return false; // Right to left
             }  else if (e2.getX() - e1.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
 //                Toast.makeText(context, "Left to right "+Math.abs(velocityX), Toast.LENGTH_SHORT).show();
 //                Log.d(TAG, "Velocity "+Math.abs(velocityX));
 //                Log.d(TAG, "Distance "+(e2.getX() - e1.getX()));
-            	fullImage.moveLeft();
+            	if (saveScale <= 1f) { fullImage.moveLeft(); }
                 return false; // Left to right
             }
             if(e1.getY() - e2.getY() > SWIPE_MIN_DISTANCE && Math.abs(velocityY) > SWIPE_THRESHOLD_VELOCITY) {
