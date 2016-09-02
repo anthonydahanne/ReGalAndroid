@@ -45,7 +45,7 @@ public class TouchImageView extends ImageView {
     float redundantXSpace, redundantYSpace;
 
     float width, height;
-    static final int CLICK = 3;
+    static final int CLICK = 10;
     float saveScale = 1f;
     float right, bottom, origWidth, origHeight, bmWidth, bmHeight;
 
@@ -245,7 +245,7 @@ public class TouchImageView extends ImageView {
 
     class GestureListener extends SimpleOnGestureListener {
         private   int SWIPE_MIN_DISTANCE = 120;
-        private   int SWIPE_THRESHOLD_VELOCITY = 200;
+        private   int SWIPE_THRESHOLD_VELOCITY = 150;
 
         @Override
         public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
