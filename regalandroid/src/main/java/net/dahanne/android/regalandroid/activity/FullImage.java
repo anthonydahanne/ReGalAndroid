@@ -85,6 +85,7 @@ public class FullImage extends AppCompatActivity {
 	private Animation mSlideUp;
 	private Animation mSlideDown;
 	private View mDecorView;
+	private boolean TBvisible;
 
     @Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -124,6 +125,7 @@ public class FullImage extends AppCompatActivity {
 		// add toolbar
 		mToolbar = (Toolbar) findViewById(R.id.toolbar);
 		setSupportActionBar(mToolbar);
+		TBvisible = false;
 	}
 
     @Override
@@ -132,6 +134,7 @@ public class FullImage extends AppCompatActivity {
 		logger.debug("onResuming");
 		application = ((RegalAndroidApplication) getApplication());
 		albumPictures = application.getPictures();
+
 		if (albumPictures == null || albumPictures.size() == 0) {
 			logger.debug("albumPictures is empty getting out");
 			finish();
@@ -371,10 +374,22 @@ public class FullImage extends AppCompatActivity {
 		alert.show();
 	}
 
+/*	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event)  {
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+			// this tells the framework to start tracking for
+			// a long press and eventual key up.  it will only
+			// do so if this is the first down (not a repeat).
+			event.startTracking();
+			return true;
+		}
+		return super.onKeyDown(keyCode, event);
+	}
 
 	@Override
 	public boolean onKeyUp(int keyCode, KeyEvent event) {
-		if (keyCode == KeyEvent.KEYCODE_BACK) {
+		if (keyCode == KeyEvent.KEYCODE_BACK && event.isTracking()
+				&& !event.isCanceled()) {
 			setResult(RESULT_OK);
 			((RegalAndroidApplication) getApplication()).setCurrentPosition(currentPosition);
 			this.finish();
@@ -383,6 +398,26 @@ public class FullImage extends AppCompatActivity {
 		return false;
 	}
 
+	@Override
+	public boolean onKeyLongPress(int keyCode, KeyEvent event) {
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+			// a long press of the call key.
+			// do our work, returning true to consume it.  by
+			// returning true, the framework knows an action has
+			// been performed on the long press, so will set the
+			// canceled flag for the following up event.
+			super.onKeyLongPress(keyCode, event);
+			return true;
+		}
+		return super.onKeyLongPress(keyCode, event);
+	}
+*/
+	@Override
+	public void onBackPressed() {
+		setResult(RESULT_OK);
+		((RegalAndroidApplication) getApplication()).setCurrentPosition(currentPosition);
+		this.finish();
+	}
 
 	void moveRight(){
 		int newPosition = currentPosition+1;
@@ -472,10 +507,12 @@ public class FullImage extends AppCompatActivity {
 
 	private View.OnClickListener onTIVClick = new View.OnClickListener() {
 		public void onClick (View v) {
-			if (getSupportActionBar().isShowing()) {
+			if (TBvisible) {
 				hideSystemUI();
+				TBvisible = false;
 			} else {
 				showSystemUI();
+				TBvisible = true;
 			}
 		}
 	};
