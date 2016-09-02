@@ -118,7 +118,7 @@
     <orderEntry type="module" module-name="commons-gallery" exported="" />
     <orderEntry type="module" module-name="jiwigo-ws-api" exported="" />
     <orderEntry type="module" module-name="g3-java-client" exported="" />
-    <orderEntry type="module" module-name="jiwigo-ws-api-converter" exported="" />
     <orderEntry type="module" module-name="g2-java-client" exported="" />
+    <orderEntry type="module" module-name="jiwigo-ws-api-converter" exported="" />
   </component>
 </module>
