@@ -563,7 +563,7 @@ public class G2Client {
 		Map<Integer, G2Album> nonSortedAlbums = extractAlbumFromProperties(albumsProperties);
 		
 		
-		Map<Integer, Album> albumss  = new HashMap<Integer, Album>();
+		Map<Integer, Album> albumss  = new TreeMap<Integer, Album>();
 		for (Integer key : nonSortedAlbums.keySet()) {
 			albumss.put(key, G2ConvertUtils.g2AlbumToAlbum(nonSortedAlbums.get(key)));
 		}
@@ -584,7 +584,7 @@ public class G2Client {
 	public Map<Integer, G2Album> extractAlbumFromProperties(
 			HashMap<String, String> albumsProperties) throws GalleryConnectionException {
 		int albumNumber = 0;
-		Map<Integer, G2Album> albumsMap = new HashMap<Integer, G2Album>();
+		Map<Integer, G2Album> albumsMap = new TreeMap<Integer, G2Album>();
 		List<Integer> tmpAlbumNumbers = new ArrayList<Integer>();
 
 		for (Entry<String, String> entry : albumsProperties.entrySet()) {
@@ -643,7 +643,7 @@ public class G2Client {
 	 */
 	public Album organizeAlbumsHierarchy(Map<Integer, G2Album> albums) {
 		Album rootAlbum = null;
-		Map<Integer, Album> albumss  = new HashMap<Integer, Album>();
+		Map<Integer, Album> albumss  = new TreeMap<Integer, Album>();
 		for (Integer key : albums.keySet()) {
 			albumss.put(key, G2ConvertUtils.g2AlbumToAlbum(albums.get(key)));
 		}
