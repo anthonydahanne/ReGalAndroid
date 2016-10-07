@@ -1,13 +1,11 @@
 language: android
 android:
    components:
-     - build-tools-19.0.3
+     - build-tools-19.1.0
+     - android-10
      - android-19
      - sysimg-19
      - extra-android-support
    licenses:
-     - android-sdk-license-bcbbd656
+     - 'android-sdk-license-.+'
      - '.*intel.+'
-install: mvn install
-#since mvn install already run the tests, we don't need travis to do it again
-test: /bin/sh ./bin/ci/do-nothing.sh 
