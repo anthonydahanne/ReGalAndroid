@@ -39,6 +39,7 @@ import java.util.Map.Entry;
  * @author Anthony Dahanne
  * 
  */
+@Ignore
 public class G2ClientTest extends Assert {
 	private String galleryUrl;
 	private String user;
