@@ -258,7 +258,6 @@ public class ImageDaoImpl implements ImageDao {
 	    if (nodeImage.getNodeType() == Node.ELEMENT_NODE) {
 		Element im = (Element) nodeImage;
 		Image myImage = new Image();
-		myImage.setThumbnailUrl(im.getAttribute("tn_url"));
 		myImage.setUrl(im.getAttribute("element_url"));
 		myImage.setWidth(Integer.valueOf(im.getAttribute("width")));
 		myImage.setHeight(Integer.valueOf(im.getAttribute("height")));
@@ -266,6 +265,15 @@ public class ImageDaoImpl implements ImageDao {
 		myImage.setSeen(Integer.valueOf(im.getAttribute("hit")));
 		myImage.setIdentifier(Integer.valueOf(im.getAttribute("id")));
 		myImage.setName(Tools.getStringValueDom(im, "name"));
+		//Thumbnail is in "derivatives" node since Piwigo 2.4
+		myImage.setThumbnailUrl(im.getAttribute("tn_url"));
+		if (myImage.getThumbnailUrl().isEmpty()) {
+			Element elementDerivatives = (Element) im.getElementsByTagName("derivatives").item(0);
+			if (elementDerivatives != null) {
+				Element elementDerivative = (Element) elementDerivatives.getElementsByTagName("thumb").item(0);
+				myImage.setThumbnailUrl(Tools.getStringValueDom(elementDerivative, "url"));
+			}
+		}
 		Element elementCategories = (Element) im.getElementsByTagName("categories").item(0);
 		if (elementCategories != null) {
 		    Element elementCategory = (Element) elementCategories.getElementsByTagName("category").item(0);
