@@ -52,6 +52,7 @@ import org.junit.Test;
 
 import com.google.common.io.ByteStreams;
 
+@Ignore
 public class G3ClientTest {
 
 	private static final int G2ANDROID_SECRET_ALBUM = 11;
