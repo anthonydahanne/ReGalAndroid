@@ -50,7 +50,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -459,22 +458,18 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 	}
 
 	@Override
-	public boolean onKeyDown(int keyCode, KeyEvent event) {
+	public void onBackPressed() {
 		// the user tries to get back to the parent album
-		if (keyCode == KeyEvent.KEYCODE_BACK) {
-			// we are leaving the gallery view, so we want to remember we want
-			// to see the parent album
-			// unless there are several albums; in this case we want to browse
-			// the album
-			if (application.getCurrentAlbum().getSubAlbums().size() == 0) {
-				application.setCurrentAlbum(application.getCurrentAlbum()
-						.getParent());
-				logger.debug("leaving activity, new currentAlbum : {}",application.getCurrentAlbum());
-			}
-			this.finish();
-			return true;
+		// we are leaving the gallery view, so we want to remember we want
+		// to see the parent album
+		// unless there are several albums; in this case we want to browse
+		// the album
+		if (application.getCurrentAlbum().getSubAlbums().size() == 0) {
+			application.setCurrentAlbum(application.getCurrentAlbum()
+					.getParent());
+			logger.debug("leaving activity, new currentAlbum : {}",application.getCurrentAlbum());
 		}
-		return false;
+		this.finish();
 	}
 
 }

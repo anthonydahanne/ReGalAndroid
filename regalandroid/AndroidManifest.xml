@@ -32,7 +32,8 @@
 		<activity android:name=".activity.About" android:label="@string/about_title" android:theme="@android:style/Theme.Dialog" android:configChanges="keyboardHidden|orientation" />
 		<activity android:name=".activity.ShowAlbums" android:label="@string/show_albums_title" android:configChanges="keyboardHidden|orientation"/>
 		<activity android:name=".activity.ShowGallery" android:label="@string/show_gallery_title"  android:configChanges="keyboardHidden|orientation" />
-		<activity android:name=".activity.FullImage" android:label="@string/full_image_title" android:theme="@android:style/Theme.NoTitleBar.Fullscreen" android:configChanges="keyboardHidden|orientation" />
+		<activity android:name=".activity.FullImage" android:label="@string/full_image_title" android:theme="@style/AppTheme" android:configChanges="keyboardHidden|orientation" />
+		<!--<activity android:name=".activity.FullImage" android:label="@string/full_image_title" android:theme="@android:style/Theme.NoTitleBar.Fullscreen" android:configChanges="keyboardHidden|orientation" />-->
 		<!--<activity android:name=".activity.FirstTime" android:label="@string/firsttime_title" android:configChanges="keyboardHidden|orientation" />-->
 		<activity android:name=".activity.ChooseSubAlbumName" android:label="@string/choose_subalbum_name" android:theme="@android:style/Theme.Dialog" android:configChanges="keyboardHidden|orientation"/>
 		<activity android:name=".activity.ChoosePhotoNumber" android:label="@string/choose_photo_number_title" android:theme="@android:style/Theme.Dialog" android:configChanges="keyboardHidden|orientation" />
@@ -43,6 +44,7 @@
 					<category
 						android:name="android.intent.category.DEFAULT" />
 					<data android:mimeType="image/*" />
+					<data android:mimeType="video/*" />
 			</intent-filter>
 		</activity>
 	</application>
@@ -50,5 +52,5 @@
 	<uses-permission android:name="android.permission.CAMERA" />
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 	<supports-screens android:anyDensity="true" android:largeScreens="true" android:normalScreens="true" android:smallScreens="true" android:resizeable="true" android:xlargeScreens="true" />
-	<uses-sdk android:minSdkVersion="4" android:targetSdkVersion="10"></uses-sdk>
+	<uses-sdk android:minSdkVersion="11" android:targetSdkVersion="22"></uses-sdk>
 </manifest> 

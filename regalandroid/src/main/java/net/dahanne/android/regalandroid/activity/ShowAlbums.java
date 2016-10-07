@@ -38,7 +38,6 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -290,15 +289,13 @@ public class ShowAlbums extends ListActivity implements OnItemClickListener {
 	}
 
 	@Override
-	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		// the user tries to get back to the parent album
-		if (keyCode == KeyEvent.KEYCODE_BACK) {
-			//we are leaving the gallery view, so we want to remember we want to see the parent album
-			if(application.getCurrentAlbum()!=null && application.getCurrentAlbum().getParent()!=null){
-				application.setCurrentAlbum(application.getCurrentAlbum().getParent());
-				logger.debug("leaving activity, new currentAlbum : {}",application.getCurrentAlbum());
-			}
-			this.finish();
+	public void onBackPressed() {
+		//we are leaving the gallery view, so we want to remember we want to see the parent album
+		if(application.getCurrentAlbum()!=null && application.getCurrentAlbum().getParent()!=null){
+			application.setCurrentAlbum(application.getCurrentAlbum().getParent());
+			logger.debug("leaving activity, new currentAlbum : {}",application.getCurrentAlbum());
+		}
+		this.finish();
 //			Album currentAlbum = remoteGallery
 //					.findAlbumFromAlbumName(
 //							application
@@ -310,10 +307,7 @@ public class ShowAlbums extends ListActivity implements OnItemClickListener {
 //				((RegalAndroidApplication) getApplication())
 //						.setAlbumName(currentAlbum.getParentName());
 //			}
-			this.finish();
-			return true;
-		}
-		return false;
+//		this.finish();
 	}
 
 }
