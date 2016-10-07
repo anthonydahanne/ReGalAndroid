@@ -39,6 +39,7 @@ public class Category {
     private Element element;
     private Integer directParent;
     private Integer level;
+    private String urlThumbnail;
 
     public Category() {
 	childCategories = new ArrayList<Category>();
@@ -168,6 +169,19 @@ public class Category {
 
     public void setIdParentCategoriesString(String idParentCategoriesString) {
 	this.idParentCategoriesString = idParentCategoriesString;
+    }
+    /**
+     * @return the urlThumbnail
+     */
+    public String getUrlThumbnail() {
+        return urlThumbnail;
+    }
+
+    /**
+     * @param urlThumbnail the urlThumbnail to set
+     */
+    public void setUrlThumbnail(String urlThumbnail) {
+        this.urlThumbnail = urlThumbnail;
     }
 
 }

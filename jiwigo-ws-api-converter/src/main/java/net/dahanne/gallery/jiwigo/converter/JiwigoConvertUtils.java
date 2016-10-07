@@ -40,6 +40,7 @@ public class JiwigoConvertUtils {
 		album.setTitle(jiwigoCategory.getName());
 //		album.setSummary(jiwigoCategory.getSummary());
 		album.setParentName(jiwigoCategory.getDirectParent()==null?0:jiwigoCategory.getDirectParent());
+		album.setAlbumCoverUrl(jiwigoCategory.getUrlThumbnail());
 		return album;
 	}
 	public static Picture jiwigoImageToPicture(Image jiwigoImage) {

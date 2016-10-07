@@ -82,6 +82,7 @@ public class CategoryDaoImpl implements CategoryDao {
 		    }
 		}
 		myCat.setIdParentCategories(idCategoriesMeres);
+			myCat.setUrlThumbnail(Tools.getStringValueDom(cat, CategoryEnum.URL_THUMBNAIL.getLabel()));
 		categories.add(myCat);
 	    }
 	}
