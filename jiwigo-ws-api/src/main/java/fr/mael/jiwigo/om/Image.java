@@ -38,6 +38,7 @@ public class Image {
     private File thumbnail;
     private String privacyLevel;
     private File originale;
+    private String resizedUrl;
 
     /**
      * @return the privacyLevel
@@ -201,6 +202,20 @@ public class Image {
      */
     public void setIdCategory(Integer idCategory) {
 	this.idCategory = idCategory;
+    }
+
+    /**
+     * @return the resized url
+     */
+    public String getResizedUrl() {
+        return resizedUrl;
+    }
+
+    /**
+     * @param resizedUrl the resized url to set
+     */
+    public void setResizedUrl(String resizedUrl) {
+        this.resizedUrl = resizedUrl;
     }
 
 }

@@ -57,7 +57,7 @@ public class JiwigoConvertUtils {
 //		picture.setThumbHeight(jiwigoImage.getThumbHeight());
 //		picture.setThumbSize(g2Picture.getThumbSize());
 		
-//		picture.setResizedUrl(baseUrl +jiwigoImage.getResizedName());
+		picture.setResizedUrl(jiwigoImage.getResizedUrl());
 //		picture.setResizedWidth(jiwigoImage.getResizedWidth());
 //		picture.setResizedHeight(jiwigoImage.getResizedHeight());
 //		picture.setResizedSize(g2Picture.getResizeSize());

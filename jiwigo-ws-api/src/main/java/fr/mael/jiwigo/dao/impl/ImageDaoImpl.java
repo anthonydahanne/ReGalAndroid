@@ -265,15 +265,20 @@ public class ImageDaoImpl implements ImageDao {
 		myImage.setSeen(Integer.valueOf(im.getAttribute("hit")));
 		myImage.setIdentifier(Integer.valueOf(im.getAttribute("id")));
 		myImage.setName(Tools.getStringValueDom(im, "name"));
-		//Thumbnail is in "derivatives" node since Piwigo 2.4
-		myImage.setThumbnailUrl(im.getAttribute("tn_url"));
-		if (myImage.getThumbnailUrl().isEmpty()) {
-			Element elementDerivatives = (Element) im.getElementsByTagName("derivatives").item(0);
-			if (elementDerivatives != null) {
-				Element elementDerivative = (Element) elementDerivatives.getElementsByTagName("thumb").item(0);
-				myImage.setThumbnailUrl(Tools.getStringValueDom(elementDerivative, "url"));
-			}
+		// "derivatives" node lists alternative sizes since Piwigo 2.4
+		Element elementDerivatives = (Element) im.getElementsByTagName("derivatives").item(0);
+		if (elementDerivatives != null) {
+			//Thumbnail is in "derivatives" node since Piwigo 2.4
+			Element thumbDerivative = (Element) elementDerivatives.getElementsByTagName("thumb").item(0);
+			myImage.setThumbnailUrl(Tools.getStringValueDom(thumbDerivative, "url"));
 		}
+		else {
+			//Thumbnail before Piwigo 2.4
+			myImage.setThumbnailUrl(im.getAttribute("tn_url"));
+		}
+		//Resized URL : derivative with the biggest size
+		myImage.setResizedUrl(findResizedUrl(elementDerivatives));
+
 		Element elementCategories = (Element) im.getElementsByTagName("categories").item(0);
 		if (elementCategories != null) {
 		    Element elementCategory = (Element) elementCategories.getElementsByTagName("category").item(0);
@@ -287,6 +292,35 @@ public class ImageDaoImpl implements ImageDao {
 	}
 	return images;
     }
+
+	/**
+	 * Find Resized Url from derivative with biggest size
+	 * @param elementDerivatives the list of derivatives
+	 * @return the Resized Url
+	 */
+	private String findResizedUrl(Element elementDerivatives) {
+		String resizedUrl = null;
+		if (elementDerivatives != null) {
+			NodeList listDerivatives = elementDerivatives.getChildNodes();
+			int maxWidth = 0;
+			Element biggestDerivative = null;
+			for (int j = 0; j < listDerivatives.getLength(); j++) {
+				Node nodeDerivative = listDerivatives.item(j);
+				if (nodeDerivative.getNodeType() == Node.ELEMENT_NODE) {
+					Element derivative = (Element) nodeDerivative;
+					int curWidth = Integer.valueOf(Tools.getStringValueDom(derivative, "width"));
+					if (curWidth > maxWidth) {
+						maxWidth = curWidth;
+						biggestDerivative = derivative;
+					}
+				}
+			}
+			if (biggestDerivative != null) {
+				resizedUrl = Tools.getStringValueDom(biggestDerivative, "url");
+			}
+		}
+		return resizedUrl;
+	}
 
     /**
      * Search images
