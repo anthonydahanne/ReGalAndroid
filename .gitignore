@@ -3,6 +3,7 @@
 
 # intellij stuff
 .idea
+*.iml
 
 # Android stuff
 local.properties
