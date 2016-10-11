@@ -1,16 +1,17 @@
 description = 'ReGalAndroid'
-apply plugin: 'android'
-//apply plugin: 'android-test'
+apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 10
-    buildToolsVersion '19.1.0'
+    compileSdkVersion 24
+    buildToolsVersion '23.0.3'
+    useLibrary  'org.apache.http.legacy'
 
     defaultConfig {
-        minSdkVersion 10
+        minSdkVersion 11
         targetSdkVersion 16
     }
     lintOptions {
+        checkReleaseBuilds false
         abortOnError false
     }
     sourceSets {
@@ -39,5 +40,5 @@ dependencies {
         exclude module: 'slf4j-api'
     }
     compile 'org.slf4j:slf4j-android:1.6.1-RC1'
-    compile 'com.android.support:appcompat-v7:22.2.+'
+    compile 'com.android.support:appcompat-v7:24.2.1'
 }
