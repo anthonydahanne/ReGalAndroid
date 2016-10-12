@@ -34,7 +34,6 @@ import net.dahanne.gallery.commons.remote.GalleryConnectionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -44,19 +43,25 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.view.GestureDetector;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 
 /**
  *
  * @author Anthony Dahanne
  *
  */
-public class FullImage extends Activity {
+public class FullImage extends AppCompatActivity {
 
 	private static final int REQUEST_CODE_CHOOSE_PHOTO_NUMBER = 1;
 	private static final String SLASH = "/";
@@ -71,26 +76,56 @@ public class FullImage extends Activity {
 	private List<Picture> albumPictures;
 	private int currentPosition;
 	private ProgressDialog progressDialog;
-	private GestureDetector gestureScanner;
 	private Toast toast;
 	private final FileUtils fileUtils = FileUtils.getInstance();
 	private RegalAndroidApplication application;
 	private final Logger logger = LoggerFactory.getLogger(FullImage.class);
     private Timer slideshowTimer;
+	private Toolbar mToolbar;
+	private Animation mSlideUp;
+	private Animation mSlideDown;
+	private View mDecorView;
+	private boolean TBvisible;
 
     @Override
 	protected void onCreate(Bundle savedInstanceState) {
+		RelativeLayout parent;
 
 		super.onCreate(savedInstanceState);
 
+		// generate relativelayout for touchimageview
+		RelativeLayout.LayoutParams param = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+
+		// load fullimage.xml
+		LayoutInflater inflater = LayoutInflater.from(this);
+		parent = (RelativeLayout) inflater.inflate(R.layout.fullimage, null);
+
 		galleryUrl = Settings.getGalleryUrl(this);
-//		setContentView(R.layout.full_image);
+
+		//setup touchimageview and add it to view. position 0 is essential. if added at the end toolbar will not work
 		imageView =  new TouchImageView(this);
-//		imageView = (TouchImageView) this.findViewById(R.id.full_image_view);
 		imageView.setMaxZoom(4f);
 		imageView.setFullImage(this);
-		setContentView(imageView);
+		imageView.setLayoutParams(param);
+		imageView.setOnClickListener(onTIVClick);
+		parent.addView(imageView, 0);
 
+		// setup listener
+		mDecorView = getWindow().getDecorView();
+		mDecorView.setOnSystemUiVisibilityChangeListener(mOnSystemUiVisibilityChangeListener);
+
+		// setup animations
+		mSlideUp = AnimationUtils.loadAnimation(this, R.anim.slide_up);
+		mSlideDown = AnimationUtils.loadAnimation(this, R.anim.slide_down);
+
+		// set view
+		hideSystemUI();
+		setContentView(parent);
+
+		// add toolbar
+		mToolbar = (Toolbar) findViewById(R.id.toolbar);
+		setSupportActionBar(mToolbar);
+		TBvisible = false;
 	}
 
     @Override
@@ -99,15 +134,15 @@ public class FullImage extends Activity {
 		logger.debug("onResuming");
 		application = ((RegalAndroidApplication) getApplication());
 		albumPictures = application.getPictures();
+
 		if (albumPictures == null || albumPictures.size() == 0) {
 			logger.debug("albumPictures is empty getting out");
 			finish();
 		} else {
 			currentPosition = ((RegalAndroidApplication) getApplication()).getCurrentPosition();
 			logger.debug("currentPosition is : {}", currentPosition);
-			loadingPicture();
+			changingPhoto(currentPosition);
 		}
-
 	}
 
 	@Override
@@ -288,7 +323,8 @@ public class FullImage extends Activity {
                 filePath = Settings.getReGalAndroidPath(this) + SLASH + picture.getFileName();
                 File file = new File(filePath);
                 if (!file.exists()) {
-                    filePath = Settings.getReGalAndroidCachePath(this) + SLASH + picture.getFileName();
+					int albumName = application.getCurrentAlbum().getName();
+                    filePath = Settings.getReGalAndroidCachePath(this) + albumName + SLASH + picture.getFileName();
                     file = new File(filePath);
                 }
                 intent.setDataAndType(Uri.fromFile(file), "image/*");
@@ -338,11 +374,22 @@ public class FullImage extends Activity {
 		alert.show();
 	}
 
-
+/*	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event)  {
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+			// this tells the framework to start tracking for
+			// a long press and eventual key up.  it will only
+			// do so if this is the first down (not a repeat).
+			event.startTracking();
+			return true;
+		}
+		return super.onKeyDown(keyCode, event);
+	}
 
 	@Override
-	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		if (keyCode == KeyEvent.KEYCODE_BACK) {
+	public boolean onKeyUp(int keyCode, KeyEvent event) {
+		if (keyCode == KeyEvent.KEYCODE_BACK && event.isTracking()
+				&& !event.isCanceled()) {
 			setResult(RESULT_OK);
 			((RegalAndroidApplication) getApplication()).setCurrentPosition(currentPosition);
 			this.finish();
@@ -351,6 +398,26 @@ public class FullImage extends Activity {
 		return false;
 	}
 
+	@Override
+	public boolean onKeyLongPress(int keyCode, KeyEvent event) {
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+			// a long press of the call key.
+			// do our work, returning true to consume it.  by
+			// returning true, the framework knows an action has
+			// been performed on the long press, so will set the
+			// canceled flag for the following up event.
+			super.onKeyLongPress(keyCode, event);
+			return true;
+		}
+		return super.onKeyLongPress(keyCode, event);
+	}
+*/
+	@Override
+	public void onBackPressed() {
+		setResult(RESULT_OK);
+		((RegalAndroidApplication) getApplication()).setCurrentPosition(currentPosition);
+		this.finish();
+	}
 
 	void moveRight(){
 		int newPosition = currentPosition+1;
@@ -372,6 +439,7 @@ public class FullImage extends Activity {
 
     private void changingPhoto(int newPosition) {
 		String message;
+		String title = "";
 		// we're above the limit
 		if (newPosition < 0 || newPosition >= albumPictures.size()) {
 			message = getString(R.string.no_more_pictures);
@@ -379,12 +447,20 @@ public class FullImage extends Activity {
 			currentPosition = newPosition;
 			loadingPicture();
 			StringBuilder showingPictureSb = new StringBuilder();
+			StringBuilder showTitle = new StringBuilder();
 			showingPictureSb.append(getString(R.string.showing_picture));
 			int currentPositionToDisplay = currentPosition + 1;
-			showingPictureSb.append(currentPositionToDisplay);
-			showingPictureSb.append(SLASH);
-			showingPictureSb.append(albumPictures.size());
+			showTitle.append(currentPositionToDisplay);
+			showTitle.append(SLASH);
+			showTitle.append(albumPictures.size());
+			title = showTitle.toString();
+			showingPictureSb.append(title);
 			message = showingPictureSb.toString();
+
+			picture = albumPictures.get(currentPosition);
+			String filename = picture.getFileName();
+			showTitle.append(" ").append(filename);
+			title = showTitle.toString();
 		}
 		// make the toast or update it
 		if (toast == null) {
@@ -393,5 +469,51 @@ public class FullImage extends Activity {
 			toast.setText(message);
 		}
 		toast.show();
+		setTitle(title);
 	}
+
+	private View.OnSystemUiVisibilityChangeListener mOnSystemUiVisibilityChangeListener = new View.OnSystemUiVisibilityChangeListener() {
+		@Override
+		public void onSystemUiVisibilityChange(int visibility) {
+			if ((visibility & View.SYSTEM_UI_FLAG_FULLSCREEN) == View.VISIBLE) {
+				mToolbar.startAnimation(mSlideDown);
+				getSupportActionBar().show();
+			} else {
+				getSupportActionBar().hide();
+				mToolbar.startAnimation(mSlideUp);
+			}
+		}
+	};
+
+	private void showSystemUI() {
+		mDecorView.setSystemUiVisibility(
+				View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+						| View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+						| View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+	}
+
+	private void hideSystemUI() {
+		// Set the IMMERSIVE flag.
+		// Set the content to appear under the system bars so that the content
+		// doesn't resize when the system bars hide and show.
+		mDecorView.setSystemUiVisibility(
+				View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+						| View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+						| View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+						| View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
+						| View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
+						| View.SYSTEM_UI_FLAG_IMMERSIVE);
+	}
+
+	private View.OnClickListener onTIVClick = new View.OnClickListener() {
+		public void onClick (View v) {
+			if (TBvisible) {
+				hideSystemUI();
+				TBvisible = false;
+			} else {
+				showSystemUI();
+				TBvisible = true;
+			}
+		}
+	};
 }
