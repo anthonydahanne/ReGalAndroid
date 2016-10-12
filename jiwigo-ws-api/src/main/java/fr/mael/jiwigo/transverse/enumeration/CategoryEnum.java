@@ -22,7 +22,7 @@ package fr.mael.jiwigo.transverse.enumeration;
 public enum CategoryEnum {
 
     ID("id"), NB_IMAGES("nb_images"), NB_TOTAL_IMAGES("total_nb_images"), URL("url"), NAME("name"), CAT_MERES(
-	    "uppercats");
+	    "uppercats"), URL_THUMBNAIL("tn_url");
 
     protected String label;
 
