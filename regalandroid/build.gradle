@@ -1,16 +1,17 @@
 description = 'ReGalAndroid'
-apply plugin: 'android'
-//apply plugin: 'android-test'
+apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 10
-    buildToolsVersion '19.1.0'
+    compileSdkVersion 24
+    buildToolsVersion '23.0.3'
+    useLibrary  'org.apache.http.legacy'
 
     defaultConfig {
-        minSdkVersion 10
+        minSdkVersion 11
         targetSdkVersion 16
     }
     lintOptions {
+        checkReleaseBuilds false
         abortOnError false
     }
     sourceSets {
@@ -23,18 +24,21 @@ android {
         exclude 'META-INF/LICENSE.txt'
         exclude 'META-INF/NOTICE.txt'
     }
+    productFlavors {
+    }
 }
 
 dependencies {
-  compile (project(':g2-java-client')) {
-      exclude module: 'slf4j-api'
-  }
-  compile (project(':g3-java-client')) {
-      exclude module: 'slf4j-api'
-  }
-  compile group: 'commons-io', name: 'commons-io', version:'20030203.000550'
-  compile (project(':jiwigo-ws-api-converter')) {
-      exclude module: 'slf4j-api'
-  }
-  compile 'org.slf4j:slf4j-android:1.6.1-RC1'
+    compile(project(':g2-java-client')) {
+        exclude module: 'slf4j-api'
+    }
+    compile(project(':g3-java-client')) {
+        exclude module: 'slf4j-api'
+    }
+    compile 'commons-io:commons-io:20030203.000550'
+    compile(project(':jiwigo-ws-api-converter')) {
+        exclude module: 'slf4j-api'
+    }
+    compile 'org.slf4j:slf4j-android:1.6.1-RC1'
+    compile 'com.android.support:appcompat-v7:24.2.1'
 }

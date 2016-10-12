@@ -458,8 +458,8 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 	public void onNothingSelected(AdapterView<?> parent) {
 	}
 
-	@Override
-	public boolean onKeyDown(int keyCode, KeyEvent event) {
+/*	@Override
+	public boolean onKeyUp(int keyCode, KeyEvent event) {
 		// the user tries to get back to the parent album
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
 			// we are leaving the gallery view, so we want to remember we want
@@ -475,6 +475,21 @@ public class ShowGallery extends Activity implements OnItemSelectedListener,
 			return true;
 		}
 		return false;
+	}
+*/
+	@Override
+	public void onBackPressed() {
+		// the user tries to get back to the parent album
+		// we are leaving the gallery view, so we want to remember we want
+		// to see the parent album
+		// unless there are several albums; in this case we want to browse
+		// the album
+		if (application.getCurrentAlbum().getSubAlbums().size() == 0) {
+			application.setCurrentAlbum(application.getCurrentAlbum()
+					.getParent());
+			logger.debug("leaving activity, new currentAlbum : {}",application.getCurrentAlbum());
+		}
+		this.finish();
 	}
 
 }
