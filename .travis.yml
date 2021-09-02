@@ -12,3 +12,7 @@ android:
    licenses:
      - 'android-sdk-license-.+'
      - '.*intel.+'
+
+cache:
+  directories:
+  - $HOME/.m2
